@@ -39,20 +39,24 @@ SGMLApplication::Position position;
 
 
 /** \brief This object is driven by OpenSP as it parses the SGML from the ofx file(s)
-*/
+ */
 class OutlineApplication : public SGMLApplication
 {
 public:
   OfxGenericContainer *curr_container_element; /**< The currently open object from ofx_proc_rs.cpp */
   OfxGenericContainer *tmp_container_element;
+  bool is_data_element; /**< If the SGML element contains data, this flag is raised */
   string incoming_data; /**< The raw data from the SGML data element */
   bool osp134workaround; /**< If the OpenSP < 1.3.4 bug is encountered, the flag is rased by startElement and lowered by endElement */
   string  osp134workaround_data; /**< The name of the previous element identifier */
+  bool osp134workaround_is_data_element;
 
   
   OutlineApplication ()
   {
     curr_container_element = NULL;
+    is_data_element = false;
+    osp134workaround = false;
   }
   
   /** \brief Callback: Start of an OFX element
@@ -63,9 +67,7 @@ public:
   {
     string identifier;
     CharStringtostring (event.gi, identifier);
-    bool is_data_element; /**< If the SGML element contains data, this flag is raised */
     message_out(PARSER,"startElement event received from OpenSP for element " + identifier);
-
     
     position = event.pos;
     switch (event.contentType)
@@ -85,7 +87,6 @@ public:
       default:
 	message_out(ERROR,"Unknow SGML content type?!?!?!? OpenSP interface changed?");
       }
-    /*       cout<<")\n";*/
     
     if (is_data_element == false)
       {
@@ -152,15 +153,15 @@ public:
 	    message_out (PARSER, "Element " + identifier + " found");
 	    curr_container_element = new OfxInvestmentTransactionContainer (curr_container_element, identifier);
 	  }
-/*The following is a list of OFX elements whose attributes will be processed by the parent container*/
+	/*The following is a list of OFX elements whose attributes will be processed by the parent container*/
 	else if (identifier == "INVBUY" ||
 		 identifier == "INVSELL" ||
 		 identifier == "INVTRAN" ||
 		 identifier == "SECID")
-	    {
-	      message_out (PARSER, "Element " + identifier + " found");
-	      curr_container_element = new OfxPushUpContainer (curr_container_element, identifier);
-	    }
+	  {
+	    message_out (PARSER, "Element " + identifier + " found");
+	    curr_container_element = new OfxPushUpContainer (curr_container_element, identifier);
+	  }
 
 	/* The different types of accounts */
 	else if (identifier == "BANKACCTFROM" || identifier == "CCACCTFROM" || identifier == "INVACCTFROM")
@@ -202,11 +203,12 @@ public:
 	message_out (WARNING, "startElement: The OpenSP <= 1.3.4 endElement bug workaround was used: Encountered " + identifier + ", generating endElement for "+osp134workaround_data+"(Data: "+incoming_data+").  Upgrade your OpenSP, your data is NOT garanteed to be correct.");
 	osp134workaround = true;
 	EndElementEvent tmp_event;
-	tmp_event.pos=event.pos;
-	tmp_event.gi=event.gi;
+	tmp_event.pos=event.pos;//dummy data
+	tmp_event.gi=event.gi;//dummy data
 	endElement( tmp_event);
       }
     osp134workaround_data = identifier;
+    osp134workaround_is_data_element=is_data_element;
   }
 
   /** \brief Callback: End of an OFX element
@@ -216,70 +218,81 @@ public:
   void endElement (const EndElementEvent & event)
   {
     string identifier;
+    bool end_element_for_data_element;
     if( osp134workaround == true)
       {
-	identifier =  osp134workaround_data;
-	message_out(PARSER,"endElement event received from OpenSP 1.3 workaround for element " + identifier);
+	 identifier =  osp134workaround_data;
+	 end_element_for_data_element=osp134workaround_is_data_element;
+	 message_out(PARSER,"endElement event received from OpenSP 1.3 workaround for element " + identifier);
       }
     else
       {
 	CharStringtostring (event.gi, identifier);
+	end_element_for_data_element=is_data_element;
 	message_out(PARSER,"endElement event received from OpenSP for element " + identifier);
       }
+
+    message_out(PARSER,"endElement event received from OpenSP");
 
     position = event.pos;
     if (curr_container_element == NULL)
       {
 	message_out (ERROR,"Tried to close a "+identifier+" without a open element (NULL pointer)");
+	incoming_data.assign ("");
+	if( osp134workaround == false)
+	  {
+	    is_data_element = false;
+	  }
       }
-    else
+    else //curr_container_element != NULL
       {
-	if (identifier != curr_container_element->tag_identifier)//Since we did not open a container for this element, the element is presumed to be a data element
+	if (end_element_for_data_element == true)
 	  {
 	    incoming_data = strip_whitespace(incoming_data);
 	    
-	    if (curr_container_element != NULL)
+	    curr_container_element->add_attribute (identifier, incoming_data);
+	    message_out (PARSER,"endElement: Added data '" + incoming_data + "' from " + identifier + " to " + curr_container_element->type + " container_element");
+	    incoming_data.assign ("");
+	    if( osp134workaround == false)
 	      {
-		curr_container_element->add_attribute (identifier, incoming_data);
-		message_out (PARSER,"endElement: Added data '" + incoming_data + "' from " + identifier + " to " + curr_container_element->type + " container_element");
-		incoming_data.assign ("");
+		is_data_element = false;
+	      }
+	  }
+	else
+	  {
+	    if (identifier == curr_container_element->tag_identifier)
+	      {
+		if(identifier == "OFX")
+		  {
+		    /* The main container is a special case */
+		    tmp_container_element = curr_container_element;
+		    curr_container_element = curr_container_element->getparent ();
+		    MainContainer->gen_event();
+		    delete MainContainer;
+		    MainContainer = NULL;
+		    message_out (DEBUG, "Element " + identifier + " closed, MainContainer destroyed");
+		  }
+		else 
+		  {
+		    tmp_container_element = curr_container_element;
+		    curr_container_element = curr_container_element->getparent ();
+		    if(MainContainer != NULL)
+		      {
+			tmp_container_element->add_to_main_tree();
+			message_out (PARSER, "Element " + identifier + " closed, object added to MainContainer");
+		      }
+		    else
+		      {
+			message_out (ERROR, "MainContainer is NULL trying to add element " + identifier);
+		      }
+		  }
 	      }
 	    else
 	      {
-		message_out (ERROR, "endElement: Trying to add data '" + incoming_data + "' from " + identifier + " to NULL container_element");
-		incoming_data.assign ("");
-	      }
-	  }
-	else//identifier == curr_container_element->tag_identifier, so the element is a container element
-	  {
-	    if (identifier == "OFX")
-	      {
-		/* The main container is a special case */
-		tmp_container_element = curr_container_element;
-		curr_container_element = curr_container_element->getparent ();
-		MainContainer->gen_event();
-		delete MainContainer;
-		MainContainer = NULL;
-		message_out (DEBUG, "Element " + identifier + " closed, MainContainer destroyed");
-	      }
-	    else 
-	      {
-		tmp_container_element = curr_container_element;
-		curr_container_element = curr_container_element->getparent ();
-		if(MainContainer != NULL)
-		  {
-		    tmp_container_element->add_to_main_tree();
-		    message_out (PARSER, "Element " + identifier + " closed, object added to MainContainer");
-		  }
-		else
-		  {
-		    message_out (ERROR, "MainContainer is NULL trying to add element " + identifier);
-		  }
+		message_out (ERROR, "Tried to close a "+identifier+" but a "+curr_container_element->type+" is currently open.");
 	      }
 	  }
       }
-    
-    
     if( osp134workaround == true)
       {
 	osp134workaround = false;
@@ -293,7 +306,6 @@ public:
   void data (const DataEvent & event)
   {
     string tmp;
-    
     position = event.pos;
     AppendCharStringtostring (event.data, incoming_data);
     message_out(PARSER, "data event received from OpenSP, incoming_data is now: " + incoming_data);

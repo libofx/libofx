@@ -1,6 +1,7 @@
-SUBDIRS = inc dtd lib . ofx2qif ofxdump
+SUBDIRS = inc dtd lib doc . ofx2qif ofxdump 
 
-docdir = ${datadir}
+docdir = ${prefix}/share/doc/libofx
+
 doc_DATA = \
   AUTHORS \
   COPYING \
@@ -17,5 +18,11 @@ EXTRA_DIST = \
   totest.txt \
   known_bugs.txt \
   libofx.lsm \
-  doc \
   config
+
+.PHONY: doc
+doc:
+	$(MAKE) -C doc doc
+
+#dist-hook: doc
+#	echo "dist-hook: " && pwd

@@ -12,4 +12,4 @@ mkdir -p config
 echo "Running automake -a"
 automake -a
 echo "Running ./configure --enable-maintainer-mode"
-./configure $conf_flags "$@"
+./configure --enable-maintainer-mode $conf_flags "$@"

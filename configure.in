@@ -16,7 +16,7 @@ AC_PROG_CXX
 
 LIBOFX_MAJOR_VERSION=0
 LIBOFX_MINOR_VERSION=6
-LIBOFX_MICRO_VERSION=1
+LIBOFX_MICRO_VERSION=2
 LIBOFX_VERSION=$LIBOFX_MAJOR_VERSION.$LIBOFX_MINOR_VERSION.$LIBOFX_MICRO_VERSION
 
 AC_SUBST(LIBOFX_MAJOR_VERSION)
@@ -107,17 +107,21 @@ AC_LANG_CPLUSPLUS
 CPPFLAGS="$ac_save_CPPFLAGS"
 LIBS="$ac_save_LIBS"		
 
+# check for doxygen
+# ----------------------------------------------------------------------------
+#BB_ENABLE_DOXYGEN
 
 AC_SUBST(OPENSPINCLUDES)
 AC_SUBST(OPENSPLIBS)
 LIBOFX_DTD_DIR='${datadir}/libofx/dtd'
 AC_SUBST(LIBOFX_DTD_DIR)
 			
-AC_OUTPUT( Makefile 
-	   libofx.spec
+AC_OUTPUT( 		Makefile 
+	   		libofx.spec
 			lib/Makefile
 			inc/Makefile
 			dtd/Makefile
+			doc/Makefile
 			ofx2qif/Makefile
 			ofxdump/Makefile
 			)

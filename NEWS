@@ -1,3 +1,8 @@
+LibOFX 0.6.2:
+-Hopefully fix incompatibilities with BOTH OpenSP 1.3.x and OpenSP >= 1.4
+-Building as rpm is now available, thanks to Chris Lyttle.
+-Doxygen API and internal doc now integrated in the build system.  It will be distributed and install with the tarballs, and can be build in libofx-cvs using make doc.
+
 LibOFX 0.6.1:
 Fix a critical bug in 0.6.0.  Parsing of a file would fail and hang for users of OpenSP 1.5pre5 (and possibly others).
 
