@@ -33,7 +33,7 @@
 #include "libofx.h"
 #include <stdio.h>		/* for printf() */
 #include <config.h>		/* Include config constants, e.g., VERSION TF */
-#include "lib/messages.hh"
+
 
 using namespace std;
 
@@ -58,17 +58,20 @@ int main (int argc, char *argv[])
   int special_options (char *argv[]);
   int count, ret = 0;;
  
-  printf ("This program was called with \"%s\".\n",argv[0]); 
+  //printf ("This program was called with \"%s\".\n",argv[0]);
   if (argc > 1) 
     { 
       for (count = 1; count < argc; count++) 
-      {
-	printf("argv[%d] = %s\n", count, argv[count]); 
-      }
+	{
+	  //printf("argv[%d] = %s\n", count, argv[count]); 
+	}
       if  (0 == special_options(argv)) ;
       else  ofx_proc_file(argc, argv);    /* Special option not found */
     } 
-  else { ofx_proc_file(argc, argv);   /* No arguments             */
+  else
+    {
+      char *spoptar[] =           {"ofxdump","--help"};
+      special_options(spoptar);   /* No arguments             */
     }
   return 0; 
 }
@@ -77,7 +80,7 @@ int main (int argc, char *argv[])
 int special_options (char *argv[])
 {
   int count;
-
+  
   /* Define case numbers */
   const int spoptver = 0;
   const int spopthelp = 1; 
@@ -86,19 +89,19 @@ int special_options (char *argv[])
   const char *spoptar[] =           {"--version", "-V", "--help"};
   const int spoptdim = sizeof(spoptar)/sizeof(spoptar[0]);
   const int spoptcasear[spoptdim] = {spoptver, spoptver, spopthelp};
-
+  
   /* Define help array  */
   const char *helpar[] =
     {
       "ofxdump command synopsis:\n",
-	"ofxdump special_option\n",
-	"ofxdump ofx_file\n",
-	"\n",
-	"Special options are:\n",
-	"--version, V     libofx version\n",
-	"--help           help text\n",
-	"\n",
-	"If the first argument is a special option, it is processed and any remaining \
+      "ofxdump special_option\n",
+      "ofxdump ofx_file\n",
+      "\n",
+      "Special options are:\n",
+      "--version, V     libofx version\n",
+      "--help           help text\n",
+      "\n",
+      "If the first argument is a special option, it is processed and any remaining \
 arguments are ignored; otherwise, control goes to ofx_proc_file.\n\n"
     };
   const int helpardim = sizeof(helpar)/sizeof(helpar[1]);
@@ -118,7 +121,7 @@ arguments are ignored; otherwise, control goes to ofx_proc_file.\n\n"
 	  }
 	default: 
 	  {
-	    message_out (ERROR, "Impossible special option case");
+	    printf("Impossible special option case\n");
 	    return -1;              /* Program error */
 	  }
 	}

@@ -1,4 +1,4 @@
-SUBDIRS = 
+SUBDIRS =
 
 docdir = ${prefix}/share/doc/libofx
 
@@ -40,4 +40,5 @@ install-data-hook:
 	cp -rp $(srcdir)/html $(DESTDIR)${docdir}
 
 uninstall-hook:
+	chmod +w -R $(DESTDIR)${docdir}/html #Why chmod is needed is a mystery
 	rm -rf $(DESTDIR)${docdir}/html

@@ -66,12 +66,14 @@ int OfxMainContainer::add_container(OfxSecurityContainer * container)
 {
   message_out(DEBUG,"OfxMainContainer::add_container, adding a security");
   security_tree.insert_after(security_tree.end(), container);
+  return true;
 }
 
 int OfxMainContainer::add_container(OfxAccountContainer * container)
 {
   message_out(DEBUG,"OfxMainContainer::add_container, adding an account");
   security_tree.insert(account_tree.end(), container);
+  return true;
 }
 
 int OfxMainContainer::add_container(OfxStatementContainer * container)
