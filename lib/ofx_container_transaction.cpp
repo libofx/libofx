@@ -348,6 +348,9 @@ void OfxInvestmentTransactionContainer::add_attribute(const string identifier, c
     data.unitprice=ofxamount_to_double(value);
     data.unitprice_valid = true;
   }
+  else if(identifier=="MKTVAL"){
+    message_out(DEBUG, "MKTVAL of "+value+" ignored since MKTVAL should always be UNITS*UNITPRICE");
+  }
   else if(identifier=="TOTAL"){
     data.amount=ofxamount_to_double(value);
     data.amount_valid = true;

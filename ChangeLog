@@ -1,3 +1,6 @@
+23/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+	* lib/ofx_container_transaction.cpp: Explicitely ignore <MKTVAL> since it should always be equal to UNiTS*UNITPRICE, and using it may lead to rounding errors.
+
 22/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>
 	* autogen.sh: Run libtoolize, and reorder the commands.  The order is now: libtoolize,aclocal, autoheader, automake, autoconf and configure
 
