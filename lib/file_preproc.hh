@@ -1,7 +1,7 @@
 /***************************************************************************
-                          ofx_preproc.h
+                          file_type_detect.hh
                              -------------------
-    copyright            : (C) 2002 by Benoit Grégoire
+    copyright            : (C) 2004 by Benoit Grégoire
     email                : bock@step.polymtl.ca
  ***************************************************************************/
 /**@file
@@ -17,24 +17,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef OFX_PREPROC_H
-#define OFX_PREPROC_H
+#ifndef FILE_PREPROC_H
+#define FILE_PREPROC_H
 
-
-#define OPENSPDCL_FILENAME "opensp.dcl"
-#define OFX160DTD_FILENAME "ofx160.dtd"
-#define OFCDTD_FILENAME "ofc.dtd"
-
-///Removes proprietary tags and comments.
-string sanitize_proprietary_tags(string input_string);
-///Find the appropriate DTD for the file version.
-string find_dtd(string dtd_filename);
 /**
- * \brief ofx_proc_file process an ofx or ofc file.  
+ * \brief  libofx_detect_file_type tries to analyze a file to determine it's format. 
  *
- *  libofx_proc_file must be called  with a list of 1 or more OFX
- files to be parsed in command line format.
+@param p_filename File name of the file to process
+ @return Detected file format, UNKNOWN if unsuccessfull.
 */
-int ofx_proc_file(const char *, LibofxFileType);
+enum LibofxFileType libofx_detect_file_type(const char * p_filename);
 
 #endif

@@ -68,7 +68,9 @@ extern int ofx_STATUS_msg;
 	     ofx_proc_status_cb
 	     );
 
-ofx_proc_file(argc, argv);
+	if(argc >= 2){
+	  libofx_proc_file(argv[1], OFX);   
+	}
 return 0;
 }
 

@@ -79,6 +79,20 @@
 
 CFCT void (*OfxCallbackFunc) ();
 
+/** List of possible file formats */
+enum LibofxFileType{ UNKNOWN, /**< Unknown file format */
+		     AUTODETECT, /**< Not really a file format, used to tell the library to try to autodetect the format*/
+		     OFX, /**< Open Financial eXchange (OFX/QFX) file */
+		     OFC, /**< Microsoft Open Financial Connectivity (OFC)*/
+		     QIF, /**< Intuit Quicken Interchange Format (QIF) */
+};
+
+/**
+ * \brief get_file_type_description returns a string description of a LibofxFileType. 
+ *
+ @return null terminated string suitable for debugging output or user communication.
+*/
+CFCT const char * get_file_type_description(enum LibofxFileType file_type);
 
 /**
  * \brief ofx_proc_file is the entry point of the library.  
@@ -86,7 +100,7 @@ CFCT void (*OfxCallbackFunc) ();
  *  libofx_proc_file must be called by the client, with a list of 1 or more OFX
  files to be parsed in command line format.
 */
-CFCT int ofx_proc_file(int argc, char *argv[]);
+CFCT int libofx_proc_file(const char * p_filename, enum LibofxFileType p_file_type);
 
 
 /**

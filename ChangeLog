@@ -1,3 +1,8 @@
+3/3/2004  Benoit Grégoire  <bock@step.polymtl.ca>
+	* Many...
+	* lib/file_preproc.cpp, lib/file_preproc.hh: Add file format autodetection architecture, can currently distinguish between OFX and OFC files.  Note that because of this change, the main entry point of the library is now in file_preproc.cpp.
+	* dtd/ofc.dtd, lib/ofx_sgml.cpp, lib/ofx_preproc.cpp:  Add embryo of OFC (Microsoft Open Financial Connectivity) to LibOFX.  The SGML parses succesfully, but LibOFX does not yet know what to do with it.  Big thanks to Jeremy Jongsma jeremy at jongsma.org for finally finding the required DTD.  I haven't yet decided if its better to to add this support to ofx_proc_sgml.cpp (easier to maintain, less code duplication), or to create a ofc_proc_sgml.cpp (easier to understand, cleaner code).
+
 3/2/2004  Benoit Grégoire  <bock@step.polymtl.ca>
 	* inc/libofx.h lib/ofx_preproc.cpp lib/tree.hh ofx2qif/ofx2qif.c ofxdump/ofxdump.cpp:  Make it compile.  I may have misunderstood what Ryan wanted to do with the prototypes in libofx.h.  If so, sorry.  Note:  I don't think that the void * passed as arguments are saved in the registry yet.
 

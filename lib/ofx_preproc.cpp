@@ -1,7 +1,7 @@
 /***************************************************************************
           ofx_preproc.cpp 
                              -------------------
-    copyright            : (C) 2002 by Benoit Grégoire
+    copyright            : (C) 2002 by Benoit Grégoir
     email                : bock@step.polymtl.ca
 ***************************************************************************/
 /**@file
@@ -29,31 +29,30 @@
 #include "ofx_preproc.hh"
 
 using namespace std;
+/**
+   \brief The number of different paths to search for DTDs.
+   This must match the number of entry in DTD_SEARCH_PATH 
+*/
+#ifdef MAKEFILE_DTD_PATH
+const int DTD_SEARCH_PATH_NUM = 4;
+#else
+const int DTD_SEARCH_PATH_NUM = 3;
+#endif
+ 
+/**
+   \brief The list of paths to search for the DTDs.
+   (Note that this should be modified so that the selected path from the makefile is added here automatically)
+*/ 
+const char *DTD_SEARCH_PATH[DTD_SEARCH_PATH_NUM] = { 
+#ifdef MAKEFILE_DTD_PATH
+  MAKEFILE_DTD_PATH , 
+#endif
+  "/usr/local/share/libofx/dtd/", 
+  "/usr/share/libofx/dtd/", 
+  "~/"};
 const unsigned int READ_BUFFER_SIZE = 1024;
 
-/**
- * Instance of the callback registry
- */
-struct OfxCallbackRegistry cb_registry;
-
-void ofx_prep_cb(
-		 int (*ofx_statement)(const struct OfxStatementData data, void * user_data),
-		 int (*ofx_account)(const struct OfxAccountData data, void * user_data),
-		 int (*ofx_transaction)(const struct OfxTransactionData data, void * user_data),
-		 int (*ofx_security)(const struct OfxSecurityData data, void * user_data),
-		 int (*ofx_status)(const struct OfxStatusData data, void * user_data)
- )
-{
-  /* assign callbacks...these can be overridden in client code*/
-  
-  cb_registry.ofx_statement_cb=ofx_statement;
-  cb_registry.ofx_transaction_cb=ofx_transaction;
-  cb_registry.ofx_security_cb=ofx_security;
-  cb_registry.ofx_account_cb=ofx_account;
-  cb_registry.ofx_status_cb=ofx_status;
-};
-
-int ofx_proc_file(int argc, char *argv[])
+int ofx_proc_file(const char * p_filename, LibofxFileType p_file_type)
 {
   bool ofx_start=false;
   bool ofx_end=false;
@@ -65,27 +64,26 @@ int ofx_proc_file(int argc, char *argv[])
   string s_buffer;
   char *filenames[3];
   char tmp_filename[50];
-  char filename_openspdtd[255];
-  char filename_ofxdtd[255];
-  char filename_ofx[255];
 
-  if(argc >= 2){
-    message_out(DEBUG, string("ofx_proc_file():Opening file: ")+argv[1]);
+  if(p_filename!=NULL&&strcmp(p_filename,"")!=0)
+    {
+    message_out(DEBUG, string("ofx_proc_file():Opening file: ")+ p_filename);
     
-    input_file.open(argv[1]);
+    input_file.open(p_filename);
     strncpy(tmp_filename,"/tmp/libofxtmpXXXXXX",50);
     mkstemp(tmp_filename);
     tmp_file.open(tmp_filename);
 
     message_out(DEBUG,"ofx_proc_file(): Creating temp file: "+string(tmp_filename));
     if(!input_file){
-      message_out(ERROR,"ofx_proc_file():Unable to open the input file "+string(argv[1]));
+      message_out(ERROR,"ofx_proc_file():Unable to open the input file "+string(p_filename));
     }
     else if(!tmp_file){
       message_out(ERROR,"ofx_proc_file():Unable to open the output file "+string(tmp_filename));
     }
     else
       {
+
 	do{
 	  input_file.getline(buffer, sizeof(buffer),'\n');
 	  //cout<<buffer<<"\n";
@@ -100,7 +98,12 @@ int ofx_proc_file(int argc, char *argv[])
 	      input_file.clear();
 	    }
 	  int ofx_start_idx;
-	  if(ofx_start==false&&((ofx_start_idx=s_buffer.find("<OFX>"))!=string::npos||(ofx_start_idx=s_buffer.find("<ofx>"))!=string::npos)){
+	  if(ofx_start==false&&(
+				(p_file_type==OFX&&((ofx_start_idx=s_buffer.find("<OFX>"))!=string::npos||(ofx_start_idx=s_buffer.find("<ofx>"))!=string::npos))
+				|| (p_file_type==OFC&&((ofx_start_idx=s_buffer.find("<OFC>"))!=string::npos||(ofx_start_idx=s_buffer.find("<ofc>"))!=string::npos))
+				)
+	     )
+{
 	    ofx_start=true;
 	    s_buffer.erase(0,ofx_start_idx);//Fix for really broken files that don't have a newline after the header.
 	    message_out(DEBUG,"ofx_proc_file():<OFX> has been found");
@@ -112,23 +115,43 @@ int ofx_proc_file(int argc, char *argv[])
 	    tmp_file.write(s_buffer.c_str(), s_buffer.length());
 	  }
 	  
-	  if(ofx_start==true&&(s_buffer.find("</OFX>")!=string::npos||s_buffer.find("</ofx>")!=string::npos)){
-	    ofx_end=true;
-	    message_out(DEBUG,"ofx_proc_file():</OFX> has been found");
-	  }
+	  if(ofx_start==true&&(
+			       (p_file_type==OFX&&((ofx_start_idx=s_buffer.find("</OFX>"))!=string::npos||(ofx_start_idx=s_buffer.find("</ofx>"))!=string::npos))
+			       || (p_file_type==OFC&&((ofx_start_idx=s_buffer.find("</OFC>"))!=string::npos||(ofx_start_idx=s_buffer.find("</ofc>"))!=string::npos))
+			       )
+	     )
+	    {
+	      ofx_end=true;
+	      message_out(DEBUG,"ofx_proc_file():</OFX> has been found");
+	    }
 	  
 	}while(!input_file.eof()&&!input_file.bad());
       }
     input_file.close();
     tmp_file.close();
 
+    char filename_openspdtd[255];
+    char filename_dtd[255];
+    char filename_ofx[255];
     strncpy(filename_openspdtd,find_dtd(OPENSPDCL_FILENAME).c_str(),255);//The opensp sgml dtd file
-    strncpy(filename_ofxdtd,find_dtd(OFX160DTD_FILENAME).c_str(),255);//The ofx dtd file
-    if((string)filename_ofxdtd!="" && (string)filename_openspdtd!="")
+    if(p_file_type==OFX)
+      {
+    strncpy(filename_dtd,find_dtd(OFX160DTD_FILENAME).c_str(),255);//The ofx dtd file
+      }
+    else if(p_file_type==OFC)
+      {
+    strncpy(filename_dtd,find_dtd(OFCDTD_FILENAME).c_str(),255);//The ofc dtd file
+      }
+    else
+      {
+	message_out(ERROR,string("ofx_proc_file(): Error unknown file format for the OFX parser"));
+      }
+
+    if((string)filename_dtd!="" && (string)filename_openspdtd!="")
       {
 	strncpy(filename_ofx,tmp_filename,255);//The processed ofx file
 	filenames[0]=filename_openspdtd;
-	filenames[1]=filename_ofxdtd;
+	filenames[1]=filename_dtd;
 	filenames[2]=filename_ofx;
 	ofx_proc_sgml(3,filenames);
 	if(remove(tmp_filename)!=0)

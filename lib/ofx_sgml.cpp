@@ -88,14 +88,13 @@ public:
       {
 	/*------- The following are OFX entities ---------------*/
 
-	if (identifier == "OFX")
+	if (identifier == "OFX" || identifier == "OFC")
 	  {
 	    message_out (PARSER, "Element " + identifier + " found");
 	    MainContainer = new OfxMainContainer (curr_container_element, identifier);
 	    curr_container_element = MainContainer;
 	  }
-
-	if (identifier == "STATUS")
+	else if (identifier == "STATUS")
 	  {
 	    message_out (PARSER, "Element " + identifier + " found");
 	    curr_container_element = new OfxStatusContainer (curr_container_element, identifier);

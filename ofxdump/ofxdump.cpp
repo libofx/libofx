@@ -48,7 +48,7 @@ int main (int argc, char *argv[])
   extern int ofx_STATUS_msg;
 
   ofx_PARSER_msg = false;
-  ofx_DEBUG_msg = false;
+  ofx_DEBUG_msg = true;
   ofx_WARNING_msg = true;
   ofx_ERROR_msg = true;
   ofx_INFO_msg = true;
@@ -74,7 +74,10 @@ int main (int argc, char *argv[])
                     ofx_proc_security_cb,
                     ofx_proc_status_cb
                     );
-	ofx_proc_file(argc, argv);    /* Special option not found */
+ /* Special option not found */
+	if(argc >= 2){
+	  libofx_proc_file(argv[1], AUTODETECT);   
+	}
       }
     } 
   else
