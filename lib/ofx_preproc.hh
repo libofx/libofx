@@ -42,9 +42,12 @@ const char *DTD_SEARCH_PATH[DTD_SEARCH_PATH_NUM] = {
   "/usr/share/libofx/dtd/", 
   "~/"};
 
+#define OPENSPDCL_FILENAME "opensp.dcl"
+#define OFX160DTD_FILENAME "ofx160.dtd"
+
 ///Removes proprietary tags and comments.
 string sanitize_proprietary_tags(string input_string);
 ///Find the appropriate DTD for the file version.
-string find_dtd(const int requested_version = 160);
+string find_dtd(string dtd_filename);
 
 #endif

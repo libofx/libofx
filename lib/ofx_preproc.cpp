@@ -43,7 +43,8 @@ int ofx_proc_file(int argc, char *argv[])
   string s_buffer;
   char *filenames[3];
   char tmp_filename[50];
-  char filename_dtd[255];
+  char filename_openspdtd[255];
+  char filename_ofxdtd[255];
   char filename_ofx[255];
 
   if(argc >= 2){
@@ -98,13 +99,16 @@ int ofx_proc_file(int argc, char *argv[])
       }
     input_file.close();
     tmp_file.close();
-    strncpy(filename_dtd,find_dtd().c_str(),255);//The dtd file
-    if(filename_dtd!=NULL)
+
+    strncpy(filename_openspdtd,find_dtd(OPENSPDCL_FILENAME).c_str(),255);//The opensp sgml dtd file
+    strncpy(filename_ofxdtd,find_dtd(OFX160DTD_FILENAME).c_str(),255);//The ofx dtd file
+    if((string)filename_ofxdtd!="" && (string)filename_openspdtd!="")
       {
 	strncpy(filename_ofx,tmp_filename,255);//The processed ofx file
-	filenames[0]=filename_dtd;
-	filenames[1]=filename_ofx;
-	ofx_proc_sgml(2,filenames);
+	filenames[0]=filename_openspdtd;
+	filenames[1]=filename_ofxdtd;
+	filenames[2]=filename_ofx;
+	ofx_proc_sgml(3,filenames);
 	if(remove(tmp_filename)!=0)
 	  { 
 	    message_out(ERROR,"ofx_proc_file(): Error deleting temporary file "+string(tmp_filename));
@@ -228,15 +232,12 @@ string sanitize_proprietary_tags(string input_string)
    *
    Please note that currently the function will ALWAYS look for version 160, since OpenSP can't parse the 201 DTD correctly
 */
-string find_dtd(const int requested_version)
+string find_dtd(string dtd_filename)
 {
   int i;
   ifstream dtd_file;
-  string dtd_filename;
   string dtd_path_filename;
   bool dtd_found=false;
-
-  dtd_filename="ofx160.dtd";
 
   for(i=0;i<DTD_SEARCH_PATH_NUM&&dtd_found==false;i++){
     dtd_path_filename=DTD_SEARCH_PATH[i];
@@ -253,7 +254,7 @@ string find_dtd(const int requested_version)
     }
   }
   if(dtd_found==false){
-    message_out(ERROR,"find_dtd():Unable to find the DTD for the requested version");
+    message_out(ERROR,"find_dtd():Unable to find the DTD named " + dtd_filename);
     dtd_path_filename="";
   }
   return dtd_path_filename;

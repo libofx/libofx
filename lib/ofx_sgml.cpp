@@ -47,16 +47,11 @@ public:
   OfxGenericContainer *tmp_container_element;
   bool is_data_element; /**< If the SGML element contains data, this flag is raised */
   string incoming_data; /**< The raw data from the SGML data element */
-  bool osp134workaround; /**< If the OpenSP < 1.3.4 bug is encountered, the flag is rased by startElement and lowered by endElement */
-  string  osp134workaround_data; /**< The name of the previous element identifier */
-  bool osp134workaround_is_data_element;
-
   
   OutlineApplication ()
   {
     curr_container_element = NULL;
     is_data_element = false;
-    osp134workaround = false;
   }
   
   /** \brief Callback: Start of an OFX element
@@ -70,6 +65,7 @@ public:
     message_out(PARSER,"startElement event received from OpenSP for element " + identifier);
     
     position = event.pos;
+
     switch (event.contentType)
       {
       case StartElementEvent::empty:	message_out(ERROR,"StartElementEvent::empty\n");
@@ -191,24 +187,12 @@ public:
 	/* The element was a data element.  OpenSP will call one or several data() callback with the data */
 	message_out (PARSER, "Data element " + identifier + " found");
 	/* There is a bug in OpenSP 1.3.4, which won't send endElement Event for some elements, and will instead send an error like "document type does not allow element "MESSAGE" here".  Incoming_data should be empty in such a case, but it will not be if the endElement event was skiped. So we empty it, so at least the last element has a chance of having valid data */ 
-	/*if (incoming_data != "")
+	if (incoming_data != "")
 	  {
-	  message_out (WARNING, "startElement: incoming_data should be empty! You are probably using OpenSP <= 1.3.4.  The folowing data was lost: " + incoming_data );
-	  //incoming_data.assign ("");
-	  }*/
+	    message_out (ERROR, "startElement: incoming_data should be empty! You are probably using OpenSP <= 1.3.4.  The folowing data was lost: " + incoming_data );
+	    incoming_data.assign ("");
+	  }
       }
-    /* This workaround for the OpenSP 1.3.4 bug.  It may not be maintained in future versions. */ 
-    if (incoming_data != "")
-      {
-	message_out (WARNING, "startElement: The OpenSP <= 1.3.4 endElement bug workaround was used: Encountered " + identifier + ", generating endElement for "+osp134workaround_data+"(Data: "+incoming_data+").  Upgrade your OpenSP, your data is NOT garanteed to be correct.");
-	osp134workaround = true;
-	EndElementEvent tmp_event;
-	tmp_event.pos=event.pos;//dummy data
-	tmp_event.gi=event.gi;//dummy data
-	endElement( tmp_event);
-      }
-    osp134workaround_data = identifier;
-    osp134workaround_is_data_element=is_data_element;
   }
 
   /** \brief Callback: End of an OFX element
@@ -219,30 +203,16 @@ public:
   {
     string identifier;
     bool end_element_for_data_element;
-    if( osp134workaround == true)
-      {
-	 identifier =  osp134workaround_data;
-	 end_element_for_data_element=osp134workaround_is_data_element;
-	 message_out(PARSER,"endElement event received from OpenSP 1.3 workaround for element " + identifier);
-      }
-    else
-      {
-	CharStringtostring (event.gi, identifier);
-	end_element_for_data_element=is_data_element;
-	message_out(PARSER,"endElement event received from OpenSP for element " + identifier);
-      }
 
-    message_out(PARSER,"endElement event received from OpenSP");
+    CharStringtostring (event.gi, identifier);
+    end_element_for_data_element=is_data_element;
+    message_out(PARSER,"endElement event received from OpenSP for element " + identifier);
 
     position = event.pos;
     if (curr_container_element == NULL)
       {
 	message_out (ERROR,"Tried to close a "+identifier+" without a open element (NULL pointer)");
 	incoming_data.assign ("");
-	if( osp134workaround == false)
-	  {
-	    is_data_element = false;
-	  }
       }
     else //curr_container_element != NULL
       {
@@ -253,15 +223,17 @@ public:
 	    curr_container_element->add_attribute (identifier, incoming_data);
 	    message_out (PARSER,"endElement: Added data '" + incoming_data + "' from " + identifier + " to " + curr_container_element->type + " container_element");
 	    incoming_data.assign ("");
-	    if( osp134workaround == false)
-	      {
-		is_data_element = false;
-	      }
+	    is_data_element=false;
 	  }
 	else
 	  {
 	    if (identifier == curr_container_element->tag_identifier)
 	      {
+		if(incoming_data!="")
+		  {
+		    message_out(ERROR,"End tag for non data element "+identifier+", incoming data should be empty but contains: "+incoming_data+" DATA HAS BEEN LOST SOMEWHERE!");
+		  }
+
 		if(identifier == "OFX")
 		  {
 		    /* The main container is a special case */
@@ -293,10 +265,6 @@ public:
 	      }
 	  }
       }
-    if( osp134workaround == true)
-      {
-	osp134workaround = false;
-      }
   }
   
   /** \brief Callback: Data from an OFX element
@@ -325,40 +293,43 @@ public:
     message = message + "OpenSP parser: ";
     switch (event.type){
     case SGMLApplication::ErrorEvent::quantity:
-      message = message + "quantity (Exceeding a quantity limit)";
+      message = message + "quantity (Exceeding a quantity limit):";
       error_type = ERROR;
       break;
     case SGMLApplication::ErrorEvent::idref:
-      message = message + "idref (An IDREF to a non-existent ID)";
+      message = message + "idref (An IDREF to a non-existent ID):";
       error_type = ERROR;
       break;
     case SGMLApplication::ErrorEvent::capacity:
-      message = message + "capacity (Exceeding a capacity limit)";
+      message = message + "capacity (Exceeding a capacity limit):";
       error_type = ERROR;
       break;
     case SGMLApplication::ErrorEvent::otherError:
-      message = message + "otherError (misc parse error)";
+      message = message + "otherError (misc parse error):";
       error_type = ERROR;
       break;
     case SGMLApplication::ErrorEvent::warning:
-      message = message + "warning (Not actually an error.)";
+      message = message + "warning (Not actually an error.):";
       error_type = WARNING;
       break;
     case SGMLApplication::ErrorEvent::info:
-      message =  message + "info (An informationnal message.  Not actually an error)";
+      message =  message + "info (An informationnal message.  Not actually an error):";
       error_type = INFO;
       break;
     default:
-      message = message + "OpenSP sent an unknown error to LibOFX (You probably have a newer version of OpenSP)";
+      message = message + "OpenSP sent an unknown error to LibOFX (You probably have a newer version of OpenSP):";
     }
-    message =	message + "\n" + "Error msg: " + CharStringtostring (event.message, string_buf);
+    message =	message + "\n" + CharStringtostring (event.message, string_buf);
     message_out (error_type, message);
   }
 
-
-  void OpenEntityChange (const OpenEntityPtr & para_entity_ptr)
+  /** \brief Callback: Receive internal OpenSP state
+   *
+   An Internal OpenSP callback, used to be able to generate line number.
+  */
+  void openEntityChange (const OpenEntityPtr & para_entity_ptr)
   {
-    cout << "\nOpenEntityChange()\n";
+    message_out(DEBUG,"openEntityChange()\n");
     entity_ptr = para_entity_ptr;
 
   };
@@ -374,6 +345,7 @@ int ofx_proc_sgml(int argc, char *argv[])
   message_out(DEBUG,"Begin ofx_proc_sgml()");
   message_out(DEBUG,argv[0]);
   message_out(DEBUG,argv[1]);
+  message_out(DEBUG,argv[2]);
   
   ParserEventGeneratorKit parserKit;
   parserKit.setOption (ParserEventGeneratorKit::showOpenEntities);

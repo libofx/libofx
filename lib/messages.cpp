@@ -32,84 +32,100 @@ volatile int ofx_STATUS_msg = false;/**< If set to true, status messages will be
 volatile int ofx_INFO_msg = false;/**< If set to true, information messages will be printed to the console */
 volatile int ofx_WARNING_msg = false;/**< If set to true, warning messages will be printed to the console */
 volatile int ofx_ERROR_msg = false;/**< If set to true, error messages will be printed to the console */
+volatile int ofx_show_position = true;/**< If set to true, the line number will be shown after any error */
+
+void show_line_number()
+{
+  extern SGMLApplication::OpenEntityPtr entity_ptr;
+  extern SGMLApplication::Position position;
+
+
+  if((ofx_show_position == true))
+    {
+      SGMLApplication::Location *location = new SGMLApplication::Location(entity_ptr, position);
+      cerr << "(Above message occured on Line "<<location->lineNumber<<", Column "<<location->columnNumber<<")"<<endl;
+      delete location;
+    }
+}
 
 /**
    Prints a message to stdout, if the corresponding message OfxMsgType given in the parameters is enabled
 */
 int message_out(OfxMsgType error_type, const string message)
 {
-  extern SGMLApplication::OpenEntityPtr entity_ptr;
-  extern SGMLApplication::Position position;
-  int show_line_number = false;//NOT YET WORKING
-  
+
+
   switch  (error_type){
   case DEBUG :
     if(ofx_DEBUG_msg==true){
       cerr << "LibOFX DEBUG: " << message<<"\n";
+      show_line_number();
     }
     break;
   case DEBUG1 :
     if(ofx_DEBUG1_msg==true){
       cerr << "LibOFX DEBUG1: " << message<<"\n";
+      show_line_number();
     }
     break;
   case DEBUG2 :
     if(ofx_DEBUG2_msg==true){
       cerr << "LibOFX DEBUG2: " << message<<"\n";
+      show_line_number();
     }
     break;
   case DEBUG3 :
     if(ofx_DEBUG3_msg==true){
       cerr << "LibOFX DEBUG3: " << message<<"\n";
+      show_line_number();
     }
     break;
   case DEBUG4 :
     if(ofx_DEBUG4_msg==true){
       cerr << "LibOFX DEBUG4: " << message<<"\n";
+      show_line_number();
     }
     break;
   case DEBUG5 :
     if(ofx_DEBUG5_msg==true){
       cerr << "LibOFX DEBUG5: " << message<<"\n";
+      show_line_number();
     }
     break;
   case STATUS :
     if(ofx_STATUS_msg==true){
       cerr << "LibOFX STATUS: " << message<<"\n";
+      show_line_number();
     }
     break;
   case INFO :
     if(ofx_INFO_msg==true){
       cerr << "LibOFX INFO: " << message<<"\n";
+      show_line_number();
     }
     break;
   case WARNING :
     if(ofx_WARNING_msg==true){
       cerr << "LibOFX WARNING: " << message<<"\n";
+      show_line_number();
     }
     break;
   case ERROR :
     if(ofx_ERROR_msg==true){
       cerr << "LibOFX ERROR: " << message<<"\n";
+      show_line_number();
     }
     break;
   case PARSER :
     if(ofx_PARSER_msg==true){
       cerr << "LibOFX PARSER: " << message<<"\n";
+      show_line_number();
     }
     break;
   default:
     cerr << "LibOFX UNKNOWN ERROR CLASS, This is a bug in LibOFX\n";
+    show_line_number();
   }
-
-  if((show_line_number == true))//NOT YET OPERATIONAL!
-    {
-      SGMLApplication::Location location;
-      unsigned long line_number;
-      location =  entity_ptr->location(position);
-      line_number = location.lineNumber;
-      cout<< "(Line "<<line_number<<")";
-    }
 
   return 0;
 }
