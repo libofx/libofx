@@ -1,3 +1,11 @@
+12/9/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+	RELEASE LibOfx 0.6.5
+	* configure.in: Change version number
+	* NEWS: Update for release
+	* lib/ofx_utilities.cpp: Change date handling to fix problems with the majority of banks diverging from the specs.  Should fix problems with the day being off by one for some countries.
+	* doc/implementation_notes.txt:  Moved contents in the doxygen docs.
+	* doc/Makefile.am:  Fix the path for the html docs.
+	
 2/5/2003  Benoit Grégoire  <bock@step.polymtl.ca>
 	* lib/ofx_utilities.cpp:  Add #include <locale.h> to fix compile error on freebsd and possibly all gcc2 based distro.
 

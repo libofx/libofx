@@ -2,13 +2,9 @@ SUBDIRS =
 
 docdir = ${prefix}/share/doc/libofx
 
-doc_DATA = \
-	implementation_notes.txt
-
 EXTRA_DIST = \
 	doxygen.cfg.in \
 	ofx_sample_files \
-	implementation_notes.txt \
 	tag_striper_test.txt
 
 all:
@@ -36,9 +32,9 @@ maintainer-clean-local: clean-local
 	rm -rf html refman.pdf
 
 install-data-hook:
-	$(mkinstalldirs) $(DESTDIR)$(docdir)/html
+	$(mkinstalldirs) $(DESTDIR)$(docdir)
 	mkdir -p html #Workaround to allow libofx-cvs user to install without doc.
-	cp -rp html $(DESTDIR)$(docdir)/html
+	cp -rp html $(DESTDIR)$(docdir)
 
 uninstall-hook:
 	chmod +w -R $(DESTDIR)${docdir}/html #Why chmod is needed is a mystery

@@ -1,3 +1,8 @@
+LibOFX 0.6.5:
+	-Fix for really broken files that do not have a newline after the ofx header (bug #721732)
+	-Add #include <locale.h> to fix compile error on freebsd and possibly all gcc2 based distro.
+	-Change date handling to fix problems with the majority of banks diverging from the specs.  Should fix problems with the day being off by one for some countries. (bug #778615)
+
 LibOFX 0.6.4:
 	-Fix critical bug that caused the decimals to be ignored after the decimal separator in some locale (no matter what the decimal separator was in the original file).  For example, importing in gnucash with a locale of fr_FR caused an amount of 19,95 to be imported as 19,00.
 
