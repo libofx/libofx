@@ -1,3 +1,7 @@
+04/12/2002  Peter O'Gorman <ogorman@users.sourceforge.net>
+	* doc/Makefile.am: Make DESTDIR work
+	* lib/Makefile.am: Changed version_info to version-info and modified the version to be what libtool expects.
+
 24/11/2002  Chris Lyttle  <chris@wilddev.net>
 	* libofx.spec.in: updated for new docs
 

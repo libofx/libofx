@@ -37,7 +37,7 @@ maintainer-clean-local: clean-local
 
 install-data-hook:
 	mkdir -p $(srcdir)/html #Workaround to allow libofx-cvs user to install without doc.
-	cp -rp $(srcdir)/html ${docdir}
+	cp -rp $(srcdir)/html $(DESTDIR)${docdir}
 
 uninstall-hook:
-	rm -rf ${docdir}/html
+	rm -rf $(DESTDIR)${docdir}/html
