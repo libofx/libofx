@@ -31,6 +31,7 @@
 #include <iomanip>
 #include <string>
 #include "libofx.h"
+#include <stdio.h>		/* for printf() */
 #include <config.h>		/* Include config constants, e.g., VERSION TF */
 #include "lib/messages.hh"
 
