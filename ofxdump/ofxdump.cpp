@@ -44,7 +44,7 @@ int main (int argc, char *argv[])
   extern int ofx_INFO_msg;
   extern int ofx_STATUS_msg;
 
-  ofx_PARSER_msg = true;
+  ofx_PARSER_msg = false;
   ofx_DEBUG_msg = true;
   ofx_WARNING_msg = true;
   ofx_ERROR_msg = true;
@@ -145,7 +145,13 @@ int ofx_proc_transaction(struct OfxTransactionData data)
     cout<<"    Date funds are available: "<<dest_string<<"\n";
   }
   if(data.amount_valid==true){
-    cout<<"    Amount: "<<setiosflags(ios::fixed)<<setiosflags(ios::showpoint)<<setprecision(2)<<data.amount<<"\n";
+    cout<<"    Total money amount: "<<setiosflags(ios::fixed)<<setiosflags(ios::showpoint)<<setprecision(2)<<data.amount<<"\n";
+  }
+  if(data.units_valid==true){
+    cout<<"    # of units: "<<setiosflags(ios::fixed)<<setiosflags(ios::showpoint)<<setprecision(2)<<data.units<<"\n";
+  }
+  if(data.unitprice_valid==true){
+    cout<<"    Unit price: "<<setiosflags(ios::fixed)<<setiosflags(ios::showpoint)<<setprecision(2)<<data.unitprice<<"\n";
   }
   if(data.fi_id_valid==true){
     cout<<"    Financial institution's ID for this transaction: "<<data.fi_id<<"\n";
@@ -163,6 +169,12 @@ int ofx_proc_transaction(struct OfxTransactionData data)
     default:
       cout<<"ofx_proc_transaction(): This should not happen!\n";
     }
+  }
+  if(data.unique_id_valid==true){
+    cout<<"    Unique ID of the security being traded: "<<data.unique_id<<"\n";
+  }
+  if(data.unique_id_type_valid==true){
+    cout<<"    Format of the Unique ID: "<<data.unique_id_type<<"\n";
   }
   if(data.server_transaction_id_valid==true){
     cout<<"    Server's transaction ID (confirmation number): "<<data.server_transaction_id<<"\n";

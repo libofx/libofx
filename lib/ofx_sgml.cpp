@@ -8,8 +8,6 @@
    \brief OFX/SGML parsing functionnality.
    *
    Almost all of the SGML parser specific code is contained in this file (some is in messages.cpp and ofx_utilities.cpp).  To understand this file you must read the documentation of OpenSP's generic interface: see http://openjade.sourceforge.net/
-   *
-   The C++ objects in this file are not yet documented.
 */
 /***************************************************************************
  *                                                                         *
@@ -49,8 +47,8 @@ public:
   OfxGenericContainer *tmp_container_element;
   bool is_data_element; /**< If the SGML element contains data, this flag is raised */
   string incoming_data; /**< The raw data from the SGML data element */
-  bool osp134workround; /**< If the OpenSP < 1.3.4 bug is encountered, the flag is rased by startElement and lowered by endElement */
-  string  osp134workround_data; /**< The name of the previous element identifier */
+  bool osp134workaround; /**< If the OpenSP < 1.3.4 bug is encountered, the flag is rased by startElement and lowered by endElement */
+  string  osp134workaround_data; /**< The name of the previous element identifier */
 
   
   OutlineApplication ()
@@ -107,26 +105,57 @@ public:
 	    //BANKTRANLIST ignored, we will process it's attributes directly inside the STATEMENT,
 	    if(curr_container_element->type!="STATEMENT")
 	      {
-		message_out(ERROR,"Element " + identifier + " found while not inside a STATEMENT object");
+		message_out(ERROR,"Element " + identifier + " found while not inside a STATEMENT container");
+	      }
+	    else
+	      {
+		curr_container_element = new OfxPushUpContainer (curr_container_element, identifier);
 	      }
 	  }
 	else if (identifier == "STMTTRN")
 	  {
 	    message_out (PARSER, "Element " + identifier + " found");
-	    curr_container_element = new OfxTransactionContainer (curr_container_element, identifier);
+	    curr_container_element = new OfxBankTransactionContainer (curr_container_element, identifier);
 	  }
+	else if(identifier == "BUYDEBT" ||
+		identifier == "BUYMF" ||
+		identifier == "BUYOPT" ||
+		identifier == "BUYOTHER" ||
+		identifier == "BUYSTOCK" ||
+		identifier == "CLOSUREOPT" ||
+		identifier == "INCOME" ||
+		identifier == "INVEXPENSE" ||
+		identifier == "JRNLFUND" ||
+		identifier == "JRNLSEC" ||
+		identifier == "MARGININTEREST" ||
+		identifier == "REINVEST" ||
+		identifier == "RETOFCAP" ||
+		identifier == "SELLDEBT" ||
+		identifier == "SELLMF" ||
+		identifier == "SELLOPT" ||
+		identifier == "SELLOTHER" ||
+		identifier == "SELLSTOCK" ||
+		identifier == "SPLIT" ||
+		identifier == "TRANSFER" )
+	  {
+	    message_out (PARSER, "Element " + identifier + " found");
+	    curr_container_element = new OfxInvestmentTransactionContainer (curr_container_element, identifier);
+	  }
+/*The following is a list of OFX elements whose attributes will be processed by the parent container*/
+	else if (identifier == "INVBUY" ||
+		 identifier == "INVSELL" ||
+		 identifier == "INVTRAN" ||
+		 identifier == "SECID")
+	    {
+	      message_out (PARSER, "Element " + identifier + " found");
+	      curr_container_element = new OfxPushUpContainer (curr_container_element, identifier);
+	    }
+
 	/* The different types of accounts */
-	else if (identifier == "BANKACCTFROM")
+	else if (identifier == "BANKACCTFROM" || identifier == "CCACCTFROM")
 	  {
 	    message_out (PARSER, "Element " + identifier + " found");
 	    curr_container_element = new OfxAccountContainer (curr_container_element, identifier);
-	  }
-	else if (identifier == "CCACCTFROM")
-	  {
-	    message_out (PARSER, "Element " + identifier + " found");
-	    curr_container_element = new OfxAccountContainer (curr_container_element, identifier);
-	    ((OfxAccountContainer *) curr_container_element)->data.account_type = ((OfxAccountContainer *) curr_container_element)->data.OFX_CREDITCARD;
-	    ((OfxAccountContainer *) curr_container_element)->data.account_type_valid = true;
 	  }
 	/* The different types of balances */
 	else if (identifier == "LEDGERBAL" || identifier == "AVAILBAL")
@@ -155,14 +184,14 @@ public:
 	if (incoming_data != "")
 	  {
 	    message_out (WARNING, "startElement: The OpenSP <= 1.3.4 endElement bug workaround was used.  Upgrade your OpenSP, your data is NOT garanteed to be correct.");
-	    osp134workround = true;
+	    osp134workaround = true;
 	    EndElementEvent tmp_event;
 	    tmp_event.pos=event.pos;
 	    tmp_event.gi=event.gi;
 	    endElement( tmp_event);
 	  }
       }
-    osp134workround_data = identifier;
+    osp134workaround_data = identifier;
   }
 
   /** \brief Callback: End of an OFX element
@@ -172,10 +201,10 @@ public:
   void endElement (const EndElementEvent & event)
   {
     string identifier;
-    if( osp134workround == true)
+    if( osp134workaround == true)
       {
-	 identifier =  osp134workround_data;
-	 osp134workround = false;
+	 identifier =  osp134workaround_data;
+	 osp134workaround = false;
       }
     else
       {
@@ -207,54 +236,14 @@ public:
       {
 	if (curr_container_element != NULL)
 	  {
-	    /*Call the appropriate callback functions */
-	    if (identifier == curr_container_element->tag_identifier){
-	      /*Select action to take once the object is complete */
-	      if (curr_container_element->type == "STATUS")
-		{
-		  ofx_proc_status (((OfxStatusContainer *)curr_container_element)->data);
-		}
-	      else if (curr_container_element->type == "STATEMENT")
-		{
-		  ofx_proc_statement (((OfxStatementContainer *) curr_container_element)->data);
-		}
-	      else if (curr_container_element->type == "STMTTRN")
-		{
-		  ofx_proc_transaction (((OfxTransactionContainer *) curr_container_element)->data);
-		}
-	      else if (curr_container_element->type == "ACCOUNT")
-		{
-		  ((OfxAccountContainer *)curr_container_element)->gen_account_id ();
-		  if (curr_container_element->parentcontainer->type == "STATEMENT")
-		    {
-		      ((OfxStatementContainer*)curr_container_element->parentcontainer)->add_account(((OfxAccountContainer*)curr_container_element)->data);
-		    }
-		  ofx_proc_account (((OfxAccountContainer *)curr_container_element)->data);
-		}
-	      /* The different types of balances */
-	      else if (curr_container_element->type == "BALANCE")
-		{
-		  if (curr_container_element->parentcontainer->type == "STATEMENT")
-		    {
-		      ((OfxStatementContainer*)curr_container_element->parentcontainer)->add_balance((OfxBalanceContainer*)curr_container_element);
-		    }
-		  else{
-		    message_out (ERROR,"I completed a " + identifier + " element, but i havent found a suitable parent to save it");
-		  }
-		}
-	      else
-		{
-		  ;//Take no action, we closed an unsupported dummy element
-		}
-
-	      tmp_container_element = curr_container_element;
-	      curr_container_element = curr_container_element->getparent ();
-	      delete tmp_container_element;
-	      message_out (PARSER, "Element " + identifier + " closed, object destroyed");
-	    }
-	    else if (identifier == "BANKTRANLIST"||curr_container_element->type=="STATEMENT")
+	    if (identifier == curr_container_element->tag_identifier)
 	      {
-		;//Do not close any objects, since BANKTRANLIST has been processed directly inside the STATEMENT,
+		tmp_container_element = curr_container_element;
+		curr_container_element = curr_container_element->getparent ();
+		/*The destructor called by delete will automatically take the corect action 
+		  (such as calling a libofx.h callback) before destroying the container */
+		delete tmp_container_element;
+		message_out (PARSER, "Element " + identifier + " closed, object destroyed");
 	      }
 	    else
 	      {

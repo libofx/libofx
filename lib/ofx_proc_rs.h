@@ -44,6 +44,7 @@ class OfxGenericContainer {
    \param value The concatenated string of the data
   */ 
   virtual void add_attribute(const string identifier, const string value) = 0;
+  /** The implemented destructor of the derived class will call the appropriate callback in libofx.h if appropriate */
   virtual ~OfxGenericContainer(){};
 
   /// Returns the parent container object (the one representing the containing OFX SGML element)
@@ -68,6 +69,22 @@ class OfxDummyContainer:public OfxGenericContainer {
   void add_attribute(const string identifier, const string value);
 };
 
+/** \brief A container to hold a OFX SGML element for which you want the parent to process it's data elements
+ *
+ When you use add_attribute on an OfxPushUpContainer, the add_attribute is redirected to the parent container.
+*/
+class OfxPushUpContainer:public OfxGenericContainer {
+ public:
+  
+  OfxPushUpContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+    OfxGenericContainer(para_parentcontainer, para_tag_identifier)
+    {
+      type="PUSHUP";
+      message_out(DEBUG, "Created OfxPushUpContainer to hold aggregate "+tag_identifier);
+    }
+  void add_attribute(const string identifier, const string value);
+};
+
 /** \brief Represents the <STATUS> OFX SGML entity */
 class OfxStatusContainer:public OfxGenericContainer {
  public:
@@ -83,6 +100,10 @@ class OfxStatusContainer:public OfxGenericContainer {
       }
       
     }
+OfxStatusContainer()
+  {
+    ofx_proc_status (data);
+  }
   void add_attribute(const string identifier, const string value);
 };
 
@@ -107,6 +128,8 @@ class OfxBalanceContainer:public OfxGenericContainer {
       date_valid=false;
       type="BALANCE";
     }
+  ~OfxBalanceContainer();
+  
   void add_attribute(const string identifier, const string value);
 };
 
@@ -123,6 +146,7 @@ class OfxStatementContainer:public OfxGenericContainer {
       memset(&data,0,sizeof(data));
       type="STATEMENT";
     }
+  ~OfxStatementContainer();
   void add_attribute(const string identifier, const string value);
   void add_account(OfxAccountData const account_data);
   void add_balance(OfxBalanceContainer* ptr_balance_container);
@@ -144,30 +168,36 @@ class OfxAccountContainer:public OfxGenericContainer {
       strcpy(branchid,"");
       strcpy(acctid,"");
       strcpy(acctkey,"");
+      if(para_tag_identifier== "CCACCTFROM")
+	{
+	  /*Set the type for a creditcard transaction.  Bank transactions
+	    will set this attribute in a specific OFX element elsewhere */
+	  data.account_type = data.OFX_CREDITCARD;
+	  data.account_type_valid = true;
+	}
       if (parentcontainer!=NULL&&((OfxStatementContainer*)parentcontainer)->data.currency_valid==true){
 	strncpy(data.currency,((OfxStatementContainer*)parentcontainer)->data.currency,OFX_CURRENCY_LENGTH); /* In ISO-4217 format */
 	data.currency_valid=true;
       }
     }
+  ~OfxAccountContainer();
   void add_attribute(const string identifier, const string value);
-  void gen_account_id(void);
  private:
+  void gen_account_id(void);
   char bankid[OFX_BANKID_LENGTH];
   char branchid[OFX_BRANCHID_LENGTH];
   char acctid[OFX_ACCTID_LENGTH];/**< This field is used by both <BANKACCTFROM> and <CCACCTFROM> */
   char acctkey[OFX_ACCTKEY_LENGTH];
-  
 };
 
-/** \brief  Represents a transaction.
- *
- Built from <STMTTRN> OFX SGML entity 
+/** \brief  Represents a generic transaction.
  */
 class OfxTransactionContainer:public OfxGenericContainer {
  public:
   OfxTransactionData data;
   
-  OfxTransactionContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):OfxGenericContainer(para_parentcontainer, para_tag_identifier)
+  OfxTransactionContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+    OfxGenericContainer(para_parentcontainer, para_tag_identifier)
     {
       memset(&data,0,sizeof(data));
       type="STMTTRN";
@@ -176,9 +206,33 @@ class OfxTransactionContainer:public OfxGenericContainer {
 	data.account_id_valid = true;
       }
     }
+  ~OfxTransactionContainer();
   void add_attribute(const string identifier, const string value);
-
 };
 
+/** \brief  Represents a bank or credid card transaction.
+ *
+ Built from <STMTTRN> OFX SGML entity 
+ */
+class OfxBankTransactionContainer:public OfxTransactionContainer {
+ public:
+  OfxBankTransactionContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier): 
+    OfxTransactionContainer(para_parentcontainer, para_tag_identifier)
+    {
+      type="STMTTRN";
+    }
+  void add_attribute(const string identifier, const string value);
+};
+
+/** \brief  Represents a bank or credid card transaction.
+ *
+ Built from the diferent investment transaction OFX entity 
+ */
+class OfxInvestmentTransactionContainer:public OfxTransactionContainer {
+ public:
+  OfxInvestmentTransactionContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+
+  void add_attribute(const string identifier, const string value);
+};
 
 #endif
