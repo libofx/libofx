@@ -60,6 +60,14 @@ extern int ofx_STATUS_msg;
  ofx_INFO_msg = false;
  ofx_STATUS_msg = false;
 
+ ofx_prep_cb(
+	     ofx_proc_statement_cb,
+	     ofx_proc_account_cb,
+	     ofx_proc_transaction_cb,
+	     ofx_proc_security_cb,
+             ofx_proc_status_cb
+	     );
+
 ofx_proc_file(argc, argv);
 return 0;
 }

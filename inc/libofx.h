@@ -69,6 +69,14 @@
 #define OFX_SECNAME_LENGTH             32 + 1
 #define OFX_TICKER_LENGTH              32 + 1
 
+/*
+#define OFX_STATEMENT_CB               0;
+#define OFX_ACCOUNT_CB                 1;
+#define OFX_TRACSACTION_CB             2;
+#define OFX_SECURITY_CB                3;
+#define OFX_STATUS_CB                  4;
+*/
+
 CFCT void (*OfxCallbackFunc) ();
 
 
@@ -500,5 +508,26 @@ struct OfxCurrency{
   int must_convert;   /**< true or false */
 };
 
+struct OfxCallbackRegistry{
+  int (*ofx_statement_cb)(const struct OfxStatementData data);
+  int (*ofx_transaction_cb)(const struct OfxTransactionData data);
+  int (*ofx_security_cb)(const struct OfxSecurityData data);
+  int (*ofx_account_cb)(const struct OfxAccountData data);
+  int (*ofx_status_cb)(const struct OfxStatusData data);
+};
+
+/**
+ * \brief ofx_proc_file is the entry point of the library.  
+ *
+ *  libofx_proc_file must be called by the client, with a list of 1 or more OFX
+ files to be parsed in command line format.
+*/
+CFCT void ofx_prep_cb(
+		     int (*ofx_statement_cb)(const struct OfxStatementData data),
+		     int (*ofx_account_cb)(const struct OfxAccountData data),
+		     int (*ofx_transaction_cb)(const struct OfxTransactionData data),
+		     int (*ofx_security_cb)(const struct OfxSecurityData data),
+		     int (*ofx_status_cb)(const struct OfxStatusData data)
+  );
 #endif
 

@@ -1,4 +1,7 @@
 14/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+	* Merge initial Callback registration patch by Ryan P Bobko.  Touches most files.
+	
+14/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>
 	RELEASE LibOfx 0.6.6
 	* configure.in: Change version number
 	* NEWS: Update for release

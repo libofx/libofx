@@ -28,7 +28,7 @@
 #include "ofx_utilities.hh"
 
 extern OfxMainContainer * MainContainer;
-
+extern OfxCallbackRegistry cb_registry;
 
 /***************************************************************************
  *                     OfxSecurityContainer                                *
@@ -84,7 +84,8 @@ void OfxSecurityContainer::add_attribute(const string identifier, const string v
 }
 int  OfxSecurityContainer::gen_event()
 {
-  ofx_proc_security_cb(data);
+  cb_registry.ofx_security_cb( data );
+  //ofx_proc_security_cb(data);
   return true;
 }
 

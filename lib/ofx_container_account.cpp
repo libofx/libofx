@@ -28,6 +28,7 @@ investment accounts.
 #include "ofx_utilities.hh"
 
 extern OfxMainContainer * MainContainer;
+extern OfxCallbackRegistry cb_registry;
 
 /***************************************************************************
  *                      OfxAccountContainer                                *
@@ -118,7 +119,8 @@ void OfxAccountContainer::add_attribute(const string identifier, const string va
 
 int OfxAccountContainer::gen_event()
 {
-  ofx_proc_account_cb(data);
+  cb_registry.ofx_account_cb( data );
+  //ofx_proc_account_cb(data);
   return true;
 }
 

@@ -37,7 +37,6 @@
 
 using namespace std;
 
-
 int main (int argc, char *argv[])
 {
   /** Tell ofxdump what you want it to send to stderr.  See messages.cpp for more details */
@@ -66,7 +65,16 @@ int main (int argc, char *argv[])
 	  //printf("argv[%d] = %s\n", count, argv[count]); 
 	}
       if  (0 == special_options(argv)) ;
-      else  ofx_proc_file(argc, argv);    /* Special option not found */
+      else{
+        ofx_prep_cb(
+                    ofx_proc_statement_cb,
+                    ofx_proc_account_cb,
+                    ofx_proc_transaction_cb,
+                    ofx_proc_security_cb,
+                    ofx_proc_status_cb
+                    );
+	ofx_proc_file(argc, argv);    /* Special option not found */
+      }
     } 
   else
     {

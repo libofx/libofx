@@ -31,6 +31,27 @@
 using namespace std;
 const unsigned int READ_BUFFER_SIZE = 1024;
 
+/**
+ * Instance of the callback registry
+ */
+struct OfxCallbackRegistry cb_registry;
+
+void ofx_prep_cb(
+      int (*ofx_statement)(const struct OfxStatementData data),
+      int (*ofx_account)(const struct OfxAccountData data),
+      int (*ofx_transaction)(const struct OfxTransactionData data),
+      int (*ofx_security)(const struct OfxSecurityData data),
+      int (*ofx_status)(const struct OfxStatusData data) )
+{
+  /* assign callbacks...these can be overridden in client code*/
+
+  cb_registry.ofx_statement_cb=ofx_statement;
+  cb_registry.ofx_transaction_cb=ofx_transaction;
+  cb_registry.ofx_security_cb=ofx_security;
+  cb_registry.ofx_account_cb=ofx_account;
+  cb_registry.ofx_status_cb=ofx_status;
+};
+
 int ofx_proc_file(int argc, char *argv[])
 {
   bool ofx_start=false;
