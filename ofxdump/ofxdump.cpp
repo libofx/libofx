@@ -66,11 +66,12 @@ int main (int argc, char *argv[])
 	}
       if  (0 == special_options(argv)) ;
       else{
+
         ofx_prep_cb(
-                    NULL, ofx_proc_statement_cb, NULL,
-                    ofx_proc_account_cb, NULL,
-                    ofx_proc_transaction_cb, NULL,
-                    ofx_proc_security_cb, NULL,
+                    ofx_proc_statement_cb,
+                    ofx_proc_account_cb,
+                    ofx_proc_transaction_cb,
+                    ofx_proc_security_cb,
                     ofx_proc_status_cb
                     );
 	ofx_proc_file(argc, argv);    /* Special option not found */

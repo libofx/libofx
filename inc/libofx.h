@@ -533,17 +533,11 @@ struct OfxCallbackRegistry{
  *  Each function will be called with the preceding void * structure as its
  *  first argument.
 */
-CFCT void ofx_prep_cb(
-			void *,
-			int (*ofx_statement_cb)(const struct OfxStatementData data, void *),
-			void *,
-		  int (*ofx_account_cb)(const struct OfxAccountData data, void *),
-			void *,
-		  int (*ofx_transaction_cb)(const struct OfxTransactionData data, void *),
-			void *,
-		  int (*ofx_security_cb)(const struct OfxSecurityData data, void * ),
-			void *,
-		  int (*ofx_status_cb)(const struct OfxStatusData data, void *)
-  );
+CFCT void ofx_prep_cb(int (*ofx_statement_cb)(const struct OfxStatementData data, void * user_data),
+		      int (*ofx_account_cb)(const struct OfxAccountData data, void * user_data),
+		      int (*ofx_transaction_cb)(const struct OfxTransactionData data, void * user_data),
+		      int (*ofx_security_cb)(const struct OfxSecurityData data, void * user_data),
+		      int (*ofx_status_cb)(const struct OfxStatusData data, void * user_data)
+		      );
 #endif
 

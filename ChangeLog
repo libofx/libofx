@@ -1,3 +1,6 @@
+3/2/2004  Benoit Grégoire  <bock@step.polymtl.ca>
+	* inc/libofx.h lib/ofx_preproc.cpp lib/tree.hh ofx2qif/ofx2qif.c ofxdump/ofxdump.cpp:  Make it compile.  I may have misunderstood what Ryan wanted to do with the prototypes in libofx.h.  If so, sorry.  Note:  I don't think that the void * passed as arguments are saved in the registry yet.
+
 18/1/2004 Ryan P Bobko <ryan@ostrich-emulators.com>
 	* inc/libofx.h
 	* lib/ofx_container_statement.cpp

@@ -61,28 +61,28 @@ extern int ofx_STATUS_msg;
  ofx_STATUS_msg = false;
 
  ofx_prep_cb(
-						 NULL, ofx_proc_statement_cb, NULL,
-						 ofx_proc_account_cb, NULL,
-						 ofx_proc_transaction_cb, NULL,
-						 ofx_proc_security_cb, NULL,
-						 ofx_proc_status_cb
-						 );
+	     ofx_proc_statement_cb,
+	     ofx_proc_account_cb,
+	     ofx_proc_transaction_cb,
+	     ofx_proc_security_cb,
+	     ofx_proc_status_cb
+	     );
 
 ofx_proc_file(argc, argv);
 return 0;
 }
 
-int ofx_proc_status_cb(struct OfxStatusData data, void * status_data)
+int ofx_proc_status_cb(const struct OfxStatusData data, void * status_data)
 {
 return 0;
 }
-int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
+int ofx_proc_security_cb(const struct OfxSecurityData data, void * security_data)
 {
 return 0;
 }
 
 
-int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_data)
+int ofx_proc_transaction_cb(const struct OfxTransactionData data, void * transaction_data)
 {
   char dest_string[255];
   char trans_buff[4096];
@@ -167,7 +167,7 @@ if(data.transactiontype_valid==true){
  return 0;
 }/* end ofx_proc_transaction() */
 
-int ofx_proc_statement_cb(struct OfxStatementData data, void * statement_data)
+int ofx_proc_statement_cb(const struct OfxStatementData data, void * statement_data)
 {
   struct tm temp_tm;
 
@@ -226,7 +226,7 @@ int ofx_proc_statement_cb(struct OfxStatementData data, void * statement_data)
   return 0;
 }/* end ofx_proc_statement() */
   
-int ofx_proc_account_cb(struct OfxAccountData data, void * account_data)
+int ofx_proc_account_cb(const struct OfxAccountData data, void * account_data)
 {
   char dest_string[255]="";
   
