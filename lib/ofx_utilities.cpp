@@ -15,6 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <config.h>
 #include <iostream>
 #include "ParserEventGeneratorKit.h"
 #include "SGMLApplication.h"
@@ -25,37 +26,14 @@
 
 using namespace std;
 
-/// Detect the byte size used by OpenSP.
-/** get_sp_char_size(const SGMLApplication::Char * ptr) is a somewhat ugly hack to detect how wide OpenSP's SGMLApplication::Char is.  You give it a pointer to a string of char (such as CharString.ptr).  It should give you the size of a Char, in multiple or your platform's standard char.  The clean way to do this would have been to use the SP_MULTI_BYTE and SP_WCHAR_T_USHORT defines in SGMLApplication.h  However, these defines are set at OpenSP compile time, wich is no help to someone with an OpenSP binary package, and litte help even if you compile from source */
-static int get_sp_char_size(const SGMLApplication::Char * ptr)
-{
-  int char_len;
-  char * c_char_ptr = (char * )ptr;
-  //cout<<"Contenu: 0"<<c_char_ptr[0]<<" 1"<<char_ptr[1]<<" 2"<<char_ptr[2]<<" 3"<<char_ptr[3]<<endl;
-  if(c_char_ptr[2]==0&&c_char_ptr[3]==0)
-    {
-      char_len = 4;
-    }
-  else if(c_char_ptr[1]==0)
-    {
-      char_len = 2 ;
-    }
-  else
-    {
-      char_len = 1;
-    }
-  return char_len;
-}
-
 /**
    Convert an OpenSP CharString directly to a C++ stream, to enable the use of cout directly for debugging.
 */ 
 ostream &operator<<(ostream &os, SGMLApplication::CharString s)
 {
-  int char_size = get_sp_char_size(s.ptr);
   for (size_t i = 0; i < s.len; i++)
     {//cout<<i<<" "<<(unsigned char)(s.ptr[i])<<endl;
-      os << ((char *)(s.ptr))[i*char_size];
+      os << ((char *)(s.ptr))[i*sizeof(SGMLApplication::Char)];
     }
   return os;
 }
@@ -71,34 +49,31 @@ ostream &operator<<(ostream &os, SGMLApplication::CharString s)
 
 wchar_t* CharStringtowchar_t(SGMLApplication::CharString source, wchar_t *dest)
 {
-  int char_size = get_sp_char_size(source.ptr);
   size_t i;
   for (i = 0; i < source.len; i++)
     {
-      dest[i]+=wchar_t(source.ptr[i*char_size*(sizeof(char)/sizeof(wchar_t))]);
+      dest[i]+=wchar_t(source.ptr[i*sizeof(SGMLApplication::Char)*(sizeof(char)/sizeof(wchar_t))]);
     }
   return dest;
 }
 
 string CharStringtostring(const SGMLApplication::CharString source, string &dest)
 {
-  int char_size = get_sp_char_size(source.ptr);
   size_t i;
   dest.assign("");//Empty the provided string
   for (i = 0; i < source.len; i++){
-    dest+=((char *)(source.ptr))[i*char_size];  
+    dest+=((char *)(source.ptr))[i*sizeof(SGMLApplication::Char)];  
   }
   return dest;
 }
 
 string AppendCharStringtostring(const SGMLApplication::CharString source, string &dest)
 {
-  int char_size = get_sp_char_size(source.ptr);
   size_t i;
   //cout<<"Length: "<<source.len<<" detected char size: "<<char_size<<endl;
   for (i = 0; i < source.len; i++)
     {
-      dest+=((char *)(source.ptr))[i*char_size]; 
+      dest+=((char *)(source.ptr))[i*sizeof(SGMLApplication::Char)]; 
     }
   return dest;
 }

@@ -1,4 +1,7 @@
 9/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+	* lib/ofx_utilities.cpp: Remove the ugly get_sp_char_size() hack and use SP_MULTI_BYTE in config.h instead.  This probably fixes the "libofx not working on big endian machines" bug.
+
+9/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>
 	* configure.in: Now detect if OpenSP was compiled with SP_MULTI_BYTE, and put the result in config.
 	* INSTALL: Update for GNU build system.
 
