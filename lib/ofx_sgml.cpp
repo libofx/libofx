@@ -49,6 +49,7 @@ public:
   string incoming_data; /**< The raw data from the SGML data element */
   bool osp134workaround; /**< If the OpenSP < 1.3.4 bug is encountered, the flag is rased by startElement and lowered by endElement */
   string  osp134workaround_data; /**< The name of the previous element identifier */
+  bool osp134workaround_is_data_element;
 
   
   OutlineApplication ()
@@ -188,25 +189,25 @@ public:
       {
 	/* The element was a data element.  OpenSP will call one or several data() callback with the data */
 	message_out (PARSER, "Data element " + identifier + " found");
-/* There is a bug in OpenSP 1.3.4, which won't send endElement Event for some elements, and will instead send an error like "document type does not allow element "MESSAGE" here".  Incoming_data should be empty in such a case, but it will not be if the endElement event was skiped. So we empty it, so at least the last element has a chance of having valid data */ 
+	/* There is a bug in OpenSP 1.3.4, which won't send endElement Event for some elements, and will instead send an error like "document type does not allow element "MESSAGE" here".  Incoming_data should be empty in such a case, but it will not be if the endElement event was skiped. So we empty it, so at least the last element has a chance of having valid data */ 
 	/*if (incoming_data != "")
 	  {
 	  message_out (WARNING, "startElement: incoming_data should be empty! You are probably using OpenSP <= 1.3.4.  The folowing data was lost: " + incoming_data );
 	  //incoming_data.assign ("");
 	  }*/
-
-	/* This workaround for the bug.  It may not be maintained in future versions. */ 
-	if (incoming_data != "")
-	  {
-	    message_out (WARNING, "startElement: The OpenSP <= 1.3.4 endElement bug workaround was used.  Upgrade your OpenSP, your data is NOT garanteed to be correct.");
-	    osp134workaround = true;
-	    EndElementEvent tmp_event;
-	    tmp_event.pos=event.pos;
-	    tmp_event.gi=event.gi;
-	    endElement( tmp_event);
-	  }
+      }
+    /* This workaround for the OpenSP 1.3.4 bug.  It may not be maintained in future versions. */ 
+    if (incoming_data != "")
+      {
+	message_out (WARNING, "startElement: The OpenSP <= 1.3.4 endElement bug workaround was used: Encountered " + identifier + ", generating endElement for "+osp134workaround_data+"(Data: "+incoming_data+").  Upgrade your OpenSP, your data is NOT garanteed to be correct.");
+	osp134workaround = true;
+	EndElementEvent tmp_event;
+	tmp_event.pos=event.pos;
+	tmp_event.gi=event.gi;
+	endElement( tmp_event);
       }
     osp134workaround_data = identifier;
+    osp134workaround_is_data_element=is_data_element;
   }
 
   /** \brief Callback: End of an OFX element
@@ -216,20 +217,22 @@ public:
   void endElement (const EndElementEvent & event)
   {
     string identifier;
+    bool end_element_for_data_element;
     if( osp134workaround == true)
       {
 	 identifier =  osp134workaround_data;
-	 osp134workaround = false;
+	 end_element_for_data_element=osp134workaround_is_data_element;
       }
     else
       {
 	CharStringtostring (event.gi, identifier);
+	end_element_for_data_element=is_data_element;
       }
 
     message_out(PARSER,"endElement event received from OpenSP");
 
     position = event.pos;
-    if (is_data_element == true)
+    if (end_element_for_data_element == true)
       {
 	incoming_data = strip_whitespace(incoming_data);
 
@@ -238,13 +241,19 @@ public:
 	    curr_container_element->add_attribute (identifier, incoming_data);
 	    message_out (PARSER,"endElement: Added data '" + incoming_data + "' from " + identifier + " to " + curr_container_element->type + " container_element");
 	    incoming_data.assign ("");
-	    is_data_element = false;
+	    if( osp134workaround == false)
+	      {
+		is_data_element = false;
+	      }
 	  }
 	else
 	  {
 	    message_out (ERROR, "endElement: Trying to add data '" + incoming_data + "' from " + identifier + " to NULL container_element");
 	    incoming_data.assign ("");
-	    is_data_element = false;
+	    if( osp134workaround == false)
+	      {
+		is_data_element = false;
+	      }
 	  }
       }
     else
@@ -284,6 +293,10 @@ public:
 	  {
 	    message_out (ERROR,"Tried to close a "+identifier+" without a open element (NULL pointer)");
 	  }
+      }
+    if( osp134workaround == true)
+      {
+	 osp134workaround = false;
       }
   }
 

@@ -3,6 +3,8 @@ LibOFX 0.x:
 	-Full investment transaction support (ofx2qif not yet updated).
 	-Now uses an Autoconf/Automake build system.
 	-Proprietary tag striper is now much smarter and read routines have been corrected.  Importing a file written on a single line will no longer cause an infinite loop.  
+	-Added yet more spagetti code and global variables to improve the work around for OpenSP 1.3 bugs.  I beg of you, please convince your distro to make openjade and the OpenSP library independently upgradable.
+
 LibOFX 0.5:
 	-Alpha version, released to accompany the new GnuCash 1.7.1 alpha release.
 	-Add an account_name to the OfxAccountData struct.  It contains a human readable identifier of the account.
