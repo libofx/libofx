@@ -68,6 +68,10 @@ done
 
 ##Detect if OpenSP was compiled with SP_MULTI_BYTE, and put the result in config.h
 ##
+
+#if 0
+##This test works for me, but breaks for most distro because the config.h installed isn't really the one that was used tu compile OpenSP
+## So --with-opensp-multibyte is now the default.
 AC_DEFUN([CHECK_SP_MULTI_BYTE],
  [
 AC_CACHE_VAL(ox_sp_multibyte,
@@ -95,11 +99,12 @@ AC_MSG_CHECKING(for if OpenSP's was compiled with SP_MULTI_BYTE)
 AC_MSG_RESULT(no)
     fi
  ])
+#endif
 
- AC_ARG_WITH(opensp-multibyte, 
-[  --with-opensp-multibyte     Force libofx to compile with the assumption that OpenSP was compiled with SP_MULTI_BYTE defined],
-			AC_DEFINE(SP_MULTI_BYTE, 1, [SP_MULTI_BYTE value from when OpenSP was compiled]),
-			CHECK_SP_MULTI_BYTE )
+ AC_ARG_WITH(no-opensp-multibyte, 	
+[  --with-no-opensp-multibyte     Force libofx to compile with the assumption that OpenSP was NOT compiled with SP_MULTI_BYTE defined],
+		,
+			AC_DEFINE(SP_MULTI_BYTE, 1, [SP_MULTI_BYTE value from when OpenSP was compiled])	 )
 			
 ##if test x"$SP_MULTI_BYTE" == x ;then
 ##CHECK_SP_MULTI_BYTE

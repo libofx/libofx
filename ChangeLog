@@ -1,3 +1,10 @@
+16/3/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+	* configure.in: Remove --with-opensp-multibyte.
+	* doc/doxygen.cfg: Remove, this file is now generated from doc/doxygen.cfg.in
+	* known_bugx.txt: Remove file, since we now have a bugtracker.
+	* README: Update
+	* INSTALL: Delete and replace by FAQ, update content.
+	
 11/3/2003  Benoit Grégoire  <bock@step.polymtl.ca>
 	* ofxdump/ofxdump.cpp: Remove comand line arguments debug output.
 	* lib/ofx_container_main.cpp: Fix compiler warnings reported by Derek Atkins

@@ -6,7 +6,7 @@ doc_DATA = \
 	implementation_notes.txt
 
 EXTRA_DIST = \
-	doxygen.cfg \
+	doxygen.cfg.in \
 	ofx_sample_files \
 	implementation_notes.txt \
 	tag_striper_test.txt
@@ -23,7 +23,7 @@ doc: doxygen.cfg
 dist-hook:
 	echo "dist-hook: " && pwd
 	cd $(srcdir) && pwd && rm -rf html refman.pdf && $(DOXYGEN) doxygen.cfg
-	cp -rp $(srcdir)/html ${distdir}
+	cp -rp html ${distdir}
 
 clean-local:
 	echo "clean-local: " && pwd
@@ -36,9 +36,20 @@ maintainer-clean-local: clean-local
 	rm -rf html refman.pdf
 
 install-data-hook:
-	mkdir -p $(srcdir)/html #Workaround to allow libofx-cvs user to install without doc.
-	cp -rp $(srcdir)/html $(DESTDIR)${docdir}
+	$(mkinstalldirs) $(DESTDIR)$(docdir)/html
+	mkdir -p html #Workaround to allow libofx-cvs user to install without doc.
+	cp -rp html $(DESTDIR)$(docdir)/html
 
 uninstall-hook:
 	chmod +w -R $(DESTDIR)${docdir}/html #Why chmod is needed is a mystery
 	rm -rf $(DESTDIR)${docdir}/html
+
+## We borrow guile's convention and use @-...-@ as the substitution
+## brackets here, instead of the usual @...@.  This prevents autoconf
+## from substituting the values directly into the left-hand sides of
+## the sed substitutions.
+doxygen.cfg: doxygen.cfg.in Makefile
+	rm -f $@.tmp
+	sed < $< > $@.tmp \
+            -e 's:@-top_srcdir-@:${top_srcdir}:g'
+	mv $@.tmp $@
