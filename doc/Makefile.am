@@ -6,7 +6,7 @@ doc_DATA = \
 	implementation_notes.txt
 
 EXTRA_DIST = \
-	doxygen.conf \
+	doxygen.cfg \
 	ofx_sample_files \
 	implementation_notes.txt \
 	tag_striper_test.txt \
@@ -14,15 +14,15 @@ EXTRA_DIST = \
 
 all:
 
-html: doxygen.conf
+html: doxygen.cfg
 	echo "html: " && pwd
 	rm -rf html/ refman.pdf
-	$(DOXYGEN) doxygen.conf
+	$(DOXYGEN) doxygen.cfg
 
-doc: doxygen.conf
+doc: doxygen.cfg
 	echo "doc: " && pwd && 	echo "distdir: " && echo $(distdir)
 	rm -rf html/ refman.pdf
-	$(DOXYGEN) doxygen.conf
+	$(DOXYGEN) doxygen.cfg
 #	$(MAKE) -C latex/ 
 #	mv latex/refman.pdf ./refman.pdf
 
