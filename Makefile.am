@@ -9,14 +9,12 @@ doc_DATA = \
   NEWS \
   README \
   ChangeLog \
-  totest.txt \
-  known_bugs.txt
+  totest.txt
 
 EXTRA_DIST = \
   libofx.spec.in \
   libofx.spec \
   totest.txt \
-  known_bugs.txt \
   libofx.lsm \
   config
 

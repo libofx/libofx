@@ -1,3 +1,8 @@
+18/3/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+	RELEASE LibOfx 0.6.3
+	* NEWS: Update for release
+	* Makefile.am: Remove references to known_bugx.txt
+
 16/3/2003  Benoit Grégoire  <bock@step.polymtl.ca>
 	* configure.in: Remove --with-opensp-multibyte configure option (it is now the default).  There is now a --with-no-opensp-multibyte instead, to force libofx to assume that OpenSP was NOT compiled with SP_MULTI_BYTE defined.
 	* doc/doxygen.cfg: Remove, this file is now generated from doc/doxygen.cfg.in
