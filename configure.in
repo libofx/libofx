@@ -53,7 +53,8 @@ AC_ARG_WITH(opensp-libs,
 			OPENSPLIBPATH="$with_opensp_libs",
 			OPENSPLIBPATH="/usr/lib")
 			
-for d in /usr/include/OpenSP /usr/include/sp/generic ; do
+			echo $OPENSPLIBPATH
+for d in /usr/include/OpenSP /usr/local/include/OpenSP /usr/include/sp/generic /usr/local/include/sp/generic; do
     if test "x$OPENSPINCLUDES" = x; then
 	save_CPPFLAGS="$CPPFLAGS"
 	CPPFLAGS="$CPPFLAGS -I$d"

@@ -1,4 +1,8 @@
 9/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+	* configure.in: Add /usr/local/include to OpenSP's include search path.
+	* INSTALL: Add FAQ for "bug" http://sourceforge.net/tracker/index.php?func=detail&aid=654591&group_id=61170&atid=496353
+
+9/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>
 	* lib/ofx_utilities.cpp: Remove the ugly get_sp_char_size() hack and use SP_MULTI_BYTE in config.h instead.  This probably fixes the "libofx not working on big endian machines" bug.
 
 9/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>

@@ -19,7 +19,7 @@ The user documentation for the ofx2qif converter is on the ofx2qif.c page.
 \section contact Contacts
 
 \subsection web Web Site
-News about LibOFX as well as the latest version can always be found at http://step.polymtl.ca/~bock/libofx/
+News about LibOFX as well as the latest version can always be found at http://libofx.sourceforge.net/
 
 \subsection email Email
 If you have any questions not covered in this documentation or the web site, do not hesitate to email me:

@@ -19,16 +19,22 @@ distro with OpenJADE 1.3.1)  OpenSP doesn't parse OFX files correctly
 1.5pre8                      COMPATIBLE with LibOFX >= 0.23
 1.5                          COMPATIBLE with LibOFX >= 0.23
 
+FAQ:
+-----------------------------------------------
+(1) Getting "configure: error: unable to link a test program, is OpenSP installed?"
+
 -BE CAREFULL:  When you compile OpenSP, by default it will install in /usr/local.  On many versions of linux (Most RedHat, All Mandrake up to 8.3) /usr/local/lib/ is not part of /etc/ld.so.conf .  In this case LibOFX will either
 1-Fail to link at all
 2-Link with libosp.so.0 (1.3.4, wich probably got installed as part of OpenJade) and not work.
-
-Even if you add /usr/local/lib/ to /etc/ld.so.conf, LibOFX will probably still link with OpenSP 1.3.4.  Symptoms will be complaints of many unclosed statements when running ofxdump on an ofx file. 
+Even if you add /usr/local/lib/ to /etc/ld.so.conf, LibOFX will probably still link with OpenSP 1.3.4 at runtime.  Symptoms will be complaints of many unclosed statements when running ofxdump on an ofx file. 
 
 I STRONGLY URGE YOU to avoid theese problems and compile OpenSP using
  ./configure --prefix=/usr
+If you really want to install OpenSP in /usr/local/lib, you must add --with-opensp-libs=/usr/local/lib to libofx's ./configure or ./autogen.sh
 
--Problems compiling OpenSP 1.4 
+
+(2) Problems compiling OpenSP 1.4 
+
 If you are getting errors like:
 ../include/Message.h:157: `class OpenSP::Messenger' is inaccessible nsgmls.cxx:60: within this context)
 
