@@ -21,6 +21,7 @@
 #include "SGMLApplication.h"
 #include <time.h>
 #include <string>
+#include <locale.h>
 #include "messages.hh"
 #include "ofx_utilities.hh"
 

@@ -1,3 +1,6 @@
+2/5/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+	* lib/ofx_utilities.cpp:  Add #include <locale.h> to fix compile error on freebsd and possibly all gcc2 based distro.
+
 15/4/2003  Benoit Grégoire  <bock@step.polymtl.ca>
 	* lib/ofx_preproc.cpp:  Fix for really broken files that do not have a newline after the ofx header.  Fixes bug #721732
 	
