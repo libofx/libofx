@@ -76,8 +76,10 @@ int ofx_proc_file(int argc, char *argv[])
 	    {
 	      input_file.clear();
 	    }
-	  if(ofx_start==false&&(s_buffer.find("<OFX>")!=string::npos||s_buffer.find("<ofx>")!=string::npos)){
+	  int ofx_start_idx;
+	  if(ofx_start==false&&((ofx_start_idx=s_buffer.find("<OFX>"))!=string::npos||(ofx_start_idx=s_buffer.find("<ofx>"))!=string::npos)){
 	    ofx_start=true;
+	    s_buffer.erase(0,ofx_start_idx);//Fix for really broken files that don't have a newline after the header.
 	    message_out(DEBUG,"ofx_proc_file():<OFX> has been found");
 	  }
 	  

@@ -1,3 +1,6 @@
+15/4/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+	* lib/ofx_preproc.cpp:  Fix for really broken files that do not have a newline after the ofx header.  Fixes bug #721732
+	
 12/4/2003  Benoit Grégoire  <bock@step.polymtl.ca>
 	RELEASE LibOfx 0.6.4
 	* configure.in: Change version number
