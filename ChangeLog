@@ -1,3 +1,7 @@
+9/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+	* configure.in: Now detect if OpenSP was compiled with SP_MULTI_BYTE, and put the result in config.
+	* INSTALL: Update for GNU build system.
+
 04/12/2002  Peter O'Gorman <ogorman@users.sourceforge.net>
 	* doc/Makefile.am: Make DESTDIR work
 	* lib/Makefile.am: Changed version_info to version-info and modified the version to be what libtool expects.
@@ -5,10 +9,10 @@
 24/11/2002  Chris Lyttle  <chris@wilddev.net>
 	* libofx.spec.in: updated for new docs
 
-24/11/2001  Benoit Grégoire  <bock@step.polymtl.ca>
+24/11/2002  Benoit Grégoire  <bock@step.polymtl.ca>
 	* configure.in, doc/Makefile.am: Improve doxygen doc generation, and enable make install without the doc.
 
-24/11/2001  Benoit Grégoire  <bock@step.polymtl.ca>
+24/11/2002  Benoit Grégoire  <bock@step.polymtl.ca>
 	* ofx_sgml.cpp: Hopefully fix incompatibilities with BOTH OpenSP 1.3.x and OpenSP >= 1.4
 	* Makefile.am, doc/Makefile.am: Doxygen API and internal doc now integrated in the build system.  It will be distributed and install with the tarballs,	and can be build in libofx-cvs using make doc.
 	* autogen.sh: Re-enable maintainer-mode. 
@@ -21,43 +25,43 @@
 	* configure.in: added spec.in line
 	* autogen.sh: changed configure line to see arguments
 	
-18/11/2001  Benoit Grégoire  <bock@step.polymtl.ca>
+18/11/2002  Benoit Grégoire  <bock@step.polymtl.ca>
 	* ofx_sgml.cpp:  Fix critical bug.  Parsing of a file would fail and hang for users of OpenSP 1.5pre5 (and possibly others).  Simplify workaround of OpenSP 1.3 bugs, more code is now shared.
 	* configure.in:  Update for release 0.6.1
 
-18/11/2001  Benoit Grégoire  <bock@step.polymtl.ca>
+18/11/2002  Benoit Grégoire  <bock@step.polymtl.ca>
 	* Update build files for release of libofx 0.6.0
 
-30/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
+30/10/2002  Benoit Grégoire  <bock@step.polymtl.ca>
 	* inc/libofx.h lib/ofx_container_transaction.cpp ofxdump/ofxdump.cpp: Created a new invtransactiontype enum to replace the invtranstype string
 
-30/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
+30/10/2002  Benoit Grégoire  <bock@step.polymtl.ca>
 	* lib/ofx_sgml.cpp: Added yet more spagetti code and global variables to improve the work around for OpenSP 1.3 bugs.  I beg of you, please convince your distro to make openjade and the OpenSP library independently upgradable.
 
-30/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
+30/10/2002  Benoit Grégoire  <bock@step.polymtl.ca>
 	* configure.in: 
 	Apply Derek Atkins <warlord@MIT.EDU> patch needed to build on
 > RH7.3 using the "distributed" version of openjade.
 
-29/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
+29/10/2002  Benoit Grégoire  <bock@step.polymtl.ca>
 	* lib/ofx_preproc.cpp doc/tag_striper_test.txt: 
 	Proprietary tag striper is now much smarter and read routines have been fixed.  Importing a file written on a single line should now be possible.  
 	Added a test file for the proprietary tag striper .
 
-29/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
+29/10/2002  Benoit Grégoire  <bock@step.polymtl.ca>
 	* configure.in: Work around autoconf 2.1 not supporting AC_LANG()
 
-21/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
+21/10/2002  Benoit Grégoire  <bock@step.polymtl.ca>
 	* ofxdump/ofxdump.cpp: Add support for invtranstype in ofx_proc_transaction_cb()
 
-21/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
+21/10/2002  Benoit Grégoire  <bock@step.polymtl.ca>
 	* lib/ofx_preproc.cpp: Abort if DTD was not found
 	
-20/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
+20/10/2002  Benoit Grégoire  <bock@step.polymtl.ca>
 	* Fix debug output
 	* Begin fixing ofx2qif for the new transaction ordering code
 	
-17/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
+17/10/2002  Benoit Grégoire  <bock@step.polymtl.ca>
 	* Implemented internal container trees, allowing transaction reordering and security lookups
 	* Complete investment transaction support
 	* Converted the build system to automake/autoconf, mostly contributed by "Peter O'Gorman" <peter@pogma.com>

@@ -1,8 +1,10 @@
 Make sure you have the OpenSP library installed (libosp.so) before compiling.  Yo can grab it at http://openjade.sourceforge.net/
-The recommended version is OpenSP 1.5pre5
+The recommended version is OpenSP 1.5
 If you have a version of OpenJade or OpenSP already installed before compiling OpenSP, make sure that you use ./configure --prefix=/usr to build OpenSP.  Otherwise, LibOFX will probably link with the older, incompatible version of OpenSP.
 
 Then type:
+./autogen.sh (For libofx CVS)
+./configure (For a distributed tarball)
 make
 And as root type:
 make install
@@ -15,6 +17,7 @@ distro with OpenJADE 1.3.1)  OpenSP doesn't parse OFX files correctly
 1.4                          NOT TESTED
 1.5pre5                      COMPATIBLE with all versions
 1.5pre8                      COMPATIBLE with LibOFX >= 0.23
+1.5                          COMPATIBLE with LibOFX >= 0.23
 
 -BE CAREFULL:  When you compile OpenSP, by default it will install in /usr/local.  On many versions of linux (Most RedHat, All Mandrake up to 8.3) /usr/local/lib/ is not part of /etc/ld.so.conf .  In this case LibOFX will either
 1-Fail to link at all

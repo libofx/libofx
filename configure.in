@@ -9,6 +9,7 @@ dnl Process this file with autoconf to produce a configure script.
 # implements checks for a variety of system-specific functions
 
 AC_INIT(inc/libofx.h)
+AM_CONFIG_HEADER(config.h)
 AC_CONFIG_AUX_DIR(config)
 AC_PROG_CC
 AC_PROG_CXX
@@ -26,7 +27,7 @@ AC_SUBST(LIBOFX_VERSION)
 AM_INIT_AUTOMAKE(libofx,$LIBOFX_VERSION)
 
 
-AM_CONFIG_HEADER(config.h)
+
 
 AM_MAINTAINER_MODE
 
@@ -56,12 +57,47 @@ for d in /usr/include/OpenSP /usr/include/sp/generic ; do
     if test "x$OPENSPINCLUDES" = x; then
 	save_CPPFLAGS="$CPPFLAGS"
 	CPPFLAGS="$CPPFLAGS -I$d"
-	AC_MSG_CHECKING(For ParserEventGenerator.h in $d)
+	AC_MSG_CHECKING(for ParserEventGenerator.h in $d)
 	AC_TRY_CPP([#include <ParserEventGeneratorKit.h>],
 	[ AC_MSG_RESULT(yes); OPENSPINCLUDES=$d ], [ AC_MSG_RESULT(no) ])
 	CPPFLAGS="$save_CPPFLAGS"
     fi
 done
+
+
+##foo=`echo -e 'foo\n#define SP_MULTI_BYTE 1\nbar' | sed 's/^#.*SP_MULTI_BYTE[\t]*\([01]\)/\1/;t;d'`
+##foo=`sed 's/^#.*SP_MULTI_BYTE[ \t]*\([01]\)/\1/;t;d' $OPENSPCONFIG_H`
+##echo $OPENSPCONFIG_H
+##echo $foo
+AC_DEFUN([CHECK_SP_MULTI_BYTE],
+ [
+AC_CACHE_VAL(ox_sp_multibyte,
+   [
+ for d in $OPENSPINCLUDES/config.h $OPENSPINCLUDES/../config.h ; do
+    if test "x$OPENSPCONFIG_H" = x; then
+	save_CPPFLAGS="$CPPFLAGS"
+	CPPFLAGS="$CPPFLAGS -DOPENSPCONFIG_H=\"$d\""
+	AC_MSG_CHECKING(For OpenSP's config.h in $d)
+	AC_TRY_CPP([#include OPENSPCONFIG_H],
+	[ AC_MSG_RESULT(yes); OPENSPCONFIG_H=$d ], [ AC_MSG_RESULT(no) ])
+	CPPFLAGS="$save_CPPFLAGS"
+    fi
+ done
+ if test "x$OPENSPCONFIG_H" = x; then
+	AC_MSG_ERROR([OpenSP's config.h not found])
+ fi
+
+    ox_sp_multibyte=`sed 's/^#.*SP_MULTI_BYTE[ \t]*\([01]\)/\1/;t;d' < \
+            $OPENSPCONFIG_H`])
+     if test x"$ox_sp_multibyte" != x ;then
+echo $ox_sp_multibyte
+         AC_DEFINE_UNQUOTED(SP_MULTI_BYTE, $ox_sp_multibyte, [SP_MULTI_BYTE value from when OpenSP was compiled])
+     else
+AC_MSG_ERROR([SP_MULTI_BYTE not found in OpenSP's config.h])
+    fi
+ ])
+
+CHECK_SP_MULTI_BYTE
 
 ac_save_CPPFLAGS="$CPPFLAGS"
 if test "x$OPENSPINCLUDES" != x ; then
