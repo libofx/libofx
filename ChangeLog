@@ -1,3 +1,10 @@
+14/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+	RELEASE LibOfx 0.6.6
+	* configure.in: Change version number
+	* NEWS: Update for release
+	* Makefile.am: Add version number to docdir name
+	* libofx.spec.in: Remove known_bugs.txt
+
 14/1/2004 Benoit Grégoire  <bock@step.polymtl.ca>
 	* dtd/Makefile.am, dtd/opensp.dcl, * lib/ofx_preproc.[cpp,hh],:  Add SGML declaration to be parsed before the DTD.  Makes us immune to changes to default settings.  Should get rid of "end tag for "MEMO" omitted, but OMITTAG NO was specified" type of messages and greatly help the parser.
 	* lib/ofx_sgml.cpp:  Get rid of OpenSP 1.3.1 compatibility code, which makes the code much easier to understand and debug.  Combined with the change obove, it should practically eliminate the parsing ambiguity that made libofx so verbose and ocasionally miss data.  More defensive coding to warn of malformed files.  This probably means that compatibility with OpenSP 1.3.1 cannot come back.  However with the change above it may work after all.  Somebody please test this...

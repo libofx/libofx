@@ -1,6 +1,6 @@
 SUBDIRS = inc dtd lib doc . ofx2qif ofxdump 
 
-docdir = ${prefix}/share/doc/libofx
+docdir = ${prefix}/share/doc/libofx-@VERSION@
 
 doc_DATA = \
   AUTHORS \

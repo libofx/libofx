@@ -1,3 +1,9 @@
+LibOFX 0.7:
+	-Important code cleanup in the parsing code. The parser should be much more independent of OpenSP default settings.  Should get rid of "end tag for "MEMO" omitted, but OMITTAG NO was specified" type messages and many other parser failures.
+	-The very old OpenSP 1.3.1 will probably no longuer work.  
+	-Fix an infinite loop in some circumstances while the library was searching for a parent statement for a transaction.  Would mostly manifest on complex investments transactions.  Thanks to stephen.a.prior A T ntlworld.ie for the catch.
+	-Implement displaying file line numbers in the error output.  Note that data won't be valid if the message occurs before the file is opened.
+
 LibOFX 0.6.5:
 	-Fix for really broken files that do not have a newline after the ofx header (bug #721732)
 	-Add #include <locale.h> to fix compile error on freebsd and possibly all gcc2 based distro.
