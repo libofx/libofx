@@ -322,27 +322,7 @@ struct OfxSecurityData{
 */
 CFCT typedef int (*LibofxProcSecurityCallback)(const struct OfxSecurityData data, void * security_data);
 
-
-/**
- * \brief An abstraction of a transaction in an account.
- *
- * The OfxTransactionData stucture contains all available information about
- an actual transaction in an account.
-*/
-struct OfxTransactionData{
-  
-  /** @name OFX mandatory elements
-   * The OFX spec defines the following elements as mandatory.  The associated
-   variables should all contain valid data but you should not trust the servers.
-   Check if the associated *_valid is true before using them. */  
-
-  char account_id[OFX_ACCOUNT_ID_LENGTH];/**< Use this for matching with
-					    the relevant account in your
-					    application */
-  struct OfxAccountData * account_ptr; /**< Pointer to the full account structure,
-					  see OfxAccountData */
-  int account_id_valid;
-  enum TransactionType{
+typedef enum {
     OFX_CREDIT,     /**< Generic credit */
     OFX_DEBIT,      /**< Generic debit */
     OFX_INT,        /**< Interest earned or paid (Note: Depends on signage of amount) */
@@ -360,13 +340,9 @@ struct OfxTransactionData{
     OFX_DIRECTDEBIT,/**< Merchant initiated debit */
     OFX_REPEATPMT,  /**< Repeating payment/standing order */
     OFX_OTHER       /**< Somer other type of transaction */
-  } transactiontype;
-  int transactiontype_valid;
- 
-  /**< Investment transaction type.  You should read this if 
-     transactiontype == OFX_OTHER.  See OFX spec 1.6 p.442 to 445 
-     for details*/
-  enum InvTransactionType{
+  } TransactionType;
+
+typedef  enum{
     OFX_BUYDEBT,        /**< Buy debt security */
     OFX_BUYMF,          /**< Buy mutual fund */
     OFX_BUYOPT,         /**< Buy option */
@@ -387,9 +363,42 @@ struct OfxTransactionData{
     OFX_SELLSTOCK,      /**< Sell stock */
     OFX_SPLIT,          /**< Stock or mutial fund split */
     OFX_TRANSFER        /**< Transfer holdings in and out of the investment account */
-  }  invtransactiontype;
+  }  InvTransactionType;
+typedef enum {
+    DELETE, /**< The transaction with a fi_id matching fi_id_corrected should
+	       be deleted */
+    REPLACE /**< The transaction with a fi_id matching fi_id_corrected should 
+	       be replaced with this one */
+  } FiIdCorrectionAction;
 
- int  invtransactiontype_valid;
+/**
+ * \brief An abstraction of a transaction in an account.
+ *
+ * The OfxTransactionData stucture contains all available information about
+ an actual transaction in an account.
+*/
+struct OfxTransactionData{
+  
+  /** @name OFX mandatory elements
+   * The OFX spec defines the following elements as mandatory.  The associated
+   variables should all contain valid data but you should not trust the servers.
+   Check if the associated *_valid is true before using them. */  
+
+  char account_id[OFX_ACCOUNT_ID_LENGTH];/**< Use this for matching with
+					    the relevant account in your
+					    application */
+  struct OfxAccountData * account_ptr; /**< Pointer to the full account structure,
+					  see OfxAccountData */
+  int account_id_valid;
+
+  TransactionType transactiontype;
+  int transactiontype_valid;
+ 
+  /**< Investment transaction type.  You should read this if 
+     transactiontype == OFX_OTHER.  See OFX spec 1.6 p.442 to 445 
+     for details*/
+  InvTransactionType invtransactiontype;
+  int  invtransactiontype_valid;
 
   double units;     /**< Variation of the number of units of the commodity
 		     Suppose units is -10, ave unitprice is 1.  If the 
@@ -451,12 +460,7 @@ struct OfxTransactionData{
   int fi_id_corrected_valid;
   /** The OfxTransactionData::FiIdCorrectionAction enum contains the action
       to be taken */
-  enum FiIdCorrectionAction{
-    DELETE, /**< The transaction with a fi_id matching fi_id_corrected should
-	       be deleted */
-    REPLACE /**< The transaction with a fi_id matching fi_id_corrected should 
-	       be replaced with this one */
-  } fi_id_correction_action;
+  FiIdCorrectionAction fi_id_correction_action;
   int fi_id_correction_action_valid;
   
   /** Used for user initiated transaction such as payment or funds transfer.

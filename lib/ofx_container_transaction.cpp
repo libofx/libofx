@@ -116,10 +116,10 @@ void OfxTransactionContainer::add_attribute(const string identifier, const strin
   else if(identifier=="CORRECTACTION"){
     data.fi_id_correction_action_valid=true;
     if(value=="REPLACE"){
-      data.fi_id_correction_action=data.REPLACE;
+      data.fi_id_correction_action=REPLACE;
     }
     else if(value=="DELETE"){
-      data.fi_id_correction_action=data.DELETE;
+      data.fi_id_correction_action=DELETE;
     }
     else{
       data.fi_id_correction_action_valid=false;
@@ -163,55 +163,55 @@ void OfxBankTransactionContainer::add_attribute(const string identifier, const s
   if( identifier=="TRNTYPE"){
     data.transactiontype_valid=true;
     if(value=="CREDIT"){
-      data.transactiontype=data.OFX_CREDIT;
+      data.transactiontype=OFX_CREDIT;
     }
     else if(value=="DEBIT"){
-      data.transactiontype=data.OFX_DEBIT;
+      data.transactiontype=OFX_DEBIT;
     }
     else if(value=="INT"){
-      data.transactiontype=data.OFX_INT;
+      data.transactiontype=OFX_INT;
     }
     else if(value=="DIV"){
-      data.transactiontype=data.OFX_DIV;
+      data.transactiontype=OFX_DIV;
     }
     else if(value=="FEE"){
-      data.transactiontype=data.OFX_FEE;
+      data.transactiontype=OFX_FEE;
     }
     else if(value=="SRVCHG"){
-      data.transactiontype=data.OFX_SRVCHG;
+      data.transactiontype=OFX_SRVCHG;
     }
     else if(value=="DEP"){
-      data.transactiontype=data.OFX_DEP;
+      data.transactiontype=OFX_DEP;
     }
     else if(value=="ATM"){
-      data.transactiontype=data.OFX_ATM;
+      data.transactiontype=OFX_ATM;
     }
     else if(value=="POS"){
-      data.transactiontype=data.OFX_POS;
+      data.transactiontype=OFX_POS;
     }
     else if(value=="XFER"){
-      data.transactiontype=data.OFX_XFER;
+      data.transactiontype=OFX_XFER;
     }
     else if(value=="CHECK"){
-      data.transactiontype=data.OFX_CHECK;
+      data.transactiontype=OFX_CHECK;
     }
     else if(value=="PAYMENT"){
-      data.transactiontype=data.OFX_PAYMENT;
+      data.transactiontype=OFX_PAYMENT;
     }
     else if(value=="CASH"){
-      data.transactiontype=data.OFX_CASH;
+      data.transactiontype=OFX_CASH;
     }
     else if(value=="DIRECTDEP"){
-      data.transactiontype=data.OFX_DIRECTDEP;
+      data.transactiontype=OFX_DIRECTDEP;
     }
     else if(value=="DIRECTDEBIT"){
-      data.transactiontype=data.OFX_DIRECTDEBIT;
+      data.transactiontype=OFX_DIRECTDEBIT;
     }
     else if(value=="REPEATPMT"){
-      data.transactiontype=data.OFX_REPEATPMT;
+      data.transactiontype=OFX_REPEATPMT;
     }
     else if(value=="OTHER"){
-      data.transactiontype=data.OFX_OTHER;
+      data.transactiontype=OFX_OTHER;
     }
     else {
       data.transactiontype_valid=false;
@@ -260,69 +260,69 @@ OfxInvestmentTransactionContainer::OfxInvestmentTransactionContainer(LibofxConte
   OfxTransactionContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
 {
   type="INVESTMENT";
-  data.transactiontype=data.OFX_OTHER;
+  data.transactiontype=OFX_OTHER;
   data.transactiontype_valid=true;
   
   data.invtransactiontype_valid=true; 
   if(para_tag_identifier=="BUYDEBT"){
-    data.invtransactiontype=data.OFX_BUYDEBT;
+    data.invtransactiontype=OFX_BUYDEBT;
   }
   else if(para_tag_identifier=="BUYMF"){
-    data.invtransactiontype=data.OFX_BUYMF;
+    data.invtransactiontype=OFX_BUYMF;
   }
   else if(para_tag_identifier=="BUYOPT"){
-    data.invtransactiontype=data.OFX_BUYOPT;
+    data.invtransactiontype=OFX_BUYOPT;
   }
   else if(para_tag_identifier=="BUYOTHER"){
-    data.invtransactiontype=data.OFX_BUYOTHER;
+    data.invtransactiontype=OFX_BUYOTHER;
   }
   else if(para_tag_identifier=="BUYSTOCK"){
-    data.invtransactiontype=data.OFX_BUYSTOCK;
+    data.invtransactiontype=OFX_BUYSTOCK;
   }
   else if(para_tag_identifier=="CLOSUREOPT"){
-    data.invtransactiontype=data.OFX_CLOSUREOPT;
+    data.invtransactiontype=OFX_CLOSUREOPT;
   }
   else if(para_tag_identifier=="INCOME"){
-    data.invtransactiontype=data.OFX_INCOME;
+    data.invtransactiontype=OFX_INCOME;
   }
   else if(para_tag_identifier=="INVEXPENSE"){
-    data.invtransactiontype=data.OFX_INVEXPENSE;
+    data.invtransactiontype=OFX_INVEXPENSE;
   }
   else if(para_tag_identifier=="JRNLFUND"){
-    data.invtransactiontype=data.OFX_JRNLFUND;
+    data.invtransactiontype=OFX_JRNLFUND;
   }
   else if(para_tag_identifier=="JRNLSEC"){
-    data.invtransactiontype=data.OFX_JRNLSEC;
+    data.invtransactiontype=OFX_JRNLSEC;
   }
   else if(para_tag_identifier=="MARGININTEREST"){
-    data.invtransactiontype=data.OFX_MARGININTEREST;
+    data.invtransactiontype=OFX_MARGININTEREST;
   }
   else if(para_tag_identifier=="REINVEST"){
-    data.invtransactiontype=data.OFX_REINVEST;
+    data.invtransactiontype=OFX_REINVEST;
   }
   else if(para_tag_identifier=="RETOFCAP"){
-    data.invtransactiontype=data.OFX_RETOFCAP;
+    data.invtransactiontype=OFX_RETOFCAP;
   }
   else if(para_tag_identifier=="SELLDEBT"){
-    data.invtransactiontype=data.OFX_SELLDEBT;
+    data.invtransactiontype=OFX_SELLDEBT;
   }
   else if(para_tag_identifier=="SELLMF"){
-    data.invtransactiontype=data.OFX_SELLMF;
+    data.invtransactiontype=OFX_SELLMF;
   }
   else if(para_tag_identifier=="SELLOPT"){
-    data.invtransactiontype=data.OFX_SELLOPT;
+    data.invtransactiontype=OFX_SELLOPT;
   }
   else if(para_tag_identifier=="SELLOTHER"){
-    data.invtransactiontype=data.OFX_SELLOTHER;
+    data.invtransactiontype=OFX_SELLOTHER;
   }
   else if(para_tag_identifier=="SELLSTOCK"){
-    data.invtransactiontype=data.OFX_SELLSTOCK;
+    data.invtransactiontype=OFX_SELLSTOCK;
   }
   else if(para_tag_identifier=="SPLIT"){
-    data.invtransactiontype=data.OFX_SPLIT;
+    data.invtransactiontype=OFX_SPLIT;
   }
   else if(para_tag_identifier=="TRANSFER"){
-    data.invtransactiontype=data.OFX_TRANSFER;
+    data.invtransactiontype=OFX_TRANSFER;
   }
   else{
     message_out(ERROR, "This should not happen, "+para_tag_identifier+" is an unknown investment transaction type");

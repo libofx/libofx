@@ -1,3 +1,8 @@
+21/9/2004  Benoit Grégoire  <bock@step.polymtl.ca>
+	* Really remove callback.hh and callback.cpp
+	* Fix compile with gcc 3.4.  This also needs to be applied to the stable branch.
+	* Fix tree handling for securities, which caused the callbacks never to be called. 
+
 31/8/2004  Benoit Grégoire  <bock@step.polymtl.ca>
 	* Remove obsolete files callback.hh and callback.cpp
 	* More makefile fixes in lib
