@@ -65,10 +65,8 @@ for d in /usr/include/OpenSP /usr/include/sp/generic ; do
 done
 
 
-##foo=`echo -e 'foo\n#define SP_MULTI_BYTE 1\nbar' | sed 's/^#.*SP_MULTI_BYTE[\t]*\([01]\)/\1/;t;d'`
-##foo=`sed 's/^#.*SP_MULTI_BYTE[ \t]*\([01]\)/\1/;t;d' $OPENSPCONFIG_H`
-##echo $OPENSPCONFIG_H
-##echo $foo
+##Detect if OpenSP was compiled with SP_MULTI_BYTE, and put the result in config.h
+##
 AC_DEFUN([CHECK_SP_MULTI_BYTE],
  [
 AC_CACHE_VAL(ox_sp_multibyte,
@@ -90,7 +88,6 @@ AC_CACHE_VAL(ox_sp_multibyte,
     ox_sp_multibyte=`sed 's/^#.*SP_MULTI_BYTE[ \t]*\([01]\)/\1/;t;d' < \
             $OPENSPCONFIG_H`])
      if test x"$ox_sp_multibyte" != x ;then
-echo $ox_sp_multibyte
          AC_DEFINE_UNQUOTED(SP_MULTI_BYTE, $ox_sp_multibyte, [SP_MULTI_BYTE value from when OpenSP was compiled])
      else
 AC_MSG_ERROR([SP_MULTI_BYTE not found in OpenSP's config.h])
