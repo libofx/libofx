@@ -1,3 +1,6 @@
+20/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
+	* Fix debug output
+	* Begin fixing ofx2qif for the new transaction ordering code
 17/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
 	* Implemented internal container trees, allowing transaction reordering and security lookups
 	* Complete investment transaction support

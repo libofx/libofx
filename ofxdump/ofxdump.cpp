@@ -45,7 +45,7 @@ int main (int argc, char *argv[])
   extern int ofx_STATUS_msg;
 
   ofx_PARSER_msg = false;
-  ofx_DEBUG_msg = true;
+  ofx_DEBUG_msg = false;
   ofx_WARNING_msg = true;
   ofx_ERROR_msg = true;
   ofx_INFO_msg = true;
@@ -111,6 +111,8 @@ int ofx_proc_security_cb(struct OfxSecurityData data)
   if(data.memo_valid==true){
     cout<<"    Extra transaction information (memo): "<<data.memo<<"\n";
   }
+  cout<<"\n";
+  return 0;
 }
 
 int ofx_proc_transaction_cb(struct OfxTransactionData data)
@@ -208,9 +210,9 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data)
     cout<<"    Format of the Unique ID: "<<data.unique_id_type<<"\n";
   }
   if(data.security_data_valid==true){
-    cout<<"    Security data is available:\n----START security_data content----------\n";
+    cout<<"    Security data is available:\n    START security_data content----------\n";
     ofx_proc_security_cb(*(data.security_data_ptr));
-    cout<<"----END security_data content----------\n";
+    cout<<"    END security_data content----------\n";
 
   }
 

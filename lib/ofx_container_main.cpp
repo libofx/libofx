@@ -127,22 +127,22 @@ int  OfxMainContainer::gen_event()
 {
   message_out(DEBUG,"Begin walking the trees of the main container to generate events");
   tree<OfxGenericContainer *>::iterator tmp = security_tree.begin();
-  cout<<security_tree.size()<<endl;
+  //cerr<<security_tree.size()<<endl;
   int i = 0;
   while(tmp!=security_tree.end())
     {
       message_out(DEBUG,"Looping...");
-      cout <<i<<endl;
+      //cerr <<i<<endl;
       i++;
       (*tmp)->gen_event();
       ++tmp;
     }
   tmp = account_tree.begin();
-  cout<<account_tree.size()<<endl;
+  //cerr<<account_tree.size()<<endl;
   i = 0;
   while(tmp!=account_tree.end())
     {
-      cout<< "i="<<i<<"; depth="<<account_tree.depth(tmp)<<endl;
+      //cerr<< "i="<<i<<"; depth="<<account_tree.depth(tmp)<<endl;
       i++;
       (*tmp)->gen_event();
       ++tmp;

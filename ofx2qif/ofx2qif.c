@@ -44,8 +44,6 @@
 #include "libofx.h"
 
 #define QIF_FILE_MAX_SIZE 256000 
-static char trans_list_buff[QIF_FILE_MAX_SIZE];
-int trans_list_is_empty;
 
 int main (int argc, char *argv[])
 {
@@ -79,8 +77,7 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data)
   char dest_string[255];
   char trans_buff[4096];
   struct tm temp_tm;
-
-  trans_list_is_empty=false;
+  char trans_list_buff[4096];
 
   if(data.date_posted_valid==true){
     temp_tm = *localtime(&(data.date_posted));
@@ -154,6 +151,7 @@ if(data.transactiontype_valid==true){
 }
  sprintf(trans_buff, "^\n");
  strncat(trans_list_buff, trans_buff, QIF_FILE_MAX_SIZE - strlen(trans_list_buff));
+ printf(trans_list_buff);
  return 0;
 }/* end ofx_proc_transaction() */
 
@@ -194,20 +192,12 @@ int ofx_proc_statement_cb(struct OfxStatementData data)
     printf("$%.2f%s",data.ledger_balance,"\n");
   }
   printf("^\n");
-  if(trans_list_is_empty==false)
-    {
-      printf(trans_list_buff);
-    }
-  trans_list_buff[0]=0;
   return 0;
 }/* end ofx_proc_statement() */
 
 int ofx_proc_account_cb(struct OfxAccountData data)
 {
   char dest_string[255];
-
-  trans_list_is_empty = true;
-  trans_list_buff[0]=0;
   
   if(data.account_type_valid==true){
     switch(data.account_type){
@@ -225,7 +215,8 @@ int ofx_proc_account_cb(struct OfxAccountData data)
       break;
     default: perror("WRITEME: ofx_proc_account() This is an unknown account type!");
     }
-    strncat(trans_list_buff, dest_string, QIF_FILE_MAX_SIZE - strlen(trans_list_buff));
+//    strncat(trans_list_buff, dest_string, QIF_FILE_MAX_SIZE - strlen(trans_list_buff));
+    printf(dest_string);
   }
   return 0;
 }/* end ofx_proc_account() */
