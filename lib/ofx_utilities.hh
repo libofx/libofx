@@ -18,6 +18,7 @@
 #ifndef OFX_UTIL_H
 #define OFX_UTIL_H
 #include <string.h>
+#include <time.h>		// for time_t
 #include "ParserEventGeneratorKit.h"
 using namespace std;
  /* This file contains various simple functions for type conversion & al */
