@@ -55,9 +55,10 @@
 #define OFX_BALANCE_DESCRIPTION_LENGTH 80 + 1
 #define OFX_CURRENCY_LENGTH            3 + 1 /* In ISO-4217 format */
 #define OFX_BANKID_LENGTH              9
-#define OFX_BRANCHID_LENGTH            22
-#define OFX_ACCTID_LENGTH              22
-#define OFX_ACCTKEY_LENGTH             22
+#define OFX_BRANCHID_LENGTH            22 + 1
+#define OFX_ACCTID_LENGTH              22 + 1 
+#define OFX_ACCTKEY_LENGTH             22 + 1
+#define OFX_BROKERID_LENGTH            22 + 1
 /* Must be MAX of <BANKID>+<BRANCHID>+<ACCTID> or <ACCTID>+<ACCTKEY> */
 #define OFX_ACCOUNT_ID_LENGTH OFX_BANKID_LENGTH + OFX_BRANCHID_LENGTH + OFX_ACCTID_LENGTH + 1
 #define OFX_MARKETING_INFO_LENGTH      360 + 1
@@ -160,7 +161,8 @@ struct OfxAccountData{
     OFX_MONEYMRKT, /**< A money market account */
     OFX_CREDITLINE,/**< A line of credit */
     OFX_CMA,       /**< Cash Management Account */
-    OFX_CREDITCARD /**< A credit card account */
+    OFX_CREDITCARD,/**< A credit card account */
+    OFX_INVESTMENT /**< An investment account */
   } account_type;
   int account_type_valid;
   char currency[OFX_CURRENCY_LENGTH]; /**< The currency is a string in ISO-4217 format */

@@ -309,6 +309,45 @@ void OfxInvestmentTransactionContainer::add_attribute(const string identifier, c
  *                      OfxAccountContainer                                *
  ***************************************************************************/
 
+OfxAccountContainer::OfxAccountContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+  OfxGenericContainer(para_parentcontainer, para_tag_identifier)
+{
+  memset(&data,0,sizeof(data));
+  type="ACCOUNT";
+  strcpy(bankid,"");
+  strcpy(branchid,"");
+  strcpy(acctid,"");
+  strcpy(acctkey,"");
+  strcpy(brokerid,"");
+  if(para_tag_identifier== "CCACCTFROM")
+    {
+      /*Set the type for a creditcard account.  Bank account specific 
+	OFX elements will set this attribute elsewhere */
+      data.account_type = data.OFX_CREDITCARD;
+      data.account_type_valid = true;
+    }
+  if(para_tag_identifier== "INVACCTFROM")
+    {
+      /*Set the type for an investment account.  Bank account specific 
+	OFX elements will set this attribute elsewhere */
+      data.account_type = data.OFX_INVESTMENT;
+      data.account_type_valid = true;
+    }
+  if (parentcontainer!=NULL&&((OfxStatementContainer*)parentcontainer)->data.currency_valid==true){
+    strncpy(data.currency,((OfxStatementContainer*)parentcontainer)->data.currency,OFX_CURRENCY_LENGTH); /* In ISO-4217 format */
+    data.currency_valid=true;
+  }
+}
+OfxAccountContainer::~OfxAccountContainer()
+{
+  gen_account_id ();
+  if (parentcontainer->type == "STATEMENT")
+    {
+      ((OfxStatementContainer*)parentcontainer)->add_account(data);
+    }
+  ofx_proc_account (data);
+}
+
 void OfxAccountContainer::add_attribute(const string identifier, const string value)
 {
   if( identifier=="BANKID"){
@@ -322,6 +361,9 @@ void OfxAccountContainer::add_attribute(const string identifier, const string va
   }
   else if( identifier=="ACCTKEY"){
     strncpy(acctkey,value.c_str(),OFX_ACCTKEY_LENGTH);
+  }
+  else if( identifier=="BROKERID"){ /* For investment accounts */
+    strncpy(brokerid,value.c_str(),OFX_BROKERID_LENGTH);
   }
   else if((identifier=="ACCTTYPE")||(identifier=="ACCTTYPE2")){
     data.account_type_valid=true;
@@ -372,16 +414,6 @@ void OfxAccountContainer::gen_account_id(void)
     data.account_id_valid=true;
   }
 }//end OfxAccountContainer::gen_account_id()
-
-OfxAccountContainer::~OfxAccountContainer()
-{
-  gen_account_id ();
-  if (parentcontainer->type == "STATEMENT")
-    {
-      ((OfxStatementContainer*)parentcontainer)->add_account(data);
-    }
-  ofx_proc_account (data);
-}
 
 /***************************************************************************
  *                    OfxStatementContainer                                *

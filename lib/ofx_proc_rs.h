@@ -100,10 +100,10 @@ class OfxStatusContainer:public OfxGenericContainer {
       }
       
     }
-OfxStatusContainer()
-  {
-    ofx_proc_status (data);
-  }
+  ~OfxStatusContainer()
+    {
+      ofx_proc_status (data);
+    }
   void add_attribute(const string identifier, const string value);
 };
 
@@ -160,26 +160,7 @@ class OfxAccountContainer:public OfxGenericContainer {
  public:
   OfxAccountData data;
   
-  OfxAccountContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):OfxGenericContainer(para_parentcontainer, para_tag_identifier)
-    {
-      memset(&data,0,sizeof(data));
-      type="ACCOUNT";
-      strcpy(bankid,"");
-      strcpy(branchid,"");
-      strcpy(acctid,"");
-      strcpy(acctkey,"");
-      if(para_tag_identifier== "CCACCTFROM")
-	{
-	  /*Set the type for a creditcard transaction.  Bank transactions
-	    will set this attribute in a specific OFX element elsewhere */
-	  data.account_type = data.OFX_CREDITCARD;
-	  data.account_type_valid = true;
-	}
-      if (parentcontainer!=NULL&&((OfxStatementContainer*)parentcontainer)->data.currency_valid==true){
-	strncpy(data.currency,((OfxStatementContainer*)parentcontainer)->data.currency,OFX_CURRENCY_LENGTH); /* In ISO-4217 format */
-	data.currency_valid=true;
-      }
-    }
+  OfxAccountContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   ~OfxAccountContainer();
   void add_attribute(const string identifier, const string value);
  private:
@@ -188,6 +169,7 @@ class OfxAccountContainer:public OfxGenericContainer {
   char branchid[OFX_BRANCHID_LENGTH];
   char acctid[OFX_ACCTID_LENGTH];/**< This field is used by both <BANKACCTFROM> and <CCACCTFROM> */
   char acctkey[OFX_ACCTKEY_LENGTH];
+  char brokerid[OFX_BROKERID_LENGTH];
 };
 
 /** \brief  Represents a generic transaction.

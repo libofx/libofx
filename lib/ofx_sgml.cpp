@@ -152,7 +152,7 @@ public:
 	    }
 
 	/* The different types of accounts */
-	else if (identifier == "BANKACCTFROM" || identifier == "CCACCTFROM")
+	else if (identifier == "BANKACCTFROM" || identifier == "CCACCTFROM" || identifier == "INVACCTFROM")
 	  {
 	    message_out (PARSER, "Element " + identifier + " found");
 	    curr_container_element = new OfxAccountContainer (curr_container_element, identifier);

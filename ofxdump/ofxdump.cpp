@@ -261,6 +261,8 @@ int ofx_proc_account(struct OfxAccountData data)
       break;
     case OfxAccountData::OFX_CREDITCARD : cout<<"CREDITCARD\n";
       break;
+    case OfxAccountData::OFX_INVESTMENT : cout<<"INVESTMENT\n";
+      break;
     default: cout<<"ofx_proc_account() WRITEME: This is an unknown account type!";
     }
   }
