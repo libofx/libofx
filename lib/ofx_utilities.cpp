@@ -25,7 +25,6 @@
 #include "ofx_utilities.hh"
 
 using namespace std;
-
 /**
    Convert an OpenSP CharString directly to a C++ stream, to enable the use of cout directly for debugging.
 */ 
@@ -33,7 +32,12 @@ ostream &operator<<(ostream &os, SGMLApplication::CharString s)
 {
   for (size_t i = 0; i < s.len; i++)
     {//cout<<i<<" "<<(unsigned char)(s.ptr[i])<<endl;
+
+#ifdef WORDS_BIGENDIAN
+      os << ((char *)(s.ptr+sizeof(SGMLApplication::Char)-1))[i*sizeof(SGMLApplication::Char)];
+#else
       os << ((char *)(s.ptr))[i*sizeof(SGMLApplication::Char)];
+#endif
     }
   return os;
 }
@@ -47,22 +51,26 @@ ostream &operator<<(ostream &os, SGMLApplication::CharString s)
   return os;
   }            */
 
-wchar_t* CharStringtowchar_t(SGMLApplication::CharString source, wchar_t *dest)
-{
+/*wchar_t* CharStringtowchar_t(SGMLApplication::CharString source, wchar_t *dest)
+  {
   size_t i;
   for (i = 0; i < source.len; i++)
-    {
-      dest[i]+=wchar_t(source.ptr[i*sizeof(SGMLApplication::Char)*(sizeof(char)/sizeof(wchar_t))]);
-    }
+  {
+  dest[i]+=wchar_t(source.ptr[i*sizeof(SGMLApplication::Char)*(sizeof(char)/sizeof(wchar_t))]);
+  }
   return dest;
-}
+  }*/
 
 string CharStringtostring(const SGMLApplication::CharString source, string &dest)
 {
   size_t i;
   dest.assign("");//Empty the provided string
   for (i = 0; i < source.len; i++){
+#ifdef WORDS_BIGENDIAN
+    dest+=((char *)(source.ptr+sizeof(SGMLApplication::Char)-1))[i*sizeof(SGMLApplication::Char)];  
+#else
     dest+=((char *)(source.ptr))[i*sizeof(SGMLApplication::Char)];  
+#endif
   }
   return dest;
 }
@@ -73,7 +81,12 @@ string AppendCharStringtostring(const SGMLApplication::CharString source, string
   //cout<<"Length: "<<source.len<<" detected char size: "<<char_size<<endl;
   for (i = 0; i < source.len; i++)
     {
+      
+#ifdef WORDS_BIGENDIAN
+      dest+=((char *)(source.ptr+sizeof(SGMLApplication::Char)-1))[i*sizeof(SGMLApplication::Char)]; 
+#else
       dest+=((char *)(source.ptr))[i*sizeof(SGMLApplication::Char)]; 
+#endif
     }
   return dest;
 }

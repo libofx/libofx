@@ -1,3 +1,6 @@
+10/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+	* lib/ofx_utilities.cpp: Try to fix problems for big endian machines.
+
 9/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>
 	* configure.in: Add /usr/local/include to OpenSP's include search path.
 	* INSTALL: Add FAQ for "bug" http://sourceforge.net/tracker/index.php?func=detail&aid=654591&group_id=61170&atid=496353

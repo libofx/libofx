@@ -69,6 +69,9 @@
 #define OFX_SECNAME_LENGTH             32 + 1
 #define OFX_TICKER_LENGTH              32 + 1
 
+CFCT void (*OfxCallbackFunc) ();
+
+
 /**
  * \brief ofx_proc_file is the entry point of the library.  
  *
