@@ -1,5 +1,16 @@
 bin_PROGRAMS = ofxdump
 ofxdump_LDADD = $(top_builddir)/lib/libofx.la
-ofxdump_SOURCES = ofxdump.cpp
+ofxdump_SOURCES = ofxdump.cpp cmdline.c cmdline.h
 AM_CPPFLAGS = \
 	-I${top_srcdir}/inc
+
+if USE_GENGETOPT 
+CLEANFILES += cmdline.c cmdline.h
+
+cmdline.c cmdline.h: cmdline.ggo Makefile
+	gengetopt --unamed-opts < $<
+
+endif
+
+EXTRA_DIST = cmdline.ggo
+

@@ -1,4 +1,9 @@
 lib_LTLIBRARIES = libofx.la
+
+#In case getoptlong() isn't available
+libofx_la_LIBADD = @LIBOBJS@
+EXTRA_DIST = gnugetopt.h getopt.c getopt1.c
+
 libofx_la_SOURCES =  messages.cpp \
 		ofx_utilities.cpp \
 		file_preproc.cpp \

@@ -1,5 +1,5 @@
 /***************************************************************************
-          file_type_detect.cpp 
+          file_preproc.cpp 
                              -------------------
     copyright            : (C) 2004 by Benoit Grégoire
     email                : bock@step.polymtl.ca
@@ -56,27 +56,37 @@ void ofx_prep_cb(
 /* get_file_type_description returns a string description of a LibofxFileType 
  * suitable for debugging output or user communication.
  */
-const char * get_file_type_description(enum LibofxFileType file_type)
+const char * libofx_get_file_format_description(const struct LibofxFileFormatInfo format_list[], enum LibofxFileFormat file_format)
 {
-  const char * retval;
-  switch (file_type)
+  const char * retval = "UNKNOWN (File format couldn't be sucessfully identified)";
+
+  for(int i=0; LibofxImportFormatList[i].format!=LAST; i++)
     {
-    case UNKNOWN: retval="UNKNOWN (File format couldn't be sucessfully identified)";
-      break;
-    case AUTODETECT: retval="AUTODETECT (File format will be automatically detected later)";
-      break;
-    case OFX: retval="OFX (Open Financial eXchange (OFX or QFX))";
-      break;
-    case OFC: retval="OFC (Microsoft Open Financial Connectivity)";
-      break;
-    case QIF: retval="QIF (Intuit Quicken Interchange Format)";
-      break;
-    default: retval="WRITEME: The file format passed as parameter is unknown to get_file_type_description()";
+      if(LibofxImportFormatList[i].format==file_format)
+	{
+	  retval = LibofxImportFormatList[i].description;
+	}
     }
   return retval;
 };
 
-int libofx_proc_file(LibofxContextPtr p_libofx_context, const char * p_filename, LibofxFileType p_file_type)
+/*
+libofx_get_file_type returns a proper enum from a file type string. 
+*/
+enum LibofxFileFormat libofx_get_file_format_from_str(const struct LibofxFileFormatInfo format_list[], const char * file_type_string)
+{
+  enum LibofxFileFormat retval = UNKNOWN;
+  for(int i=0; LibofxImportFormatList[i].format!=LAST; i++)
+    {
+      if(strcmp(LibofxImportFormatList[i].format_name, file_type_string)==0)
+	{
+	  retval = LibofxImportFormatList[i].format;
+	}
+    }
+  return retval;
+}
+
+int libofx_proc_file(LibofxContextPtr p_libofx_context, const char * p_filename, LibofxFileFormat p_file_type)
 {
   LibofxContext * libofx_context = (LibofxContext *) p_libofx_context;
 
@@ -84,12 +94,12 @@ int libofx_proc_file(LibofxContextPtr p_libofx_context, const char * p_filename,
     {
       message_out(INFO, string("libofx_proc_file(): File format not specified, autodecting..."));
       libofx_context->current_file_type = libofx_detect_file_type( p_filename);
-      message_out(INFO, string("libofx_proc_file(): Detected file format: ")+get_file_type_description(libofx_context->current_file_type ));
+      message_out(INFO, string("libofx_proc_file(): Detected file format: ")+libofx_get_file_format_description(LibofxImportFormatList, libofx_context->current_file_type ));
     }
   else
     {
      libofx_context->current_file_type = p_file_type;
-     message_out(INFO, string("libofx_proc_file(): File format forced to: ")+get_file_type_description(libofx_context->current_file_type ));
+     message_out(INFO, string("libofx_proc_file(): File format forced to: ")+libofx_get_file_format_description(LibofxImportFormatList, libofx_context->current_file_type ));
     }
 
   switch (libofx_context->current_file_type)
@@ -103,9 +113,9 @@ int libofx_proc_file(LibofxContextPtr p_libofx_context, const char * p_filename,
   return 0;
 }
 
-enum LibofxFileType libofx_detect_file_type(const char * p_filename)
+enum LibofxFileFormat libofx_detect_file_type(const char * p_filename)
 {
-  enum LibofxFileType retval = UNKNOWN;
+  enum LibofxFileFormat retval = UNKNOWN;
   ifstream input_file;
   char buffer[READ_BUFFER_SIZE];
   char tmp;

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          file_type_detect.hh
+                          file_preproc.hh
                              -------------------
     copyright            : (C) 2004 by Benoit Grégoire
     email                : bock@step.polymtl.ca
@@ -26,6 +26,6 @@
 @param p_filename File name of the file to process
  @return Detected file format, UNKNOWN if unsuccessfull.
 */
-enum LibofxFileType libofx_detect_file_type(const char * p_filename);
+enum LibofxFileFormat libofx_detect_file_type(const char * p_filename);
 
 #endif

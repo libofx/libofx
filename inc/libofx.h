@@ -88,19 +88,52 @@ typedef void * LibofxContextPtr;
 CFCT LibofxContextPtr libofx_init_context();
 
 /** List of possible file formats */
-enum LibofxFileType{ UNKNOWN, /**< Unknown file format */
-		     AUTODETECT, /**< Not really a file format, used to tell the library to try to autodetect the format*/
+enum LibofxFileFormat{ AUTODETECT, /**< Not really a file format, used to tell the library to try to autodetect the format*/
 		     OFX, /**< Open Financial eXchange (OFX/QFX) file */
 		     OFC, /**< Microsoft Open Financial Connectivity (OFC)*/
 		     QIF, /**< Intuit Quicken Interchange Format (QIF) */
+		     UNKNOWN, /**< Unknown file format */
+		     LAST /**< Not a file format, meant as a loop breaking condition */
+};
+
+struct LibofxFileFormatInfo{
+enum LibofxFileFormat format;/**< The file format enum */
+const char * format_name;  /**< Text version of the enum */
+const char * description; /**< Description of the file format */
+};
+
+const struct LibofxFileFormatInfo LibofxImportFormatList[] = 
+{
+{AUTODETECT, "AUTODETECT", "AUTODETECT (File format will be automatically detected later)"},
+{OFX, "OFX", "OFX (Open Financial eXchange (OFX or QFX))"},
+{OFC, "OFC", "OFC (Microsoft Open Financial Connectivity)"},
+{QIF, "QIF", "QIF (Intuit Quicken Interchange Format) NOT IMPLEMENTED"},
+{LAST, "LAST", "Not a file format, meant as a loop breaking condition"}
+};
+
+const struct LibofxFileFormatInfo LibofxExportFormatList[] = 
+{
+{QIF, "QIF", "QIF (Intuit Quicken Interchange Format) NOT IMPLEMENTED"},
+{LAST, "LAST", "Not a file format, meant as a loop breaking condition"}
 };
 
 /**
- * \brief get_file_type_description returns a string description of a LibofxFileType. 
+ * \brief libofx_get_file_type returns a proper enum from a file type string. 
  *
+ @format_list The file format list in which the format string should be found, usually LibofxImportFormatList or LibofxExportFormatList
+ @file_type_string The string which contain the file format matching one of the format_name of the list.
+ @return the file format, or UNKNOWN if the format wasn't recognised.
+*/
+CFCT enum LibofxFileFormat libofx_get_file_format_from_str(const struct LibofxFileFormatInfo format_list[], const char * file_type_string);
+
+/**
+ * \brief get_file_format_description returns a string description of a LibofxFileType. 
+ *
+ @format_list The file format list in which the format should be looked up, usually LibofxImportFormatList or LibofxExportFormatList
+ @file_format The file format which should match one of the formats in the list.
  @return null terminated string suitable for debugging output or user communication.
 */
-CFCT const char * libofx_get_file_type_description(enum LibofxFileType file_type);
+CFCT const char * libofx_get_file_format_description(const struct LibofxFileFormatInfo format_list[], enum LibofxFileFormat file_format);
 
 /**
  * \brief ofx_proc_file is the entry point of the library.  
@@ -108,7 +141,7 @@ CFCT const char * libofx_get_file_type_description(enum LibofxFileType file_type
  *  libofx_proc_file must be called by the client, with a list of 1 or more OFX
  files to be parsed in command line format.
 */
-CFCT int libofx_proc_file(LibofxContextPtr libofx_context, const char * p_filename, enum LibofxFileType p_file_type);
+CFCT int libofx_proc_file(LibofxContextPtr libofx_context, const char * p_filename, enum LibofxFileFormat p_file_type);
 
 
 /**

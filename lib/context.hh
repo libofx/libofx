@@ -20,7 +20,7 @@
 using namespace std;
 class LibofxContext {
  public:
-  enum LibofxFileType current_file_type;
+  enum LibofxFileFormat current_file_type;
 
 };//End class LibofxContext
 

@@ -34,6 +34,7 @@
 #include <stdio.h>		/* for printf() */
 #include <config.h>		/* Include config constants, e.g., VERSION TF */
 
+#include "cmdline.h" /* Gengetopt generated parser */
 
 using namespace std;
 
@@ -47,27 +48,39 @@ int main (int argc, char *argv[])
   extern int ofx_INFO_msg;
   extern int ofx_STATUS_msg;
 
-  ofx_PARSER_msg = false;
-  ofx_DEBUG_msg = true;
-  ofx_WARNING_msg = true;
-  ofx_ERROR_msg = true;
-  ofx_INFO_msg = true;
-  ofx_STATUS_msg = true;
+  gengetopt_args_info args_info;
 
-  int special_options (char *argv[]);
-  int count, ret = 0;
- 
+  /* let's call our cmdline parser */
+  if (cmdline_parser (argc, argv, &args_info) != 0)
+    exit(1) ;
+
+  //  if (args_info.msg_parser_given)
+  //    cout << "The msg_parser option was given!" << endl;
+
+  //  cout << "The flag is " << ( args_info.msg_parser_flag ? "on" : "off" ) <<
+  //    "." << endl ;
+  args_info.msg_parser_flag ? ofx_PARSER_msg = true : ofx_PARSER_msg = false;
+  args_info.msg_debug_flag ? ofx_DEBUG_msg = true : ofx_DEBUG_msg = false;
+  args_info.msg_warning_flag ? ofx_WARNING_msg = true : ofx_WARNING_msg = false;
+  args_info.msg_error_flag ? ofx_ERROR_msg = true : ofx_ERROR_msg = false;
+  args_info.msg_info_flag ? ofx_INFO_msg = true : ofx_INFO_msg = false;
+  args_info.msg_status_flag ? ofx_STATUS_msg = true : ofx_STATUS_msg;
+
+  if(args_info.list_import_formats_given)
+    {
+      cout <<"The supported file formats for the 'input-file-format' argument are:"<<endl;
+      for(int i=0; LibofxImportFormatList[i].format!=LAST; i++)
+	{
+	  cout <<"     "<<LibofxImportFormatList[i].description<<endl;
+	}
+    }
+
   LibofxContextPtr libofx_context = libofx_init_context();
 
-  //printf ("This program was called with \"%s\".\n",argv[0]);
-  if (argc > 1) 
+  //char **inputs ; /* unamed options */
+  //unsigned inputs_num ; /* unamed options number */
+  if (args_info.inputs_num  > 0)
     { 
-      for (count = 1; count < argc; count++) 
-	{
-	  //printf("argv[%d] = %s\n", count, argv[count]); 
-	}
-      if  (0 == special_options(argv)) ;
-      else{
 
         ofx_prep_cb(
                     ofx_proc_statement_cb,
@@ -76,75 +89,25 @@ int main (int argc, char *argv[])
                     ofx_proc_security_cb,
                     ofx_proc_status_cb
                     );
- /* Special option not found */
-	if(argc >= 2){
-	  libofx_proc_file(libofx_context, argv[1], AUTODETECT);   
-	}
-      }
+
+	enum LibofxFileFormat file_format = libofx_get_file_format_from_str(LibofxImportFormatList, args_info.import_format_arg);
+	/** @todo currently, only the first file is processed as the library can't deal with more right now.*/
+	if(args_info.inputs_num  > 1)
+	  {
+	    cout << "Sorry, currently, only the first file is processed as the library can't deal with more right now.  The followinf files were ignored:"<<endl;
+	    for ( unsigned i = 1 ; i < args_info.inputs_num ; ++i )
+	      {
+		cout << "file: " << args_info.inputs[i] << endl ;
+	      }
+	  }
+	libofx_proc_file(libofx_context, args_info.inputs[0], file_format);  
     } 
   else
     {
-      char *spoptar[] =           {"ofxdump","--help"};
-      special_options(spoptar);   /* No arguments             */
+
     }
-  return 0; 
+  return 0;
 }
-
-
-int special_options (char *argv[])
-{
-  int count;
-  
-  /* Define case numbers */
-  const int spoptver = 0;
-  const int spopthelp = 1; 
-  
-  /* Define option and case arrays */
-  const char *spoptar[] =           {"--version", "-V", "--help"};
-  const int spoptdim = sizeof(spoptar)/sizeof(spoptar[0]);
-  const int spoptcasear[spoptdim] = {spoptver, spoptver, spopthelp};
-  
-  /* Define help array  */
-  const char *helpar[] =
-    {
-      "ofxdump command synopsis:\n",
-      "ofxdump special_option\n",
-      "ofxdump ofx_file\n",
-      "\n",
-      "Special options are:\n",
-      "--version, V     libofx version\n",
-      "--help           help text\n",
-      "\n",
-      "If the first argument is a special option, it is processed and any remaining \
-arguments are ignored; otherwise, control goes to ofx_proc_file.\n\n"
-    };
-  const int helpardim = sizeof(helpar)/sizeof(helpar[1]);
-
-  /* Scan for special option */  
-  for (count = 0; (count < spoptdim) && (strcmp(argv[1], spoptar[count]) != 0) ; count++);
-
-  if (count < spoptdim)               /* If found */
-    {
-      switch (spoptcasear[count])
-	{ 
-	case spoptver:  printf ("libofx version:  %s \n", VERSION ); return 0;
-	case spopthelp: 
-	  {
-	    for (int i=0; i < helpardim; i++)  printf (helpar[i]); 
-	    return 0;
-	  }
-	default: 
-	  {
-	    printf("Impossible special option case\n");
-	    return -1;              /* Program error */
-	  }
-	}
-    }
-  return 1;    
-}
-
-
-
 
 int ofx_proc_status_cb(struct OfxStatusData data, void * status_data)
 {
@@ -300,7 +263,7 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
     switch(data.invtransactiontype){
     case data.OFX_BUYDEBT: strncpy(dest_string, "BUYDEBT (Buy debt security)", sizeof(dest_string));
       break;
-     case data.OFX_BUYMF: strncpy(dest_string, "BUYMF (Buy mutual fund)", sizeof(dest_string));
+    case data.OFX_BUYMF: strncpy(dest_string, "BUYMF (Buy mutual fund)", sizeof(dest_string));
       break;
     case data.OFX_BUYOPT: strncpy(dest_string, "BUYOPT (Buy option)", sizeof(dest_string));
       break;
@@ -425,7 +388,7 @@ int ofx_proc_account_cb(struct OfxAccountData data, void * account_data)
     cout<<"    Account ID: "<<data.account_id<<"\n";
     cout<<"    Account name: "<<data.account_name<<"\n";
   }
-   if(data.account_type_valid==true){
+  if(data.account_type_valid==true){
     cout<<"    Account type: ";
     switch(data.account_type){
     case OfxAccountData::OFX_CHECKING : cout<<"CHECKING\n";
