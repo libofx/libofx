@@ -45,15 +45,6 @@
 
 #define QIF_FILE_MAX_SIZE 256000
 
-int ofx_proc_status_cb(const struct OfxStatusData data, void * status_data)
-{
-return 0;
-}
-int ofx_proc_security_cb(const struct OfxSecurityData data, void * security_data)
-{
-return 0;
-}
-
 int ofx_proc_transaction_cb(const struct OfxTransactionData data, void * transaction_data)
 {
   char dest_string[255];
@@ -227,9 +218,6 @@ extern int ofx_STATUS_msg;
  ofx_set_statement_cb(libofx_context, ofx_proc_statement_cb, 0);
  ofx_set_account_cb(libofx_context, ofx_proc_account_cb, 0);
  ofx_set_transaction_cb(libofx_context, ofx_proc_transaction_cb, 0);
- ofx_set_security_cb(libofx_context, ofx_proc_security_cb, 0);
- ofx_set_status_cb(libofx_context, ofx_proc_status_cb, 0);
-
 
  if(argc >= 2){
    libofx_proc_file(libofx_context, argv[1], OFX);

@@ -1,4 +1,7 @@
-
+31/8/2004  Benoit Grégoire  <bock@step.polymtl.ca>
+	* Remove obsolete files callback.hh and callback.cpp
+	* More makefile fixes in lib
+	
 1/9/2004 Martin Preuss <martin@aquamaniac.de>
  	* simplified internal callback mechanism (removed CallbackRegistry, it is easier this way)
         * protected members of LibOfxContext (you need to call methods to get/set them)

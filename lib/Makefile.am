@@ -6,7 +6,6 @@ libofx_la_SOURCES =  messages.cpp \
 		ofx_utilities.cpp \
 		file_preproc.cpp \
 		context.cpp \
-		callback.cpp \
 		ofx_preproc.cpp \
 		ofx_container_generic.cpp \
 		ofx_container_main.cpp \
@@ -23,7 +22,6 @@ noinst_HEADERS = ${top_srcdir}/inc/libofx.h \
 		ofx_preproc.hh \
 		file_preproc.hh \
 		context.hh \
-		callback.cpp \
 		ofx_sgml.hh \
 		ofc_sgml.hh \
 		ofx_error_msg.hh \
@@ -37,7 +35,7 @@ AM_CPPFLAGS = \
 	-I${OPENSPINCLUDES} \
 	-DMAKEFILE_DTD_PATH=\"${LIBOFX_DTD_DIR}/\"
 
-libofx_la_LIBADD = @LIBOBJS@ ${OPENSPLIBS} -lstdc++
+libofx_la_LIBADD = @LIBOBJ@ ${OPENSPLIBS} -lstdc++
 libofx_la_LDFLAGS = -version-info @LIBOFX_SO_CURRENT@:@LIBOFX_SO_REVISION@:@LIBOFX_SO_AGE@
 
 

@@ -17,7 +17,6 @@
 #include <time.h>		// for time_t
 #include "libofx.h"
 #include "ParserEventGeneratorKit.h"
-#include "callback.hh"
 
 using namespace std;
 class LibofxContext {
