@@ -39,8 +39,8 @@ extern OfxCallbackRegistry cb_registry;
  *                         OfxDummyContainer                               *
  ***************************************************************************/
 
-OfxDummyContainer::OfxDummyContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
-  OfxGenericContainer(para_parentcontainer, para_tag_identifier)
+OfxDummyContainer::OfxDummyContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+  OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
 {
   type="DUMMY";
   message_out(INFO, "Created OfxDummyContainer to hold unsupported aggregate "+para_tag_identifier);
@@ -54,8 +54,8 @@ void OfxDummyContainer::add_attribute(const string identifier, const string valu
  *                         OfxPushUpContainer                              *
  ***************************************************************************/
 
-OfxPushUpContainer::OfxPushUpContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
-  OfxGenericContainer(para_parentcontainer, para_tag_identifier)
+OfxPushUpContainer::OfxPushUpContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+  OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
 {
   type="PUSHUP";
   message_out(DEBUG, "Created OfxPushUpContainer to hold aggregate "+tag_identifier);
@@ -70,8 +70,8 @@ void OfxPushUpContainer::add_attribute(const string identifier, const string val
  *                         OfxStatusContainer                              *
  ***************************************************************************/
 
-OfxStatusContainer::OfxStatusContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
-  OfxGenericContainer(para_parentcontainer, para_tag_identifier)
+OfxStatusContainer::OfxStatusContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+  OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
 {
   memset(&data,0,sizeof(data));
   type="STATUS";
@@ -130,8 +130,8 @@ void OfxStatusContainer::add_attribute(const string identifier, const string val
  * OfxBalanceContainer  (does not directly abstract a object in libofx.h)  *
  ***************************************************************************/
 
-OfxBalanceContainer::OfxBalanceContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
-  OfxGenericContainer(para_parentcontainer, para_tag_identifier)
+OfxBalanceContainer::OfxBalanceContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+  OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
 {
   amount_valid=false;
   date_valid=false;

@@ -34,8 +34,8 @@ extern OfxCallbackRegistry cb_registry;
  *                      OfxTransactionContainer                            *
  ***************************************************************************/
 
-OfxTransactionContainer::OfxTransactionContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
-  OfxGenericContainer(para_parentcontainer, para_tag_identifier)
+OfxTransactionContainer::OfxTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+  OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
 {
   OfxGenericContainer * tmp_parentcontainer=parentcontainer;
 
@@ -155,8 +155,8 @@ void OfxTransactionContainer::add_account(OfxAccountData * account_data)
  *                      OfxBankTransactionContainer                        *
  ***************************************************************************/
 
-OfxBankTransactionContainer::OfxBankTransactionContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier): 
-  OfxTransactionContainer(para_parentcontainer, para_tag_identifier)
+OfxBankTransactionContainer::OfxBankTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier): 
+  OfxTransactionContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
 {
   ;
 }
@@ -258,8 +258,8 @@ void OfxBankTransactionContainer::add_attribute(const string identifier, const s
  *                    OfxInvestmentTransactionContainer                    *
  ***************************************************************************/
 
-OfxInvestmentTransactionContainer::OfxInvestmentTransactionContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
-  OfxTransactionContainer(para_parentcontainer, para_tag_identifier)
+OfxInvestmentTransactionContainer::OfxInvestmentTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+  OfxTransactionContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
 {
   type="INVESTMENT";
   data.transactiontype=data.OFX_OTHER;

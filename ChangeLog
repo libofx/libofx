@@ -1,3 +1,7 @@
+8/4/2004  Benoit Grégoire  <bock@step.polymtl.ca>
+	* Multiple filse: Working (but incomplete) OFC import.  Still need cleanup.  Pass context everywhere.  Begin cleaning up tree handling.
+	* lib/tree.hh:  Upgrade to latest version
+
 31/3/2004  Benoit Grégoire  <bock@step.polymtl.ca>
 	* lib/context.cpp,hh: New files.  Create a global libofx object to allow the library to cleanly keep state.  This will allow much cleanup, and is needed for the move to a DOM style interface.  Other files ajusted to match.
 

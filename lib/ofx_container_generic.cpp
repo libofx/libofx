@@ -28,21 +28,24 @@
 
 extern OfxMainContainer * MainContainer;
 
-OfxGenericContainer::OfxGenericContainer()
+OfxGenericContainer::OfxGenericContainer(LibofxContext *p_libofx_context)
 {
   parentcontainer=NULL;
   type="";
   tag_identifier="";
+  libofx_context = p_libofx_context;
 }
-OfxGenericContainer::OfxGenericContainer(OfxGenericContainer *para_parentcontainer)
+OfxGenericContainer::OfxGenericContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer)
 {
+  libofx_context = p_libofx_context;
   parentcontainer = para_parentcontainer;
   if(parentcontainer!=NULL&&parentcontainer->type=="DUMMY"){
     message_out(DEBUG,"OfxGenericContainer(): The parent is a DummyContainer!");
   }
 }
-OfxGenericContainer::OfxGenericContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier)
+OfxGenericContainer::OfxGenericContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier)
 {
+  libofx_context = p_libofx_context;
   parentcontainer = para_parentcontainer;
   tag_identifier = para_tag_identifier;
   if(parentcontainer!=NULL&&parentcontainer->type=="DUMMY"){

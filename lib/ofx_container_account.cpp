@@ -34,8 +34,8 @@ extern OfxCallbackRegistry cb_registry;
  *                      OfxAccountContainer                                *
  ***************************************************************************/
 
-OfxAccountContainer::OfxAccountContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
-  OfxGenericContainer(para_parentcontainer, para_tag_identifier)
+OfxAccountContainer::OfxAccountContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+  OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
 {
   memset(&data,0,sizeof(data));
   type="ACCOUNT";

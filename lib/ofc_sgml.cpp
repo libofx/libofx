@@ -47,13 +47,14 @@ private:
   OfxGenericContainer *tmp_container_element;
   bool is_data_element; /**< If the SGML element contains data, this flag is raised */
   string incoming_data; /**< The raw data from the SGML data element */
-
+  LibofxContext * libofx_context;
  public:
-  OFCApplication ()
+  OFCApplication (LibofxContext * p_libofx_context)
   {
     MainContainer=NULL;
     curr_container_element = NULL;
     is_data_element = false;
+    libofx_context=p_libofx_context;
   }
   
   /** \brief Callback: Start of an OFX element
@@ -93,18 +94,18 @@ private:
 	if (identifier == "OFC")
 	  {
 	    message_out (PARSER, "Element " + identifier + " found");
-	    MainContainer = new OfxMainContainer (curr_container_element, identifier);
+	    MainContainer = new OfxMainContainer (libofx_context, curr_container_element, identifier);
 	    curr_container_element = MainContainer;
 	  }
 	else if (identifier == "STATUS")
 	  {
 	    message_out (PARSER, "Element " + identifier + " found");
-	    curr_container_element = new OfxStatusContainer (curr_container_element, identifier);
+	    curr_container_element = new OfxStatusContainer (libofx_context, curr_container_element, identifier);
 	  }
 	else if (identifier == "ACCTSTMT")
 	  {
 	    message_out (PARSER, "Element " + identifier + " found");
-	    curr_container_element = new OfxStatementContainer (curr_container_element, identifier);
+	    curr_container_element = new OfxStatementContainer (libofx_context, curr_container_element, identifier);
 	  }
 	else if (identifier == "STMTRS")
 	  {
@@ -116,13 +117,14 @@ private:
 	      }
 	    else
 	      {
-		curr_container_element = new OfxPushUpContainer (curr_container_element, identifier);
+		curr_container_element = new OfxPushUpContainer (libofx_context, curr_container_element, identifier);
 	      }
 	  }
-	else if (identifier == "STMTTRN")
+	else if (identifier == "GENTRN" ||
+		 identifier == "STMTTRN")
 	  {
 	    message_out (PARSER, "Element " + identifier + " found");
-	    curr_container_element = new OfxBankTransactionContainer (curr_container_element, identifier);
+	    curr_container_element = new OfxBankTransactionContainer (libofx_context, curr_container_element, identifier);
 	  }
 	else if(identifier == "BUYDEBT" ||
 		identifier == "BUYMF" ||
@@ -146,7 +148,7 @@ private:
 		identifier == "TRANSFER" )
 	  {
 	    message_out (PARSER, "Element " + identifier + " found");
-	    curr_container_element = new OfxInvestmentTransactionContainer (curr_container_element, identifier);
+	    curr_container_element = new OfxInvestmentTransactionContainer (libofx_context, curr_container_element, identifier);
 	  }
 	/*The following is a list of OFX elements whose attributes will be processed by the parent container*/
 	else if (identifier == "INVBUY" ||
@@ -155,30 +157,31 @@ private:
 		 identifier == "SECID")
 	  {
 	    message_out (PARSER, "Element " + identifier + " found");
-	    curr_container_element = new OfxPushUpContainer (curr_container_element, identifier);
+	    curr_container_element = new OfxPushUpContainer (libofx_context, curr_container_element, identifier);
 	  }
 
 	/* The different types of accounts */
-	else if (identifier == "ACCTFROM" )
+	else if (identifier == "ACCOUNT"||
+		 identifier == "ACCTFROM" )
 	  {
 	    message_out (PARSER, "Element " + identifier + " found");
-	    curr_container_element = new OfxAccountContainer (curr_container_element, identifier);
+	    curr_container_element = new OfxAccountContainer (libofx_context, curr_container_element, identifier);
 	  }
 	else if (identifier == "SECINFO")
 	  {
 	    message_out (PARSER, "Element " + identifier + " found");
-	    curr_container_element = new OfxSecurityContainer (curr_container_element, identifier);
+	    curr_container_element = new OfxSecurityContainer (libofx_context, curr_container_element, identifier);
 	  }
        	/* The different types of balances */
 	else if (identifier == "LEDGERBAL" || identifier == "AVAILBAL")
 	  {
 	    message_out (PARSER, "Element " + identifier + " found");
-	    curr_container_element = new OfxBalanceContainer (curr_container_element, identifier);
+	    curr_container_element = new OfxBalanceContainer (libofx_context, curr_container_element, identifier);
 	  }
 	else
 	  {
 	    /* We dont know this OFX element, so we create a dummy container */
-	    curr_container_element = new OfxDummyContainer(curr_container_element, identifier);
+	    curr_container_element = new OfxDummyContainer(libofx_context, curr_container_element, identifier);
 	  }
       }
     else
@@ -350,8 +353,8 @@ int ofc_proc_sgml(LibofxContext * libofx_context, int argc, char *argv[])
   parserKit.setOption (ParserEventGeneratorKit::showOpenEntities);
   EventGenerator *egp =	parserKit.makeEventGenerator (argc, argv);
   egp->inhibitMessages (true);	/* Error output is handled by libofx not OpenSP */
-  OFCApplication app;
-  unsigned nErrors = egp->run (app); /* Begin parsing */
+  OFCApplication *app = new OFCApplication(libofx_context);
+  unsigned nErrors = egp->run (*app); /* Begin parsing */
   delete egp;
   return nErrors > 0;
 }

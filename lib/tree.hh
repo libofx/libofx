@@ -1,6 +1,6 @@
 /* 
 
-   $Id: tree.hh,v 1.2 2004-02-04 03:16:02 benoitg Exp $
+   $Id: tree.hh,v 1.3 2004-04-09 06:51:45 benoitg Exp $
 
    STL-like templated tree class.
    Copyright (C) 2001  Kasper Peeters <k.peeters@damtp.cam.ac.uk>
@@ -54,6 +54,8 @@
 // HP-style construct/destroy have gone from the standard,
 // so here is a copy.
 
+namespace kp {
+
 template <class T1, class T2>
 inline void constructor(T1* p, T2& val) 
    {
@@ -67,11 +69,12 @@ inline void constructor(T1* p)
    }
 
 template <class T1>
-inline void destructor(T1* p)
+inline void kp::destructor(T1* p)
    {
    p->~T1();
    }
 
+};
 
 template<class T>
 class tree_node_ { // size: 5*4=20 bytes (on 32 bit arch), can be reduced by 8.
@@ -269,6 +272,12 @@ class tree {
       template<typename iter> iter reparent(iter position, sibling_iterator begin, sibling_iterator end);
       // ditto, the range being all children of the 'from' node
       template<typename iter> iter reparent(iter position, iter from);
+
+      // new style move members, moving nodes plus children to a different 
+      template<typename iter> iter move_after(iter target, iter source);
+      template<typename iter> iter move_before(iter target, iter source);
+      template<typename iter> iter move_below(iter target, iter source);
+
       // merge with other tree, creating new branches and leaves only if they are not already present
       void     merge(sibling_iterator, sibling_iterator, sibling_iterator, sibling_iterator, 
                      bool duplicate_leaves=false);
@@ -468,7 +477,7 @@ void tree<T, tree_node_allocator>::erase_children(const iterator_base& it)
       prev=cur;
       cur=cur->next_sibling;
       erase_children(pre_order_iterator(prev));
-      destructor(&prev->data);
+      kp::destructor(&prev->data);
       alloc_.deallocate(prev,1);
       }
    it.node->first_child=0;
@@ -498,7 +507,7 @@ iter tree<T, tree_node_allocator>::erase(iter it)
       cur->next_sibling->prev_sibling=cur->prev_sibling;
       }
 
-   destructor(&cur->data);
+   kp::destructor(&cur->data);
    alloc_.deallocate(cur,1);
    return ret;
    }
@@ -616,7 +625,7 @@ iter tree<T, tree_node_allocator>::append_child(iter position)
    assert(position.node!=head);
 
    tree_node* tmp = alloc_.allocate(1,0);
-   constructor(&tmp->data);
+   kp::constructor(&tmp->data);
    tmp->first_child=0;
    tmp->last_child=0;
 
@@ -644,7 +653,7 @@ iter tree<T, tree_node_allocator>::append_child(iter position, const T& x)
    assert(position.node!=head);
 
    tree_node* tmp = alloc_.allocate(1,0);
-   constructor(&tmp->data, x);
+   kp::constructor(&tmp->data, x);
    tmp->first_child=0;
    tmp->last_child=0;
 
@@ -700,7 +709,7 @@ iter tree<T, tree_node_allocator>::insert(iter position, const T& x)
                           // insert before the feet.
       }
    tree_node* tmp = alloc_.allocate(1,0);
-   constructor(&tmp->data, x);
+   kp::constructor(&tmp->data, x);
    tmp->first_child=0;
    tmp->last_child=0;
 
@@ -720,7 +729,7 @@ template <class T, class tree_node_allocator>
 typename tree<T, tree_node_allocator>::sibling_iterator tree<T, tree_node_allocator>::insert(sibling_iterator position, const T& x)
    {
    tree_node* tmp = alloc_.allocate(1,0);
-   constructor(&tmp->data, x);
+   kp::constructor(&tmp->data, x);
    tmp->first_child=0;
    tmp->last_child=0;
 
@@ -728,6 +737,7 @@ typename tree<T, tree_node_allocator>::sibling_iterator tree<T, tree_node_alloca
    if(position.node==0) { // iterator points to end of a subtree
       tmp->parent=position.parent_;
       tmp->prev_sibling=position.range_last();
+      tmp->parent->last_child=tmp;
       }
    else {
       tmp->parent=position.node->parent;
@@ -747,7 +757,7 @@ template <class iter>
 iter tree<T, tree_node_allocator>::insert_after(iter position, const T& x)
    {
    tree_node* tmp = alloc_.allocate(1,0);
-   constructor(&tmp->data, x);
+   kp::constructor(&tmp->data, x);
    tmp->first_child=0;
    tmp->last_child=0;
 
@@ -790,8 +800,8 @@ template <class T, class tree_node_allocator>
 template <class iter>
 iter tree<T, tree_node_allocator>::replace(iter position, const T& x)
    {
-   destructor(&position.node->data);
-   constructor(&position.node->data, x);
+   kp::destructor(&position.node->data);
+   kp::constructor(&position.node->data, x);
    return position;
    }
 
@@ -807,7 +817,7 @@ iter tree<T, tree_node_allocator>::replace(iter position, const iterator_base& f
    // replace the node at position with head of the replacement tree at from
    erase_children(position);  
    tree_node* tmp = alloc_.allocate(1,0);
-   constructor(&tmp->data, (*from));
+   kp::constructor(&tmp->data, (*from));
    tmp->first_child=0;
    tmp->last_child=0;
    if(current_to->prev_sibling==0) {
@@ -825,7 +835,7 @@ iter tree<T, tree_node_allocator>::replace(iter position, const iterator_base& f
       }
    tmp->next_sibling=current_to->next_sibling;
    tmp->parent=current_to->parent;
-   destructor(&current_to->data);
+   kp::destructor(&current_to->data);
    alloc_.deallocate(current_to,1);
    current_to=tmp;
    
@@ -980,6 +990,32 @@ template <typename iter> iter tree<T, tree_node_allocator>::reparent(iter positi
    {
    if(from.node->first_child==0) return position;
    return reparent(position, from.node->first_child, end(from));
+   }
+
+template <class T, class tree_node_allocator>
+template <typename iter> iter tree<T, tree_node_allocator>::move_before(iter target, iter source)
+   {
+   tree_node *dst=target.node;
+   tree_node *src=source.node;
+   assert(dst);
+   assert(src);
+
+   if(dst==src) return source;
+
+   // take src out of the tree
+   if(src->prev_sibling!=0) src->prev_sibling->next_sibling=src->next_sibling;
+   else                     src->parent->first_child=src->next_sibling;
+   if(src->next_sibling!=0) src->next_sibling->prev_sibling=src->prev_sibling;
+   else                     src->parent->last_child=src->prev_sibling;
+
+   // connect it to the new point
+   if(dst->prev_sibling!=0) dst->prev_sibling->next_sibling=src;
+   else                     dst->parent->first_child=src;
+   src->prev_sibling=dst->prev_sibling;
+   dst->prev_sibling=src;
+   src->next_sibling=dst;
+   src->parent=dst->parent;
+   return src;
    }
 
 template <class T, class tree_node_allocator>
@@ -1875,6 +1911,7 @@ typename tree<T, tree_node_allocator>::tree_node *tree<T, tree_node_allocator>::
    {
    return parent_->last_child;
    }
+
 
 #endif
 

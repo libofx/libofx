@@ -27,8 +27,8 @@
 #include "libofx.h"
 #include "ofx_containers.hh"
 
-OfxMainContainer::OfxMainContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
-  OfxGenericContainer(para_parentcontainer, para_tag_identifier)
+OfxMainContainer::OfxMainContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+  OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
 {
  
 //statement_tree_top=statement_tree.insert(statement_tree_top, NULL);
@@ -72,7 +72,18 @@ int OfxMainContainer::add_container(OfxSecurityContainer * container)
 int OfxMainContainer::add_container(OfxAccountContainer * container)
 {
   message_out(DEBUG,"OfxMainContainer::add_container, adding an account");
-  security_tree.insert(account_tree.end(), container);
+  if( account_tree.size()==0)
+    {
+      message_out(DEBUG,"OfxMainContainer::add_container, account is the first account");
+      account_tree.insert(account_tree.begin(), container);
+    }
+  else
+    {
+      message_out(DEBUG,"OfxMainContainer::add_container, account is not the first account");
+      tree<OfxGenericContainer *>::sibling_iterator tmp =  account_tree.begin();
+  tmp += (account_tree.number_of_siblings(tmp))-2; //Find last account
+      account_tree.insert_after(tmp, container);
+    }  
   return true;
 }
 
@@ -80,28 +91,30 @@ int OfxMainContainer::add_container(OfxStatementContainer * container)
 {
   message_out(DEBUG,"OfxMainContainer::add_container, adding a statement");
   tree<OfxGenericContainer *>::sibling_iterator tmp =  account_tree.begin();
-  tmp += (account_tree.number_of_siblings(account_tree.begin()))-1;
+  //cerr<< "size="<<account_tree.size()<<"; num_sibblings="<<account_tree.number_of_siblings(tmp)<<endl;
+  tmp += (account_tree.number_of_siblings(tmp))-2; //Find last account
   
-  if(tmp!=account_tree.end())
+  if(account_tree.is_valid(tmp))
     {
       message_out(DEBUG,"1: tmp is valid, Accounts are present");
       tree<OfxGenericContainer *>::iterator child = account_tree.begin(tmp);
-      if(child!=account_tree.end(tmp))
+      if(account_tree.number_of_children(tmp)!=0)
 	{
 	  message_out(DEBUG,"There are already children for this account");
-	  security_tree.insert(child, container);
+	  account_tree.insert(tmp.begin(), container);
 	  
 	}
       else
 	{
 	  message_out(DEBUG,"There are no children for this account");
-	  security_tree.append_child(tmp,container);
+	  account_tree.append_child(tmp,container);
 	}
       container->add_account(&( ((OfxAccountContainer *)(*tmp))->data));
       return true;
     }
   else
     {
+      message_out(ERROR,"OfxMainContainer::add_container, no accounts are present (tmp is invalid)");
       return false;
     }
 }
@@ -109,18 +122,28 @@ int OfxMainContainer::add_container(OfxStatementContainer * container)
 int OfxMainContainer::add_container(OfxTransactionContainer * container)
 {
   message_out(DEBUG,"OfxMainContainer::add_container, adding a transaction");
-  tree<OfxGenericContainer *>::sibling_iterator tmp =  account_tree.begin();
-  tmp += (account_tree.number_of_siblings(account_tree.begin()))-1;
 
-  if(tmp!=account_tree.end())
+  if( account_tree.size()!=0)
     {
-      message_out(DEBUG,"1: tmp is valid, Accounts are present");
-      security_tree.append_child(tmp,container);
-      container->add_account(&(((OfxAccountContainer *)(*tmp))->data));
-      return true;
+  tree<OfxGenericContainer *>::sibling_iterator tmp =  account_tree.begin();
+  //cerr<< "size="<<account_tree.size()<<"; num_sibblings="<<account_tree.number_of_siblings(tmp)<<endl;
+  tmp += (account_tree.number_of_siblings(tmp))-2; //Find last account
+      if(account_tree.is_valid(tmp))
+	{
+	  message_out(DEBUG,"OfxMainContainer::add_container: tmp is valid, Accounts are present");
+	  account_tree.append_child(tmp,container);
+	  container->add_account(&(((OfxAccountContainer *)(*tmp))->data));
+	  return true;
+	}
+      else
+	{
+	  message_out(ERROR,"OfxMainContainer::add_container: tmp is invalid!");
+	  return false;
+	}
     }
   else
     {
+      message_out(ERROR,"OfxMainContainer::add_container: the tree is empty!");
       return false;
     }
 }
@@ -140,11 +163,11 @@ int  OfxMainContainer::gen_event()
       ++tmp;
     }
   tmp = account_tree.begin();
-  //cerr<<account_tree.size()<<endl;
+  cerr<<account_tree.size()<<endl;
   i = 0;
   while(tmp!=account_tree.end())
     {
-      //cerr<< "i="<<i<<"; depth="<<account_tree.depth(tmp)<<endl;
+      cerr<< "i="<<i<<"; depth="<<account_tree.depth(tmp)<<endl;
       i++;
       (*tmp)->gen_event();
       ++tmp;

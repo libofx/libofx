@@ -22,6 +22,8 @@
 #define OFX_PROC_H
 #include "libofx.h"
 #include "tree.hh"
+#include "context.hh"
+
 using namespace std;
 
 /** \brief A generic container for an OFX SGML element.  Every container inherits from OfxGenericContainer.
@@ -33,10 +35,11 @@ class OfxGenericContainer {
   string type;/**< The type of the object, often == tag_identifier */
   string tag_identifier; /**< The identifer of the creating tag */
   OfxGenericContainer *parentcontainer;
-  
-  OfxGenericContainer();
-  OfxGenericContainer(OfxGenericContainer *para_parentcontainer);
-  OfxGenericContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  LibofxContext *libofx_context;
+
+  OfxGenericContainer(LibofxContext *p_libofx_context);
+  OfxGenericContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer);
+  OfxGenericContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
 
   virtual ~OfxGenericContainer(){};
   
@@ -71,7 +74,7 @@ class OfxGenericContainer {
 */
 class OfxDummyContainer:public OfxGenericContainer {
  public:
-  OfxDummyContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  OfxDummyContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   void add_attribute(const string identifier, const string value);
 };
 
@@ -82,7 +85,7 @@ class OfxDummyContainer:public OfxGenericContainer {
 class OfxPushUpContainer:public OfxGenericContainer {
  public:
   
-  OfxPushUpContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  OfxPushUpContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   void add_attribute(const string identifier, const string value);
 };
 
@@ -91,7 +94,7 @@ class OfxStatusContainer:public OfxGenericContainer {
  public:
   OfxStatusData data;
   
-  OfxStatusContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  OfxStatusContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   ~OfxStatusContainer();
   void add_attribute(const string identifier, const string value);
 };
@@ -111,7 +114,7 @@ class OfxBalanceContainer:public OfxGenericContainer {
   time_t date; /**< Effective date of the given balance */
   int date_valid;
   
-  OfxBalanceContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  OfxBalanceContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   ~OfxBalanceContainer();
   void add_attribute(const string identifier, const string value);
 };
@@ -127,7 +130,7 @@ class OfxStatementContainer:public OfxGenericContainer {
  public:
   OfxStatementData data;
   
-  OfxStatementContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  OfxStatementContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   ~OfxStatementContainer();
   void add_attribute(const string identifier, const string value);
   virtual int add_to_main_tree();
@@ -149,7 +152,7 @@ class OfxAccountContainer:public OfxGenericContainer {
  public:
   OfxAccountData data;
   
-  OfxAccountContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  OfxAccountContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   ~OfxAccountContainer();
   void add_attribute(const string identifier, const string value);
   int add_to_main_tree();
@@ -172,7 +175,7 @@ class OfxSecurityContainer:public OfxGenericContainer {
  public:
   OfxSecurityData data;  
 
-  OfxSecurityContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  OfxSecurityContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   ~OfxSecurityContainer();
   void add_attribute(const string identifier, const string value);
   virtual int gen_event();
@@ -191,7 +194,7 @@ class OfxTransactionContainer:public OfxGenericContainer {
  public:
   OfxTransactionData data;  
 
-  OfxTransactionContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  OfxTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   ~OfxTransactionContainer();
   virtual void add_attribute(const string identifier, const string value);
   void add_account(OfxAccountData * account_data);
@@ -208,7 +211,7 @@ class OfxTransactionContainer:public OfxGenericContainer {
  */
 class OfxBankTransactionContainer:public OfxTransactionContainer {
  public:
-  OfxBankTransactionContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  OfxBankTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   void add_attribute(const string identifier, const string value);
 };
 
@@ -218,7 +221,7 @@ class OfxBankTransactionContainer:public OfxTransactionContainer {
  */
 class OfxInvestmentTransactionContainer:public OfxTransactionContainer {
  public:
-  OfxInvestmentTransactionContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  OfxInvestmentTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
 
   void add_attribute(const string identifier, const string value);
 };
@@ -232,7 +235,7 @@ class OfxInvestmentTransactionContainer:public OfxTransactionContainer {
 */
 class OfxMainContainer:public OfxGenericContainer {
 public:
-  OfxMainContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  OfxMainContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   ~OfxMainContainer();
   int add_container(OfxGenericContainer * container);
   int add_container(OfxStatementContainer * container);
