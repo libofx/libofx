@@ -60,6 +60,7 @@ int OfxMainContainer::add_container(OfxGenericContainer * container)
   /* Call gen_event anyway, it could be a status container or similar */
   container->gen_event();
   delete container;
+  return 0;
 }
 
 int OfxMainContainer::add_container(OfxSecurityContainer * container)

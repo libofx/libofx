@@ -64,7 +64,7 @@ enum LibofxFileFormat libofx_get_file_format_from_str(const struct LibofxFileFor
   return retval;
 }
 
-int libofx_proc_file(LibofxContextPtr p_libofx_context, const char * p_filename, LibofxFileFormat p_file_type)
+CFCT int libofx_proc_file(LibofxContextPtr p_libofx_context, const char * p_filename, LibofxFileFormat p_file_type)
 {
   LibofxContext * libofx_context = (LibofxContext *) p_libofx_context;
 
@@ -101,7 +101,6 @@ enum LibofxFileFormat libofx_detect_file_type(const char * p_filename)
   enum LibofxFileFormat retval = UNKNOWN;
   ifstream input_file;
   char buffer[READ_BUFFER_SIZE];
-  char tmp;
   string s_buffer;
   bool type_found=false;
   

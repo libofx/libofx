@@ -140,12 +140,14 @@ CFCT enum LibofxFileFormat libofx_get_file_format_from_str(const struct LibofxFi
 CFCT const char * libofx_get_file_format_description(const struct LibofxFileFormatInfo format_list[], enum LibofxFileFormat file_format);
 
 /**
- * \brief ofx_proc_file is the entry point of the library.  
+ * \brief libofx_proc_file is the entry point of the library.
  *
  *  libofx_proc_file must be called by the client, with a list of 1 or more OFX
  files to be parsed in command line format.
 */
-CFCT int libofx_proc_file(LibofxContextPtr libofx_context, const char * p_filename, enum LibofxFileFormat p_file_type);
+CFCT int libofx_proc_file(LibofxContextPtr libofx_context,
+                          const char * p_filename,
+                          enum LibofxFileFormat ftype);
 
 
 /**
@@ -624,7 +626,8 @@ CFCT void ofx_set_statement_cb(LibofxContextPtr ctx,
 /**
  * Parses the content of the given buffer.
  */
-CFCT int ofx_proc_buffer(LibofxContextPtr ctx, const char *s, unsigned int size);
+CFCT int libofx_proc_buffer(LibofxContextPtr ctx,
+                            const char *s, unsigned int size);
 
 
 
