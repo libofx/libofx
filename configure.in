@@ -54,7 +54,7 @@ AC_ARG_WITH(opensp-libs,
 			
 ac_save_CPPFLAGS="$CPPFLAGS"
 CPPFLAGS="-I$OPENSPINCLUDES $CPPFLAGS"
-AC_LANG(C++)
+AC_LANG_CPLUSPLUS 
 AC_CHECK_HEADERS([ParserEventGeneratorKit.h SGMLApplication.h EventGenerator.h], 
 				[] , 
 				[ AC_MSG_ERROR([OpenSP includes not found]) ], 
@@ -67,6 +67,7 @@ LIBS="$OPENSPLIBS $LIBS"
 AC_MSG_CHECKING([for libosp])
 ##dnl This is code from the opensp documentation, I modified it a little
 ##dnl It is really just a link test rather than a run test, it does nothing
+AC_LANG_CPLUSPLUS 
 	AC_TRY_RUN([
 		#include "ParserEventGeneratorKit.h"
 		using namespace std;

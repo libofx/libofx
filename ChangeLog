@@ -1,3 +1,6 @@
+29/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
+	* configure.in: Work around autoconf 2.1 not supporting AC_LANG()
+
 21/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
 	* ofxdump/ofxdump.cpp: Add support for invtranstype in ofx_proc_transaction_cb()
 
