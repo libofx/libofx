@@ -18,7 +18,7 @@ using namespace std;
 
 
 LibofxContext::LibofxContext()
-  :_current_file_type(UNKNOWN)
+  :_current_file_type(OFX)
   ,_statusCallback(0)
   ,_accountCallback(0)
   ,_securityCallback(0)
@@ -143,6 +143,7 @@ CFCT LibofxContextPtr libofx_get_new_context(){
 
 CFCT int libofx_free_context( LibofxContextPtr libofx_context_param){
   delete (LibofxContext *)libofx_context_param;
+  return 0;
 }
 
 

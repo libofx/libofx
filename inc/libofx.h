@@ -621,6 +621,10 @@ CFCT void ofx_set_statement_cb(LibofxContextPtr ctx,
                                void *user_data);
 
 
+/**
+ * Parses the content of the given buffer.
+ */
+CFCT int ofx_proc_buffer(LibofxContextPtr ctx, const char *s, unsigned int size);
 
 
 

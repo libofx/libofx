@@ -55,7 +55,7 @@ const unsigned int READ_BUFFER_SIZE = 1024;
 *
 * Takes care of comment striping, dtd locating, etc.
 */
-int ofx_proc_file(LibofxContext * libofx_context, const char * p_filename)
+CFCT int ofx_proc_file(LibofxContext * libofx_context, const char * p_filename)
 {
   bool ofx_start=false;
   bool ofx_end=false;
@@ -63,7 +63,6 @@ int ofx_proc_file(LibofxContext * libofx_context, const char * p_filename)
   ifstream input_file;
   ofstream tmp_file;
   char buffer[READ_BUFFER_SIZE];
-  char tmp;
   string s_buffer;
   char *filenames[3];
   char tmp_filename[50];
@@ -193,6 +192,133 @@ int ofx_proc_file(LibofxContext * libofx_context, const char * p_filename)
   }
   return 0;
 }
+
+
+
+CFCT int ofx_proc_buffer(LibofxContextPtr ctx, const char *s, unsigned int size){
+  ofstream tmp_file;
+  string s_buffer;
+  char *filenames[3];
+  char tmp_filename[50];
+  unsigned int pos;
+  LibofxContext *libofx_context;
+
+  libofx_context=(LibofxContext*)ctx;
+
+  if (size==0) {
+    message_out(ERROR,
+                "ofx_proc_file(): bad size");
+    return -1;
+  }
+  s_buffer=string(s, size);
+
+  strncpy(tmp_filename,"/tmp/libofxtmpXXXXXX",50);
+  mkstemp(tmp_filename);
+  tmp_file.open(tmp_filename);
+
+  message_out(DEBUG,"ofx_proc_file(): Creating temp file: "+string(tmp_filename));
+  if(!tmp_file){
+    message_out(ERROR,"ofx_proc_file():Unable to open the output file "+string(tmp_filename));
+    return -1;
+  }
+
+  if (libofx_context->currentFileType()==OFX) {
+    pos=s_buffer.find("<OFX>");
+    if (pos==string::npos)
+      pos=s_buffer.find("<ofx>");
+  }
+  else if (libofx_context->currentFileType()==OFC) {
+    pos=s_buffer.find("<OFC>");
+    if (pos==string::npos)
+      pos=s_buffer.find("<ofc>");
+  }
+  else {
+    message_out(ERROR,"ofx_proc(): unknown file type");
+    return -1;
+  }
+  if (pos==string::npos) {
+    message_out(ERROR,"ofx_proc():<OFX> has not been found");
+    return -1;
+  }
+  else {
+    // erase everything before the OFX tag
+    s_buffer.erase(0, pos);
+    message_out(DEBUG,"ofx_proc_file():<OF?> has been found");
+  }
+
+  if (libofx_context->currentFileType()==OFX) {
+    pos=s_buffer.find("</OFX>");
+    if (pos==string::npos)
+      pos=s_buffer.find("</ofx>");
+  }
+  else if (libofx_context->currentFileType()==OFC) {
+    pos=s_buffer.find("</OFC>");
+    if (pos==string::npos)
+      pos=s_buffer.find("</ofc>");
+  }
+  else {
+    message_out(ERROR,"ofx_proc(): unknown file type");
+    return -1;
+  }
+
+  if (pos==string::npos) {
+    message_out(ERROR,"ofx_proc():</OF?> has not been found");
+    return -1;
+  }
+  else {
+    // erase everything after the /OFX tag
+    s_buffer.erase(pos+6);
+    message_out(DEBUG,"ofx_proc_file():<OFX> has been found");
+  }
+
+  s_buffer=sanitize_proprietary_tags(s_buffer);
+  tmp_file.write(s_buffer.c_str(), s_buffer.length());
+
+  tmp_file.close();
+
+  char filename_openspdtd[255];
+  char filename_dtd[255];
+  char filename_ofx[255];
+  strncpy(filename_openspdtd,find_dtd(OPENSPDCL_FILENAME).c_str(),255);//The opensp sgml dtd file
+  if(libofx_context->currentFileType()==OFX){
+    strncpy(filename_dtd,find_dtd(OFX160DTD_FILENAME).c_str(),255);//The ofx dtd file
+  }
+  else if(libofx_context->currentFileType()==OFC){
+    strncpy(filename_dtd,find_dtd(OFCDTD_FILENAME).c_str(),255);//The ofc dtd file
+  }
+  else {
+    message_out(ERROR,string("ofx_proc_file(): Error unknown file format for the OFX parser"));
+  }
+
+  if((string)filename_dtd!="" && (string)filename_openspdtd!=""){
+    strncpy(filename_ofx,tmp_filename,255);//The processed ofx file
+    filenames[0]=filename_openspdtd;
+    filenames[1]=filename_dtd;
+    filenames[2]=filename_ofx;
+    if(libofx_context->currentFileType()==OFX){
+      ofx_proc_sgml(libofx_context, 3,filenames);
+    }
+    else if(libofx_context->currentFileType()==OFC){
+      ofc_proc_sgml(libofx_context, 3,filenames);
+    }
+    else {
+      message_out(ERROR,string("ofx_proc_file(): Error unknown file format for the OFX parser"));
+    }
+    if(remove(tmp_filename)!=0){
+      message_out(ERROR,"ofx_proc_file(): Error deleting temporary file "+string(tmp_filename));
+    }
+  }
+  else {
+    message_out(ERROR,"ofx_proc_file(): FATAL: Missing DTD, aborting");
+  }
+
+  return 0;
+}
+
+
+
+
+
 
 /**
    This function will strip all the OFX proprietary tags and SGML comments from the SGML string passed to it

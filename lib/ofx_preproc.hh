@@ -36,6 +36,6 @@ string find_dtd(string dtd_filename);
  *  libofx_proc_file must be called  with a list of 1 or more OFX
  files to be parsed in command line format.
 */
-int ofx_proc_file(LibofxContext * libofx_context, const char *);
+CFCT int ofx_proc_file(LibofxContext * libofx_context, const char *);
 
 #endif
