@@ -43,7 +43,7 @@ OfxTransactionContainer::OfxTransactionContainer(OfxGenericContainer *para_paren
   /* Find the parent statement container*/
   while(tmp_parentcontainer!=NULL&&tmp_parentcontainer->type!="STATEMENT")
     {
-      tmp_parentcontainer=parentcontainer->parentcontainer;
+      tmp_parentcontainer=tmp_parentcontainer->parentcontainer;
     }  
   if (tmp_parentcontainer!=NULL){
     parent_statement=(OfxStatementContainer*)tmp_parentcontainer;
