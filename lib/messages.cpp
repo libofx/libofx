@@ -19,8 +19,8 @@
 #include <stdlib.h>
 #include <string>
 #include "ParserEventGeneratorKit.h"
-#include "ofx_utilities.h"
-#include "messages.h"
+#include "ofx_utilities.hh"
+#include "messages.hh"
 volatile int ofx_PARSER_msg = false; /**< If set to true, parser events will be printed to the console */
 volatile int ofx_DEBUG_msg = false;/**< If set to true, general debug messages will be printed to the console */
 volatile int ofx_DEBUG1_msg = false;/**< If set to true, debug level 1 messages will be printed to the console */

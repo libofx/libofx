@@ -54,7 +54,7 @@ int main (int argc, char *argv[])
   ofx_proc_file(argc, argv);
 }
 
-int ofx_proc_status(struct OfxStatusData data)
+int ofx_proc_status_cb(struct OfxStatusData data)
 {
   cout<<"ofx_proc_status():\n";
   if(data.ofx_element_name_valid==true){
@@ -82,7 +82,7 @@ int ofx_proc_status(struct OfxStatusData data)
   return 0;
 }
 
-int ofx_proc_security(struct OfxSecurityData data)
+int ofx_proc_security_cb(struct OfxSecurityData data)
 {
   char dest_string[255];
   cout<<"ofx_proc_security():\n";
@@ -113,7 +113,7 @@ int ofx_proc_security(struct OfxSecurityData data)
   }
 }
 
-int ofx_proc_transaction(struct OfxTransactionData data)
+int ofx_proc_transaction_cb(struct OfxTransactionData data)
 {
   char dest_string[255];
   cout<<"ofx_proc_transaction():\n";
@@ -207,6 +207,13 @@ int ofx_proc_transaction(struct OfxTransactionData data)
   if(data.unique_id_type_valid==true){
     cout<<"    Format of the Unique ID: "<<data.unique_id_type<<"\n";
   }
+  if(data.security_data_valid==true){
+    cout<<"    Security data is available:\n----START security_data content----------\n";
+    ofx_proc_security_cb(*(data.security_data_ptr));
+    cout<<"----END security_data content----------\n";
+
+  }
+
   if(data.server_transaction_id_valid==true){
     cout<<"    Server's transaction ID (confirmation number): "<<data.server_transaction_id<<"\n";
   }
@@ -232,7 +239,7 @@ int ofx_proc_transaction(struct OfxTransactionData data)
   return 0;
 }//end ofx_proc_transaction()
 
-int ofx_proc_statement(struct OfxStatementData data)
+int ofx_proc_statement_cb(struct OfxStatementData data)
 {
   char dest_string[255];
   cout<<"ofx_proc_statement():\n";
@@ -271,7 +278,7 @@ int ofx_proc_statement(struct OfxStatementData data)
   return 0;
 }//end ofx_proc_statement()
 
-int ofx_proc_account(struct OfxAccountData data)
+int ofx_proc_account_cb(struct OfxAccountData data)
 {
   cout<<"ofx_proc_account():\n";
   if(data.account_id_valid==true){

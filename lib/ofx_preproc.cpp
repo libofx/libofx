@@ -24,9 +24,9 @@
 #include <string>
 #include "ParserEventGeneratorKit.h"
 #include "libofx.h"
-#include "messages.h"
-#include "ofx_sgml.h"
-#include "ofx_preproc.h"
+#include "messages.hh"
+#include "ofx_sgml.hh"
+#include "ofx_preproc.hh"
 
 using namespace std;
 const unsigned int READ_BUFFER_SIZE = 1024;

@@ -27,13 +27,13 @@
 #include <string>
 #include "ParserEventGeneratorKit.h"
 #include "libofx.h"
-#include "ofx_utilities.h"
-#include "messages.h"
-#include "ofx_proc_rs.h"
+#include "ofx_utilities.hh"
+#include "messages.hh"
+#include "ofx_containers.hh"
 
 using namespace std;
 
-
+OfxMainContainer * MainContainer = NULL;
 SGMLApplication::OpenEntityPtr entity_ptr;
 SGMLApplication::Position position;
 
@@ -89,6 +89,14 @@ public:
     if (is_data_element == false)
       {
 	/*------- The following are OFX entities ---------------*/
+
+	if (identifier == "OFX")
+	  {
+	    message_out (PARSER, "Element " + identifier + " found");
+	    MainContainer = new OfxMainContainer (curr_container_element, identifier);
+	    curr_container_element = MainContainer;
+	  }
+
 	if (identifier == "STATUS")
 	  {
 	    message_out (PARSER, "Element " + identifier + " found");
@@ -243,14 +251,29 @@ public:
       {
 	if (curr_container_element != NULL)
 	  {
-	    if (identifier == curr_container_element->tag_identifier)
+	    if (identifier == curr_container_element->tag_identifier && identifier == "OFX")
+	      {
+		/* The main container is a special case */
+		tmp_container_element = curr_container_element;
+		curr_container_element = curr_container_element->getparent ();
+		MainContainer->gen_event();
+		delete MainContainer;
+		MainContainer = NULL;
+		message_out (DEBUG, "Element " + identifier + " closed, MainContainer destroyed");
+	      }
+	    else if (identifier == curr_container_element->tag_identifier)
 	      {
 		tmp_container_element = curr_container_element;
 		curr_container_element = curr_container_element->getparent ();
-		/*The destructor called by delete will automatically take the corect action 
-		  (such as calling a libofx.h callback) before destroying the container */
-		delete tmp_container_element;
-		message_out (PARSER, "Element " + identifier + " closed, object destroyed");
+		if(MainContainer != NULL)
+		  {
+		    tmp_container_element->add_to_main_tree();
+		    message_out (PARSER, "Element " + identifier + " closed, object added to MainContainer");
+		  }
+		else
+		  {
+		    message_out (ERROR, "MainContainer is NULL trying to add element " + identifier);
+		  }
 	      }
 	    else
 	      {

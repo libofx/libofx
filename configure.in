@@ -1,0 +1,109 @@
+## -*-m4-*-
+
+dnl Process this file with autoconf to produce a configure script.
+
+# FILE:
+# configure.in
+#
+# FUNCTION:
+# implements checks for a variety of system-specific functions
+
+AC_INIT(inc/libofx.h)
+AC_CONFIG_AUX_DIR(config)
+AC_PROG_CC
+AC_PROG_CXX
+#AC_PROG_RANLIB
+
+LIBOFX_MAJOR_VERSION=0
+LIBOFX_MINOR_VERSION=3
+LIBOFX_MICRO_VERSION=1
+LIBOFX_VERSION=$LIBOFX_MAJOR_VERSION.$LIBOFX_MINOR_VERSION.$LIBOFX_MICRO_VERSION
+
+AC_SUBST(LIBOFX_MAJOR_VERSION)
+AC_SUBST(LIBOFX_MINOR_VERSION)
+AC_SUBST(LIBOFX_MICRO_VERSION)
+AC_SUBST(LIBOFX_VERSION)
+AM_INIT_AUTOMAKE(libofx,$LIBOFX_VERSION)
+
+
+AM_CONFIG_HEADER(config.h)
+
+AM_MAINTAINER_MODE
+
+AC_PROG_INSTALL
+
+AC_LIBTOOL_DLOPEN
+AM_PROG_LIBTOOL
+
+AC_ISC_POSIX
+AC_C_BIGENDIAN
+AC_PROG_MAKE_SET
+AC_HEADER_STDC
+
+AC_ARG_WITH(opensp-includes, 
+[  --with-opensp-includes=PATH     specify where to look for OpenSP includes  
+                                  - default is /usr/include/OpenSP)],
+			OPENSPINCLUDES="$with_opensp_includes",
+			OPENSPINCLUDES="/usr/include/OpenSP")
+			
+AC_ARG_WITH(opensp-libs, 
+[  --with-opensp-libs=PATH         specify where to look for libosp 
+                                  - default is /usr/lib],
+			OPENSPLIBPATH="$with_opensp_libs",
+			OPENSPLIBPATH="/usr/lib")
+			
+ac_save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="-I$OPENSPINCLUDES $CPPFLAGS"
+AC_LANG(C++)
+AC_CHECK_HEADERS([ParserEventGeneratorKit.h SGMLApplication.h EventGenerator.h], 
+				[] , 
+				[ AC_MSG_ERROR([OpenSP includes not found]) ], 
+				[] )
+				
+OPENSPLIBS="-L$OPENSPLIBPATH -losp"
+ac_save_LIBS="$LIBS"
+LIBS="$OPENSPLIBS $LIBS"
+
+AC_MSG_CHECKING([for libosp])
+##dnl This is code from the opensp documentation, I modified it a little
+##dnl It is really just a link test rather than a run test, it does nothing
+	AC_TRY_RUN([
+		#include "ParserEventGeneratorKit.h"
+		using namespace std;
+		class OutlineApplication : public SGMLApplication {
+		public:
+		  OutlineApplication() { }
+		  void startElement(const StartElementEvent &event) {
+		  }
+		  void endElement(const EndElementEvent &) { }
+
+		};
+		int main(int argc, char **argv)
+		{
+		  ParserEventGeneratorKit parserKit;
+		  EventGenerator *egp = parserKit.makeEventGenerator(argc - 1, argv + 1);
+		  OutlineApplication app;
+		}
+	],
+	[AC_MSG_RESULT([yes])],
+	[AC_MSG_RESULT([no])
+	AC_MSG_ERROR([unable to link a test program, is OpenSP installed?])],
+	[AC_MSG_RESULT([unknown, assumed OK])])
+				
+CPPFLAGS="$ac_save_CPPFLAGS"
+LIBS="$ac_save_LIBS"		
+
+
+AC_SUBST(OPENSPINCLUDES)
+AC_SUBST(OPENSPLIBS)
+LIBOFX_DTD_DIR='${datadir}/libofx/dtd'
+AC_SUBST(LIBOFX_DTD_DIR)
+			
+AC_OUTPUT( Makefile 
+			lib/Makefile
+			inc/Makefile
+			dtd/Makefile
+			ofx2qif/Makefile
+			ofxdump/Makefile
+			)
+

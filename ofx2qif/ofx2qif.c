@@ -66,15 +66,15 @@ ofx_proc_file(argc, argv);
 return 0;
 }
 
-int ofx_proc_status(struct OfxStatusData data)
+int ofx_proc_status_cb(struct OfxStatusData data)
 {
 return 0;
 }
-int ofx_proc_security(struct OfxSecurityData data)
+int ofx_proc_security_cb(struct OfxSecurityData data)
 {
 return 0;
 }
-int ofx_proc_transaction(struct OfxTransactionData data)
+int ofx_proc_transaction_cb(struct OfxTransactionData data)
 {
   char dest_string[255];
   char trans_buff[4096];
@@ -157,7 +157,7 @@ if(data.transactiontype_valid==true){
  return 0;
 }/* end ofx_proc_transaction() */
 
-int ofx_proc_statement(struct OfxStatementData data)
+int ofx_proc_statement_cb(struct OfxStatementData data)
 {
   struct tm temp_tm;
 
@@ -166,9 +166,9 @@ int ofx_proc_statement(struct OfxStatementData data)
     /* Use the account id as the qif name of the account */
     printf("N%s%s",data.account_id,"\n");
   }
-  if(data.account.account_type_valid==true)
+  if(data.account_ptr->account_type_valid==true)
     {
-      switch(data.account.account_type){
+      switch(data.account_ptr->account_type){
       case OFX_CHECKING : printf("TBank\n");
 	break;
       case OFX_SAVINGS :  printf("TBank\n");
@@ -202,7 +202,7 @@ int ofx_proc_statement(struct OfxStatementData data)
   return 0;
 }/* end ofx_proc_statement() */
 
-int ofx_proc_account(struct OfxAccountData data)
+int ofx_proc_account_cb(struct OfxAccountData data)
 {
   char dest_string[255];
 

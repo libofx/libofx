@@ -72,7 +72,7 @@
 /**
  * \brief ofx_proc_file is the entry point of the library.  
  *
- *  ofx_proc_file must be called by the client, with a list of 1 or more OFX
+ *  libofx_proc_file must be called by the client, with a list of 1 or more OFX
  files to be parsed in command line format.
 */
 CFCT int ofx_proc_file(int argc, char *argv[]);
@@ -130,11 +130,11 @@ struct OfxStatusData{
 /**
  * \brief The callback function for the OfxStatusData stucture. 
  *
- * An ofx_proc_status event is sent everytime the server has generated a OFX
+ * An ofx_proc_status_cb event is sent everytime the server has generated a OFX
  STATUS element.  As such, it could be received at any time(but not during
  other events).  An OfxStatusData structure is passed to this even.
 */
-CFCT int ofx_proc_status(const struct OfxStatusData data);
+CFCT int ofx_proc_status_cb(const struct OfxStatusData data);
 
 /**
  * \brief An abstraction of an account
@@ -182,7 +182,7 @@ struct OfxAccountData{
 /**
  * \brief The callback function for the OfxAccountData stucture. 
  *
- * The ofx_proc_account event is always generated first, to allow the
+ * The ofx_proc_account_cb event is always generated first, to allow the
  application to create accounts or ask the user to match an existing
  account before the ofx_proc_statement and ofx_proc_transaction event are
  received.  An OfxAccountData is passed to this event.
@@ -190,7 +190,7 @@ struct OfxAccountData{
  Note however that this OfxAccountData structure will also be available as
  part of OfxStatementData structure passed to  ofx_proc_statement event.
 */
-CFCT int ofx_proc_account(const struct OfxAccountData data);
+CFCT int ofx_proc_account_cb(const struct OfxAccountData data);
 
 /**
  * \brief An abstraction of a security, such as a stock, mutual fund, etc.
@@ -238,14 +238,14 @@ struct OfxSecurityData{
 /** 
  * \brief The callback function for the OfxSecurityData stucture. 
  *
- * An ofx_proc_security event is generated for any security listed in the
+ * An ofx_proc_security_cb event is generated for any securities listed in the
  ofx file.  It is generated after ofx_proc_statement but before 
  ofx_proc_transaction. It is meant to be used to allow the client to 
- create a new commodity or security.  Please note however that this information 
- is also available as part of each OfxtransactionData.
+ create a new commodity or security (such as a new stock type).  Please note however
+ that this information is usually also available as part of each OfxtransactionData.
  An OfxSecurityData structure is passed to this event.
 */
-CFCT int ofx_proc_security(const struct OfxSecurityData data);
+CFCT int ofx_proc_security_cb(const struct OfxSecurityData data);
 
 
 /**
@@ -264,6 +264,8 @@ struct OfxTransactionData{
   char account_id[OFX_ACCOUNT_ID_LENGTH];/**< Use this for matching with
 					    the relevant account in your
 					    application */
+  struct OfxAccountData * account_ptr; /**< Pointer to the full account structure,
+					  see OfxAccountData */
   int account_id_valid;
   enum TransactionType{
     OFX_CREDIT,     /**< Generic credit */
@@ -322,7 +324,7 @@ struct OfxTransactionData{
   char unique_id_type[OFX_UNIQUE_ID_TYPE_LENGTH];/**< Usially "CUSIP" for FIs in
 						    north america*/ 
   int unique_id_type_valid;
-  struct OfxSecurityData *security_data;  /** A pointer to the security's data.*/
+  struct OfxSecurityData *security_data_ptr;  /** A pointer to the security's data.*/
   int security_data_valid;
   
   time_t date_posted;/**< Date the transaction took effect (ex: date it
@@ -388,11 +390,11 @@ char check_number[OFX_CHECK_NUMBER_LENGTH];
 /** 
  * \brief The callback function for the OfxTransactionData stucture. 
  *
- * An ofx_proc_transaction event is generated for every transaction in the 
+ * An ofx_proc_transaction_cb event is generated for every transaction in the 
  ofx response, after ofx_proc_statement (and possibly ofx_proc_security is 
  generated. An OfxTransactionData structure is passed to this event.
 */
-CFCT int ofx_proc_transaction(const struct OfxTransactionData data);
+CFCT int ofx_proc_transaction_cb(const struct OfxTransactionData data);
 
 /** 
  * \brief An abstraction of an account statement. 
@@ -415,7 +417,8 @@ struct OfxStatementData{
   int currency_valid;
   char account_id[OFX_ACCOUNT_ID_LENGTH];/**< Use this for matching this statement with
 					    the relevant account in your application */
-  struct OfxAccountData account; /**< Full account structure, see OfxAccountData */
+  struct OfxAccountData * account_ptr; /**< Pointer to the full account structure, see 
+				      OfxAccountData */
   int account_id_valid;
    /** The actual balance, according to the FI.  The user should be warned
        of any discrepency between this and the balance in the application */
@@ -456,10 +459,10 @@ struct OfxStatementData{
 /**
  * \brief The callback function for the OfxStatementData stucture. 
  *
- * The ofx_proc_statement event is sent after all ofx_proc_transaction 
+ * The ofx_proc_statement_cb event is sent after all ofx_proc_transaction 
  events have been sent. An OfxStatementData is passed to this event.
 */
-CFCT int ofx_proc_statement(const struct OfxStatementData data);
+CFCT int ofx_proc_statement_cb(const struct OfxStatementData data);
 
 /** 
     \brief NOT YET SUPPORTED

@@ -20,8 +20,8 @@
 #include "SGMLApplication.h"
 #include <time.h>
 #include <string>
-#include "messages.h"
-#include "ofx_utilities.h"
+#include "messages.hh"
+#include "ofx_utilities.hh"
 
 using namespace std;
 
