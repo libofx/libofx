@@ -27,4 +27,7 @@ AM_CPPFLAGS = \
 	-DMAKEFILE_DTD_PATH=\"${LIBOFX_DTD_DIR}/\"
 
 libofx_la_LIBADD = ${OPENSPLIBS} -lstdc++
-libofx_la_LDFLAGS = -version_info 0:3:0
+libofx_la_LDFLAGS = -version_info ${LIBOFX_MAJOR_VERSION}:${LIBOFX_MINOR_VERSION}:${LIBOFX_MICRO_VERSION}
+
+
+

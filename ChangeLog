@@ -1,3 +1,6 @@
+18/11/2001  Benoit Grégoire  <bock@step.polymtl.ca>
+	* Update build files for release of libofx 0.6.0
+
 30/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
 	* inc/libofx.h lib/ofx_container_transaction.cpp ofxdump/ofxdump.cpp: Created a new invtransactiontype enum to replace the invtranstype string
 

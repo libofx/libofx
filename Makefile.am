@@ -15,4 +15,5 @@ EXTRA_DIST = \
   totest.txt \
   known_bugs.txt \
   libofx.lsm \
-  doc
+  doc \
+  config
