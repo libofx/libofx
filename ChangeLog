@@ -1,10 +1,15 @@
 20/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
+	* lib/ofx_preproc.cpp: Abort if DTD was not found
+	
+20/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
 	* Fix debug output
 	* Begin fixing ofx2qif for the new transaction ordering code
+	
 17/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
 	* Implemented internal container trees, allowing transaction reordering and security lookups
 	* Complete investment transaction support
 	* Converted the build system to automake/autoconf, mostly contributed by "Peter O'Gorman" <peter@pogma.com>
+	
 LibOFX 0.?????????:
 	-Add an account_name to the OfxAccountData struct.  It contains a human readable identifier of the account.
 	-Include file location seems to have changed in recent versions of OpenSP.  Included old and new case.

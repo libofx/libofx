@@ -88,23 +88,30 @@ int ofx_proc_file(int argc, char *argv[])
     input_file.close();
     tmp_file.close();
     strncpy(filename_dtd,find_dtd().c_str(),255);//The dtd file
-    strncpy(filename_ofx,tmp_filename,255);//The processed ofx file
-    filenames[0]=filename_dtd;
-    filenames[1]=filename_ofx;
-    ofx_proc_sgml(2,filenames);
-    if(remove(tmp_filename)!=0)
-      { 
-	message_out(ERROR,"ofx_proc_file(): Error deleting temporary file "+string(tmp_filename));
+    if(filename_dtd!=NULL)
+      {
+	strncpy(filename_ofx,tmp_filename,255);//The processed ofx file
+	filenames[0]=filename_dtd;
+	filenames[1]=filename_ofx;
+	ofx_proc_sgml(2,filenames);
+	if(remove(tmp_filename)!=0)
+	  { 
+	    message_out(ERROR,"ofx_proc_file(): Error deleting temporary file "+string(tmp_filename));
+	  }
+      }
+    else
+      {
+	message_out(ERROR,"ofx_proc_file(): FATAL: Missing DTD, aborting");
       }
   }
   else{
     message_out(ERROR,"ofx_proc_file():No input file specified");
   }
-return 0;
+  return 0;
 }
 
 /**
-This function will strip all the OFX proprietary tags and SGML comments from the SGML string passed to it
+   This function will strip all the OFX proprietary tags and SGML comments from the SGML string passed to it
 */
 string sanitize_proprietary_tags(string input_string)
 {
@@ -153,13 +160,13 @@ string sanitize_proprietary_tags(string input_string)
           proprietary_tag=true;
         }
       }
-    tagname[i]=input_string.c_str()[i];
+      tagname[i]=input_string.c_str()[i];
     }
   }
   if(proprietary_tag==true){
- message_out(DEBUG,"sanitize_proprietary_tags() original line: "+input_string);
+    message_out(DEBUG,"sanitize_proprietary_tags() original line: "+input_string);
     if(crop_end_idx==0){//no closing tag
-    crop_end_idx=input_string.size()-1;
+      crop_end_idx=input_string.size()-1;
     }
     input_string.copy(buffer,(crop_end_idx-orig_tag_open_idx)+1,orig_tag_open_idx);
     message_out(INFO,"sanitize_proprietary_tags() removed: "+string(buffer));
@@ -168,9 +175,9 @@ string sanitize_proprietary_tags(string input_string)
   return input_string;
 }
 /**
-This function will try to find a DTD matching the requested_version and return the full path of the DTD found (or an empty string if unsuccessfull)
-*
-Please note that currently the function will ALWAYS look for version 160, since OpenSP can't parse the 201 DTD correctly
+   This function will try to find a DTD matching the requested_version and return the full path of the DTD found (or an empty string if unsuccessfull)
+   *
+   Please note that currently the function will ALWAYS look for version 160, since OpenSP can't parse the 201 DTD correctly
 */
 string find_dtd(const int requested_version)
 {
