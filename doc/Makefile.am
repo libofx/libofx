@@ -9,15 +9,9 @@ EXTRA_DIST = \
 	doxygen.cfg \
 	ofx_sample_files \
 	implementation_notes.txt \
-	tag_striper_test.txt \
-	html
+	tag_striper_test.txt
 
 all:
-
-html: doxygen.cfg
-	echo "html: " && pwd
-	rm -rf html/ refman.pdf
-	$(DOXYGEN) doxygen.cfg
 
 doc: doxygen.cfg
 	echo "doc: " && pwd && 	echo "distdir: " && echo $(distdir)
@@ -25,6 +19,11 @@ doc: doxygen.cfg
 	$(DOXYGEN) doxygen.cfg
 #	$(MAKE) -C latex/ 
 #	mv latex/refman.pdf ./refman.pdf
+
+dist-hook:
+	echo "dist-hook: " && pwd
+	cd $(srcdir) && pwd && rm -rf html refman.pdf && $(DOXYGEN) doxygen.cfg
+	cp -rp $(srcdir)/html ${distdir}
 
 clean-local:
 	echo "clean-local: " && pwd
@@ -39,7 +38,6 @@ maintainer-clean-local: clean-local
 install-data-hook:
 	mkdir -p $(srcdir)/html #Workaround to allow libofx-cvs user to install without doc.
 	cp -rp $(srcdir)/html ${docdir}
-	rm -rf html #That directory must be cleared or make distcheck might include an empty html directory
 
 uninstall-hook:
 	rm -rf ${docdir}/html
