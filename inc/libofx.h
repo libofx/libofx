@@ -59,8 +59,9 @@
 #define OFX_ACCTID_LENGTH              22 + 1 
 #define OFX_ACCTKEY_LENGTH             22 + 1
 #define OFX_BROKERID_LENGTH            22 + 1
-/* Must be MAX of <BANKID>+<BRANCHID>+<ACCTID> or <ACCTID>+<ACCTKEY> */
+/* Must be MAX of <BANKID>+<BRANCHID>+<ACCTID>, <ACCTID>+<ACCTKEY> and <ACCTID>+<BROKERID> */
 #define OFX_ACCOUNT_ID_LENGTH OFX_BANKID_LENGTH + OFX_BRANCHID_LENGTH + OFX_ACCTID_LENGTH + 1
+#define OFX_ACCOUNT_NAME_LENGTH        255
 #define OFX_MARKETING_INFO_LENGTH      360 + 1
 #define OFX_TRANSACTION_NAME_LENGTH    32 + 1
 #define OFX_UNIQUE_ID_LENGTH           32 + 1
@@ -131,7 +132,7 @@ struct OfxStatusData{
  STATUS element.  As such, it could be received at any time(but not during
  other events).  An OfxStatusData structure is passed to this even.
 */
-CFCT int ofx_proc_status(struct OfxStatusData data);
+CFCT int ofx_proc_status(const struct OfxStatusData data);
 
 /**
  * \brief An abstraction of an account
@@ -146,14 +147,20 @@ struct OfxAccountData{
    variables should all contain valid data but you should not trust the servers.
    Check if the associated *_valid is true before using them. */  
 
-  /** The account_id is actually a concatenation of 
-      <BANKID><BRANCHID><ACCTID> for a bank account, and <ACCTID><ACCTKEY>
-      for a credit card account. Together, they form a worldwide OFX unique
+  /** The account_id is actually built from <BANKID><BRANCHID><ACCTID> for
+      a bank account, and <ACCTID><ACCTKEY> for a credit card account.
+      account_id is meant to be computer-readable.  It is a worldwide OFX unique
       identifier wich can be used for account matching, even in system with
       multiple users.*/
   char account_id[OFX_ACCOUNT_ID_LENGTH];
+  /** The account_id_name is a string meant to allow the user to identify the
+      account.  Currently it is <ACCTID> for a bank account and a credit 
+      card account an <BROKERID>:<ACCTID> for investment accounts.
+      account_id_name is not meant to be computer-readable and
+      is not garanteed to be unique.*/
+  char account_name[OFX_ACCOUNT_NAME_LENGTH];
+  int account_id_valid;/* Use for both account_id and account_name */
 
-  int account_id_valid;
   /** account_type tells you what kind of account this is.  See the AccountType enum */
     enum AccountType{
     OFX_CHECKING,  /**< A standard checking account */
@@ -181,7 +188,7 @@ struct OfxAccountData{
  Note however that this OfxAccountData structure will also be available as
  part of OfxStatementData structure passed to  ofx_proc_statement event.
 */
-CFCT int ofx_proc_account(struct OfxAccountData data);
+CFCT int ofx_proc_account(const struct OfxAccountData data);
 
 
 /**
@@ -325,7 +332,7 @@ char check_number[OFX_CHECK_NUMBER_LENGTH];
  * An ofx_proc_transaction event is generated for every transaction in the 
  ofx response. An OfxTransactionData structure is passed to this event
 */
-CFCT int ofx_proc_transaction(struct OfxTransactionData data);
+CFCT int ofx_proc_transaction(const struct OfxTransactionData data);
 
 /** 
  * \brief An abstraction of an account statement. 
@@ -392,7 +399,7 @@ struct OfxStatementData{
  * The ofx_proc_statement event is sent after all ofx_proc_transaction 
  events have been sent. An OfxStatementData is passed to this event.
 */
-CFCT int ofx_proc_statement(struct OfxStatementData data);
+CFCT int ofx_proc_statement(const struct OfxStatementData data);
 
 /** 
     \brief NOT YET SUPPORTED

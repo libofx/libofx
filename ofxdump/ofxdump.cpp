@@ -245,8 +245,9 @@ int ofx_proc_account(struct OfxAccountData data)
   cout<<"ofx_proc_account():\n";
   if(data.account_id_valid==true){
     cout<<"    Account ID: "<<data.account_id<<"\n";
+    cout<<"    Account name: "<<data.account_name<<"\n";
   }
-  if(data.account_type_valid==true){
+   if(data.account_type_valid==true){
     cout<<"    Account type: ";
     switch(data.account_type){
     case OfxAccountData::OFX_CHECKING : cout<<"CHECKING\n";

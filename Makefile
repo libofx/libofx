@@ -24,7 +24,7 @@ uninstall:
 	$(MAKE) -C ofx2qif/ uninstall
 
 clean:
-	rm -rf bin/*	
+	rm -f bin/*	
 	rm -f *.o *~ core
 	rm -f inc/*~
 	$(MAKE) -C lib/ clean

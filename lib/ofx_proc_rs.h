@@ -43,15 +43,12 @@ class OfxGenericContainer {
    \param identifier The name of the data element
    \param value The concatenated string of the data
   */ 
-  virtual void add_attribute(const string identifier, const string value) = 0;
+  virtual void add_attribute(const string identifier, const string value);
   /** The implemented destructor of the derived class will call the appropriate callback in libofx.h if appropriate */
   virtual ~OfxGenericContainer(){};
 
   /// Returns the parent container object (the one representing the containing OFX SGML element)
-    OfxGenericContainer* getparent()
-      {
-	return parentcontainer;
-      };
+    OfxGenericContainer* getparent();
 };//End class OfxGenericObject
 
 /** \brief A container to holds OFX SGML elements that LibOFX knows nothing about
@@ -60,12 +57,7 @@ class OfxGenericContainer {
 */
 class OfxDummyContainer:public OfxGenericContainer {
  public:
-  
-  OfxDummyContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):OfxGenericContainer(para_parentcontainer, para_tag_identifier)
-    {
-      type="DUMMY";
-      message_out(INFO, "Created OfxDummyContainer to hold unsupported aggregate "+para_tag_identifier);
-    }
+  OfxDummyContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   void add_attribute(const string identifier, const string value);
 };
 
@@ -76,12 +68,7 @@ class OfxDummyContainer:public OfxGenericContainer {
 class OfxPushUpContainer:public OfxGenericContainer {
  public:
   
-  OfxPushUpContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
-    OfxGenericContainer(para_parentcontainer, para_tag_identifier)
-    {
-      type="PUSHUP";
-      message_out(DEBUG, "Created OfxPushUpContainer to hold aggregate "+tag_identifier);
-    }
+  OfxPushUpContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   void add_attribute(const string identifier, const string value);
 };
 
@@ -90,20 +77,8 @@ class OfxStatusContainer:public OfxGenericContainer {
  public:
   OfxStatusData data;
   
-  OfxStatusContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):OfxGenericContainer(para_parentcontainer, para_tag_identifier)
-    {
-      memset(&data,0,sizeof(data));
-      type="STATUS";
-      if (parentcontainer!=NULL){
-	strncpy(data.ofx_element_name, parentcontainer->tag_identifier.c_str(), OFX_ELEMENT_NAME_LENGTH);
-	data.ofx_element_name_valid=true;
-      }
-      
-    }
-  ~OfxStatusContainer()
-    {
-      ofx_proc_status (data);
-    }
+  OfxStatusContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  ~OfxStatusContainer();
   void add_attribute(const string identifier, const string value);
 };
 
@@ -122,14 +97,8 @@ class OfxBalanceContainer:public OfxGenericContainer {
   time_t date; /**< Effective date of the given balance */
   int date_valid;
   
-  OfxBalanceContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):OfxGenericContainer(para_parentcontainer, para_tag_identifier)
-    {
-      amount_valid=false;
-      date_valid=false;
-      type="BALANCE";
-    }
+  OfxBalanceContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   ~OfxBalanceContainer();
-  
   void add_attribute(const string identifier, const string value);
 };
 
@@ -141,11 +110,7 @@ class OfxStatementContainer:public OfxGenericContainer {
  public:
   OfxStatementData data;
   
-  OfxStatementContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):OfxGenericContainer(para_parentcontainer, para_tag_identifier)
-    {
-      memset(&data,0,sizeof(data));
-      type="STATEMENT";
-    }
+  OfxStatementContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   ~OfxStatementContainer();
   void add_attribute(const string identifier, const string value);
   void add_account(OfxAccountData const account_data);
@@ -178,18 +143,9 @@ class OfxTransactionContainer:public OfxGenericContainer {
  public:
   OfxTransactionData data;
   
-  OfxTransactionContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
-    OfxGenericContainer(para_parentcontainer, para_tag_identifier)
-    {
-      memset(&data,0,sizeof(data));
-      type="STMTTRN";
-      if (parentcontainer!=NULL&&((OfxStatementContainer*)parentcontainer)->data.account_id_valid==true){
-	strncpy(data.account_id,((OfxStatementContainer*)parentcontainer)->data.account_id,OFX_ACCOUNT_ID_LENGTH);
-	data.account_id_valid = true;
-      }
-    }
+  OfxTransactionContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   ~OfxTransactionContainer();
-  void add_attribute(const string identifier, const string value);
+  virtual void add_attribute(const string identifier, const string value);
 };
 
 /** \brief  Represents a bank or credid card transaction.
@@ -198,11 +154,7 @@ class OfxTransactionContainer:public OfxGenericContainer {
  */
 class OfxBankTransactionContainer:public OfxTransactionContainer {
  public:
-  OfxBankTransactionContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier): 
-    OfxTransactionContainer(para_parentcontainer, para_tag_identifier)
-    {
-      type="STMTTRN";
-    }
+  OfxBankTransactionContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   void add_attribute(const string identifier, const string value);
 };
 

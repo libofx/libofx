@@ -94,7 +94,9 @@ public:
 	    message_out (PARSER, "Element " + identifier + " found");
 	    curr_container_element = new OfxStatusContainer (curr_container_element, identifier);
 	  }
-	else if (identifier == "STMTRS" || identifier == "CCSTMTRS")
+	else if (identifier == "STMTRS" ||
+		 identifier == "CCSTMTRS" ||
+		 identifier == "INVSTMTRS")
 	  {
 	    message_out (PARSER, "Element " + identifier + " found");
 	    curr_container_element = new OfxStatementContainer (curr_container_element, identifier);

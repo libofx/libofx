@@ -28,7 +28,9 @@
 #include "ofx_utilities.h"
 #include "ofx_proc_rs.h"
 
-
+/***************************************************************************
+ *                         OfxGenericContainer                             *
+ ***************************************************************************/
 
 OfxGenericContainer::OfxGenericContainer()
 {
@@ -52,12 +54,42 @@ OfxGenericContainer::OfxGenericContainer(OfxGenericContainer *para_parentcontain
     message_out(DEBUG,"OfxGenericContainer(): The parent for this "+tag_identifier+" is a DummyContainer!");
   }
 }
+void OfxGenericContainer::add_attribute(const string identifier, const string value)
+{
+  /*If an attribute has made it all the way up to the Generic Container's add_attribute, 
+    we don't know what to do with it! */
+    message_out(ERROR, "WRITEME: "+identifier+" ("+value+") is not supported by the "+type+" container");
+}
+OfxGenericContainer* OfxGenericContainer::getparent()
+{
+  return parentcontainer;
+};
 
+/***************************************************************************
+ *                         OfxDummyContainer                              *
+ ***************************************************************************/
+
+OfxDummyContainer::OfxDummyContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+  OfxGenericContainer(para_parentcontainer, para_tag_identifier)
+{
+  type="DUMMY";
+  message_out(INFO, "Created OfxDummyContainer to hold unsupported aggregate "+para_tag_identifier);
+}
 void OfxDummyContainer::add_attribute(const string identifier, const string value)
 {
   message_out(DEBUG, "OfxDummyContainer for "+tag_identifier+" ignored a "+identifier+" ("+value+")");
 }
 
+/***************************************************************************
+ *                         OfxPushUpContainer                              *
+ ***************************************************************************/
+
+OfxPushUpContainer::OfxPushUpContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+  OfxGenericContainer(para_parentcontainer, para_tag_identifier)
+{
+  type="PUSHUP";
+  message_out(DEBUG, "Created OfxPushUpContainer to hold aggregate "+tag_identifier);
+}
 void OfxPushUpContainer::add_attribute(const string identifier, const string value)
 {
   //message_out(DEBUG, "OfxPushUpContainer for "+tag_identifier+" will push up a "+identifier+" ("+value+") to a "+ parentcontainer->type + " container");
@@ -68,6 +100,21 @@ void OfxPushUpContainer::add_attribute(const string identifier, const string val
  *                         OfxStatusContainer                              *
  ***************************************************************************/
 
+OfxStatusContainer::OfxStatusContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+  OfxGenericContainer(para_parentcontainer, para_tag_identifier)
+{
+  memset(&data,0,sizeof(data));
+  type="STATUS";
+  if (parentcontainer!=NULL){
+    strncpy(data.ofx_element_name, parentcontainer->tag_identifier.c_str(), OFX_ELEMENT_NAME_LENGTH);
+    data.ofx_element_name_valid=true;
+  }
+  
+}
+OfxStatusContainer::~OfxStatusContainer()
+{
+  ofx_proc_status (data);
+}
 void OfxStatusContainer::add_attribute(const string identifier, const string value)
 {
   ErrorMsg error_msg;
@@ -101,7 +148,8 @@ void OfxStatusContainer::add_attribute(const string identifier, const string val
     data.server_message_valid=true;
   }
   else{
-    message_out(ERROR, "Dont know how to add a "+identifier+" inside a "+type+" container");
+    /* Redirect unknown identifiers to the base class */
+    OfxGenericContainer::add_attribute(identifier, value);
   }
 }
 
@@ -109,6 +157,30 @@ void OfxStatusContainer::add_attribute(const string identifier, const string val
  *                      OfxTransactionContainer                            *
  ***************************************************************************/
 
+OfxTransactionContainer::OfxTransactionContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+  OfxGenericContainer(para_parentcontainer, para_tag_identifier)
+{
+  OfxGenericContainer * tmp_parentcontainer=parentcontainer;
+
+  memset(&data,0,sizeof(data));
+  type="TRANSACTION";
+  
+  while(tmp_parentcontainer!=NULL&&tmp_parentcontainer->type!="STATEMENT")
+    {
+      tmp_parentcontainer=parentcontainer->parentcontainer;
+    }  
+  if (tmp_parentcontainer!=NULL&&((OfxStatementContainer*)tmp_parentcontainer)->data.account_id_valid==true){
+    strncpy(data.account_id,((OfxStatementContainer*)tmp_parentcontainer)->data.account_id,OFX_ACCOUNT_ID_LENGTH);
+    data.account_id_valid = true;
+  }
+  else{
+    message_out(ERROR,"Unable to find the enclosing statement container to get the account id for this transaction");
+  }
+}
+OfxTransactionContainer::~OfxTransactionContainer()
+{
+  ofx_proc_transaction(data);
+}
 void OfxTransactionContainer::add_attribute(const string identifier, const string value)
 {
 
@@ -153,15 +225,17 @@ void OfxTransactionContainer::add_attribute(const string identifier, const strin
     data.memo_valid = true;
   }
   else{
-    message_out(ERROR, "Dont know how to add a "+identifier+" inside a "+type+" container");
+    /* Redirect unknown identifiers to the base class */
+    OfxGenericContainer::add_attribute(identifier, value);
   }
 }// end OfxTransactionContainer::add_attribute()
 
-OfxTransactionContainer::~OfxTransactionContainer()
-{
-  ofx_proc_transaction(data);
-}
 
+OfxBankTransactionContainer::OfxBankTransactionContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier): 
+  OfxTransactionContainer(para_parentcontainer, para_tag_identifier)
+{
+  ;
+}
 void OfxBankTransactionContainer::add_attribute(const string identifier, const string value)
 {
   if( identifier=="TRNTYPE"){
@@ -251,7 +325,6 @@ void OfxBankTransactionContainer::add_attribute(const string identifier, const s
   }
   else{
     /* Redirect unknown identifiers to base class */
-    /* message_out(DEBUG, "A " + type + " container is redirecting a " + identifier + " to the base class");*/
     OfxTransactionContainer::add_attribute(identifier, value);
   }
 }//end OfxBankTransactionContainer::add_attribute
@@ -298,8 +371,7 @@ void OfxInvestmentTransactionContainer::add_attribute(const string identifier, c
     data.date_initiated_valid = true;
   }
   else{
-    /* Redirect unknown identifiers to base class */
-    //message_out(DEBUG, "A " + type + " container is redirecting a " + identifier + " to the base class");
+    /* Redirect unknown identifiers to the base class */
     OfxTransactionContainer::add_attribute(identifier, value);
   }
 }//end OfxInvestmentTransactionContainer::add_attribute
@@ -388,27 +460,40 @@ void OfxAccountContainer::add_attribute(const string identifier, const string va
     }
   }
   else{
-    message_out(ERROR, "Dont know how to add a "+identifier+" inside a "+type+" container");
+    /* Redirect unknown identifiers to the base class */
+    OfxGenericContainer::add_attribute(identifier, value);
   }
 }//end OfxAccountContainer::add_attribute()
 
 void OfxAccountContainer::gen_account_id(void)
 {
-  size_t max_cat_size;
-  strcpy(data.account_id,"");
   if(data.account_type==OfxAccountData::OFX_CREDITCARD){
-    max_cat_size=OFX_ACCOUNT_ID_LENGTH-strlen(data.account_id);
-    strncat(data.account_id,acctid,max_cat_size);
-    max_cat_size=OFX_ACCOUNT_ID_LENGTH-strlen(data.account_id);
-    strncat(data.account_id,acctkey,max_cat_size);
+    strncat(data.account_id,acctid,OFX_ACCOUNT_ID_LENGTH-strlen(data.account_id));
+    strncat(data.account_id," ",OFX_ACCOUNT_ID_LENGTH-strlen(data.account_id));
+    strncat(data.account_id,acctkey,OFX_ACCOUNT_ID_LENGTH-strlen(data.account_id));
+
+    strncat(data.account_name,"Credit card ",OFX_ACCOUNT_NAME_LENGTH-strlen(data.account_name));
+    strncat(data.account_name,acctid,OFX_ACCOUNT_NAME_LENGTH-strlen(data.account_name));
+  }
+  else if(data.account_type==OfxAccountData::OFX_INVESTMENT){
+    strncat(data.account_id,brokerid,OFX_ACCOUNT_ID_LENGTH-strlen(data.account_id));
+    strncat(data.account_id," ",OFX_ACCOUNT_ID_LENGTH-strlen(data.account_id));
+    strncat(data.account_id,acctid,OFX_ACCOUNT_ID_LENGTH-strlen(data.account_id));
+
+    strncat(data.account_name,"Investment account ",OFX_ACCOUNT_NAME_LENGTH-strlen(data.account_name));
+    strncat(data.account_name,acctid,OFX_ACCOUNT_NAME_LENGTH-strlen(data.account_name));
+    strncat(data.account_name," at broker ",OFX_ACCOUNT_NAME_LENGTH-strlen(data.account_name));
+    strncat(data.account_name,brokerid,OFX_ACCOUNT_NAME_LENGTH-strlen(data.account_name));
   }
   else{
-    max_cat_size=OFX_ACCOUNT_ID_LENGTH-strlen(data.account_id);
-    strncat(data.account_id,bankid,max_cat_size);
-    max_cat_size=OFX_ACCOUNT_ID_LENGTH-strlen(data.account_id);
-    strncat(data.account_id,branchid,max_cat_size);
-    max_cat_size=OFX_ACCOUNT_ID_LENGTH-strlen(data.account_id);
-    strncat(data.account_id,acctid,max_cat_size);
+    strncat(data.account_id,bankid,OFX_ACCOUNT_ID_LENGTH-strlen(data.account_id));
+    strncat(data.account_id," ",OFX_ACCOUNT_ID_LENGTH-strlen(data.account_id));
+    strncat(data.account_id,branchid,OFX_ACCOUNT_ID_LENGTH-strlen(data.account_id));
+    strncat(data.account_id," ",OFX_ACCOUNT_ID_LENGTH-strlen(data.account_id));
+    strncat(data.account_id,acctid,OFX_ACCOUNT_ID_LENGTH-strlen(data.account_id));
+
+    strncat(data.account_name,"Bank account ",OFX_ACCOUNT_NAME_LENGTH-strlen(data.account_name));
+    strncat(data.account_name,acctid,OFX_ACCOUNT_NAME_LENGTH-strlen(data.account_name));
   }
   if(strlen(data.account_id)>=0){
     data.account_id_valid=true;
@@ -419,6 +504,12 @@ void OfxAccountContainer::gen_account_id(void)
  *                    OfxStatementContainer                                *
  ***************************************************************************/
 
+OfxStatementContainer::OfxStatementContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+  OfxGenericContainer(para_parentcontainer, para_tag_identifier)
+{
+  memset(&data,0,sizeof(data));
+  type="STATEMENT";
+}
 void OfxStatementContainer::add_attribute(const string identifier, const string value)
 {
   if(identifier=="CURDEF"){
@@ -438,7 +529,7 @@ void OfxStatementContainer::add_attribute(const string identifier, const string 
     data.date_end_valid = true;
   }
   else{
-    message_out(ERROR, "Dont know how to add a "+identifier+" inside a "+type+" container");
+    OfxGenericContainer::add_attribute(identifier, value);
   }
 }//end OfxStatementContainer::add_attribute()
 
@@ -476,19 +567,12 @@ OfxStatementContainer::~OfxStatementContainer()
  * OfxBalanceContainer  (does not directly abstract a object in libofx.h)  *
  ***************************************************************************/
 
-void OfxBalanceContainer::add_attribute(const string identifier, const string value)
+OfxBalanceContainer::OfxBalanceContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+  OfxGenericContainer(para_parentcontainer, para_tag_identifier)
 {
-  if(identifier=="BALAMT"){
-    amount=ofxamount_to_double(value);
-    amount_valid=true;
-  }
-  else if(identifier=="DTASOF"){
-    date = ofxdate_to_time_t(value);
-    date_valid = true;
-  }
-  else{
-    message_out(ERROR, "Dont know how to add a "+identifier+" inside a "+type+" container");
-  }  
+  amount_valid=false;
+  date_valid=false;
+  type="BALANCE";
 }
 
 OfxBalanceContainer::~OfxBalanceContainer()
@@ -502,4 +586,18 @@ OfxBalanceContainer::~OfxBalanceContainer()
       message_out (ERROR,"I completed a " + type + " element, but I havent found a suitable parent to save it");
     }
 }
-
+void OfxBalanceContainer::add_attribute(const string identifier, const string value)
+{
+  if(identifier=="BALAMT"){
+    amount=ofxamount_to_double(value);
+    amount_valid=true;
+  }
+  else if(identifier=="DTASOF"){
+    date = ofxdate_to_time_t(value);
+    date_valid = true;
+  }
+  else{
+    /* Redirect unknown identifiers to the base class */
+    OfxGenericContainer::add_attribute(identifier, value);
+  }  
+}
