@@ -17,11 +17,20 @@
 #include <time.h>		// for time_t
 #include "libofx.h"
 #include "ParserEventGeneratorKit.h"
+#include "callback.hh"
+
 using namespace std;
 class LibofxContext {
  public:
-  enum LibofxFileFormat current_file_type;
+  LibofxFileFormat current_file_type;
+/**
+ * Instance of the callback registry
+ */
+  OfxCallbackRegistry cb_registry;
 
 };//End class LibofxContext
+
+
+
 
 #endif

@@ -28,7 +28,6 @@ credit cart statements, etc.
 #include "ofx_utilities.hh"
 
 extern OfxMainContainer * MainContainer;
-extern OfxCallbackRegistry cb_registry;
 
 /***************************************************************************
  *                    OfxStatementContainer                                *
@@ -101,7 +100,7 @@ int  OfxStatementContainer::add_to_main_tree()
 
 int  OfxStatementContainer::gen_event()
 {
-  cb_registry.ofx_statement_cb( data, cb_registry.statement_data );
+  libofx_context->cb_registry.ofx_statement_cb( data, libofx_context->cb_registry.statement_data );
   //ofx_proc_statement_cb(data);
   return true;
 }

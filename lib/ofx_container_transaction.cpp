@@ -28,7 +28,6 @@
 #include "ofx_utilities.hh"
 
 extern OfxMainContainer * MainContainer;
-extern OfxCallbackRegistry cb_registry;
 
 /***************************************************************************
  *                      OfxTransactionContainer                            *
@@ -73,7 +72,7 @@ int OfxTransactionContainer::gen_event()
 	  data.security_data_valid = true;
 	}
     }
-  cb_registry.ofx_transaction_cb( data, cb_registry.transaction_data );
+  libofx_context->cb_registry.ofx_transaction_cb( data, libofx_context->cb_registry.transaction_data );
   //ofx_proc_transaction_cb(data);
   return true;
 }

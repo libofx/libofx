@@ -77,15 +77,19 @@
 #define OFX_STATUS_CB                  4;
 */
 
-CFCT void (*OfxCallbackFunc) ();
-
 typedef void * LibofxContextPtr;
 /**
  * \brief Initialise the library and return a new context. 
  *
  @return the new context, to be used by the other functions.
 */
-CFCT LibofxContextPtr libofx_init_context();
+CFCT LibofxContextPtr libofx_get_new_context();
+/**
+ * \brief Free all ressources used by this context. 
+ *
+ @return 0 if successfull.
+*/
+CFCT int libofx_free_context( LibofxContextPtr );
 
 /** List of possible file formats */
 enum LibofxFileFormat{ AUTODETECT, /**< Not really a file format, used to tell the library to try to autodetect the format*/
@@ -201,7 +205,7 @@ struct OfxStatusData{
  other events).  An OfxStatusData structure is passed to this event, as well as
  a pointer to an arbitrary data structure.
 */
-CFCT int ofx_proc_status_cb(const struct OfxStatusData data, void * status_data);
+CFCT typedef int (*LibofxProcStatusCallback)(const struct OfxStatusData data, void * status_data);
 
 /**
  * \brief An abstraction of an account
@@ -258,7 +262,7 @@ struct OfxAccountData{
  part of OfxStatementData structure passed to ofx_proc_statement event, 
  as well as a pointer to an arbitrary data structure.
 */
-CFCT int ofx_proc_account_cb(const struct OfxAccountData data, void * account_data);
+CFCT typedef int (*LibofxProcAccountCallback)(const struct OfxAccountData data, void * account_data);
 
 /**
  * \brief An abstraction of a security, such as a stock, mutual fund, etc.
@@ -314,7 +318,7 @@ struct OfxSecurityData{
  An OfxSecurityData structure is passed to this event, as well as
  a pointer to an arbitrary data structure.
 */
-CFCT int ofx_proc_security_cb(const struct OfxSecurityData data, void * security_data);
+CFCT typedef int (*LibofxProcSecurityCallback)(const struct OfxSecurityData data, void * security_data);
 
 
 /**
@@ -488,7 +492,7 @@ char check_number[OFX_CHECK_NUMBER_LENGTH];
  generated. An OfxTransactionData structure is passed to this event, as well as
  a pointer to an arbitrary data structure.
 */
-CFCT int ofx_proc_transaction_cb(const struct OfxTransactionData data, void * transaction_data);
+CFCT typedef int (*LibofxProcTransactionCallback)(const struct OfxTransactionData data, void * transaction_data);
 
 /** 
  * \brief An abstraction of an account statement. 
@@ -557,7 +561,7 @@ struct OfxStatementData{
  events have been sent. An OfxStatementData is passed to this event, as well as
  a pointer to an arbitrary data structure.
 */
-CFCT int ofx_proc_statement_cb(const struct OfxStatementData data, void * statement_data);
+CFCT typedef int (*LibofxProcStatementCallback)(const struct OfxStatementData data, void * statement_data);
 
 /** 
     \brief NOT YET SUPPORTED
@@ -568,31 +572,20 @@ struct OfxCurrency{
   int must_convert;   /**< true or false */
 };
 
-
-struct OfxCallbackRegistry{
-	void * statement_data;
-	int (*ofx_statement_cb)( const struct OfxStatementData data, void *);
-	void * account_data;
-  int (*ofx_account_cb)( const struct OfxAccountData data, void *);
-	void * transaction_data;
-  int (*ofx_transaction_cb)( const struct OfxTransactionData data, void *);
-	void * security_data;
-  int (*ofx_security_cb)( const struct OfxSecurityData data, void *);
-	void * status_data;
-  int (*ofx_status_cb)(const struct OfxStatusData data, void *);
-};
+typedef struct OfxCallbackRegistry OfxCallbackRegistry;
 
 /**
  * \brief ofx_prep_cb registers the callbacks to be signaled during processing 
  *
  *  Each function will be called with the preceding void * structure as its
- *  first argument.
+ *  first argument.  If one is unused, just pass it NULL.
 */
-CFCT void ofx_prep_cb(int (*ofx_statement_cb)(const struct OfxStatementData data, void * user_data),
-		      int (*ofx_account_cb)(const struct OfxAccountData data, void * user_data),
-		      int (*ofx_transaction_cb)(const struct OfxTransactionData data, void * user_data),
-		      int (*ofx_security_cb)(const struct OfxSecurityData data, void * user_data),
-		      int (*ofx_status_cb)(const struct OfxStatusData data, void * user_data)
+CFCT void ofx_prep_cb(LibofxContextPtr,
+		      LibofxProcStatementCallback,
+		      LibofxProcAccountCallback,
+		      LibofxProcTransactionCallback,
+		      LibofxProcSecurityCallback,
+		      LibofxProcStatusCallback
 		      );
 #endif
 

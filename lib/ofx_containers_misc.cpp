@@ -33,7 +33,6 @@
 #include "ofx_containers.hh"
 
 extern OfxMainContainer * MainContainer;
-extern OfxCallbackRegistry cb_registry;
 
 /***************************************************************************
  *                         OfxDummyContainer                               *
@@ -83,7 +82,7 @@ OfxStatusContainer::OfxStatusContainer(LibofxContext *p_libofx_context, OfxGener
 }
 OfxStatusContainer::~OfxStatusContainer()
 {
-  cb_registry.ofx_status_cb( data, cb_registry.status_data );
+  libofx_context->cb_registry.ofx_status_cb( data, libofx_context->cb_registry.status_data );
   //ofx_proc_status_cb (data);
 }
 void OfxStatusContainer::add_attribute(const string identifier, const string value)

@@ -45,37 +45,6 @@
 
 #define QIF_FILE_MAX_SIZE 256000
 
-int main (int argc, char *argv[])
-{
-extern int ofx_PARSER_msg;
-extern int ofx_DEBUG_msg;
-extern int ofx_WARNING_msg;
-extern int ofx_ERROR_msg;
-extern int ofx_INFO_msg;
-extern int ofx_STATUS_msg;
- ofx_PARSER_msg = false;
- ofx_DEBUG_msg = false;
- ofx_WARNING_msg = false;
- ofx_ERROR_msg = false;
- ofx_INFO_msg = false;
- ofx_STATUS_msg = false;
-
- ofx_prep_cb(
-	     ofx_proc_statement_cb,
-	     ofx_proc_account_cb,
-	     ofx_proc_transaction_cb,
-	     ofx_proc_security_cb,
-	     ofx_proc_status_cb
-	     );
-
-  LibofxContextPtr libofx_context = libofx_init_context();
-
-	if(argc >= 2){
-	  libofx_proc_file(libofx_context, argv[1], OFX);   
-	}
-return 0;
-}
-
 int ofx_proc_status_cb(const struct OfxStatusData data, void * status_data)
 {
 return 0;
@@ -84,7 +53,6 @@ int ofx_proc_security_cb(const struct OfxSecurityData data, void * security_data
 {
 return 0;
 }
-
 
 int ofx_proc_transaction_cb(const struct OfxTransactionData data, void * transaction_data)
 {
@@ -239,3 +207,33 @@ int ofx_proc_account_cb(const struct OfxAccountData data, void * account_data)
   fputs(dest_string,stdout);
  return 0;
 }/* end ofx_proc_account() */
+
+int main (int argc, char *argv[])
+{
+extern int ofx_PARSER_msg;
+extern int ofx_DEBUG_msg;
+extern int ofx_WARNING_msg;
+extern int ofx_ERROR_msg;
+extern int ofx_INFO_msg;
+extern int ofx_STATUS_msg;
+ ofx_PARSER_msg = false;
+ ofx_DEBUG_msg = false;
+ ofx_WARNING_msg = false;
+ ofx_ERROR_msg = false;
+ ofx_INFO_msg = false;
+ ofx_STATUS_msg = false;
+
+  LibofxContextPtr libofx_context = libofx_get_new_context();
+  ofx_prep_cb(libofx_context,
+	     ofx_proc_statement_cb,
+	     ofx_proc_account_cb,
+	     ofx_proc_transaction_cb,
+	     ofx_proc_security_cb,
+	     ofx_proc_status_cb
+	     );
+
+	if(argc >= 2){
+	  libofx_proc_file(libofx_context, argv[1], OFX);   
+	}
+return libofx_free_context(libofx_context);
+}

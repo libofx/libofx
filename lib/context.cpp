@@ -16,7 +16,15 @@
 using namespace std;
 
 
-void * libofx_init_context()
+
+/** @note:  Actual object returned is LibofxContext *
+*/
+CFCT LibofxContextPtr libofx_get_new_context()
 {
   return new LibofxContext();
+}
+
+CFCT int libofx_free_context( LibofxContextPtr libofx_context_param)
+{
+  delete (LibofxContext *)libofx_context_param;
 }

@@ -38,104 +38,6 @@
 
 using namespace std;
 
-int main (int argc, char *argv[])
-{
-  /** Tell ofxdump what you want it to send to stderr.  See messages.cpp for more details */
-  extern int ofx_PARSER_msg;
-  extern int ofx_DEBUG_msg;
-  extern int ofx_WARNING_msg;
-  extern int ofx_ERROR_msg;
-  extern int ofx_INFO_msg;
-  extern int ofx_STATUS_msg;
-
-  gengetopt_args_info args_info;
-
-  /* let's call our cmdline parser */
-  if (cmdline_parser (argc, argv, &args_info) != 0)
-    exit(1) ;
-
-  //  if (args_info.msg_parser_given)
-  //    cout << "The msg_parser option was given!" << endl;
-
-  //  cout << "The flag is " << ( args_info.msg_parser_flag ? "on" : "off" ) <<
-  //    "." << endl ;
-  args_info.msg_parser_flag ? ofx_PARSER_msg = true : ofx_PARSER_msg = false;
-  args_info.msg_debug_flag ? ofx_DEBUG_msg = true : ofx_DEBUG_msg = false;
-  args_info.msg_warning_flag ? ofx_WARNING_msg = true : ofx_WARNING_msg = false;
-  args_info.msg_error_flag ? ofx_ERROR_msg = true : ofx_ERROR_msg = false;
-  args_info.msg_info_flag ? ofx_INFO_msg = true : ofx_INFO_msg = false;
-  args_info.msg_status_flag ? ofx_STATUS_msg = true : ofx_STATUS_msg;
-
-  if(args_info.list_import_formats_given)
-    {
-      cout <<"The supported file formats for the 'input-file-format' argument are:"<<endl;
-      for(int i=0; LibofxImportFormatList[i].format!=LAST; i++)
-	{
-	  cout <<"     "<<LibofxImportFormatList[i].description<<endl;
-	}
-    }
-
-  LibofxContextPtr libofx_context = libofx_init_context();
-
-  //char **inputs ; /* unamed options */
-  //unsigned inputs_num ; /* unamed options number */
-  if (args_info.inputs_num  > 0)
-    { 
-
-        ofx_prep_cb(
-                    ofx_proc_statement_cb,
-                    ofx_proc_account_cb,
-                    ofx_proc_transaction_cb,
-                    ofx_proc_security_cb,
-                    ofx_proc_status_cb
-                    );
-
-	enum LibofxFileFormat file_format = libofx_get_file_format_from_str(LibofxImportFormatList, args_info.import_format_arg);
-	/** @todo currently, only the first file is processed as the library can't deal with more right now.*/
-	if(args_info.inputs_num  > 1)
-	  {
-	    cout << "Sorry, currently, only the first file is processed as the library can't deal with more right now.  The followinf files were ignored:"<<endl;
-	    for ( unsigned i = 1 ; i < args_info.inputs_num ; ++i )
-	      {
-		cout << "file: " << args_info.inputs[i] << endl ;
-	      }
-	  }
-	libofx_proc_file(libofx_context, args_info.inputs[0], file_format);  
-    } 
-  else
-    {
-
-    }
-  return 0;
-}
-
-int ofx_proc_status_cb(struct OfxStatusData data, void * status_data)
-{
-  cout<<"ofx_proc_status():\n";
-  if(data.ofx_element_name_valid==true){
-    cout<<"    Ofx entity this status is relevent to: "<< data.ofx_element_name<<" \n";
-  }
-  if(data.severity_valid==true){
-    cout<<"    Severity: ";
-    switch(data.severity){
-    case OfxStatusData::INFO : cout<<"INFO\n";
-      break;
-    case OfxStatusData::WARN : cout<<"WARN\n";
-      break;
-    case OfxStatusData::ERROR : cout<<"ERROR\n";
-      break;
-    default: cout<<"WRITEME: Unknown status severity!\n";
-    }
-  }
-  if(data.code_valid==true){
-    cout<<"    Code: "<<data.code<<", name: "<<data.name<<"\n    Description: "<<data.description<<"\n";
-  }
-  if(data.server_message_valid==true){
-    cout<<"    Server Message: "<<data.server_message<<"\n";
-  }
-  cout<<"\n";
-  return 0;
-}
 
 int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
 {
@@ -415,3 +317,105 @@ int ofx_proc_account_cb(struct OfxAccountData data, void * account_data)
   cout<<"\n";
   return 0;
 }//end ofx_proc_account()
+
+
+
+int ofx_proc_status_cb(struct OfxStatusData data, void * status_data)
+{
+  cout<<"ofx_proc_status():\n";
+  if(data.ofx_element_name_valid==true){
+    cout<<"    Ofx entity this status is relevent to: "<< data.ofx_element_name<<" \n";
+  }
+  if(data.severity_valid==true){
+    cout<<"    Severity: ";
+    switch(data.severity){
+    case OfxStatusData::INFO : cout<<"INFO\n";
+      break;
+    case OfxStatusData::WARN : cout<<"WARN\n";
+      break;
+    case OfxStatusData::ERROR : cout<<"ERROR\n";
+      break;
+    default: cout<<"WRITEME: Unknown status severity!\n";
+    }
+  }
+  if(data.code_valid==true){
+    cout<<"    Code: "<<data.code<<", name: "<<data.name<<"\n    Description: "<<data.description<<"\n";
+  }
+  if(data.server_message_valid==true){
+    cout<<"    Server Message: "<<data.server_message<<"\n";
+  }
+  cout<<"\n";
+  return 0;
+}
+
+
+int main (int argc, char *argv[])
+{
+  /** Tell ofxdump what you want it to send to stderr.  See messages.cpp for more details */
+  extern int ofx_PARSER_msg;
+  extern int ofx_DEBUG_msg;
+  extern int ofx_WARNING_msg;
+  extern int ofx_ERROR_msg;
+  extern int ofx_INFO_msg;
+  extern int ofx_STATUS_msg;
+
+  gengetopt_args_info args_info;
+
+  /* let's call our cmdline parser */
+  if (cmdline_parser (argc, argv, &args_info) != 0)
+    exit(1) ;
+
+  //  if (args_info.msg_parser_given)
+  //    cout << "The msg_parser option was given!" << endl;
+
+  //  cout << "The flag is " << ( args_info.msg_parser_flag ? "on" : "off" ) <<
+  //    "." << endl ;
+  args_info.msg_parser_flag ? ofx_PARSER_msg = true : ofx_PARSER_msg = false;
+  args_info.msg_debug_flag ? ofx_DEBUG_msg = true : ofx_DEBUG_msg = false;
+  args_info.msg_warning_flag ? ofx_WARNING_msg = true : ofx_WARNING_msg = false;
+  args_info.msg_error_flag ? ofx_ERROR_msg = true : ofx_ERROR_msg = false;
+  args_info.msg_info_flag ? ofx_INFO_msg = true : ofx_INFO_msg = false;
+  args_info.msg_status_flag ? ofx_STATUS_msg = true : ofx_STATUS_msg;
+
+  if(args_info.list_import_formats_given)
+    {
+      cout <<"The supported file formats for the 'input-file-format' argument are:"<<endl;
+      for(int i=0; LibofxImportFormatList[i].format!=LAST; i++)
+	{
+	  cout <<"     "<<LibofxImportFormatList[i].description<<endl;
+	}
+    }
+
+  LibofxContextPtr libofx_context = libofx_get_new_context();
+
+  //char **inputs ; /* unamed options */
+  //unsigned inputs_num ; /* unamed options number */
+  if (args_info.inputs_num  > 0)
+    { 
+
+      ofx_prep_cb(libofx_context,
+                    ofx_proc_statement_cb,
+                    ofx_proc_account_cb,
+                    ofx_proc_transaction_cb,
+                    ofx_proc_security_cb,
+                    ofx_proc_status_cb
+                    );
+
+	enum LibofxFileFormat file_format = libofx_get_file_format_from_str(LibofxImportFormatList, args_info.import_format_arg);
+	/** @todo currently, only the first file is processed as the library can't deal with more right now.*/
+	if(args_info.inputs_num  > 1)
+	  {
+	    cout << "Sorry, currently, only the first file is processed as the library can't deal with more right now.  The followinf files were ignored:"<<endl;
+	    for ( unsigned i = 1 ; i < args_info.inputs_num ; ++i )
+	      {
+		cout << "file: " << args_info.inputs[i] << endl ;
+	      }
+	  }
+	libofx_proc_file(libofx_context, args_info.inputs[0], file_format);  
+    } 
+  else
+    {
+
+    }
+  return 0;
+}

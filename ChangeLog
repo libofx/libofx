@@ -1,3 +1,7 @@
+31/8/2004  Benoit Grégoire  <bock@step.polymtl.ca>
+	* Revamp the callback architecture according to discussion with Martin Preuss.  This is much cleaner and extensible, although a long way from perfect.
+	* Autoconf fixes from Martin Preuss
+
 23/4/2004  Benoit Grégoire  <bock@step.polymtl.ca>
 	* At long last, a flexible and extendable command line parser is used in ofxdump.  This was essential for debuging, and even more essential for developing Direct Connect.  Immediate benefits are that you can set the desired debug output without recompiling.  Check ofxdump --help for options.
 	* configure.in:  gengetopt will be used if available. 
