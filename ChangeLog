@@ -1,3 +1,9 @@
+12/4/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+	RELEASE LibOfx 0.6.4
+	* configure.in: Change version number
+	* NEWS: Update for release
+	* lib/ofx_utilities.cpp: Fix bug in ofxamount_to_double() triggered by the client setting the locale.  If the locale used ',' as decimal separator, it would get normalised to '.' and atof() would fail.  Now normalises to (localeconv())->decimal_point.  Closes gnucash bug 105481
+
 18/3/2003  Benoit Grégoire  <bock@step.polymtl.ca>
 	RELEASE LibOfx 0.6.3
 	* NEWS: Update for release

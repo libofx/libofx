@@ -134,16 +134,23 @@ time_t ofxdate_to_time_t(const string ofxdate)
 
 /**
  * Convert a C++ string containing an amount of money as specified by the OFX standard and convert it to a double float.
+ *\note The ofx number format is the following:  "." or "," as decimal separator, NO thousands separator.
  */ 
 double ofxamount_to_double(const string ofxamount)
 {
-  //Replace commas with decimal points for atof()
+  //Replace commas and decimal points for atof()
   string::size_type idx;
   string tmp = ofxamount;
+
   idx = tmp.find(',');
-  if(idx!=string::npos){
-    tmp.replace(idx,1,1,'.');
+  if(idx==string::npos){
+    idx = tmp.find('.');
   }
+  
+  if(idx!=string::npos){
+    tmp.replace(idx,1,1,((localeconv())->decimal_point)[0]);
+  }
+
   return atof(tmp.c_str());
 }
 

@@ -1,23 +1,26 @@
+LibOFX 0.6.4:
+	-Fix critical bug that caused the decimals to be ignored after the decimal separator in some locale (no matter what the decimal separator was in the original file).  For example, importing in gnucash with a locale of fr_FR caused an amount of 19,95 to be imported as 19,00.
+
 LibOFX 0.6.3:
--Fix incompatibilities with big endian machines
--Fix compilation on sun
--Fix error in the DTD that caused "content model is ambiguous" errors
--Fix ofx2qif crash
--ofxdump can now report the library version number.
+	-Fix incompatibilities with big endian machines
+	-Fix compilation on sun
+	-Fix error in the DTD that caused "content model is ambiguous" errors
+	-Fix ofx2qif crash
+	-ofxdump can now report the library version number.
 
 LibOFX 0.6.2:
--Hopefully fix incompatibilities with BOTH OpenSP 1.3.x and OpenSP >= 1.4
--Building as rpm is now available, thanks to Chris Lyttle.
--Doxygen API and internal doc now integrated in the build system.  It will be distributed and install with the tarballs, and can be build in libofx-cvs using make doc.
+	-Hopefully fix incompatibilities with BOTH OpenSP 1.3.x and OpenSP >= 1.4
+	-Building as rpm is now available, thanks to Chris Lyttle.
+	-Doxygen API and internal doc now integrated in the build system.  It will be distributed and install with the tarballs, and can be build in libofx-cvs using make doc.
 
 LibOFX 0.6.1:
-Fix a critical bug in 0.6.0.  Parsing of a file would fail and hang for users of OpenSP 1.5pre5 (and possibly others).
+	-Fix a critical bug in 0.6.0.  Parsing of a file would fail and hang for users of OpenSP 1.5pre5 (and possibly others).
 
 LibOFX 0.6:
 	-Beta version, released to accompany the new GnuCash 1.7.3 beta release.
 	-Full investment transaction support (ofx2qif not yet updated however).
 	-Now uses an Autoconf/Automake build system.
-	-Proprietary tag striper is now much smarter and read routines have been corrected.  Importing a file written on a single line will no longer cause an infinite loop.  
+	-Proprietary tag striper is now much smarter and read routines have been corrected.  Importing a file written on a single line will no longer cause an infinite loop.
 	-Added yet more spagetti code and global variables to improve the work around for OpenSP 1.3 bugs.  I beg of you, please convince your distro to make openjade and the OpenSP library independently upgradable.
 
 LibOFX 0.5:
@@ -28,7 +31,7 @@ LibOFX 0.5:
 	-Basic work for investment account and securities.
 LibOFX 0.3:
 	-MUCH improved documentation.  Full API and internals reference in doc/html/
-	-Major update to ofx2qif.  It will now generate the !Account QIF construct, which should improbe compatibility with other accounting software. 
+	-Major update to ofx2qif.  It will now generate the !Account QIF construct, which should improbe compatibility with other accounting software.
 	-gcc3.2 caused problems with ld, now use gcc to link.  Should solve the "undefined symbol:__dso_handle" runtime problem with Mandrake cooker.
 	-There is now a workaround in the code to make it work with the OpenSP version (1.3.4) distributed with OpenJADE.  However, this is not guaranteed to work, and it might cause errors in your financial data, and might not be present in future versions.  Use at your own risk, you've been warned.
 	-LibOFX can now be installed in "unorthodox" directories, such as ~/experimental, and still find it's dtd.  You must modify the prefix in common.m (recommended) or put it in the command line of BOTH make and make install. 
