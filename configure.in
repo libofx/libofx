@@ -44,16 +44,29 @@ AC_ARG_WITH(opensp-includes,
 [  --with-opensp-includes=PATH     specify where to look for OpenSP includes  
                                   - default is /usr/include/OpenSP)],
 			OPENSPINCLUDES="$with_opensp_includes",
-			OPENSPINCLUDES="/usr/include/OpenSP")
-			
+			OPENSPINCLUDES="" )
+
 AC_ARG_WITH(opensp-libs, 
 [  --with-opensp-libs=PATH         specify where to look for libosp 
                                   - default is /usr/lib],
 			OPENSPLIBPATH="$with_opensp_libs",
 			OPENSPLIBPATH="/usr/lib")
 			
+for d in /usr/include/OpenSP /usr/include/sp/generic ; do
+    if test "x$OPENSPINCLUDES" = x; then
+	save_CPPFLAGS="$CPPFLAGS"
+	CPPFLAGS="$CPPFLAGS -I$d"
+	AC_MSG_CHECKING(For ParserEventGenerator.h in $d)
+	AC_TRY_CPP([#include <ParserEventGeneratorKit.h>],
+	[ AC_MSG_RESULT(yes); OPENSPINCLUDES=$d ], [ AC_MSG_RESULT(no) ])
+	CPPFLAGS="$save_CPPFLAGS"
+    fi
+done
+
 ac_save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I$OPENSPINCLUDES $CPPFLAGS"
+if test "x$OPENSPINCLUDES" != x ; then
+  CPPFLAGS="-I$OPENSPINCLUDES $CPPFLAGS"
+fi
 AC_LANG_CPLUSPLUS 
 AC_CHECK_HEADERS([ParserEventGeneratorKit.h SGMLApplication.h EventGenerator.h], 
 				[] , 

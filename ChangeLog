@@ -1,3 +1,8 @@
+30/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
+	* configure.in: 
+	Apply Derek Atkins <warlord@MIT.EDU> patch needed to build on
+> RH7.3 using the "distributed" version of openjade.
+
 29/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
 	* lib/ofx_preproc.cpp doc/tag_striper_test.txt: 
 	Proprietary tag striper is now much smarter and read routines have been fixed.  Importing a file written on a single line should now be possible.  
