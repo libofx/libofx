@@ -1,0 +1,44 @@
+LibOFX 0.?????????:
+	-Include file location seems to have changed in recent versions of OpenSP.  Included old and new case.
+	-Profiling now possible.  It is now posible to use "make static".  Statically linked ofxdump and ofx2qif will be created, with profiling enabled.
+LibOFX 0.3:
+	-MUCH improved documentation.  Full API and internals reference in doc/html/
+	-Major update to ofx2qif.  It will now generate the !Account QIF construct, which should improbe compatibility with other accounting software. 
+	-gcc3.2 caused problems with ld, now use gcc to link.  Should solve the "undefined symbol:__dso_handle" runtime problem with Mandrake cooker.
+	-There is now a workaround in the code to make it work with the OpenSP version (1.3.4) distributed with OpenJADE.  However, this is not guaranteed to work, and it might cause errors in your financial data, and might not be present in future versions.  Use at your own risk, you've been warned.
+	-LibOFX can now be installed in "unorthodox" directories, such as ~/experimental, and still find it's dtd.  You must modify the prefix in common.m (recommended) or put it in the command line of BOTH make and make install. 
+	-LibOFX is now officially in beta.  Since one application now uses it (GnuCash), from now on, the library soname will be bumped if binary compatibility is broken.
+LibOFX 0.24:
+	-Fix include files for gcc2
+LibOFX 0.23:
+	-Hacked in runtime detection of OpenSP's SGMLApplication::Char size.  This should fix the hairy problems some people were experiencing with garbled Output with some versions of OpenSP.
+	-Installation instruction have been improved.
+	-OpenSP include files are no longer distributed with LibOFX.
+LibOFX 0.22:
+	-make install will now copy libofx.h in the appropriate include directory.
+LibOFX 0.21:
+	-Files were still created in current directory.  Now force /tmp to be used
+LibOFX 0.2:
+	-The input OFX file's directory no longer need to be writable, and no stale files are left behind.
+	-Prefixed all enum names with OFX to avoid collision with client software (Gnucash in particular)
+	-Changed all money amounts from float to double
+	-Fixed constructors to avoid some "holdover" data
+LibOFX 0.122:
+	-Always show two decimals for money in ofxdump.
+	-Fix dates off by two month (Scott Drennan)
+	-Fix ofx2qif account type for CREDITCARD (Scott Drennan)
+LibOFX 0.121:
+	-Fix makefiles for users who do not have ldconfig in their path to create local links.
+LibOFX 0.12:
+	-LibOFX can now be transparently used by both C and C++, using the same include file (libofx.h)
+	-ofx2qif rewritten in C, to ensure that C compatibility will be maintained and tested.
+	-Added target uninstall to all makefiles
+	-Various other makefile improvements
+LibOFX 0.11:
+	-Added ofx sample files extracted from the OFX 1.60 and 2.01 specifications in DOC.
+	-Fix compile problems with G++2.9.6
+	-Makefiles updated
+	-Require a recent version of OpenSP, doesn't work well the one included in OpenJADE (At least on Mandrake).
+	-Fixed the algorithm for proprietary tag striping.
+LibOFX 0.1:
+	-Initial public release

@@ -1,0 +1,4 @@
+Known bugs:
+
+-Line nuber in debugging out does not work, I haven't figured out why.
+-The DTD has minor problems.  You can safely ignore "content model is ambiguous" errors
