@@ -1,7 +1,7 @@
 /***************************************************************************
                           ofxdump.cpp
                              -------------------
-    copyright            : (C) 2002 by Benoit Grégoire
+    copyright            : (C) 2002 by Benoit GrÃ©goire
     email                : bock@step.polymtl.ca
 ***************************************************************************/
 /**@file
@@ -31,6 +31,9 @@
 #include <iomanip>
 #include <string>
 #include "libofx.h"
+#include <config.h>		/* Include config constants, e.g., VERSION TF */
+#include "lib/messages.hh"
+
 using namespace std;
 
 
@@ -50,9 +53,80 @@ int main (int argc, char *argv[])
   ofx_ERROR_msg = true;
   ofx_INFO_msg = true;
   ofx_STATUS_msg = true;
-  
-  ofx_proc_file(argc, argv);
+
+  int special_options (char *argv[]);
+  int count, ret = 0;;
+ 
+  printf ("This program was called with \"%s\".\n",argv[0]); 
+  if (argc > 1) 
+    { 
+      for (count = 1; count < argc; count++) 
+      {
+	printf("argv[%d] = %s\n", count, argv[count]); 
+      }
+      if  (0 == special_options(argv)) ;
+      else  ofx_proc_file(argc, argv);    /* Special option not found */
+    } 
+  else { ofx_proc_file(argc, argv);   /* No arguments             */
+    }
+  return 0; 
 }
+
+
+int special_options (char *argv[])
+{
+  int count;
+
+  /* Define case numbers */
+  const int spoptver = 0;
+  const int spopthelp = 1; 
+  
+  /* Define option and case arrays */
+  const char *spoptar[] =           {"--version", "-V", "--help"};
+  const int spoptdim = sizeof(spoptar)/sizeof(spoptar[0]);
+  const int spoptcasear[spoptdim] = {spoptver, spoptver, spopthelp};
+
+  /* Define help array  */
+  const char *helpar[] =
+    {
+      "ofxdump command synopsis:\n",
+	"ofxdump special_option\n",
+	"ofxdump ofx_file\n",
+	"\n",
+	"Special options are:\n",
+	"--version, V     libofx version\n",
+	"--help           help text\n",
+	"\n",
+	"If the first argument is a special option, it is processed and any remaining \
+arguments are ignored; otherwise, control goes to ofx_proc_file.\n\n"
+    };
+  const int helpardim = sizeof(helpar)/sizeof(helpar[1]);
+
+  /* Scan for special option */  
+  for (count = 0; (count < spoptdim) && (strcmp(argv[1], spoptar[count]) != 0) ; count++);
+
+  if (count < spoptdim)               /* If found */
+    {
+      switch (spoptcasear[count])
+	{ 
+	case spoptver:  printf ("libofx version:  %s \n", VERSION ); return 0;
+	case spopthelp: 
+	  {
+	    for (int i=0; i < helpardim; i++)  printf (helpar[i]); 
+	    return 0;
+	  }
+	default: 
+	  {
+	    message_out (ERROR, "Impossible special option case");
+	    return -1;              /* Program error */
+	  }
+	}
+    }
+  return 1;    
+}
+
+
+
 
 int ofx_proc_status_cb(struct OfxStatusData data)
 {
