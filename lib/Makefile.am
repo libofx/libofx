@@ -1,7 +1,5 @@
 lib_LTLIBRARIES = libofx.la
 
-#In case getoptlong() isn't available
-libofx_la_LIBADD = @LIBOBJS@
 EXTRA_DIST = gnugetopt.h getopt.c getopt1.c
 
 libofx_la_SOURCES =  messages.cpp \
@@ -39,7 +37,7 @@ AM_CPPFLAGS = \
 	-I${OPENSPINCLUDES} \
 	-DMAKEFILE_DTD_PATH=\"${LIBOFX_DTD_DIR}/\"
 
-libofx_la_LIBADD = ${OPENSPLIBS} -lstdc++
+libofx_la_LIBADD = @LIBOBJS@ ${OPENSPLIBS} -lstdc++
 libofx_la_LDFLAGS = -version-info ${LIBOFX_MAJOR_VERSION}:${LIBOFX_MINOR_VERSION}:0
 
 

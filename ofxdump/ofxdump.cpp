@@ -391,28 +391,26 @@ int main (int argc, char *argv[])
   //char **inputs ; /* unamed options */
   //unsigned inputs_num ; /* unamed options number */
   if (args_info.inputs_num  > 0)
-    { 
+    {
 
-      ofx_prep_cb(libofx_context,
-                    ofx_proc_statement_cb,
-                    ofx_proc_account_cb,
-                    ofx_proc_transaction_cb,
-                    ofx_proc_security_cb,
-                    ofx_proc_status_cb
-                    );
+      ofx_set_statement_cb(libofx_context, ofx_proc_statement_cb, 0);
+      ofx_set_account_cb(libofx_context, ofx_proc_account_cb, 0);
+      ofx_set_transaction_cb(libofx_context, ofx_proc_transaction_cb, 0);
+      ofx_set_security_cb(libofx_context, ofx_proc_security_cb, 0);
+      ofx_set_status_cb(libofx_context, ofx_proc_status_cb, 0);
 
-	enum LibofxFileFormat file_format = libofx_get_file_format_from_str(LibofxImportFormatList, args_info.import_format_arg);
-	/** @todo currently, only the first file is processed as the library can't deal with more right now.*/
-	if(args_info.inputs_num  > 1)
-	  {
-	    cout << "Sorry, currently, only the first file is processed as the library can't deal with more right now.  The followinf files were ignored:"<<endl;
-	    for ( unsigned i = 1 ; i < args_info.inputs_num ; ++i )
-	      {
-		cout << "file: " << args_info.inputs[i] << endl ;
+      enum LibofxFileFormat file_format = libofx_get_file_format_from_str(LibofxImportFormatList, args_info.import_format_arg);
+      /** @todo currently, only the first file is processed as the library can't deal with more right now.*/
+      if(args_info.inputs_num  > 1)
+        {
+          cout << "Sorry, currently, only the first file is processed as the library can't deal with more right now.  The followinf files were ignored:"<<endl;
+          for ( unsigned i = 1 ; i < args_info.inputs_num ; ++i )
+            {
+              cout << "file: " << args_info.inputs[i] << endl ;
 	      }
-	  }
-	libofx_proc_file(libofx_context, args_info.inputs[0], file_format);  
-    } 
+        }
+      libofx_proc_file(libofx_context, args_info.inputs[0], file_format);
+    }
   else
     {
 

@@ -31,19 +31,3 @@ private:
 };
 */
 
-CFCT void ofx_prep_cb(LibofxContextPtr libofx_context_param,
-		      LibofxProcStatementCallback ofx_statement_cb,
-		      LibofxProcAccountCallback ofx_account_cb,
-		      LibofxProcTransactionCallback ofx_transaction_cb,
-		      LibofxProcSecurityCallback ofx_security_cb,
-		      LibofxProcStatusCallback ofx_status_cb
-		      )
-{
-  LibofxContext *libofx_context = ( LibofxContext *)libofx_context_param;
-  /* assign callbacks...these can be overridden in client code */
-  libofx_context->cb_registry.ofx_statement_cb=ofx_statement_cb;
-  libofx_context->cb_registry.ofx_transaction_cb=ofx_transaction_cb;
-  libofx_context->cb_registry.ofx_security_cb=ofx_security_cb;
-  libofx_context->cb_registry.ofx_account_cb=ofx_account_cb;
-  libofx_context->cb_registry.ofx_status_cb=ofx_status_cb;
-};

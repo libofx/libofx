@@ -71,16 +71,21 @@ int libofx_proc_file(LibofxContextPtr p_libofx_context, const char * p_filename,
   if(p_file_type==AUTODETECT)
     {
       message_out(INFO, string("libofx_proc_file(): File format not specified, autodecting..."));
-      libofx_context->current_file_type = libofx_detect_file_type( p_filename);
-      message_out(INFO, string("libofx_proc_file(): Detected file format: ")+libofx_get_file_format_description(LibofxImportFormatList, libofx_context->current_file_type ));
+      libofx_context->setCurrentFileType(libofx_detect_file_type(p_filename));
+      message_out(INFO, string("libofx_proc_file(): Detected file format: ")+
+                  libofx_get_file_format_description(LibofxImportFormatList,
+                                                     libofx_context->currentFileType() ));
     }
   else
     {
-     libofx_context->current_file_type = p_file_type;
-     message_out(INFO, string("libofx_proc_file(): File format forced to: ")+libofx_get_file_format_description(LibofxImportFormatList, libofx_context->current_file_type ));
+      libofx_context->setCurrentFileType(libofx_detect_file_type(p_filename));
+      message_out(INFO,
+                  string("libofx_proc_file(): File format forced to: ")+
+                  libofx_get_file_format_description(LibofxImportFormatList,
+                                                     libofx_context->currentFileType() ));
     }
 
-  switch (libofx_context->current_file_type)
+  switch (libofx_context->currentFileType())
     {
     case OFX: ofx_proc_file(libofx_context, p_filename);
       break;

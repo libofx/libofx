@@ -223,17 +223,21 @@ extern int ofx_STATUS_msg;
  ofx_INFO_msg = false;
  ofx_STATUS_msg = false;
 
-  LibofxContextPtr libofx_context = libofx_get_new_context();
-  ofx_prep_cb(libofx_context,
-	     ofx_proc_statement_cb,
-	     ofx_proc_account_cb,
-	     ofx_proc_transaction_cb,
-	     ofx_proc_security_cb,
-	     ofx_proc_status_cb
-	     );
+ LibofxContextPtr libofx_context = libofx_get_new_context();
+ ofx_set_statement_cb(libofx_context, ofx_proc_statement_cb, 0);
+ ofx_set_account_cb(libofx_context, ofx_proc_account_cb, 0);
+ ofx_set_transaction_cb(libofx_context, ofx_proc_transaction_cb, 0);
+ ofx_set_security_cb(libofx_context, ofx_proc_security_cb, 0);
+ ofx_set_status_cb(libofx_context, ofx_proc_status_cb, 0);
 
-	if(argc >= 2){
-	  libofx_proc_file(libofx_context, argv[1], OFX);   
-	}
-return libofx_free_context(libofx_context);
+
+ if(argc >= 2){
+   libofx_proc_file(libofx_context, argv[1], OFX);
+ }
+ return libofx_free_context(libofx_context);
 }
+
+
+
+
+

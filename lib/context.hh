@@ -21,12 +21,40 @@
 
 using namespace std;
 class LibofxContext {
- public:
-  LibofxFileFormat current_file_type;
-/**
- * Instance of the callback registry
- */
-  OfxCallbackRegistry cb_registry;
+private:
+  LibofxFileFormat _current_file_type;
+
+  LibofxProcStatusCallback _statusCallback;
+  LibofxProcAccountCallback _accountCallback;
+  LibofxProcSecurityCallback _securityCallback;
+  LibofxProcTransactionCallback _transactionCallback;
+  LibofxProcStatementCallback _statementCallback;
+
+  void * _statementData;
+  void * _accountData;
+  void * _transactionData;
+  void * _securityData;
+  void * _statusData;
+
+public:
+  LibofxContext();
+  ~LibofxContext();
+
+  LibofxFileFormat currentFileType() const;
+  void setCurrentFileType(LibofxFileFormat t);
+
+  int statementCallback(const struct OfxStatementData data);
+  int accountCallback(const struct OfxAccountData data);
+  int transactionCallback(const struct OfxTransactionData data);
+  int securityCallback(const struct OfxSecurityData data);
+  int statusCallback(const struct OfxStatusData data);
+
+  void setStatusCallback(LibofxProcStatusCallback cb, void *user_data);
+  void setAccountCallback(LibofxProcAccountCallback cb, void *user_data);
+  void setSecurityCallback(LibofxProcSecurityCallback cb, void *user_data);
+  void setTransactionCallback(LibofxProcTransactionCallback cb, void *user_data);
+  void setStatementCallback(LibofxProcStatementCallback cb, void *user_data);
+
 
 };//End class LibofxContext
 

@@ -5,7 +5,7 @@ AM_CPPFLAGS = \
 	-I${top_srcdir}/inc
 
 if USE_GENGETOPT 
-CLEANFILES += cmdline.c cmdline.h
+CLEANFILES = cmdline.c cmdline.h
 
 cmdline.c cmdline.h: cmdline.ggo Makefile
 	gengetopt --unamed-opts < $<

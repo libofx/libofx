@@ -87,8 +87,8 @@ int ofx_proc_file(LibofxContext * libofx_context, const char * p_filename)
     else
       {
 
-	do{
-	  input_file.getline(buffer, sizeof(buffer),'\n');
+	do {
+          input_file.getline(buffer, sizeof(buffer),'\n');
 	  //cout<<buffer<<"\n";
 	  s_buffer.assign(buffer);
 	  //cout<<"input_file.gcount(): "<<input_file.gcount()<<" sizeof(buffer): "<<sizeof(buffer)<<endl;
@@ -101,34 +101,44 @@ int ofx_proc_file(LibofxContext * libofx_context, const char * p_filename)
 	      input_file.clear();
 	    }
 	  int ofx_start_idx;
-	  if(ofx_start==false&&(
-				(libofx_context->current_file_type==OFX&&((ofx_start_idx=s_buffer.find("<OFX>"))!=string::npos||(ofx_start_idx=s_buffer.find("<ofx>"))!=string::npos))
-				|| (libofx_context->current_file_type==OFC&&((ofx_start_idx=s_buffer.find("<OFC>"))!=string::npos||(ofx_start_idx=s_buffer.find("<ofc>"))!=string::npos))
-				)
-	     )
-{
-	    ofx_start=true;
-	    s_buffer.erase(0,ofx_start_idx);//Fix for really broken files that don't have a newline after the header.
-	    message_out(DEBUG,"ofx_proc_file():<OFX> or <OFC> has been found");
+          if (ofx_start==false &&
+              (
+               (libofx_context->currentFileType()==OFX&&
+                ((ofx_start_idx=s_buffer.find("<OFX>"))!=
+                 string::npos||(ofx_start_idx=s_buffer.find("<ofx>"))!=string::npos))
+               || (libofx_context->currentFileType()==OFC&&
+                   ((ofx_start_idx=s_buffer.find("<OFC>"))!=string::npos||
+                    (ofx_start_idx=s_buffer.find("<ofc>"))!=string::npos))
+              )
+             )
+            {
+              ofx_start=true;
+              s_buffer.erase(0,ofx_start_idx);//Fix for really broken files that don't have a newline after the header.
+              message_out(DEBUG,"ofx_proc_file():<OFX> or <OFC> has been found");
+            }
+
+          if(ofx_start==true && ofx_end==false){
+            s_buffer=sanitize_proprietary_tags(s_buffer);
+            //cout<< s_buffer<<"\n";
+            tmp_file.write(s_buffer.c_str(), s_buffer.length());
 	  }
 	  
-	  if(ofx_start==true&&ofx_end==false){
-	    s_buffer=sanitize_proprietary_tags(s_buffer);
-	    //cout<< s_buffer<<"\n";
-	    tmp_file.write(s_buffer.c_str(), s_buffer.length());
-	  }
-	  
-	  if(ofx_start==true&&(
-			       (libofx_context->current_file_type==OFX&&((ofx_start_idx=s_buffer.find("</OFX>"))!=string::npos||(ofx_start_idx=s_buffer.find("</ofx>"))!=string::npos))
-			       || (libofx_context->current_file_type==OFC&&((ofx_start_idx=s_buffer.find("</OFC>"))!=string::npos||(ofx_start_idx=s_buffer.find("</ofc>"))!=string::npos))
-			       )
-	     )
-	    {
-	      ofx_end=true;
-	      message_out(DEBUG,"ofx_proc_file():</OFX> or </OFC>  has been found");
-	    }
-	  
-	}while(!input_file.eof()&&!input_file.bad());
+          if (ofx_start==true &&
+              (
+               (libofx_context->currentFileType()==OFX &&
+                ((ofx_start_idx=s_buffer.find("</OFX>"))!=string::npos ||
+                 (ofx_start_idx=s_buffer.find("</ofx>"))!=string::npos))
+               || (libofx_context->currentFileType()==OFC &&
+                   ((ofx_start_idx=s_buffer.find("</OFC>"))!=string::npos ||
+                    (ofx_start_idx=s_buffer.find("</ofc>"))!=string::npos))
+              )
+             )
+            {
+              ofx_end=true;
+              message_out(DEBUG,"ofx_proc_file():</OFX> or </OFC>  has been found");
+            }
+
+        } while(!input_file.eof()&&!input_file.bad());
       }
     input_file.close();
     tmp_file.close();
@@ -137,45 +147,45 @@ int ofx_proc_file(LibofxContext * libofx_context, const char * p_filename)
     char filename_dtd[255];
     char filename_ofx[255];
     strncpy(filename_openspdtd,find_dtd(OPENSPDCL_FILENAME).c_str(),255);//The opensp sgml dtd file
-    if(libofx_context->current_file_type==OFX)
+    if(libofx_context->currentFileType()==OFX)
       {
-    strncpy(filename_dtd,find_dtd(OFX160DTD_FILENAME).c_str(),255);//The ofx dtd file
+        strncpy(filename_dtd,find_dtd(OFX160DTD_FILENAME).c_str(),255);//The ofx dtd file
       }
-    else if(libofx_context->current_file_type==OFC)
+    else if(libofx_context->currentFileType()==OFC)
       {
-    strncpy(filename_dtd,find_dtd(OFCDTD_FILENAME).c_str(),255);//The ofc dtd file
+        strncpy(filename_dtd,find_dtd(OFCDTD_FILENAME).c_str(),255);//The ofc dtd file
       }
     else
       {
-	message_out(ERROR,string("ofx_proc_file(): Error unknown file format for the OFX parser"));
+        message_out(ERROR,string("ofx_proc_file(): Error unknown file format for the OFX parser"));
       }
 
     if((string)filename_dtd!="" && (string)filename_openspdtd!="")
       {
-	strncpy(filename_ofx,tmp_filename,255);//The processed ofx file
-	filenames[0]=filename_openspdtd;
-	filenames[1]=filename_dtd;
-	filenames[2]=filename_ofx;
-	if(libofx_context->current_file_type==OFX)
-	  {
-	    ofx_proc_sgml(libofx_context, 3,filenames);
-	  }
-	else if(libofx_context->current_file_type==OFC)
-	  {
-	    ofc_proc_sgml(libofx_context, 3,filenames);
-	  }
-	else
-	  {
-	    message_out(ERROR,string("ofx_proc_file(): Error unknown file format for the OFX parser"));
-	  }
-	if(remove(tmp_filename)!=0)
-	  { 
-	    message_out(ERROR,"ofx_proc_file(): Error deleting temporary file "+string(tmp_filename));
-	  }
+        strncpy(filename_ofx,tmp_filename,255);//The processed ofx file
+        filenames[0]=filename_openspdtd;
+        filenames[1]=filename_dtd;
+        filenames[2]=filename_ofx;
+        if(libofx_context->currentFileType()==OFX)
+          {
+            ofx_proc_sgml(libofx_context, 3,filenames);
+          }
+        else if(libofx_context->currentFileType()==OFC)
+          {
+            ofc_proc_sgml(libofx_context, 3,filenames);
+          }
+        else
+          {
+            message_out(ERROR,string("ofx_proc_file(): Error unknown file format for the OFX parser"));
+          }
+        if(remove(tmp_filename)!=0)
+          {
+            message_out(ERROR,"ofx_proc_file(): Error deleting temporary file "+string(tmp_filename));
+          }
       }
     else
       {
-	message_out(ERROR,"ofx_proc_file(): FATAL: Missing DTD, aborting");
+        message_out(ERROR,"ofx_proc_file(): FATAL: Missing DTD, aborting");
       }
   }
   else{

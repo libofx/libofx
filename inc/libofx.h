@@ -572,20 +572,57 @@ struct OfxCurrency{
   int must_convert;   /**< true or false */
 };
 
-typedef struct OfxCallbackRegistry OfxCallbackRegistry;
 
 /**
- * \brief ofx_prep_cb registers the callbacks to be signaled during processing 
- *
- *  Each function will be called with the preceding void * structure as its
- *  first argument.  If one is unused, just pass it NULL.
-*/
-CFCT void ofx_prep_cb(LibofxContextPtr,
-		      LibofxProcStatementCallback,
-		      LibofxProcAccountCallback,
-		      LibofxProcTransactionCallback,
-		      LibofxProcSecurityCallback,
-		      LibofxProcStatusCallback
-		      );
+ * Set the status callback in the given context.
+ * @param ctx context
+ * @param cb callback function
+ * @param user_data user data to be passed to the callback
+ */
+CFCT void ofx_set_status_cb(LibofxContextPtr ctx,
+                            LibofxProcStatusCallback cb,
+                            void *user_data);
+/**
+ * Set the account callback in the given context.
+ * @param ctx context
+ * @param cb callback function
+ * @param user_data user data to be passed to the callback
+ */
+CFCT void ofx_set_account_cb(LibofxContextPtr ctx,
+                             LibofxProcAccountCallback cb,
+                             void *user_data);
+/**
+ * Set the security callback in the given context.
+ * @param ctx context
+ * @param cb callback function
+ * @param user_data user data to be passed to the callback
+ */
+CFCT void ofx_set_security_cb(LibofxContextPtr ctx,
+                              LibofxProcSecurityCallback cb,
+                              void *user_data);
+/**
+ * Set the transaction callback in the given context.
+ * @param ctx context
+ * @param cb callback function
+ * @param user_data user data to be passed to the callback
+ */
+CFCT void ofx_set_transaction_cb(LibofxContextPtr ctx,
+                                 LibofxProcTransactionCallback cb,
+                                 void *user_data);
+
+/**
+ * Set the statement callback in the given context.
+ * @param ctx context
+ * @param cb callback function
+ * @param user_data user data to be passed to the callback
+ */
+CFCT void ofx_set_statement_cb(LibofxContextPtr ctx,
+                               LibofxProcStatementCallback cb,
+                               void *user_data);
+
+
+
+
+
 #endif
 

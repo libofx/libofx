@@ -16,15 +16,15 @@
 using namespace std;
 
 struct OfxCallbackRegistry{
-	void * statement_data;
-	int (*ofx_statement_cb)( const struct OfxStatementData data, void *);
-	void * account_data;
+  void * statement_data;
+  int (*ofx_statement_cb)( const struct OfxStatementData data, void *);
+  void * account_data;
   int (*ofx_account_cb)( const struct OfxAccountData data, void *);
-	void * transaction_data;
+  void * transaction_data;
   int (*ofx_transaction_cb)( const struct OfxTransactionData data, void *);
-	void * security_data;
+  void * security_data;
   int (*ofx_security_cb)( const struct OfxSecurityData data, void *);
-	void * status_data;
+  void * status_data;
   int (*ofx_status_cb)(const struct OfxStatusData data, void *);
 };
 

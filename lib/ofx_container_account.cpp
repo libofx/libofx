@@ -118,8 +118,7 @@ void OfxAccountContainer::add_attribute(const string identifier, const string va
 
 int OfxAccountContainer::gen_event()
 {
-  libofx_context->cb_registry.ofx_account_cb( data, libofx_context->cb_registry.account_data );
-  //ofx_proc_account_cb(data);
+  libofx_context->accountCallback(data);
   return true;
 }
 

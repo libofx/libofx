@@ -1,3 +1,15 @@
+
+1/9/2004 Martin Preuss <martin@aquamaniac.de>
+ 	* simplified internal callback mechanism (removed CallbackRegistry, it is easier this way)
+        * protected members of LibOfxContext (you need to call methods to get/set them)
+        * added functions which allow to set each callback individually. If you are not interested in a particular
+          callback you don't need to set it
+        * removed the all-callback setter
+        * all callbacks now pass LibOfxContext which either propagates the callback or silently ignores it (for callbacks
+          which haven't been set)
+        * a few Makefile fixes in lib
+        * adjusted ofxdump and ofx2qif to these changes
+
 31/8/2004  Benoit Grégoire  <bock@step.polymtl.ca>
 	* Revamp the callback architecture according to discussion with Martin Preuss.  This is much cleaner and extensible, although a long way from perfect.
 	* Autoconf fixes from Martin Preuss

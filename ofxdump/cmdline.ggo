@@ -10,11 +10,11 @@ purpose "ofxdump prints to stdout, in human readable form, everything the librar
 # Options
 # option <long> <short> <desc> {argtype} {typestr="<type descr>"} {default="<default value>"} {required} {argoptional} {multiple}
 
-section "File options"
+#section "File options"
 option  "import-format"	f	"Force the file format of the file(s) specified" string default="AUTODETECT" no
 option	"list-import-formats"	-	"List available import file formats 'import-format' command"	no
 
-section "Debug output options"
+#section "Debug output options"
 option	"msg_parser"	-	"Output file parsing messages"	flag	off
 option	"msg_debug"	-	"Output messages meant for debuging"	flag	off
 option	"msg_warning"	-	"Output warning messages about abnormal conditions and unknown constructs"	flag	on
