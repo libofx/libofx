@@ -68,8 +68,10 @@ extern int ofx_STATUS_msg;
 	     ofx_proc_status_cb
 	     );
 
+  LibofxContextPtr libofx_context = libofx_init_context();
+
 	if(argc >= 2){
-	  libofx_proc_file(argv[1], OFX);   
+	  libofx_proc_file(libofx_context, argv[1], OFX);   
 	}
 return 0;
 }

@@ -32,7 +32,6 @@
 using namespace std;
 /**
    \brief The number of different paths to search for DTDs.
-   This must match the number of entry in DTD_SEARCH_PATH 
 */
 #ifdef MAKEFILE_DTD_PATH
 const int DTD_SEARCH_PATH_NUM = 4;
@@ -42,7 +41,6 @@ const int DTD_SEARCH_PATH_NUM = 3;
  
 /**
    \brief The list of paths to search for the DTDs.
-   (Note that this should be modified so that the selected path from the makefile is added here automatically)
 */ 
 const char *DTD_SEARCH_PATH[DTD_SEARCH_PATH_NUM] = { 
 #ifdef MAKEFILE_DTD_PATH
@@ -53,7 +51,11 @@ const char *DTD_SEARCH_PATH[DTD_SEARCH_PATH_NUM] = {
   "~/"};
 const unsigned int READ_BUFFER_SIZE = 1024;
 
-int ofx_proc_file(const char * p_filename, LibofxFileType p_file_type)
+/** @brief File pre-processing of OFX AND for OFC files 
+*
+* Takes care of comment striping, dtd locating, etc.
+*/
+int ofx_proc_file(LibofxContext * libofx_context, const char * p_filename)
 {
   bool ofx_start=false;
   bool ofx_end=false;
@@ -100,8 +102,8 @@ int ofx_proc_file(const char * p_filename, LibofxFileType p_file_type)
 	    }
 	  int ofx_start_idx;
 	  if(ofx_start==false&&(
-				(p_file_type==OFX&&((ofx_start_idx=s_buffer.find("<OFX>"))!=string::npos||(ofx_start_idx=s_buffer.find("<ofx>"))!=string::npos))
-				|| (p_file_type==OFC&&((ofx_start_idx=s_buffer.find("<OFC>"))!=string::npos||(ofx_start_idx=s_buffer.find("<ofc>"))!=string::npos))
+				(libofx_context->current_file_type==OFX&&((ofx_start_idx=s_buffer.find("<OFX>"))!=string::npos||(ofx_start_idx=s_buffer.find("<ofx>"))!=string::npos))
+				|| (libofx_context->current_file_type==OFC&&((ofx_start_idx=s_buffer.find("<OFC>"))!=string::npos||(ofx_start_idx=s_buffer.find("<ofc>"))!=string::npos))
 				)
 	     )
 {
@@ -117,8 +119,8 @@ int ofx_proc_file(const char * p_filename, LibofxFileType p_file_type)
 	  }
 	  
 	  if(ofx_start==true&&(
-			       (p_file_type==OFX&&((ofx_start_idx=s_buffer.find("</OFX>"))!=string::npos||(ofx_start_idx=s_buffer.find("</ofx>"))!=string::npos))
-			       || (p_file_type==OFC&&((ofx_start_idx=s_buffer.find("</OFC>"))!=string::npos||(ofx_start_idx=s_buffer.find("</ofc>"))!=string::npos))
+			       (libofx_context->current_file_type==OFX&&((ofx_start_idx=s_buffer.find("</OFX>"))!=string::npos||(ofx_start_idx=s_buffer.find("</ofx>"))!=string::npos))
+			       || (libofx_context->current_file_type==OFC&&((ofx_start_idx=s_buffer.find("</OFC>"))!=string::npos||(ofx_start_idx=s_buffer.find("</ofc>"))!=string::npos))
 			       )
 	     )
 	    {
@@ -135,11 +137,11 @@ int ofx_proc_file(const char * p_filename, LibofxFileType p_file_type)
     char filename_dtd[255];
     char filename_ofx[255];
     strncpy(filename_openspdtd,find_dtd(OPENSPDCL_FILENAME).c_str(),255);//The opensp sgml dtd file
-    if(p_file_type==OFX)
+    if(libofx_context->current_file_type==OFX)
       {
     strncpy(filename_dtd,find_dtd(OFX160DTD_FILENAME).c_str(),255);//The ofx dtd file
       }
-    else if(p_file_type==OFC)
+    else if(libofx_context->current_file_type==OFC)
       {
     strncpy(filename_dtd,find_dtd(OFCDTD_FILENAME).c_str(),255);//The ofc dtd file
       }
@@ -154,13 +156,13 @@ int ofx_proc_file(const char * p_filename, LibofxFileType p_file_type)
 	filenames[0]=filename_openspdtd;
 	filenames[1]=filename_dtd;
 	filenames[2]=filename_ofx;
-	if(p_file_type==OFX)
+	if(libofx_context->current_file_type==OFX)
 	  {
-	    ofx_proc_sgml(3,filenames);
+	    ofx_proc_sgml(libofx_context, 3,filenames);
 	  }
-	else if(p_file_type==OFC)
+	else if(libofx_context->current_file_type==OFC)
 	  {
-	    ofc_proc_sgml(3,filenames);
+	    ofc_proc_sgml(libofx_context, 3,filenames);
 	  }
 	else
 	  {

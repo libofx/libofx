@@ -25,6 +25,7 @@
 #include "libofx.h"
 #include "messages.hh"
 #include "ofx_preproc.hh"
+#include "context.hh"
 #include "file_preproc.hh"
 
 using namespace std;
@@ -75,27 +76,27 @@ const char * get_file_type_description(enum LibofxFileType file_type)
   return retval;
 };
 
-int libofx_proc_file(const char * p_filename, LibofxFileType p_file_type)
+int libofx_proc_file(LibofxContextPtr p_libofx_context, const char * p_filename, LibofxFileType p_file_type)
 {
-  LibofxFileType file_type;
+  LibofxContext * libofx_context = (LibofxContext *) p_libofx_context;
 
   if(p_file_type==AUTODETECT)
     {
       message_out(INFO, string("libofx_proc_file(): File format not specified, autodecting..."));
-      file_type = libofx_detect_file_type( p_filename);
-      message_out(INFO, string("libofx_proc_file(): Detected file format: ")+get_file_type_description(file_type ));
+      libofx_context->current_file_type = libofx_detect_file_type( p_filename);
+      message_out(INFO, string("libofx_proc_file(): Detected file format: ")+get_file_type_description(libofx_context->current_file_type ));
     }
   else
     {
-      message_out(INFO, string("libofx_proc_file(): File format forced to: ")+get_file_type_description(file_type ));
-      file_type = p_file_type;
+     libofx_context->current_file_type = p_file_type;
+     message_out(INFO, string("libofx_proc_file(): File format forced to: ")+get_file_type_description(libofx_context->current_file_type ));
     }
 
-  switch (file_type)
+  switch (libofx_context->current_file_type)
     {
-    case OFX: ofx_proc_file(p_filename, file_type);
+    case OFX: ofx_proc_file(libofx_context, p_filename);
       break;
-    case OFC: ofx_proc_file(p_filename, file_type);
+    case OFC: ofx_proc_file(libofx_context, p_filename);
       break;
     default: message_out(ERROR, string("libofx_proc_file(): Detected file format not yet supported ou couldn't detect file format; aborting."));
     }

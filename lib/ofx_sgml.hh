@@ -18,8 +18,8 @@
  ***************************************************************************/
 #ifndef OFX_SGML_H
 #define OFX_SGML_H
-
+#include "context.hh"
 ///Parses a DTD and OFX file(s)
-int ofx_proc_sgml(int argc, char *argv[]);
+int ofx_proc_sgml(LibofxContext * libofx_context, int argc, char *argv[]);
 
 #endif

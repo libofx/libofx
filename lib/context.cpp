@@ -1,13 +1,7 @@
-/***************************************************************************
-                          ofx_sgml.h
-                             -------------------
-    begin                : Tue Mar 19 2002
-    copyright            : (C) 2002 by Benoit Grégoire
-    email                : bock@step.polymtl.ca
- ***************************************************************************/
-/** @file
- * \brief OFX/SGML parsing functionnality.
-*/
+/**@file libofx_context.hh
+ @brief Main state object passed everywhere in the library
+ @author (C) 2004 by Benoit Grégoire
+ */
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,11 +10,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef OFC_SGML_H
-#define OFC_SGML_H
+#include <config.h>
 #include "context.hh"
 
-///Parses a DTD and OFX file(s)
-int ofc_proc_sgml(LibofxContext * libofx_context, int argc, char *argv[]);
+using namespace std;
 
-#endif
+
+void * libofx_init_context()
+{
+  return new LibofxContext();
+}

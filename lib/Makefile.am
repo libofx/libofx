@@ -2,6 +2,7 @@ lib_LTLIBRARIES = libofx.la
 libofx_la_SOURCES =  messages.cpp \
 		ofx_utilities.cpp \
 		file_preproc.cpp \
+		context.cpp \
 		ofx_preproc.cpp \
 		ofx_container_generic.cpp \
 		ofx_container_main.cpp \
@@ -17,6 +18,7 @@ noinst_HEADERS = ${top_srcdir}/inc/libofx.h \
 		messages.hh \
 		ofx_preproc.hh \
 		file_preproc.hh \
+		context.hh \
 		ofx_sgml.hh \
 		ofc_sgml.hh \
 		ofx_error_msg.hh \

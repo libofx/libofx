@@ -42,12 +42,13 @@ extern OfxMainContainer * MainContainer;
 /** \brief This object is driven by OpenSP as it parses the SGML from the ofx file(s)
  */
 class OFCApplication : public SGMLApplication{
-public:
+private:
   OfxGenericContainer *curr_container_element; /**< The currently open object from ofx_proc_rs.cpp */
   OfxGenericContainer *tmp_container_element;
   bool is_data_element; /**< If the SGML element contains data, this flag is raised */
   string incoming_data; /**< The raw data from the SGML data element */
-  
+
+ public:
   OFCApplication ()
   {
     MainContainer=NULL;
@@ -338,7 +339,7 @@ private:
 /**
    ofc_proc_sgml will take a list of files in command line format.  The first file must be the DTD, and then any number of OFX files.
 */
-int ofc_proc_sgml(int argc, char *argv[])
+int ofc_proc_sgml(LibofxContext * libofx_context, int argc, char *argv[])
 {
   message_out(DEBUG,"Begin ofx_proc_sgml()");
   message_out(DEBUG,argv[0]);

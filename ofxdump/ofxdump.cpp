@@ -1,7 +1,7 @@
 /***************************************************************************
                           ofxdump.cpp
                              -------------------
-    copyright            : (C) 2002 by Benoit GrÃ©goire
+    copyright            : (C) 2002 by Benoit Grégoire
     email                : bock@step.polymtl.ca
 ***************************************************************************/
 /**@file
@@ -55,8 +55,10 @@ int main (int argc, char *argv[])
   ofx_STATUS_msg = true;
 
   int special_options (char *argv[]);
-  int count, ret = 0;;
+  int count, ret = 0;
  
+  LibofxContextPtr libofx_context = libofx_init_context();
+
   //printf ("This program was called with \"%s\".\n",argv[0]);
   if (argc > 1) 
     { 
@@ -76,7 +78,7 @@ int main (int argc, char *argv[])
                     );
  /* Special option not found */
 	if(argc >= 2){
-	  libofx_proc_file(argv[1], AUTODETECT);   
+	  libofx_proc_file(libofx_context, argv[1], AUTODETECT);   
 	}
       }
     } 

@@ -79,6 +79,14 @@
 
 CFCT void (*OfxCallbackFunc) ();
 
+typedef void * LibofxContextPtr;
+/**
+ * \brief Initialise the library and return a new context. 
+ *
+ @return the new context, to be used by the other functions.
+*/
+CFCT LibofxContextPtr libofx_init_context();
+
 /** List of possible file formats */
 enum LibofxFileType{ UNKNOWN, /**< Unknown file format */
 		     AUTODETECT, /**< Not really a file format, used to tell the library to try to autodetect the format*/
@@ -92,7 +100,7 @@ enum LibofxFileType{ UNKNOWN, /**< Unknown file format */
  *
  @return null terminated string suitable for debugging output or user communication.
 */
-CFCT const char * get_file_type_description(enum LibofxFileType file_type);
+CFCT const char * libofx_get_file_type_description(enum LibofxFileType file_type);
 
 /**
  * \brief ofx_proc_file is the entry point of the library.  
@@ -100,7 +108,7 @@ CFCT const char * get_file_type_description(enum LibofxFileType file_type);
  *  libofx_proc_file must be called by the client, with a list of 1 or more OFX
  files to be parsed in command line format.
 */
-CFCT int libofx_proc_file(const char * p_filename, enum LibofxFileType p_file_type);
+CFCT int libofx_proc_file(LibofxContextPtr libofx_context, const char * p_filename, enum LibofxFileType p_file_type);
 
 
 /**
