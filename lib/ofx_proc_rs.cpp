@@ -66,7 +66,7 @@ OfxGenericContainer* OfxGenericContainer::getparent()
 };
 
 /***************************************************************************
- *                         OfxDummyContainer                              *
+ *                         OfxDummyContainer                               *
  ***************************************************************************/
 
 OfxDummyContainer::OfxDummyContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
@@ -154,6 +154,65 @@ void OfxStatusContainer::add_attribute(const string identifier, const string val
 }
 
 /***************************************************************************
+ *                        OfxSecurityContainer                             *
+ ***************************************************************************/
+
+  void add_attribute(const string identifier, const string value);
+
+OfxSecurityContainer::OfxSecurityContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+  OfxGenericContainer(para_parentcontainer, para_tag_identifier)
+{
+  OfxGenericContainer * tmp_parentcontainer=parentcontainer;
+
+  memset(&data,0,sizeof(data));
+  type="SECURITY";
+}
+OfxSecurityContainer::~OfxSecurityContainer()
+{
+ // parent_statement->add_security(data);
+  ofx_proc_security(data);
+}
+void OfxSecurityContainer::add_attribute(const string identifier, const string value)
+{
+  if(identifier=="UNIQUEID"){
+    strncpy(data.unique_id,value.c_str(), sizeof(data.unique_id));
+    data.unique_id_valid = true;
+  }
+  else if(identifier=="UNIQUEIDTYPE"){
+    strncpy(data.unique_id_type,value.c_str(), sizeof(data.unique_id_type));
+    data.unique_id_type_valid = true;
+  }
+  else if(identifier=="SECNAME"){
+    strncpy(data.secname,value.c_str(), sizeof(data.secname));
+    data.secname_valid = true;
+  }
+  else if(identifier=="TICKER"){
+    strncpy(data.ticker,value.c_str(), sizeof(data.ticker));
+    data.ticker_valid = true;
+  }
+  else if(identifier=="UNITPRICE"){
+    data.unitprice=ofxamount_to_double(value);
+    data.unitprice_valid = true;
+  }
+  else if(identifier=="DTASOF"){
+    data.date_unitprice = ofxdate_to_time_t(value);
+    data.date_unitprice_valid = true;
+  }
+  else if(identifier=="CURDEF"){
+    strncpy(data.currency,value.c_str(),OFX_CURRENCY_LENGTH);
+    data.currency_valid=true;
+  }
+  else if(identifier=="MEMO" || identifier=="MEMO2"){
+    strncpy(data.memo,value.c_str(), sizeof(data.memo));
+    data.memo_valid = true;
+ }
+  else{
+    /* Redirect unknown identifiers to the base class */
+    OfxGenericContainer::add_attribute(identifier, value);
+  }
+}
+
+/***************************************************************************
  *                      OfxTransactionContainer                            *
  ***************************************************************************/
 
@@ -164,22 +223,26 @@ OfxTransactionContainer::OfxTransactionContainer(OfxGenericContainer *para_paren
 
   memset(&data,0,sizeof(data));
   type="TRANSACTION";
-  
+  /* Find the parent statement container*/
   while(tmp_parentcontainer!=NULL&&tmp_parentcontainer->type!="STATEMENT")
     {
       tmp_parentcontainer=parentcontainer->parentcontainer;
     }  
-  if (tmp_parentcontainer!=NULL&&((OfxStatementContainer*)tmp_parentcontainer)->data.account_id_valid==true){
-    strncpy(data.account_id,((OfxStatementContainer*)tmp_parentcontainer)->data.account_id,OFX_ACCOUNT_ID_LENGTH);
-    data.account_id_valid = true;
+  if (tmp_parentcontainer!=NULL){
+    parent_statement=(OfxStatementContainer*)tmp_parentcontainer;
   }
   else{
-    message_out(ERROR,"Unable to find the enclosing statement container to get the account id for this transaction");
+    parent_statement=NULL;
+    message_out(ERROR,"Unable to find the enclosing statement container this transaction");
+  }
+  if (parent_statement!=NULL&&parent_statement->data.account_id_valid==true){
+    strncpy(data.account_id,parent_statement->data.account_id,OFX_ACCOUNT_ID_LENGTH);
+    data.account_id_valid = true;
   }
 }
 OfxTransactionContainer::~OfxTransactionContainer()
 {
-  ofx_proc_transaction(data);
+  parent_statement->add_transaction(data);
 }
 void OfxTransactionContainer::add_attribute(const string identifier, const string value)
 {
@@ -510,6 +573,15 @@ OfxStatementContainer::OfxStatementContainer(OfxGenericContainer *para_parentcon
   memset(&data,0,sizeof(data));
   type="STATEMENT";
 }
+OfxStatementContainer::~OfxStatementContainer()
+{
+  ofx_proc_statement(data);
+  while(transaction_queue.empty()!=true)
+    {
+      ofx_proc_transaction(transaction_queue.front());
+      transaction_queue.pop();
+    }
+}
 void OfxStatementContainer::add_attribute(const string identifier, const string value)
 {
   if(identifier=="CURDEF"){
@@ -557,10 +629,13 @@ void OfxStatementContainer::add_account(OfxAccountData const account_data)
       data.account_id_valid = true;
     }
 }
-
-OfxStatementContainer::~OfxStatementContainer()
+void OfxStatementContainer::add_transaction(const OfxTransactionData transaction_data)
 {
-  ofx_proc_statement(data);
+  transaction_queue.push(transaction_data);
+}
+void OfxStatementContainer::add_security(const OfxSecurityData security_data)
+{
+  ofx_proc_security(security_data);
 }
 
 /***************************************************************************

@@ -159,7 +159,12 @@ public:
 	    message_out (PARSER, "Element " + identifier + " found");
 	    curr_container_element = new OfxAccountContainer (curr_container_element, identifier);
 	  }
-	/* The different types of balances */
+	else if (identifier == "SECINFO")
+	  {
+	    message_out (PARSER, "Element " + identifier + " found");
+	    curr_container_element = new OfxSecurityContainer (curr_container_element, identifier);
+	  }
+       	/* The different types of balances */
 	else if (identifier == "LEDGERBAL" || identifier == "AVAILBAL")
 	  {
 	    message_out (PARSER, "Element " + identifier + " found");

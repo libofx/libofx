@@ -70,7 +70,10 @@ int ofx_proc_status(struct OfxStatusData data)
 {
 return 0;
 }
-
+int ofx_proc_security(struct OfxSecurityData data)
+{
+return 0;
+}
 int ofx_proc_transaction(struct OfxTransactionData data)
 {
   char dest_string[255];

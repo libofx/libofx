@@ -66,6 +66,8 @@
 #define OFX_TRANSACTION_NAME_LENGTH    32 + 1
 #define OFX_UNIQUE_ID_LENGTH           32 + 1
 #define OFX_UNIQUE_ID_TYPE_LENGTH      10 + 1
+#define OFX_SECNAME_LENGTH             32 + 1
+#define OFX_TICKER_LENGTH              32 + 1
 
 /**
  * \brief ofx_proc_file is the entry point of the library.  
@@ -190,6 +192,61 @@ struct OfxAccountData{
 */
 CFCT int ofx_proc_account(const struct OfxAccountData data);
 
+/**
+ * \brief An abstraction of a security, such as a stock, mutual fund, etc.
+ *
+ * The OfxSecurityData stucture is used to hols the securyty information inside
+a OfxTransactionData struct for investment transactions.
+*/
+struct OfxSecurityData{
+  /** @name OFX mandatory elements
+   * The OFX spec defines the following elements as mandatory.  The associated
+   variables should all contain valid data but you should not trust the servers.
+   Check if the associated *_valid is true before using them. */  
+
+  char unique_id[OFX_UNIQUE_ID_LENGTH];   /**< The id of the security being traded.*/
+  int unique_id_valid;
+  char unique_id_type[OFX_UNIQUE_ID_TYPE_LENGTH];/**< Usially "CUSIP" for FIs in
+						    north america*/ 
+  int unique_id_type_valid;
+  char secname[OFX_SECNAME_LENGTH];/**< The full name of the security */ 
+  int secname_valid;
+
+  /** @name OFX optional elements
+   *  The OFX spec defines the following elements as optional. If the 
+   associated *_valid is true, the corresponding element is present and
+   the associated variable contains valid data. */  
+
+  char ticker[OFX_TICKER_LENGTH];/**< The ticker symbol of the security */ 
+  int ticker_valid;
+
+  double unitprice;/**< The price of each unit of the security, as of  
+		      date_unitprice */
+  int unitprice_valid;
+
+  time_t date_unitprice;/**< The date as of which the unit price was valid. */
+  int date_unitprice_valid;
+
+  char currency[OFX_CURRENCY_LENGTH]; /**< The currency is a string in ISO-4217 format.
+					 It overrides the one defined in the statement
+					 for the unit price */
+  int currency_valid;
+  char memo[OFX_MEMO2_LENGTH];/**< Extra information not included in name */
+  int memo_valid;
+};/* end struct OfxSecurityData */
+
+/** 
+ * \brief The callback function for the OfxSecurityData stucture. 
+ *
+ * An ofx_proc_security event is generated for any security listed in the
+ ofx file.  It is generated after ofx_proc_statement but before 
+ ofx_proc_transaction. It is meant to be used to allow the client to 
+ create a new commodity or security.  Please note however that this information 
+ is also available as part of each OfxtransactionData.
+ An OfxSecurityData structure is passed to this event.
+*/
+CFCT int ofx_proc_security(const struct OfxSecurityData data);
+
 
 /**
  * \brief An abstraction of a transaction in an account.
@@ -258,12 +315,15 @@ struct OfxTransactionData{
    associated *_valid is true, the corresponding element is present and
    the associated variable contains valid data. */  
   
-  /**< The id of the security being traded. */
+  /** The id of the security being traded. Mandatory for investment
+      transactions */
   char unique_id[OFX_UNIQUE_ID_LENGTH];  
   int unique_id_valid;
   char unique_id_type[OFX_UNIQUE_ID_TYPE_LENGTH];/**< Usially "CUSIP" for FIs in
-						north america*/ 
+						    north america*/ 
   int unique_id_type_valid;
+  struct OfxSecurityData *security_data;  /** A pointer to the security's data.*/
+  int security_data_valid;
   
   time_t date_posted;/**< Date the transaction took effect (ex: date it
 			appeared on your credit card bill).  Setlement date;
@@ -325,12 +385,12 @@ char check_number[OFX_CHECK_NUMBER_LENGTH];
   /*********** NOT YET COMPLETE!!! *********************/
 };
 
-
 /** 
  * \brief The callback function for the OfxTransactionData stucture. 
  *
  * An ofx_proc_transaction event is generated for every transaction in the 
- ofx response. An OfxTransactionData structure is passed to this event
+ ofx response, after ofx_proc_statement (and possibly ofx_proc_security is 
+ generated. An OfxTransactionData structure is passed to this event.
 */
 CFCT int ofx_proc_transaction(const struct OfxTransactionData data);
 

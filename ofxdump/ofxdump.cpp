@@ -82,6 +82,37 @@ int ofx_proc_status(struct OfxStatusData data)
   return 0;
 }
 
+int ofx_proc_security(struct OfxSecurityData data)
+{
+  char dest_string[255];
+  cout<<"ofx_proc_security():\n";
+  if(data.unique_id_valid==true){
+    cout<<"    Unique ID of the security being traded: "<<data.unique_id<<"\n";
+  }
+  if(data.unique_id_type_valid==true){
+    cout<<"    Format of the Unique ID: "<<data.unique_id_type<<"\n";
+  }
+  if(data.secname_valid==true){
+    cout<<"    Name of the security: "<<data.secname<<"\n";
+  }
+  if(data.ticker_valid==true){
+    cout<<"    Ticker symbol: "<<data.ticker<<"\n";
+  }
+  if(data.unitprice_valid==true){
+    cout<<"    Price of each unit of the security: "<<data.unitprice<<"\n";
+  }
+  if(data.date_unitprice_valid==true){
+    strftime(dest_string,sizeof(dest_string),"%c %Z",localtime(&(data.date_unitprice)));
+    cout<<"    Date as of which the unitprice is valid: "<<dest_string<<"\n";
+  }
+  if(data.currency_valid==true){
+    cout<<"    Currency of the unitprice: "<<data.currency<<"\n";
+  }
+  if(data.memo_valid==true){
+    cout<<"    Extra transaction information (memo): "<<data.memo<<"\n";
+  }
+}
+
 int ofx_proc_transaction(struct OfxTransactionData data)
 {
   char dest_string[255];

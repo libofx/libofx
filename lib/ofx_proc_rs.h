@@ -21,6 +21,7 @@
 #ifndef OFX_PROC_H
 #define OFX_PROC_H
 #include "libofx.h"
+#include <queue>
 using namespace std;
 
 /** \brief A generic container for an OFX SGML element.  Every container inherits from OfxGenericContainer.
@@ -113,8 +114,12 @@ class OfxStatementContainer:public OfxGenericContainer {
   OfxStatementContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   ~OfxStatementContainer();
   void add_attribute(const string identifier, const string value);
-  void add_account(OfxAccountData const account_data);
+  void add_account(const OfxAccountData account_data);
   void add_balance(OfxBalanceContainer* ptr_balance_container);
+  void add_transaction(const OfxTransactionData transaction_data);
+  void add_security(const OfxSecurityData security_data);
+ private:
+  queue<OfxTransactionData> transaction_queue;
 };
 
 /** \brief  Represents a bank account or a credit card account.
@@ -137,15 +142,30 @@ class OfxAccountContainer:public OfxGenericContainer {
   char brokerid[OFX_BROKERID_LENGTH];
 };
 
+/** \brief  Represents a security, such as a stock or bound.
+ */
+class OfxSecurityContainer:public OfxGenericContainer {
+ public:
+  OfxSecurityData data;  
+
+  OfxSecurityContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  ~OfxSecurityContainer();
+  void add_attribute(const string identifier, const string value);
+ private:
+  OfxStatementContainer * parent_statement;
+};
+
 /** \brief  Represents a generic transaction.
  */
 class OfxTransactionContainer:public OfxGenericContainer {
  public:
-  OfxTransactionData data;
-  
+  OfxTransactionData data;  
+
   OfxTransactionContainer(OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   ~OfxTransactionContainer();
   virtual void add_attribute(const string identifier, const string value);
+ private:
+  OfxStatementContainer * parent_statement;
 };
 
 /** \brief  Represents a bank or credid card transaction.
