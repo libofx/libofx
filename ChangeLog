@@ -1,3 +1,6 @@
+22/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+	* autogen.sh: Run libtoolize, and reorder the commands.  The order is now: libtoolize,aclocal, autoheader, automake, autoconf and configure
+
 11/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>
 	* lib/ofx_utilities.cpp: Really fix problems for big endian machines.
 	* INSTALL:  Document the --with-opensp-multibyte workaround for when headers in package lie about the compile option of OpenSP (usually because they were not compiled at the same time).  This is the case with the OpenJade package distributed in Mandrake cooker, and perhaps others. 
