@@ -1,4 +1,7 @@
 30/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
+	* inc/libofx.h lib/ofx_container_transaction.cpp ofxdump/ofxdump.cpp: Created a new invtransactiontype enum to replace the invtranstype string
+
+30/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
 	* lib/ofx_sgml.cpp: Added yet more spagetti code and global variables to improve the work around for OpenSP 1.3 bugs.  I beg of you, please convince your distro to make openjade and the OpenSP library independently upgradable.
 
 30/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>

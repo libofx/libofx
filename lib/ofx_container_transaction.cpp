@@ -263,8 +263,71 @@ OfxInvestmentTransactionContainer::OfxInvestmentTransactionContainer(OfxGenericC
   data.transactiontype=data.OFX_OTHER;
   data.transactiontype_valid=true;
   
-  data.invtranstype_valid=true; 
-  strncpy(data.invtranstype,para_tag_identifier.c_str(),sizeof(data.invtranstype));
+  data.invtransactiontype_valid=true; 
+  if(para_tag_identifier=="BUYDEBT"){
+    data.invtransactiontype=data.OFX_BUYDEBT;
+  }
+  else if(para_tag_identifier=="BUYMF"){
+    data.invtransactiontype=data.OFX_BUYMF;
+  }
+  else if(para_tag_identifier=="BUYOPT"){
+    data.invtransactiontype=data.OFX_BUYOPT;
+  }
+  else if(para_tag_identifier=="BUYOTHER"){
+    data.invtransactiontype=data.OFX_BUYOTHER;
+  }
+  else if(para_tag_identifier=="BUYSTOCK"){
+    data.invtransactiontype=data.OFX_BUYSTOCK;
+  }
+  else if(para_tag_identifier=="CLOSUREOPT"){
+    data.invtransactiontype=data.OFX_CLOSUREOPT;
+  }
+  else if(para_tag_identifier=="INCOME"){
+    data.invtransactiontype=data.OFX_INCOME;
+  }
+  else if(para_tag_identifier=="INVEXPENSE"){
+    data.invtransactiontype=data.OFX_INVEXPENSE;
+  }
+  else if(para_tag_identifier=="JRNLFUND"){
+    data.invtransactiontype=data.OFX_JRNLFUND;
+  }
+  else if(para_tag_identifier=="JRNLSEC"){
+    data.invtransactiontype=data.OFX_JRNLSEC;
+  }
+  else if(para_tag_identifier=="MARGININTEREST"){
+    data.invtransactiontype=data.OFX_MARGININTEREST;
+  }
+  else if(para_tag_identifier=="REINVEST"){
+    data.invtransactiontype=data.OFX_REINVEST;
+  }
+  else if(para_tag_identifier=="RETOFCAP"){
+    data.invtransactiontype=data.OFX_RETOFCAP;
+  }
+  else if(para_tag_identifier=="SELLDEBT"){
+    data.invtransactiontype=data.OFX_SELLDEBT;
+  }
+  else if(para_tag_identifier=="SELLMF"){
+    data.invtransactiontype=data.OFX_SELLMF;
+  }
+  else if(para_tag_identifier=="SELLOPT"){
+    data.invtransactiontype=data.OFX_SELLOPT;
+  }
+  else if(para_tag_identifier=="SELLOTHER"){
+    data.invtransactiontype=data.OFX_SELLOTHER;
+  }
+  else if(para_tag_identifier=="SELLSTOCK"){
+    data.invtransactiontype=data.OFX_SELLSTOCK;
+  }
+  else if(para_tag_identifier=="SPLIT"){
+    data.invtransactiontype=data.OFX_SPLIT;
+  }
+  else if(para_tag_identifier=="TRANSFER"){
+    data.invtransactiontype=data.OFX_TRANSFER;
+  }
+  else{
+    message_out(ERROR, "This should not happen, "+para_tag_identifier+" is an unknown investment transaction type");
+    data.invtransactiontype_valid=false; 
+  }
 }
 
 void OfxInvestmentTransactionContainer::add_attribute(const string identifier, const string value)

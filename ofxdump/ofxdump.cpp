@@ -203,8 +203,51 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data)
       cout<<"ofx_proc_transaction(): This should not happen!\n";
     }
   }
-  if(data.invtranstype_valid==true){
-    cout<<"    Investment transaction type: "<<data.invtranstype<<"\n";
+  if(data.invtransactiontype_valid==true){
+    cout<<"    Investment transaction type: ";
+    switch(data.invtransactiontype){
+    case data.OFX_BUYDEBT: strncpy(dest_string, "BUYDEBT (Buy debt security)", sizeof(dest_string));
+      break;
+     case data.OFX_BUYMF: strncpy(dest_string, "BUYMF (Buy mutual fund)", sizeof(dest_string));
+      break;
+    case data.OFX_BUYOPT: strncpy(dest_string, "BUYOPT (Buy option)", sizeof(dest_string));
+      break;
+    case data.OFX_BUYOTHER: strncpy(dest_string, "BUYOTHER (Buy other security type)", sizeof(dest_string));
+      break;
+    case data.OFX_BUYSTOCK: strncpy(dest_string, "BUYSTOCK (Buy stock))", sizeof(dest_string));
+      break;
+    case data.OFX_CLOSUREOPT: strncpy(dest_string, "CLOSUREOPT (Close a position for an option)", sizeof(dest_string));
+      break;
+    case data.OFX_INCOME: strncpy(dest_string, "INCOME (Investment income is realized as cash into the investment account)", sizeof(dest_string));
+      break;
+    case data.OFX_INVEXPENSE: strncpy(dest_string, "INVEXPENSE (Misc investment expense that is associated with a specific security)", sizeof(dest_string));
+      break;
+    case data.OFX_JRNLFUND: strncpy(dest_string, "JRNLFUND (Journaling cash holdings between subaccounts within the same investment account)", sizeof(dest_string));
+      break;
+    case data.OFX_MARGININTEREST: strncpy(dest_string, "MARGININTEREST (Margin interest expense)", sizeof(dest_string));
+      break;
+    case data.OFX_REINVEST: strncpy(dest_string, "REINVEST (Reinvestment of income)", sizeof(dest_string));
+      break;
+    case data.OFX_RETOFCAP: strncpy(dest_string, "RETOFCAP (Return of capital)", sizeof(dest_string));
+      break;
+    case data.OFX_SELLDEBT: strncpy(dest_string, "SELLDEBT (Sell debt security.  Used when debt is sold, called, or reached maturity)", sizeof(dest_string));
+      break;
+    case data.OFX_SELLMF: strncpy(dest_string, "SELLMF (Sell mutual fund)", sizeof(dest_string));
+      break;
+    case data.OFX_SELLOPT: strncpy(dest_string, "SELLOPT (Sell option)", sizeof(dest_string));
+      break;
+    case data.OFX_SELLOTHER: strncpy(dest_string, "SELLOTHER (Sell other type of security)", sizeof(dest_string));
+      break;
+    case data.OFX_SELLSTOCK: strncpy(dest_string, "SELLSTOCK (Sell stock)", sizeof(dest_string));
+      break;
+    case data.OFX_SPLIT: strncpy(dest_string, "SPLIT (Stock or mutial fund split)", sizeof(dest_string));
+      break;
+    case data.OFX_TRANSFER: strncpy(dest_string, "TRANSFER (Transfer holdings in and out of the investment account)", sizeof(dest_string));
+      break;
+    default: strncpy(dest_string, "ERROR, this investment transaction type is unknown.  This is a bug in ofxdump", sizeof(dest_string));
+      break;
+    }
+    cout<<dest_string<<"\n";
   }
   if(data.unique_id_valid==true){
     cout<<"    Unique ID of the security being traded: "<<data.unique_id<<"\n";

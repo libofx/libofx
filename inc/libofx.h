@@ -287,10 +287,34 @@ struct OfxTransactionData{
     OFX_OTHER       /**< Somer other type of transaction */
   } transactiontype;
   int transactiontype_valid;
-  
-  char invtranstype[15];/**< Investment transaction type.  You should
-			   read this if transactiontype == OFX_OTHER */
-  int invtranstype_valid;
+ 
+  /**< Investment transaction type.  You should read this if 
+     transactiontype == OFX_OTHER.  See OFX spec 1.6 p.442 to 445 
+     for details*/
+  enum InvTransactionType{
+    OFX_BUYDEBT,        /**< Buy debt security */
+    OFX_BUYMF,          /**< Buy mutual fund */
+    OFX_BUYOPT,         /**< Buy option */
+    OFX_BUYOTHER,       /**< Buy other security type */
+    OFX_BUYSTOCK,       /**< Buy stock */
+    OFX_CLOSUREOPT,     /**< Close a position for an option */
+    OFX_INCOME,         /**< Investment income is realized as cash into the investment account */
+    OFX_INVEXPENSE,     /**< Misc investment expense that is associated with a specific security */
+    OFX_JRNLFUND,       /**< Journaling cash holdings between subaccounts within the same investment account */
+    OFX_JRNLSEC,        /**< Journaling security holdings between subaccounts within the same investment account */
+    OFX_MARGININTEREST, /**< Margin interest expense */
+    OFX_REINVEST,       /**< Reinvestment of income */
+    OFX_RETOFCAP,       /**< Return of capital */
+    OFX_SELLDEBT,       /**< Sell debt security.  Used when debt is sold, called, or reached maturity */
+    OFX_SELLMF,         /**< Sell mutual fund */
+    OFX_SELLOPT,        /**< Sell option */
+    OFX_SELLOTHER,      /**< Sell other type of security */
+    OFX_SELLSTOCK,      /**< Sell stock */
+    OFX_SPLIT,          /**< Stock or mutial fund split */
+    OFX_TRANSFER        /**< Transfer holdings in and out of the investment account */
+  }  invtransactiontype;
+
+ int  invtransactiontype_valid;
 
   double units;     /**< Variation of the number of units of the commodity
 		     Suppose units is -10, ave unitprice is 1.  If the 
