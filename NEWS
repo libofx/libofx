@@ -1,3 +1,6 @@
+LibOFX 0.6.1:
+Fix a critical bug in 0.6.0.  Parsing of a file would fail and hang for users of OpenSP 1.5pre5 (and possibly others).
+
 LibOFX 0.6:
 	-Beta version, released to accompany the new GnuCash 1.7.3 beta release.
 	-Full investment transaction support (ofx2qif not yet updated however).

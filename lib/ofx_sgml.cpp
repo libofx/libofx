@@ -45,17 +45,14 @@ class OutlineApplication : public SGMLApplication
 public:
   OfxGenericContainer *curr_container_element; /**< The currently open object from ofx_proc_rs.cpp */
   OfxGenericContainer *tmp_container_element;
-  bool is_data_element; /**< If the SGML element contains data, this flag is raised */
   string incoming_data; /**< The raw data from the SGML data element */
   bool osp134workaround; /**< If the OpenSP < 1.3.4 bug is encountered, the flag is rased by startElement and lowered by endElement */
   string  osp134workaround_data; /**< The name of the previous element identifier */
-  bool osp134workaround_is_data_element;
 
   
   OutlineApplication ()
   {
     curr_container_element = NULL;
-    is_data_element = false;
   }
   
   /** \brief Callback: Start of an OFX element
@@ -66,24 +63,27 @@ public:
   {
     string identifier;
     CharStringtostring (event.gi, identifier);
+    bool is_data_element; /**< If the SGML element contains data, this flag is raised */
+    message_out(PARSER,"startElement event received from OpenSP for element " + identifier);
+
     
     position = event.pos;
     switch (event.contentType)
       {
-      case StartElementEvent::empty:	cerr <<"StartElementEvent::empty\n";
+      case StartElementEvent::empty:	message_out(ERROR,"StartElementEvent::empty\n");
 	break;
-      case StartElementEvent::cdata:	cerr <<"StartElementEvent::cdata\n";
+      case StartElementEvent::cdata:	message_out(ERROR,"StartElementEvent::cdata\n");
 	break;
-      case StartElementEvent::rcdata:	cerr <<"StartElementEvent::rcdata\n";
+      case StartElementEvent::rcdata:   message_out(ERROR,"StartElementEvent::rcdata\n");
 	break;
-      case StartElementEvent::mixed:	//cerr <<"mixed\n";
+      case StartElementEvent::mixed:	message_out(PARSER,"StartElementEvent::mixed");
 	is_data_element = true;
 	break;
-      case StartElementEvent::element:	//cerr <<"element\n";
+      case StartElementEvent::element:	message_out(PARSER,"StartElementEvent::element");
 	is_data_element = false;
 	break;
       default:
-	cerr << "unknow SGML content type ?!?!??";
+	message_out(ERROR,"Unknow SGML content type?!?!?!? OpenSP interface changed?");
       }
     /*       cout<<")\n";*/
     
@@ -207,7 +207,6 @@ public:
 	endElement( tmp_event);
       }
     osp134workaround_data = identifier;
-    osp134workaround_is_data_element=is_data_element;
   }
 
   /** \brief Callback: End of an OFX element
@@ -217,50 +216,43 @@ public:
   void endElement (const EndElementEvent & event)
   {
     string identifier;
-    bool end_element_for_data_element;
     if( osp134workaround == true)
       {
-	 identifier =  osp134workaround_data;
-	 end_element_for_data_element=osp134workaround_is_data_element;
+	identifier =  osp134workaround_data;
+	message_out(PARSER,"endElement event received from OpenSP 1.3 workaround for element " + identifier);
       }
     else
       {
 	CharStringtostring (event.gi, identifier);
-	end_element_for_data_element=is_data_element;
+	message_out(PARSER,"endElement event received from OpenSP for element " + identifier);
       }
 
-    message_out(PARSER,"endElement event received from OpenSP");
-
     position = event.pos;
-    if (end_element_for_data_element == true)
+    if (curr_container_element == NULL)
       {
-	incoming_data = strip_whitespace(incoming_data);
-
-	if (curr_container_element != NULL)
-	  {
-	    curr_container_element->add_attribute (identifier, incoming_data);
-	    message_out (PARSER,"endElement: Added data '" + incoming_data + "' from " + identifier + " to " + curr_container_element->type + " container_element");
-	    incoming_data.assign ("");
-	    if( osp134workaround == false)
-	      {
-		is_data_element = false;
-	      }
-	  }
-	else
-	  {
-	    message_out (ERROR, "endElement: Trying to add data '" + incoming_data + "' from " + identifier + " to NULL container_element");
-	    incoming_data.assign ("");
-	    if( osp134workaround == false)
-	      {
-		is_data_element = false;
-	      }
-	  }
+	message_out (ERROR,"Tried to close a "+identifier+" without a open element (NULL pointer)");
       }
     else
       {
-	if (curr_container_element != NULL)
+	if (identifier != curr_container_element->tag_identifier)//Since we did not open a container for this element, the element is presumed to be a data element
 	  {
-	    if (identifier == curr_container_element->tag_identifier && identifier == "OFX")
+	    incoming_data = strip_whitespace(incoming_data);
+	    
+	    if (curr_container_element != NULL)
+	      {
+		curr_container_element->add_attribute (identifier, incoming_data);
+		message_out (PARSER,"endElement: Added data '" + incoming_data + "' from " + identifier + " to " + curr_container_element->type + " container_element");
+		incoming_data.assign ("");
+	      }
+	    else
+	      {
+		message_out (ERROR, "endElement: Trying to add data '" + incoming_data + "' from " + identifier + " to NULL container_element");
+		incoming_data.assign ("");
+	      }
+	  }
+	else//identifier == curr_container_element->tag_identifier, so the element is a container element
+	  {
+	    if (identifier == "OFX")
 	      {
 		/* The main container is a special case */
 		tmp_container_element = curr_container_element;
@@ -270,7 +262,7 @@ public:
 		MainContainer = NULL;
 		message_out (DEBUG, "Element " + identifier + " closed, MainContainer destroyed");
 	      }
-	    else if (identifier == curr_container_element->tag_identifier)
+	    else 
 	      {
 		tmp_container_element = curr_container_element;
 		curr_container_element = curr_container_element->getparent ();
@@ -284,22 +276,16 @@ public:
 		    message_out (ERROR, "MainContainer is NULL trying to add element " + identifier);
 		  }
 	      }
-	    else
-	      {
-		message_out (ERROR, "Tried to close a "+identifier+" but a "+curr_container_element->type+" is currently open.");
-	      }
-	  }
-	else
-	  {
-	    message_out (ERROR,"Tried to close a "+identifier+" without a open element (NULL pointer)");
 	  }
       }
+    
+    
     if( osp134workaround == true)
       {
-	 osp134workaround = false;
+	osp134workaround = false;
       }
   }
-
+  
   /** \brief Callback: Data from an OFX element
    *
    An OpenSP callback, get's called when the raw data of an OFX element appears in the file.  Is usually called more than once for a single element, so we must concatenate the data.
@@ -309,8 +295,8 @@ public:
     string tmp;
     
     position = event.pos;
-    /*cout << "data:"<<event.data<<"\n"; */
     AppendCharStringtostring (event.data, incoming_data);
+    message_out(PARSER, "data event received from OpenSP, incoming_data is now: " + incoming_data);
   }
 
   /** \brief Callback: SGML parse error
