@@ -83,7 +83,7 @@ OfxStatusContainer::OfxStatusContainer(OfxGenericContainer *para_parentcontainer
 }
 OfxStatusContainer::~OfxStatusContainer()
 {
-  cb_registry.ofx_status_cb( data );
+  cb_registry.ofx_status_cb( data, cb_registry.status_data );
   //ofx_proc_status_cb (data);
 }
 void OfxStatusContainer::add_attribute(const string identifier, const string value)

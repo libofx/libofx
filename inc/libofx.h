@@ -143,9 +143,10 @@ struct OfxStatusData{
  *
  * An ofx_proc_status_cb event is sent everytime the server has generated a OFX
  STATUS element.  As such, it could be received at any time(but not during
- other events).  An OfxStatusData structure is passed to this even.
+ other events).  An OfxStatusData structure is passed to this event, as well as
+ a pointer to an arbitrary data structure.
 */
-CFCT int ofx_proc_status_cb(const struct OfxStatusData data);
+CFCT int ofx_proc_status_cb(const struct OfxStatusData data, void * status_data);
 
 /**
  * \brief An abstraction of an account
@@ -199,9 +200,10 @@ struct OfxAccountData{
  received.  An OfxAccountData is passed to this event.
  *
  Note however that this OfxAccountData structure will also be available as
- part of OfxStatementData structure passed to  ofx_proc_statement event.
+ part of OfxStatementData structure passed to ofx_proc_statement event, 
+ as well as a pointer to an arbitrary data structure.
 */
-CFCT int ofx_proc_account_cb(const struct OfxAccountData data);
+CFCT int ofx_proc_account_cb(const struct OfxAccountData data, void * account_data);
 
 /**
  * \brief An abstraction of a security, such as a stock, mutual fund, etc.
@@ -254,9 +256,10 @@ struct OfxSecurityData{
  ofx_proc_transaction. It is meant to be used to allow the client to 
  create a new commodity or security (such as a new stock type).  Please note however
  that this information is usually also available as part of each OfxtransactionData.
- An OfxSecurityData structure is passed to this event.
+ An OfxSecurityData structure is passed to this event, as well as
+ a pointer to an arbitrary data structure.
 */
-CFCT int ofx_proc_security_cb(const struct OfxSecurityData data);
+CFCT int ofx_proc_security_cb(const struct OfxSecurityData data, void * security_data);
 
 
 /**
@@ -427,9 +430,10 @@ char check_number[OFX_CHECK_NUMBER_LENGTH];
  *
  * An ofx_proc_transaction_cb event is generated for every transaction in the 
  ofx response, after ofx_proc_statement (and possibly ofx_proc_security is 
- generated. An OfxTransactionData structure is passed to this event.
+ generated. An OfxTransactionData structure is passed to this event, as well as
+ a pointer to an arbitrary data structure.
 */
-CFCT int ofx_proc_transaction_cb(const struct OfxTransactionData data);
+CFCT int ofx_proc_transaction_cb(const struct OfxTransactionData data, void * transaction_data);
 
 /** 
  * \brief An abstraction of an account statement. 
@@ -495,9 +499,10 @@ struct OfxStatementData{
  * \brief The callback function for the OfxStatementData stucture. 
  *
  * The ofx_proc_statement_cb event is sent after all ofx_proc_transaction 
- events have been sent. An OfxStatementData is passed to this event.
+ events have been sent. An OfxStatementData is passed to this event, as well as
+ a pointer to an arbitrary data structure.
 */
-CFCT int ofx_proc_statement_cb(const struct OfxStatementData data);
+CFCT int ofx_proc_statement_cb(const struct OfxStatementData data, void * statement_data);
 
 /** 
     \brief NOT YET SUPPORTED
@@ -508,26 +513,37 @@ struct OfxCurrency{
   int must_convert;   /**< true or false */
 };
 
+
 struct OfxCallbackRegistry{
-  int (*ofx_statement_cb)(const struct OfxStatementData data);
-  int (*ofx_transaction_cb)(const struct OfxTransactionData data);
-  int (*ofx_security_cb)(const struct OfxSecurityData data);
-  int (*ofx_account_cb)(const struct OfxAccountData data);
-  int (*ofx_status_cb)(const struct OfxStatusData data);
+	void * statement_data;
+	int (*ofx_statement_cb)( const struct OfxStatementData data, void *);
+	void * account_data;
+  int (*ofx_account_cb)( const struct OfxAccountData data, void *);
+	void * transaction_data;
+  int (*ofx_transaction_cb)( const struct OfxTransactionData data, void *);
+	void * security_data;
+  int (*ofx_security_cb)( const struct OfxSecurityData data, void *);
+	void * status_data;
+  int (*ofx_status_cb)(const struct OfxStatusData data, void *);
 };
 
 /**
- * \brief ofx_proc_file is the entry point of the library.  
+ * \brief ofx_prep_cb registers the callbacks to be signaled during processing 
  *
- *  libofx_proc_file must be called by the client, with a list of 1 or more OFX
- files to be parsed in command line format.
+ *  Each function will be called with the preceding void * structure as its
+ *  first argument.
 */
 CFCT void ofx_prep_cb(
-		     int (*ofx_statement_cb)(const struct OfxStatementData data),
-		     int (*ofx_account_cb)(const struct OfxAccountData data),
-		     int (*ofx_transaction_cb)(const struct OfxTransactionData data),
-		     int (*ofx_security_cb)(const struct OfxSecurityData data),
-		     int (*ofx_status_cb)(const struct OfxStatusData data)
+			void *,
+			int (*ofx_statement_cb)(const struct OfxStatementData data, void *),
+			void *,
+		  int (*ofx_account_cb)(const struct OfxAccountData data, void *),
+			void *,
+		  int (*ofx_transaction_cb)(const struct OfxTransactionData data, void *),
+			void *,
+		  int (*ofx_security_cb)(const struct OfxSecurityData data, void * ),
+			void *,
+		  int (*ofx_status_cb)(const struct OfxStatusData data, void *)
   );
 #endif
 

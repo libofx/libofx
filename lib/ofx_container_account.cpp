@@ -119,7 +119,7 @@ void OfxAccountContainer::add_attribute(const string identifier, const string va
 
 int OfxAccountContainer::gen_event()
 {
-  cb_registry.ofx_account_cb( data );
+  cb_registry.ofx_account_cb( data, cb_registry.account_data );
   //ofx_proc_account_cb(data);
   return true;
 }

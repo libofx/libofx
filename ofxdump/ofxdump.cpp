@@ -67,10 +67,10 @@ int main (int argc, char *argv[])
       if  (0 == special_options(argv)) ;
       else{
         ofx_prep_cb(
-                    ofx_proc_statement_cb,
-                    ofx_proc_account_cb,
-                    ofx_proc_transaction_cb,
-                    ofx_proc_security_cb,
+                    NULL, ofx_proc_statement_cb, NULL,
+                    ofx_proc_account_cb, NULL,
+                    ofx_proc_transaction_cb, NULL,
+                    ofx_proc_security_cb, NULL,
                     ofx_proc_status_cb
                     );
 	ofx_proc_file(argc, argv);    /* Special option not found */
@@ -140,7 +140,7 @@ arguments are ignored; otherwise, control goes to ofx_proc_file.\n\n"
 
 
 
-int ofx_proc_status_cb(struct OfxStatusData data)
+int ofx_proc_status_cb(struct OfxStatusData data, void * status_data)
 {
   cout<<"ofx_proc_status():\n";
   if(data.ofx_element_name_valid==true){
@@ -168,7 +168,7 @@ int ofx_proc_status_cb(struct OfxStatusData data)
   return 0;
 }
 
-int ofx_proc_security_cb(struct OfxSecurityData data)
+int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
 {
   char dest_string[255];
   cout<<"ofx_proc_security():\n";
@@ -201,7 +201,7 @@ int ofx_proc_security_cb(struct OfxSecurityData data)
   return 0;
 }
 
-int ofx_proc_transaction_cb(struct OfxTransactionData data)
+int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_data)
 {
   char dest_string[255];
   cout<<"ofx_proc_transaction():\n";
@@ -343,7 +343,7 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data)
   }
   if(data.security_data_valid==true){
     cout<<"    Security data is available:\n    START security_data content----------\n";
-    ofx_proc_security_cb(*(data.security_data_ptr));
+    ofx_proc_security_cb(*(data.security_data_ptr), NULL );
     cout<<"    END security_data content----------\n";
 
   }
@@ -373,7 +373,7 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data)
   return 0;
 }//end ofx_proc_transaction()
 
-int ofx_proc_statement_cb(struct OfxStatementData data)
+int ofx_proc_statement_cb(struct OfxStatementData data, void * statement_data)
 {
   char dest_string[255];
   cout<<"ofx_proc_statement():\n";
@@ -412,7 +412,7 @@ int ofx_proc_statement_cb(struct OfxStatementData data)
   return 0;
 }//end ofx_proc_statement()
 
-int ofx_proc_account_cb(struct OfxAccountData data)
+int ofx_proc_account_cb(struct OfxAccountData data, void * account_data)
 {
   cout<<"ofx_proc_account():\n";
   if(data.account_id_valid==true){

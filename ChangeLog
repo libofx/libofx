@@ -1,7 +1,18 @@
-14/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+18/1/2004 Ryan P Bobko <ryan@ostrich-emulators.com>
+	* inc/libofx.h
+	* lib/ofx_container_statement.cpp
+	* lib/ofx_container_account.cpp
+	* lib/ofx_container_transaction.cpp
+	* lib/ofx_container_security.cpp
+	* lib/ofx_containers_misc.cpp
+	* ofxdump/ofxdump.cpp
+	* ofx2qif/ofx2qif.c: all these files: improved callback registry by including a void pointer to arbitrary data (which can be set by the client in ofx_prep_cb). The pointer gets passed to the callback function as the second argument.
+	
+	
+14/1/2004  Benoit Grégoire  <bock@step.polymtl.ca>
 	* Merge initial Callback registration patch by Ryan P Bobko.  Touches most files.
 	
-14/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+14/1/2004  Benoit Grégoire  <bock@step.polymtl.ca>
 	RELEASE LibOfx 0.6.6
 	* configure.in: Change version number
 	* NEWS: Update for release

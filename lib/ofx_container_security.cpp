@@ -84,7 +84,7 @@ void OfxSecurityContainer::add_attribute(const string identifier, const string v
 }
 int  OfxSecurityContainer::gen_event()
 {
-  cb_registry.ofx_security_cb( data );
+  cb_registry.ofx_security_cb( data, cb_registry.security_data );
   //ofx_proc_security_cb(data);
   return true;
 }

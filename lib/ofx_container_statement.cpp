@@ -101,7 +101,7 @@ int  OfxStatementContainer::add_to_main_tree()
 
 int  OfxStatementContainer::gen_event()
 {
-  cb_registry.ofx_statement_cb( data );
+  cb_registry.ofx_statement_cb( data, cb_registry.statement_data );
   //ofx_proc_statement_cb(data);
   return true;
 }
