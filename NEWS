@@ -2,6 +2,7 @@ LibOFX 0.x:
 	-Beta version, released to accompany the new GnuCash 1.7.2 alpha release.
 	-Full investment transaction support (ofx2qif not yet updated).
 	-Now uses an Autoconf/Automake build system.
+	-Proprietary tag striper is now much smarter and read routines have been corrected.  Importing a file written on a single line will no longer cause an infinite loop.  
 LibOFX 0.5:
 	-Alpha version, released to accompany the new GnuCash 1.7.1 alpha release.
 	-Add an account_name to the OfxAccountData struct.  It contains a human readable identifier of the account.

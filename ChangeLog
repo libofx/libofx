@@ -1,4 +1,9 @@
 29/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
+	* lib/ofx_preproc.cpp doc/tag_striper_test.txt: 
+	Proprietary tag striper is now much smarter and read routines have been fixed.  Importing a file written on a single line should now be possible.  
+	Added a test file for the proprietary tag striper .
+
+29/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
 	* configure.in: Work around autoconf 2.1 not supporting AC_LANG()
 
 21/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
