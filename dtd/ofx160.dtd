@@ -3,8 +3,8 @@
 <!--#version 160 -->
 
 <!--
-    $Revision: 1.1 $
-    $Date: 2002-09-05 04:08:16 $
+    $Revision: 1.2 $
+    $Date: 2003-02-11 22:17:31 $
        
  Open Financial Exchange DTD 
  Copyright 1997, 1998, 1999 CheckFree Corp., Intuit Inc., Microsoft Corp.
@@ -3048,8 +3048,6 @@
      more occurances of the %MSGSETMACRO contents.
      Also, make <SIGNONMSGSET> and <PROFMSGSET> required. -->
 <!ELEMENT MSGSETLIST    - - (
-    ((( SIGNONMSGSET, PROFMSGSET ) | ( PROFMSGSET, SIGNONMSGSET )),
-     (%MSGSETMACRO)+ ) |
     ((( SIGNONMSGSET, (%MSGSETMACRO)+, PROFMSGSET ) |
      ( PROFMSGSET, (%MSGSETMACRO)+, SIGNONMSGSET )), (%MSGSETMACRO)* ) |
     ( (%MSGSETMACRO)+,

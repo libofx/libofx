@@ -1,4 +1,10 @@
 3/2/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+	* dtd/ofx160.dtd: Correct the dtd to fix the "content model is ambiguous" errors reported by opensp.
+	
+27/1/2003 Thomas Frayne <TomF@sjpc.org>
+	* ofxdump/ofxdump.cpp: Add command options: --version, -V, --help
+
+3/2/2003  Benoit Grégoire  <bock@step.polymtl.ca>
 	* lib/ofx_utilities.cpp: Fix ofxdate_to_time_t() that wouldn't compile on sun.
 
 23/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>
