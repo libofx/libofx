@@ -11,7 +11,7 @@ doc_DATA = \
   ChangeLog \
   totest.txt \
   known_bugs.txt
-  
+
 EXTRA_DIST = \
   libofx.spec.in \
   libofx.spec \
@@ -23,6 +23,3 @@ EXTRA_DIST = \
 .PHONY: doc
 doc:
 	$(MAKE) -C doc doc
-
-#dist-hook: doc
-#	echo "dist-hook: " && pwd
