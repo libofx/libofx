@@ -84,12 +84,12 @@ string AppendCharStringtostring(const SGMLApplication::CharString source, string
 time_t ofxdate_to_time_t(const string ofxdate)
 {
   struct tm time;
-  int local_offset; /**< in seconds */
+  double local_offset; /**< in seconds */
   float ofx_gmt_offset;/**< in fractionnal hours */
   char timezone[4];/**< Original timezone: the library does not expose this value*/
   time_t temptime;
   std::time(&temptime);
-  local_offset = (localtime(&temptime))->tm_gmtoff;
+  local_offset = difftime(mktime(localtime(&temptime)), mktime(gmtime(&temptime)));
   
   if(ofxdate.size()!=0){
     time.tm_year=atoi(ofxdate.substr(0,4).c_str())-1900;
@@ -124,7 +124,7 @@ time_t ofxdate_to_time_t(const string ofxdate)
       strcpy(timezone, "GMT");
     }
     /* Correct the time for the timezone */
-    time.tm_sec = time.tm_sec + (local_offset - ((int)ofx_gmt_offset*60*60));//Convert from fractionnal hours to seconds
+    time.tm_sec = time.tm_sec + (int)(local_offset - (ofx_gmt_offset*60*60));//Convert from fractionnal hours to seconds
   }
   else{
     message_out(ERROR, "ofxdate_to_time_t():Unable to convert time, string is 0 length!");
