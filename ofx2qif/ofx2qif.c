@@ -192,31 +192,34 @@ int ofx_proc_statement_cb(struct OfxStatementData data)
     printf("$%.2f%s",data.ledger_balance,"\n");
   }
   printf("^\n");
-  return 0;
-}/* end ofx_proc_statement() */
-
-int ofx_proc_account_cb(struct OfxAccountData data)
-{
-  char dest_string[255];
-  
-  if(data.account_type_valid==true){
-    switch(data.account_type){
-    case OFX_CHECKING : strncpy(dest_string,"!Type:Bank\n",sizeof(dest_string));
+  /*The transactions will follow, here is the header */
+  if(data.account_ptr->account_type_valid==true){
+    switch(data.account_ptr->account_type){
+    case OFX_CHECKING : printf("!Type:Bank\n");
       break;
-    case OFX_SAVINGS : strncpy(dest_string,"!Type:Bank\n",sizeof(dest_string));
+    case OFX_SAVINGS : printf("!Type:Bank\n");
       break;
-    case OFX_MONEYMRKT : strncpy(dest_string,"!Type:Oth A\n",sizeof(dest_string));
+    case OFX_MONEYMRKT : printf("!Type:Oth A\n");
       break;
-    case OFX_CREDITLINE : strncpy(dest_string,"!Type:Oth L\n",sizeof(dest_string));
+    case OFX_CREDITLINE : printf("!Type:Oth L\n");
       break;
-    case OFX_CMA : strncpy(dest_string,"!Type:Oth A\n",sizeof(dest_string));
+    case OFX_CMA : printf("!Type:Oth A\n");
       break;
-    case OFX_CREDITCARD : strncpy(dest_string,"!Type:CCard\n",sizeof(dest_string));
+    case OFX_CREDITCARD : printf("!Type:CCard\n");
       break;
     default: perror("WRITEME: ofx_proc_account() This is an unknown account type!");
     }
-//    strncat(trans_list_buff, dest_string, QIF_FILE_MAX_SIZE - strlen(trans_list_buff));
-    printf(dest_string);
   }
+
   return 0;
+}/* end ofx_proc_statement() */
+  
+int ofx_proc_account_cb(struct OfxAccountData data)
+{
+  char dest_string[255]="";
+  
+  
+  //    strncat(trans_list_buff, dest_string, QIF_FILE_MAX_SIZE - strlen(trans_list_buff));
+  printf(dest_string);
+ return 0;
 }/* end ofx_proc_account() */
