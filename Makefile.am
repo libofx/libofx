@@ -1,6 +1,6 @@
 SUBDIRS = inc dtd lib doc . ofx2qif ofxdump 
 
-docdir = ${prefix}/share/doc/libofx-@VERSION@
+docdir = ${prefix}/share/doc/libofx
 
 doc_DATA = \
   AUTHORS \
@@ -21,3 +21,8 @@ EXTRA_DIST = \
 .PHONY: doc
 doc:
 	$(MAKE) -C doc doc
+
+rpm:    $(PACKAGE).spec dist
+	rpmbuild="rpm" && \
+	if [ `rpm --version | awk '{ print $$3 }'` > /dev/null ]; then rpmbuild="rpmbuild"; fi && \
+	$$rpmbuild -ta $(PACKAGE)-$(VERSION).tar.gz

@@ -56,14 +56,15 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%doc AUTHORS COPYING ChangeLog INSTALL NEWS README totest.txt doc/html doc/implementation_notes.txt
+%doc AUTHORS COPYING ChangeLog INSTALL NEWS README
 %{_bindir}/*
 %{_libdir}/*.a
 %{_libdir}/*.la
 %{_libdir}/*.so
 %{_libdir}/*.so*
 %{_includedir}/*
-%{_datadir}/libofx/dtd/*
+%{_datadir}/%{name}/dtd/*
+%{_datadir}/doc/%{name}
 
 %changelog
 * Sat Nov 23 2002 Chris Lyttle <chris@wilddev.net>

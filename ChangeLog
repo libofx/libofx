@@ -1,3 +1,6 @@
+24/11/2004:  Benoit Grégoire  <bock@step.polymtl.ca>
+	* Apply Christian Stimming's patch for rpm building.  Also adds a make rpm target.
+	
 08/10/2004:  Benoit Grégoire  <bock@step.polymtl.ca>
 	* Release 0.7.0
 	* configure.in:  Update libtool version number.
