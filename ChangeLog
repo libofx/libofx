@@ -1,3 +1,7 @@
+24/2/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+	* ofx2qif/ofx2qif.c: Apply patch by Scott Gifford <sgifford@suspectclass.com> to fix ofx2qif crash.
+	* Add a bunch of .cvsignore files
+
 3/2/2003  Benoit Grégoire  <bock@step.polymtl.ca>
 	* dtd/ofx160.dtd: Correct the dtd to fix the "content model is ambiguous" errors reported by opensp.
 	

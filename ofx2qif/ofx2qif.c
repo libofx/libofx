@@ -43,7 +43,7 @@
 #include <time.h>
 #include "libofx.h"
 
-#define QIF_FILE_MAX_SIZE 256000 
+#define QIF_FILE_MAX_SIZE 256000
 
 int main (int argc, char *argv[])
 {
@@ -72,37 +72,41 @@ int ofx_proc_security_cb(struct OfxSecurityData data)
 {
 return 0;
 }
+
+
 int ofx_proc_transaction_cb(struct OfxTransactionData data)
 {
   char dest_string[255];
   char trans_buff[4096];
   struct tm temp_tm;
-  char trans_list_buff[4096];
+  char trans_list_buff[QIF_FILE_MAX_SIZE];
 
+  trans_list_buff[0]='\0';
+  
   if(data.date_posted_valid==true){
     temp_tm = *localtime(&(data.date_posted));
     sprintf(trans_buff, "D%d%s%d%s%d%s", temp_tm.tm_mday, "/", temp_tm.tm_mon+1, "/", temp_tm.tm_year+1900, "\n");
-    strncat(trans_list_buff, trans_buff, QIF_FILE_MAX_SIZE - strlen(trans_list_buff));
+    strncat(trans_list_buff, trans_buff, sizeof(trans_list_buff)-1 - strlen(trans_list_buff));
   }
   if(data.amount_valid==true){
     sprintf(trans_buff, "T%.2f%s",data.amount,"\n");
-    strncat(trans_list_buff, trans_buff, QIF_FILE_MAX_SIZE - strlen(trans_list_buff));
+    strncat(trans_list_buff, trans_buff, sizeof(trans_list_buff)-1 - strlen(trans_list_buff));
   }
   if(data.check_number_valid==true){
     sprintf(trans_buff, "N%s%s",data.check_number,"\n");
-    strncat(trans_list_buff, trans_buff, QIF_FILE_MAX_SIZE - strlen(trans_list_buff));
+    strncat(trans_list_buff, trans_buff, sizeof(trans_list_buff)-1 - strlen(trans_list_buff));
   }
   else if(data.reference_number_valid==true){
     sprintf(trans_buff, "N%s%s",data.reference_number,"\n");
-      strncat(trans_list_buff, trans_buff, QIF_FILE_MAX_SIZE - strlen(trans_list_buff));
+      strncat(trans_list_buff, trans_buff, sizeof(trans_list_buff)-1 - strlen(trans_list_buff));
 }
 if(data.name_valid==true){
     sprintf(trans_buff, "P%s%s",data.name,"\n");
-        strncat(trans_list_buff, trans_buff, QIF_FILE_MAX_SIZE - strlen(trans_list_buff));
+        strncat(trans_list_buff, trans_buff, sizeof(trans_list_buff)-1 - strlen(trans_list_buff));
 }
 if(data.memo_valid==true){
     sprintf(trans_buff, "M%s%s",data.memo,"\n");
-        strncat(trans_list_buff, trans_buff, QIF_FILE_MAX_SIZE - strlen(trans_list_buff));
+        strncat(trans_list_buff, trans_buff, sizeof(trans_list_buff)-1 - strlen(trans_list_buff));
 }
 /* Add PAYEE and ADRESS here once supported by the library */
 
@@ -147,11 +151,11 @@ if(data.transactiontype_valid==true){
         break;
     }
     sprintf(trans_buff, "L%s%s",dest_string,"\n");
-    strncat(trans_list_buff, trans_buff, QIF_FILE_MAX_SIZE - strlen(trans_list_buff));
+    strncat(trans_list_buff, trans_buff, sizeof(trans_list_buff)-1 - strlen(trans_list_buff));
 }
- sprintf(trans_buff, "^\n");
- strncat(trans_list_buff, trans_buff, QIF_FILE_MAX_SIZE - strlen(trans_list_buff));
- printf(trans_list_buff);
+ strcpy(trans_buff, "^\n");
+ strncat(trans_list_buff, trans_buff, sizeof(trans_list_buff)-1 - strlen(trans_list_buff));
+ fputs(trans_list_buff,stdout);
  return 0;
 }/* end ofx_proc_transaction() */
 
@@ -220,6 +224,6 @@ int ofx_proc_account_cb(struct OfxAccountData data)
   
   
   //    strncat(trans_list_buff, dest_string, QIF_FILE_MAX_SIZE - strlen(trans_list_buff));
-  printf(dest_string);
+  fputs(dest_string,stdout);
  return 0;
 }/* end ofx_proc_account() */
