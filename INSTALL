@@ -40,5 +40,11 @@ If you are getting errors like:
 
 Try to change private to protected in file OpenSP-1.4/nsgmls/RasEventHandler.h, on line 105.
 
+(3) ofxdump does now work right.  It seems some values are cut in half
 
+LibOFx read's OpenSP's config.h, to determine if it was conpiled with SP_MULTI_BYTE defined.  Unfortunately, if the devel package for opensp was not compiled at the same time as the lib, it may give wrong value.  
+You can force libofx to assume that OpenSP was conpiled with SP_MULTI_BYTE defined by using: 
+./configure --with-opensp-multibyte
+or for CVS:
+./autogen.sh --with-opensp-multibyte
 

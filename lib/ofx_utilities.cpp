@@ -28,19 +28,14 @@ using namespace std;
 /**
    Convert an OpenSP CharString directly to a C++ stream, to enable the use of cout directly for debugging.
 */ 
-ostream &operator<<(ostream &os, SGMLApplication::CharString s)
-{
+/*ostream &operator<<(ostream &os, SGMLApplication::CharString s)
+  {
   for (size_t i = 0; i < s.len; i++)
-    {//cout<<i<<" "<<(unsigned char)(s.ptr[i])<<endl;
-
-#ifdef WORDS_BIGENDIAN
-      os << ((char *)(s.ptr+sizeof(SGMLApplication::Char)-1))[i*sizeof(SGMLApplication::Char)];
-#else
-      os << ((char *)(s.ptr))[i*sizeof(SGMLApplication::Char)];
-#endif
-    }
+  {
+  os << ((char *)(s.ptr))[i*sizeof(SGMLApplication::Char)];
+  }
   return os;
-}
+  }*/
 
 /*wostream &operator<<(wostream &os, SGMLApplication::CharString s)
   {
@@ -65,12 +60,10 @@ string CharStringtostring(const SGMLApplication::CharString source, string &dest
 {
   size_t i;
   dest.assign("");//Empty the provided string
+  //  cout<<"Length: "<<source.len<<"sizeof(Char)"<<sizeof(SGMLApplication::Char)<<endl;
   for (i = 0; i < source.len; i++){
-#ifdef WORDS_BIGENDIAN
-    dest+=((char *)(source.ptr+sizeof(SGMLApplication::Char)-1))[i*sizeof(SGMLApplication::Char)];  
-#else
-    dest+=((char *)(source.ptr))[i*sizeof(SGMLApplication::Char)];  
-#endif
+    dest+=(char)(((source.ptr)[i]));  
+    //    cout<<i<<" "<<(char)(((source.ptr)[i]))<<endl; 
   }
   return dest;
 }
@@ -78,15 +71,9 @@ string CharStringtostring(const SGMLApplication::CharString source, string &dest
 string AppendCharStringtostring(const SGMLApplication::CharString source, string &dest)
 {
   size_t i;
-  //cout<<"Length: "<<source.len<<" detected char size: "<<char_size<<endl;
   for (i = 0; i < source.len; i++)
     {
-      
-#ifdef WORDS_BIGENDIAN
-      dest+=((char *)(source.ptr+sizeof(SGMLApplication::Char)-1))[i*sizeof(SGMLApplication::Char)]; 
-#else
-      dest+=((char *)(source.ptr))[i*sizeof(SGMLApplication::Char)]; 
-#endif
+      dest+=(char)(((source.ptr)[i]));
     }
   return dest;
 }

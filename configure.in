@@ -72,11 +72,11 @@ AC_DEFUN([CHECK_SP_MULTI_BYTE],
  [
 AC_CACHE_VAL(ox_sp_multibyte,
    [
- for d in $OPENSPINCLUDES/config.h $OPENSPINCLUDES/../config.h ; do
+ for d in $OPENSPINCLUDES/config.h $OPENSPINCLUDES/../config.h $OPENSPINCLUDES/../include/config.h ; do
     if test "x$OPENSPCONFIG_H" = x; then
 	save_CPPFLAGS="$CPPFLAGS"
 	CPPFLAGS="$CPPFLAGS -DOPENSPCONFIG_H=\"$d\""
-	AC_MSG_CHECKING(For OpenSP's config.h in $d)
+	AC_MSG_CHECKING(for OpenSP's config.h in $d)
 	AC_TRY_CPP([#include OPENSPCONFIG_H],
 	[ AC_MSG_RESULT(yes); OPENSPCONFIG_H=$d ], [ AC_MSG_RESULT(no) ])
 	CPPFLAGS="$save_CPPFLAGS"
@@ -85,17 +85,25 @@ AC_CACHE_VAL(ox_sp_multibyte,
  if test "x$OPENSPCONFIG_H" = x; then
 	AC_MSG_ERROR([OpenSP's config.h not found])
  fi
-
+AC_MSG_CHECKING(for if OpenSP's was compiled with SP_MULTI_BYTE)
     ox_sp_multibyte=`sed 's/^#.*SP_MULTI_BYTE[ \t]*\([01]\)/\1/;t;d' < \
             $OPENSPCONFIG_H`])
      if test x"$ox_sp_multibyte" != x ;then
          AC_DEFINE_UNQUOTED(SP_MULTI_BYTE, $ox_sp_multibyte, [SP_MULTI_BYTE value from when OpenSP was compiled])
+		 AC_MSG_RESULT(yes)
      else
-AC_MSG_ERROR([SP_MULTI_BYTE not found in OpenSP's config.h])
+AC_MSG_RESULT(no)
     fi
  ])
 
-CHECK_SP_MULTI_BYTE
+ AC_ARG_WITH(opensp-multibyte, 
+[  --with-opensp-multibyte     Force libofx to compile with the assumption that OpenSP was compiled with SP_MULTI_BYTE defined],
+			AC_DEFINE(SP_MULTI_BYTE, 1, [SP_MULTI_BYTE value from when OpenSP was compiled]),
+			CHECK_SP_MULTI_BYTE )
+			
+##if test x"$SP_MULTI_BYTE" == x ;then
+##CHECK_SP_MULTI_BYTE
+##fi
 
 ac_save_CPPFLAGS="$CPPFLAGS"
 if test "x$OPENSPINCLUDES" != x ; then
@@ -188,6 +196,7 @@ AC_SUBST(OPENSPINCLUDES)
 AC_SUBST(OPENSPLIBS)
 LIBOFX_DTD_DIR='${datadir}/libofx/dtd'
 AC_SUBST(LIBOFX_DTD_DIR)
+
 			
 AC_OUTPUT( 		Makefile 
 	   		libofx.spec
