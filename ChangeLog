@@ -1,4 +1,7 @@
 24/11/2001  Benoit Grégoire  <bock@step.polymtl.ca>
+	* configure.in, doc/Makefile.am: Improve doxygen doc generation, and enable make install without the doc.
+
+24/11/2001  Benoit Grégoire  <bock@step.polymtl.ca>
 	* ofx_sgml.cpp: Hopefully fix incompatibilities with BOTH OpenSP 1.3.x and OpenSP >= 1.4
 	* Makefile.am, doc/Makefile.am: Doxygen API and internal doc now integrated in the build system.  It will be distributed and install with the tarballs,	and can be build in libofx-cvs using make doc.
 	* autogen.sh: Re-enable maintainer-mode. 

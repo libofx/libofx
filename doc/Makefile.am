@@ -17,12 +17,12 @@ all:
 html: doxygen.conf
 	echo "html: " && pwd
 	rm -rf html/ refman.pdf
-	@doxygen doxygen.conf
+	$(DOXYGEN) doxygen.conf
 
 doc: doxygen.conf
 	echo "doc: " && pwd && 	echo "distdir: " && echo $(distdir)
 	rm -rf html/ refman.pdf
-	@doxygen doxygen.conf
+	$(DOXYGEN) doxygen.conf
 #	$(MAKE) -C latex/ 
 #	mv latex/refman.pdf ./refman.pdf
 
@@ -37,6 +37,7 @@ maintainer-clean-local: clean-local
 	rm -rf html refman.pdf
 
 install-data-hook:
+	mkdir -p $(srcdir)/html #Workaround to allow libofx-cvs user to install without doc.
 	cp -rp $(srcdir)/html ${docdir}
 
 uninstall-hook:
