@@ -26,6 +26,7 @@
 #include "libofx.h"
 #include "messages.hh"
 #include "ofx_sgml.hh"
+#include "ofc_sgml.hh"
 #include "ofx_preproc.hh"
 
 using namespace std;
@@ -106,7 +107,7 @@ int ofx_proc_file(const char * p_filename, LibofxFileType p_file_type)
 {
 	    ofx_start=true;
 	    s_buffer.erase(0,ofx_start_idx);//Fix for really broken files that don't have a newline after the header.
-	    message_out(DEBUG,"ofx_proc_file():<OFX> has been found");
+	    message_out(DEBUG,"ofx_proc_file():<OFX> or <OFC> has been found");
 	  }
 	  
 	  if(ofx_start==true&&ofx_end==false){
@@ -122,7 +123,7 @@ int ofx_proc_file(const char * p_filename, LibofxFileType p_file_type)
 	     )
 	    {
 	      ofx_end=true;
-	      message_out(DEBUG,"ofx_proc_file():</OFX> has been found");
+	      message_out(DEBUG,"ofx_proc_file():</OFX> or </OFC>  has been found");
 	    }
 	  
 	}while(!input_file.eof()&&!input_file.bad());
@@ -153,7 +154,18 @@ int ofx_proc_file(const char * p_filename, LibofxFileType p_file_type)
 	filenames[0]=filename_openspdtd;
 	filenames[1]=filename_dtd;
 	filenames[2]=filename_ofx;
-	ofx_proc_sgml(3,filenames);
+	if(p_file_type==OFX)
+	  {
+	    ofx_proc_sgml(3,filenames);
+	  }
+	else if(p_file_type==OFC)
+	  {
+	    ofc_proc_sgml(3,filenames);
+	  }
+	else
+	  {
+	    message_out(ERROR,string("ofx_proc_file(): Error unknown file format for the OFX parser"));
+	  }
 	if(remove(tmp_filename)!=0)
 	  { 
 	    message_out(ERROR,"ofx_proc_file(): Error deleting temporary file "+string(tmp_filename));

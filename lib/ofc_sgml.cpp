@@ -30,26 +30,25 @@
 #include "ofx_utilities.hh"
 #include "messages.hh"
 #include "ofx_containers.hh"
-#include "ofx_sgml.hh"
+#include "ofc_sgml.hh"
 
 using namespace std;
 
-OfxMainContainer * MainContainer = NULL;
+
 extern SGMLApplication::OpenEntityPtr entity_ptr;
 extern SGMLApplication::Position position;
-
+extern OfxMainContainer * MainContainer;
 
 /** \brief This object is driven by OpenSP as it parses the SGML from the ofx file(s)
  */
-class OutlineApplication : public SGMLApplication
-{
+class OFCApplication : public SGMLApplication{
 public:
   OfxGenericContainer *curr_container_element; /**< The currently open object from ofx_proc_rs.cpp */
   OfxGenericContainer *tmp_container_element;
   bool is_data_element; /**< If the SGML element contains data, this flag is raised */
   string incoming_data; /**< The raw data from the SGML data element */
   
-  OutlineApplication ()
+  OFCApplication ()
   {
     MainContainer=NULL;
     curr_container_element = NULL;
@@ -88,9 +87,9 @@ public:
     
     if (is_data_element == false)
       {
-	/*------- The following are OFX entities ---------------*/
+	/*------- The following are OFC entities ---------------*/
 
-	if (identifier == "OFX")
+	if (identifier == "OFC")
 	  {
 	    message_out (PARSER, "Element " + identifier + " found");
 	    MainContainer = new OfxMainContainer (curr_container_element, identifier);
@@ -101,17 +100,15 @@ public:
 	    message_out (PARSER, "Element " + identifier + " found");
 	    curr_container_element = new OfxStatusContainer (curr_container_element, identifier);
 	  }
-	else if (identifier == "STMTRS" ||
-		 identifier == "CCSTMTRS" ||
-		 identifier == "INVSTMTRS")
+	else if (identifier == "ACCTSTMT")
 	  {
 	    message_out (PARSER, "Element " + identifier + " found");
 	    curr_container_element = new OfxStatementContainer (curr_container_element, identifier);
 	  }
-	else if (identifier == "BANKTRANLIST")
+	else if (identifier == "STMTRS")
 	  {
 	    message_out (PARSER, "Element " + identifier + " found");
-	    //BANKTRANLIST ignored, we will process it's attributes directly inside the STATEMENT,
+	    //STMTRS ignored, we will process it's attributes directly inside the STATEMENT,
 	    if(curr_container_element->type!="STATEMENT")
 	      {
 		message_out(ERROR,"Element " + identifier + " found while not inside a STATEMENT container");
@@ -161,7 +158,7 @@ public:
 	  }
 
 	/* The different types of accounts */
-	else if (identifier == "BANKACCTFROM" || identifier == "CCACCTFROM" || identifier == "INVACCTFROM")
+	else if (identifier == "ACCTFROM" )
 	  {
 	    message_out (PARSER, "Element " + identifier + " found");
 	    curr_container_element = new OfxAccountContainer (curr_container_element, identifier);
@@ -339,9 +336,9 @@ private:
 };
 
 /**
-   ofx_proc_sgml will take a list of files in command line format.  The first file must be the DTD, and then any number of OFX files.
+   ofc_proc_sgml will take a list of files in command line format.  The first file must be the DTD, and then any number of OFX files.
 */
-int ofx_proc_sgml(int argc, char *argv[])
+int ofc_proc_sgml(int argc, char *argv[])
 {
   message_out(DEBUG,"Begin ofx_proc_sgml()");
   message_out(DEBUG,argv[0]);
@@ -352,7 +349,7 @@ int ofx_proc_sgml(int argc, char *argv[])
   parserKit.setOption (ParserEventGeneratorKit::showOpenEntities);
   EventGenerator *egp =	parserKit.makeEventGenerator (argc, argv);
   egp->inhibitMessages (true);	/* Error output is handled by libofx not OpenSP */
-  OutlineApplication app;
+  OFCApplication app;
   unsigned nErrors = egp->run (app); /* Begin parsing */
   delete egp;
   return nErrors > 0;

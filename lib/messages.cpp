@@ -21,6 +21,10 @@
 #include "ParserEventGeneratorKit.h"
 #include "ofx_utilities.hh"
 #include "messages.hh"
+
+SGMLApplication::OpenEntityPtr entity_ptr; /**< Global for determining the line number in OpenSP */
+SGMLApplication::Position position; /**< Global for determining the line number in OpenSP */
+
 volatile int ofx_PARSER_msg = false; /**< If set to true, parser events will be printed to the console */
 volatile int ofx_DEBUG_msg = false;/**< If set to true, general debug messages will be printed to the console */
 volatile int ofx_DEBUG1_msg = false;/**< If set to true, debug level 1 messages will be printed to the console */

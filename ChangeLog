@@ -1,3 +1,7 @@
+7/3/2004  Benoit Grégoire  <bock@step.polymtl.ca>
+	* lib/ofc_sgml.cpp/hh: New files.  Splits code path for OFC and OFX to keep things understandeable.  Some more OFC parsing.  Now waiting to implement global libofx context object passed everywhere to make further progress.
+	* lib/messages.cpp:  Move the definition of the required globals for displaying line numbers there, as it's the only place they are read.
+
 3/3/2004  Benoit Grégoire  <bock@step.polymtl.ca>
 	* Many...
 	* lib/file_preproc.cpp, lib/file_preproc.hh: Add file format autodetection architecture, can currently distinguish between OFX and OFC files.  Note that because of this change, the main entry point of the library is now in file_preproc.cpp.

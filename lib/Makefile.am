@@ -10,13 +10,15 @@ libofx_la_SOURCES =  messages.cpp \
 		ofx_container_account.cpp \
 		ofx_container_transaction.cpp \
 		ofx_containers_misc.cpp \
-		ofx_sgml.cpp
+		ofx_sgml.cpp \
+		ofc_sgml.cpp
 
 noinst_HEADERS = ${top_srcdir}/inc/libofx.h \
 		messages.hh \
 		ofx_preproc.hh \
 		file_preproc.hh \
 		ofx_sgml.hh \
+		ofc_sgml.hh \
 		ofx_error_msg.hh \
 		ofx_containers.hh \
 		ofx_utilities.hh \
