@@ -203,6 +203,9 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data)
       cout<<"ofx_proc_transaction(): This should not happen!\n";
     }
   }
+  if(data.invtranstype_valid==true){
+    cout<<"    Investment transaction type: "<<data.invtranstype<<"\n";
+  }
   if(data.unique_id_valid==true){
     cout<<"    Unique ID of the security being traded: "<<data.unique_id<<"\n";
   }

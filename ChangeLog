@@ -1,4 +1,7 @@
-20/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
+21/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
+	* ofxdump/ofxdump.cpp: Add support for invtranstype in ofx_proc_transaction_cb()
+
+21/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
 	* lib/ofx_preproc.cpp: Abort if DTD was not found
 	
 20/10/2001  Benoit Grégoire  <bock@step.polymtl.ca>
