@@ -54,7 +54,7 @@
 #define OFX_BALANCE_NAME_LENGTH        32 + 1
 #define OFX_BALANCE_DESCRIPTION_LENGTH 80 + 1
 #define OFX_CURRENCY_LENGTH            3 + 1 /* In ISO-4217 format */
-#define OFX_BANKID_LENGTH              9
+#define OFX_BANKID_LENGTH              9 + 1
 #define OFX_BRANCHID_LENGTH            22 + 1
 #define OFX_ACCTID_LENGTH              22 + 1 
 #define OFX_ACCTKEY_LENGTH             22 + 1
@@ -68,6 +68,10 @@
 #define OFX_UNIQUE_ID_TYPE_LENGTH      10 + 1
 #define OFX_SECNAME_LENGTH             32 + 1
 #define OFX_TICKER_LENGTH              32 + 1
+#define OFX_ORG_LENGTH                 32 + 1
+#define OFX_FID_LENGTH                 32 + 1
+#define OFX_USERID_LENGTH              32 + 1
+#define OFX_USERPASS_LENGTH            32 + 1
 
 /*
 #define OFX_STATEMENT_CB               0;
@@ -632,8 +636,80 @@ CFCT void ofx_set_statement_cb(LibofxContextPtr ctx,
  */
 CFCT int libofx_proc_buffer(LibofxContextPtr ctx,
                             const char *s, unsigned int size);
+                            
+/** @name Creating OFX Files
+ *
+ * This group deals with creating OFX files
+ */
+//@{
 
+ /**
+ * \brief Information sufficient to log into an financial institution
+ *
+ * Contains all the info needed for a user to log into a financial
+ * institution and make requests for statements or post transactions.
+ * An OfxFiLogin must be passed to all functions which create OFX
+ * requests.
+ */
 
+struct OfxFiLogin{
+  char fid[OFX_FID_LENGTH];
+  char org[OFX_ORG_LENGTH];
+  char bankid[OFX_BANKID_LENGTH];
+  char brokerid[OFX_BROKERID_LENGTH];
+  char userid[OFX_USERID_LENGTH];
+  char userpass[OFX_USERPASS_LENGTH];
+};
+
+typedef enum{
+  OFX_NO_ACCT=0,
+  OFX_BANK_ACCT,
+  OFX_INVEST_ACCOUNT,
+  OFX_CREDITCARD_ACCOUNT,
+  OFX_INVALID_ACCOUNT
+} AccountType;
+
+ /**
+ * \brief Information sufficient to identify an account
+ *
+ * Contains all the info needed for an OFX request to identify an account.
+ * An OfxAccountInfo must be passed to all functions which create OFX
+ * requests related to a specific account.
+ */
+
+struct OfxAccountInfo{
+  char accountid[OFX_ACCOUNT_ID_LENGTH];
+  AccountType type;
+};
+
+/**
+ * \brief Creates an OFX statement request in string form
+ *
+ * Creates a string which should be passed to an OFX server.  This string is
+ * an OFX request suitable to retrieve a statement for the @p account from the
+ * @p fi
+ *
+ * @param fi Identifies the financial institution and the user logging in.
+ * @param account Idenfities the account for which a statement is desired
+ * @return string pointer to the request.  This is allocated via malloc(), and is the callers responsibility to free.
+*/
+
+CFCT char* libofx_request_statement( const struct OfxFiLogin* fi, const struct OfxAccountInfo* account, time_t date_from );
+
+/**
+ * \brief Creates an OFX account info (list) request in string form
+ *
+ * Creates a string which should be passed to an OFX server.  This string is
+ * an OFX request suitable to retrieve a list of accounts from the
+ * @p fi
+ *
+ * @param fi Identifies the financial institution and the user logging in.
+ * @return string pointer to the request.  This is allocated via malloc(), and is the callers responsibility to free.
+*/
+
+CFCT char* libofx_request_accountinfo( const struct OfxFiLogin* login );
+
+//@}
 
 #endif
 

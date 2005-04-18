@@ -1,3 +1,8 @@
+18/04/2005:  Ace Jones  <acejones@users.sf.net>
+	* Added libofx_request_statement API, and underlying support classes, to create an OFX statement request
+	* Added libofx_request_accountinfo API to create an OFX account into request
+	* Added ofxconnect sample app to demonstrate & test new API's (try "make check" in the ofxconnect folder).  Read README.privateserver first.
+
 24/11/2004:  Benoit Grégoire  <bock@step.polymtl.ca>
 	* Apply Christian Stimming's patch for rpm building.  Also adds a make rpm target.
 	

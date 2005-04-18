@@ -302,5 +302,6 @@ AC_OUTPUT( 		Makefile
 			doc/Makefile
 			ofx2qif/Makefile
 			ofxdump/Makefile
+			ofxconnect/Makefile
 			)
 
