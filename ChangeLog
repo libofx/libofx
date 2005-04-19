@@ -1,3 +1,9 @@
+
+
+20/4/2004 Martin Preuss <martin@aquamaniac.de>
+	* inserted an \"#ifndef\" before definition of static variables to 
+          allow include from multiple source files of a project
+
 18/04/2005:  Ace Jones  <acejones@users.sf.net>
 	* Added libofx_request_statement API, and underlying support classes, to create an OFX statement request
 	* Added libofx_request_accountinfo API to create an OFX account into request
