@@ -110,6 +110,9 @@ const char * format_name;  /**< Text version of the enum */
 const char * description; /**< Description of the file format */
 };
 
+
+#ifndef OFX_AQUAMANIAC_UGLY_HACK1
+
 const struct LibofxFileFormatInfo LibofxImportFormatList[] = 
 {
 {AUTODETECT, "AUTODETECT", "AUTODETECT (File format will be automatically detected later)"},
@@ -142,6 +145,8 @@ CFCT enum LibofxFileFormat libofx_get_file_format_from_str(const struct LibofxFi
  @return null terminated string suitable for debugging output or user communication.
 */
 CFCT const char * libofx_get_file_format_description(const struct LibofxFileFormatInfo format_list[], enum LibofxFileFormat file_format);
+
+#endif
 
 /**
  * \brief libofx_proc_file is the entry point of the library.
