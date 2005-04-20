@@ -1,6 +1,7 @@
 bin_PROGRAMS = ofxconnect
-ofxconnect_LDADD = $(top_builddir)/lib/libofx.la
+ofxconnect_LDADD = $(top_builddir)/lib/libofx.la -L/usr/lib -lcurl -lz -lssl -lcrypto -ldl
 ofxconnect_SOURCES = cmdline.h cmdline.c ofxconnect.cpp 
+
 AM_CPPFLAGS = \
 	-I${top_srcdir}/inc
 
@@ -17,3 +18,4 @@ EXTRA_DIST = cmdline.ggo
 # See README.privateserver for details on this server and how to get
 # the key needed to run this test.
 TESTS = test-privateserver.sh 
+

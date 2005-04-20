@@ -32,10 +32,49 @@
 #include <string>
 #include "libofx.h"
 #include <config.h>		/* Include config constants, e.g., VERSION TF */
+#include <curl/curl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 #include "cmdline.h" /* Gengetopt generated parser */
 
 using namespace std;
+
+bool post(const char* request, const char* url, const char* filename)
+{
+  CURL *curl = curl_easy_init();
+  if(! curl)
+    return false;
+
+  unlink("tmpout");  
+  FILE* file = fopen(filename,"wb");
+  if (! file )
+  {
+    curl_easy_cleanup(curl);
+    return false;
+  }
+    
+  curl_easy_setopt(curl, CURLOPT_URL, url);
+  curl_easy_setopt(curl, CURLOPT_POSTFIELDS, request);
+
+  struct curl_slist *headerlist=NULL;
+  headerlist=curl_slist_append(headerlist, "Content-type: application/x-ofx");
+  headerlist=curl_slist_append(headerlist, "Accept: */*, application/x-ofx");    
+  
+  curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headerlist);
+  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, fwrite);
+  curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)file);
+    
+  CURLcode res = curl_easy_perform(curl);
+
+  curl_easy_cleanup(curl);
+  curl_slist_free_all (headerlist);
+  
+  fclose(file);
+  
+  return true;
+}
 
 int main (int argc, char *argv[])
 {
@@ -49,7 +88,16 @@ int main (int argc, char *argv[])
     cmdline_parser_print_help();
     exit(1);
   }
-    
+
+  if ( args_info.inputs_num > 0 )
+  {
+    cout << "file " << args_info.inputs[0] << endl;
+  }
+  else
+  {
+    cerr << "ERROR: You must specify an output file" << endl;
+  }
+  
   if ( args_info.statement_req_flag )
   {
     cerr << "Statement request" << endl;
@@ -166,11 +214,14 @@ int main (int argc, char *argv[])
     
     if ( ok )
     {
-      char* ofx = libofx_request_statement( &fi, &account, time(NULL) - args_info.past_arg * 86400L );
+      char* request = libofx_request_statement( &fi, &account, time(NULL) - args_info.past_arg * 86400L );
+    
+      if ( args_info.url_given )
+        post(request,args_info.url_arg,args_info.inputs[0]);
+      else
+        cout << request;
       
-      cout << ofx;
-      
-      free(ofx);
+      free(request);
     }
   }
 
@@ -223,15 +274,20 @@ int main (int argc, char *argv[])
     
     if ( ok )
     {
-      char* ofx = libofx_request_accountinfo( &fi );
+      char* request = libofx_request_accountinfo( &fi );
     
-      cout << ofx;
+      if ( args_info.url_given )
+        post(request,args_info.url_arg,args_info.inputs[0]);
+      else
+        cout << request;
     
-      free(ofx);
+      free(request);
     }
   }
         
   return 0;
 }
+
+
 // vim:cin:si:ai:et:ts=2:sw=2:
 

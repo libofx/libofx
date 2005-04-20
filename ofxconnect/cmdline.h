@@ -35,6 +35,7 @@ struct gengetopt_args_info
   char * acct_arg;	/* Account ID.  */
   int type_arg;	/* Account Type 1=checking 2=invest 3=ccard.  */
   long past_arg;	/* How far back to look from today (in days).  */
+  char * url_arg;	/* Url to POST the data to (otherwise goes to stdout).  */
 
   int help_given ;	/* Whether help was given.  */
   int version_given ;	/* Whether version was given.  */
@@ -49,6 +50,7 @@ struct gengetopt_args_info
   int acct_given ;	/* Whether acct was given.  */
   int type_given ;	/* Whether type was given.  */
   int past_given ;	/* Whether past was given.  */
+  int url_given ;	/* Whether url was given.  */
 
   char **inputs ; /* unamed options */
   unsigned inputs_num ; /* unamed options number */

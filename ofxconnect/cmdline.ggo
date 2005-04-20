@@ -21,3 +21,4 @@ option "pass" - "Password" string no
 option "acct" - "Account ID" string no
 option "type" - "Account Type 1=checking 2=invest 3=ccard" int no
 option "past" - "How far back to look from today (in days)" long no
+option "url" - "Url to POST the data to (otherwise goes to stdout)" string no

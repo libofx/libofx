@@ -1,10 +1,11 @@
+19/4/2005:  Ace Jones  <acejones@users.sf.net>
+	* Improved ofxconnect to do the POST operation itself
+	* Improved the ofxconnect unit test to be mostly cleartext except the server login information.
 
+20/4/2005 Martin Preuss <martin@aquamaniac.de>
+	* inserted an \"#ifndef\" before definition of static variables to allow include from multiple source files of a project
 
-20/4/2004 Martin Preuss <martin@aquamaniac.de>
-	* inserted an \"#ifndef\" before definition of static variables to 
-          allow include from multiple source files of a project
-
-18/04/2005:  Ace Jones  <acejones@users.sf.net>
+18/4/2005:  Ace Jones  <acejones@users.sf.net>
 	* Added libofx_request_statement API, and underlying support classes, to create an OFX statement request
 	* Added libofx_request_accountinfo API to create an OFX account into request
 	* Added ofxconnect sample app to demonstrate & test new API's (try "make check" in the ofxconnect folder).  Read README.privateserver first.

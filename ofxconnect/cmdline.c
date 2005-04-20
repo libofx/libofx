@@ -53,6 +53,7 @@ cmdline_parser_print_help (void)
   printf("      --acct=STRING      Account ID\n");
   printf("      --type=INT         Account Type 1=checking 2=invest 3=ccard\n");
   printf("      --past=LONG        How far back to look from today (in days)\n");
+  printf("      --url=STRING       Url to POST the data to (otherwise goes to stdout)\n");
 }
 
 
@@ -89,6 +90,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
   args_info->acct_given = 0 ;
   args_info->type_given = 0 ;
   args_info->past_given = 0 ;
+  args_info->url_given = 0 ;
 #define clear_args() { \
   args_info->statement_req_flag = 0;\
   args_info->accountinfo_req_flag = 0;\
@@ -99,6 +101,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
   args_info->user_arg = NULL; \
   args_info->pass_arg = NULL; \
   args_info->acct_arg = NULL; \
+  args_info->url_arg = NULL; \
 }
 
   clear_args();
@@ -130,6 +133,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
         { "acct",	1, NULL, 0 },
         { "type",	1, NULL, 0 },
         { "past",	1, NULL, 0 },
+        { "url",	1, NULL, 0 },
         { NULL,	0, NULL, 0 }
       };
 
@@ -297,6 +301,20 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
               }
             args_info->past_given = 1;
             args_info->past_arg = strtol (optarg,&stop_char,0);
+            break;
+          }
+          
+          /* Url to POST the data to (otherwise goes to stdout).  */
+          else if (strcmp (long_options[option_index].name, "url") == 0)
+          {
+            if (args_info->url_given)
+              {
+                fprintf (stderr, "%s: `--url' option given more than once\n", CMDLINE_PARSER_PACKAGE);
+                clear_args ();
+                exit (EXIT_FAILURE);
+              }
+            args_info->url_given = 1;
+            args_info->url_arg = gengetopt_strdup (optarg);
             break;
           }
           
