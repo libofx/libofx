@@ -1,3 +1,9 @@
+
+22/4/2004 Martin Preuss <martin@aquamaniac.de>
+        * added fields bank_id, bank_id_valid, branch_id, branch_id_valid,
+          account_number and account_number_valid to OfxAccountData
+          according to discussion on LibOFX mailinglist.
+          
 19/4/2005:  Ace Jones  <acejones@users.sf.net>
 	* Improved ofxconnect to do the POST operation itself
 	* Improved the ofxconnect unit test to be mostly cleartext except the server login information.

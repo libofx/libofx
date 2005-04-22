@@ -259,6 +259,15 @@ struct OfxAccountData{
   char currency[OFX_CURRENCY_LENGTH]; /**< The currency is a string in ISO-4217 format */
   int currency_valid;
 
+  char bank_id[OFX_BANKID_LENGTH];
+  int bank_id_valid;
+
+  char branch_id[OFX_BRANCHID_LENGTH];
+  int branch_id_valid;
+
+  char account_number[OFX_ACCTID_LENGTH];
+  int account_number_valid;
+
 };
 
 /**

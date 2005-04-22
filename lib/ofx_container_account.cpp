@@ -75,12 +75,18 @@ void OfxAccountContainer::add_attribute(const string identifier, const string va
 {
   if( identifier=="BANKID"){
     strncpy(bankid,value.c_str(),OFX_BANKID_LENGTH);
+    data.bank_id_valid=true;
+    strncpy(data.bank_id, value.c_str(), OFX_BANKID_LENGTH);
   }
   else if( identifier=="BRANCHID"){
     strncpy(branchid,value.c_str(),OFX_BRANCHID_LENGTH);
+    data.branch_id_valid=true;
+    strncpy(data.branch_id, value.c_str(), OFX_BRANCHID_LENGTH);
   }
   else if( identifier=="ACCTID"){
     strncpy(acctid,value.c_str(),OFX_ACCTID_LENGTH);
+    data.account_number_valid=true;
+    strncpy(data.account_number, value.c_str(), OFX_ACCTID_LENGTH);
   }
   else if( identifier=="ACCTKEY"){
     strncpy(acctkey,value.c_str(),OFX_ACCTKEY_LENGTH);

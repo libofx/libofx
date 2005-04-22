@@ -1,5 +1,5 @@
 # Name of your program
-package "ofxconnect"
+#package "ofxconnect"
 # Version of your program
 # don't use version if you're using automake
 purpose "prints to stdout the created OFX file based on the options you pass it. currently it will only create a statement request file.  you can POST this to an OFX server to request a statement from that financial institution for that account."
@@ -7,11 +7,11 @@ purpose "prints to stdout the created OFX file based on the options you pass it.
 # Options
 # option <long> <short> <desc> {argtype} {typestr="<type descr>"} {default="<default value>"} {required} {argoptional} {multiple}
 
-section "Commands"
+#section "Commands"
 option "statement-req"  s  "Request for a statement" flag off
 option "accountinfo-req"  a  "Request for a list of accounts" flag off
 
-section "Parameters"
+#section "Parameters"
 option "fid" - "FI identifier" string no
 option "org" - "FI org tag" string no
 option "bank" - "IBAN bank identifier" string no
