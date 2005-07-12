@@ -77,7 +77,7 @@ OfxAggregate OfxRequest::SignOnRequest(void) const
   sonrqTag.Add( "LANGUAGE","ENG");
   sonrqTag.Add( fiTag );
   sonrqTag.Add( "APPID","QWIN");
-  sonrqTag.Add( "APPVER","1100");
+  sonrqTag.Add( "APPVER","1200");
   
   OfxAggregate signonmsgTag("SIGNONMSGSRQV1");
   signonmsgTag.Add( sonrqTag );

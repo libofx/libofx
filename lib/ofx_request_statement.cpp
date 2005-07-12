@@ -59,7 +59,7 @@ OfxStatementRequest::OfxStatementRequest( const OfxFiLogin& fi, const OfxAccount
 OfxAggregate OfxStatementRequest::BankStatementRequest(void) const
 {
   OfxAggregate bankacctfromTag("BANKACCTFROM");
-  bankacctfromTag.Add( "BANKID", m_login.bankid );
+  bankacctfromTag.Add( "BANKID", m_account.bankid );
   bankacctfromTag.Add( "ACCTID", m_account.accountid );
   bankacctfromTag.Add( "ACCTTYPE", "CHECKING" );
   // FIXME "CHECKING" should not be hard-coded
@@ -102,7 +102,7 @@ OfxAggregate OfxStatementRequest::InvestmentStatementRequest(void) const
 {
   OfxAggregate invacctfromTag("INVACCTFROM");
   
-  invacctfromTag.Add( "BROKERID", m_login.brokerid );
+  invacctfromTag.Add( "BROKERID", m_account.brokerid );
   invacctfromTag.Add( "ACCTID", m_account.accountid );
 
   OfxAggregate inctranTag("INCTRAN");

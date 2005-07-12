@@ -669,15 +669,13 @@ CFCT int libofx_proc_buffer(LibofxContextPtr ctx,
 struct OfxFiLogin{
   char fid[OFX_FID_LENGTH];
   char org[OFX_ORG_LENGTH];
-  char bankid[OFX_BANKID_LENGTH];
-  char brokerid[OFX_BROKERID_LENGTH];
   char userid[OFX_USERID_LENGTH];
   char userpass[OFX_USERPASS_LENGTH];
 };
 
 typedef enum{
-  OFX_NO_ACCT=0,
-  OFX_BANK_ACCT,
+  OFX_NO_ACCOUNT=0,
+  OFX_BANK_ACCOUNT,
   OFX_INVEST_ACCOUNT,
   OFX_CREDITCARD_ACCOUNT,
   OFX_INVALID_ACCOUNT
@@ -693,6 +691,8 @@ typedef enum{
 
 struct OfxAccountInfo{
   char accountid[OFX_ACCOUNT_ID_LENGTH];
+  char bankid[OFX_BANKID_LENGTH];
+  char brokerid[OFX_BROKERID_LENGTH];
   AccountType type;
 };
 

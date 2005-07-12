@@ -97,43 +97,67 @@ int main (int argc, char *argv[])
   {
     cerr << "ERROR: You must specify an output file" << endl;
   }
+ 
+  // Get the FI Login information
+  // 
+  OfxFiLogin fi;
+  memset(&fi,0,sizeof(OfxFiLogin));
+  bool ok = true;
+  if ( args_info.fid_given )
+  {
+    cerr << "fid " <<  args_info.fid_arg << endl;  
+    strncpy(fi.fid,args_info.fid_arg,OFX_FID_LENGTH-1);
+  }
+  else
+  {
+    cerr << "ERROR: --fid is required" << endl;
+    ok = false;
+  }
+  
+  if ( args_info.org_given )
+  {
+    cerr << "org " << args_info.org_arg << endl;  
+    strncpy(fi.org,args_info.org_arg,OFX_ORG_LENGTH-1);
+  }
+  else
+  {
+    cerr << "ERROR: --org is required" << endl;
+    ok = false;
+  }
+
+  if ( args_info.user_given )
+  {
+    cerr << "user " << args_info.user_arg << endl;  
+    strncpy(fi.userid,args_info.user_arg,OFX_USERID_LENGTH-1);
+  }
+  else
+  {
+    cerr << "ERROR: --user is required" << endl;
+    ok = false;
+  }
+  
+  if ( args_info.pass_given )
+  {
+    cerr << "pass " << args_info.pass_arg << endl;  
+    strncpy(fi.userpass,args_info.pass_arg,OFX_USERPASS_LENGTH-1);
+  }
+  else
+  {
+    cerr << "ERROR: --pass is required" << endl;
+    ok = false;
+  }
   
   if ( args_info.statement_req_flag )
   {
     cerr << "Statement request" << endl;
     
-    OfxFiLogin fi;
-    memset(&fi,0,sizeof(OfxFiLogin));
     OfxAccountInfo account;
     memset(&account,0,sizeof(OfxAccountInfo));
-    
-    bool ok = true;
-    if ( args_info.fid_given )
-    {
-      cerr << "fid " <<  args_info.fid_arg << endl;  
-      strncpy(fi.fid,args_info.fid_arg,OFX_FID_LENGTH-1);
-    }
-    else
-    {
-      cerr << "ERROR: --fid is required for a statement request" << endl;
-      ok = false;
-    }
-    
-    if ( args_info.org_given )
-    {
-      cerr << "org " << args_info.org_arg << endl;  
-      strncpy(fi.org,args_info.org_arg,OFX_ORG_LENGTH-1);
-    }
-    else
-    {
-      cerr << "ERROR: --org is required for a statement request" << endl;
-      ok = false;
-    }
     
     if ( args_info.bank_given )
     {
       cerr << "bank " << args_info.bank_arg << endl;  
-      strncpy(fi.bankid,args_info.bank_arg,OFX_BANKID_LENGTH-1);
+      strncpy(account.bankid,args_info.bank_arg,OFX_BANKID_LENGTH-1);
     }
     else    
     {
@@ -147,7 +171,7 @@ int main (int argc, char *argv[])
     if ( args_info.broker_given )
     {
       cerr << "broker " << args_info.broker_arg << endl;  
-      strncpy(fi.brokerid,args_info.broker_arg,OFX_BROKERID_LENGTH-1);
+      strncpy(account.brokerid,args_info.broker_arg,OFX_BROKERID_LENGTH-1);
     }
     else
     {
@@ -156,28 +180,6 @@ int main (int argc, char *argv[])
         cerr << "ERROR: --broker is required for an investment statement request" << endl;
         ok = false;
       }
-    }
-    
-    if ( args_info.user_given )
-    {
-      cerr << "user " << args_info.user_arg << endl;  
-      strncpy(fi.userid,args_info.user_arg,OFX_USERID_LENGTH-1);
-    }
-    else
-    {
-      cerr << "ERROR: --user is required for a statement request" << endl;
-      ok = false;
-    }
-    
-    if ( args_info.pass_given )
-    {
-      cerr << "pass " << args_info.pass_arg << endl;  
-      strncpy(fi.userpass,args_info.pass_arg,OFX_USERPASS_LENGTH-1);
-    }
-    else
-    {
-      cerr << "ERROR: --pass is required for a statement request" << endl;
-      ok = false;
     }
     
     if ( args_info.acct_given )
@@ -227,51 +229,6 @@ int main (int argc, char *argv[])
 
   if ( args_info.accountinfo_req_flag )
   {
-    OfxFiLogin fi;
-    memset(&fi,0,sizeof(OfxFiLogin));
-
-    bool ok = true;
-    if ( args_info.fid_given )
-    {
-      cerr << "fid " <<  args_info.fid_arg << endl;  
-      strncpy(fi.fid,args_info.fid_arg,OFX_FID_LENGTH-1);
-    }
-    else
-    {
-      cerr << "ERROR: --fid is required for an account info request" << endl;
-      ok = false;
-    }
-    if ( args_info.org_given )
-    {
-      cerr << "org " << args_info.org_arg << endl;  
-      strncpy(fi.org,args_info.org_arg,OFX_ORG_LENGTH-1);
-    }
-    else
-    {
-      cerr << "ERROR: --org is required for an account info request" << endl;
-      ok = false;
-    }
-    if ( args_info.user_given )
-    {
-      cerr << "user " << args_info.user_arg << endl;  
-      strncpy(fi.userid,args_info.user_arg,OFX_USERID_LENGTH-1);
-    }
-    else
-    {
-      cerr << "ERROR: --user is required for an account info request" << endl;
-      ok = false;
-    }
-    if ( args_info.pass_given )
-    {
-      cerr << "pass " << args_info.pass_arg << endl;  
-      strncpy(fi.userpass,args_info.pass_arg,OFX_USERPASS_LENGTH-1);
-    }
-    else
-    {
-      cerr << "ERROR: --pass is required for an account info request" << endl;
-      ok = false;
-    }
-    
     if ( ok )
     {
       char* request = libofx_request_accountinfo( &fi );
