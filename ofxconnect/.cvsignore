@@ -4,5 +4,6 @@
 .libs
 Makefile
 Makefile.in
-html
-doxygen.log
+ofxconnect
+cmdline.c
+cmdline.h

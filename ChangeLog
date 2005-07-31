@@ -1,4 +1,9 @@
-11/7/2004 Ace Jones <acejones@users.sf.net>
+08/10/2004:  Benoit Grégoire  <bock@step.polymtl.ca>
+	* Release 0.8.0
+	* configure.in:  Update libtool version number.  Make curl check fatal untill there is code to conditionally not compile ofxconnect when CURL is unavailable.
+	* Fix the build system so that discheck will finally run properly.
+
+11/7/2005 Ace Jones <acejones@users.sf.net>
 	* Upgraded the app version for OFX Requests (some banks are denying
 	  the old version now)
 	* Moved bank & broker ID's from OfxFiLogin to OfxAccountInfo, which is

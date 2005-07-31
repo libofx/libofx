@@ -1,3 +1,8 @@
+LibOFX 0.8.0:
+	- New DirectConnect API for statement downloads, thanks to Ace Jones and Martin Preuss
+	- Added ofxconnect sample app to demonstrate & test new API's (try "make check" in the ofxconnect folder).  Read README.privateserver first.
+	- Apply Christian Stimming's patch for rpm building.  Also adds a make rpm target.
+
 LibOFX 0.7.0:
 	- Fix compile with gcc 3.4.  This also needs to be applied to the stable branch.
 	- Now uses a proper callback architecture (many thanks to Martin Preuss and Ryan P Bobko who contributed to it).

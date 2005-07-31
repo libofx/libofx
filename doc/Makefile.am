@@ -3,23 +3,24 @@ SUBDIRS =
 docdir = ${prefix}/share/doc/libofx
 
 EXTRA_DIST = \
-	doxygen.cfg.in \
+	doxygen.cfg \
 	ofx_sample_files \
-	tag_striper_test.txt
+	tag_striper_test.txt \
+	html
 
 all:
 
-doc: doxygen.cfg
+doc: html/
+
+html/: doxygen.cfg
 	echo "doc: " && pwd && 	echo "distdir: " && echo $(distdir)
 	rm -rf html/ refman.pdf
 	$(DOXYGEN) doxygen.cfg
 #	$(MAKE) -C latex/ 
 #	mv latex/refman.pdf ./refman.pdf
 
-dist-hook: doxygen.cfg
+dist-hook: maintainer-clean-local doc
 	echo "dist-hook: " && pwd
-	cd $(srcdir) && pwd && rm -rf html refman.pdf && $(DOXYGEN) doxygen.cfg
-	cp -rp html ${distdir}
 
 clean-local:
 	echo "clean-local: " && pwd
@@ -39,13 +40,3 @@ install-data-hook:
 uninstall-hook:
 	chmod +w -R $(DESTDIR)${docdir}/html #Why chmod is needed is a mystery
 	rm -rf $(DESTDIR)${docdir}/html
-
-## We borrow guile's convention and use @-...-@ as the substitution
-## brackets here, instead of the usual @...@.  This prevents autoconf
-## from substituting the values directly into the left-hand sides of
-## the sed substitutions.
-doxygen.cfg: doxygen.cfg.in Makefile
-	rm -f $@.tmp
-	sed < $< > $@.tmp \
-            -e 's:@-top_srcdir-@:${top_srcdir}:g'
-	mv $@.tmp $@

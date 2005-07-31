@@ -15,6 +15,9 @@ ofx2qif is a OFX "file" to QIF (Quicken Interchange Format) converter.  It was w
 I do not plan on working on this utility much further, but I would be more than happy to accept contributions.
 usage: ofx2qif path_to_ofx_file/ofx_filename > output_filename.qif
 
+ofxconnect:
+sample app to demonstrate & test new direct connect API's (try "make check" in the ofxconnect folder).  Read README.privateserver first.
+
 LibOFX strives to achieve the following design goals:
 
 -Simplicity: OFX is a VERY complex spec. However, few if any software needs all this complexity. The library tries to hide this complexity by "flattening" the data structures, doing timezone conversions, currency conversion, etc.

@@ -15,8 +15,7 @@ EXTRA_DIST = \
   libofx.spec.in \
   libofx.spec \
   totest.txt \
-  libofx.lsm \
-  config
+  libofx.lsm
 
 .PHONY: doc
 doc:

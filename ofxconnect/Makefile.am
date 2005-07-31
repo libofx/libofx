@@ -13,7 +13,7 @@ cmdline.c cmdline.h: cmdline.ggo Makefile
 
 endif
 
-EXTRA_DIST = cmdline.ggo
+EXTRA_DIST = cmdline.ggo test-privateserver.sh
 
 # See README.privateserver for details on this server and how to get
 # the key needed to run this test.
