@@ -144,6 +144,12 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
   if(data.unitprice_valid==true){
     cout<<"    Unit price: "<<setiosflags(ios::fixed)<<setiosflags(ios::showpoint)<<setprecision(2)<<data.unitprice<<"\n";
   }
+  if(data.fees_valid==true){
+    cout<<"    Fees: "<<setiosflags(ios::fixed)<<setiosflags(ios::showpoint)<<setprecision(2)<<data.fees<<"\n";
+  }
+  if(data.commission_valid==true){
+    cout<<"    Commission: "<<setiosflags(ios::fixed)<<setiosflags(ios::showpoint)<<setprecision(2)<<data.commission<<"\n";
+  }
   if(data.fi_id_valid==true){
     cout<<"    Financial institution's ID for this transaction: "<<data.fi_id<<"\n";
   }

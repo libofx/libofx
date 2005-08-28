@@ -363,6 +363,14 @@ void OfxInvestmentTransactionContainer::add_attribute(const string identifier, c
     data.date_initiated = ofxdate_to_time_t(value);
     data.date_initiated_valid = true;
   }
+  else if(identifier=="COMMISSION"){
+    data.commission=ofxamount_to_double(value);
+    data.commission_valid = true;
+  }
+  else if(identifier=="FEES"){
+    data.fees=ofxamount_to_double(value);
+    data.fees_valid = true;
+  }
   else{
     /* Redirect unknown identifiers to the base class */
     OfxTransactionContainer::add_attribute(identifier, value);

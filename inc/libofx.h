@@ -504,6 +504,10 @@ char check_number[OFX_CHECK_NUMBER_LENGTH];
   int name_valid;
   char memo[OFX_MEMO2_LENGTH];/**< Extra information not included in name */
   int memo_valid;
+  double commission;/**< Commission paid to broker (investment transactions only) */
+  int commission_valid;
+  double fees;/**< Fees applied to trade (investment transactions only) */
+  int fees_valid;
 
   /*********** NOT YET COMPLETE!!! *********************/
 };

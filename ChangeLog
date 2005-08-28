@@ -1,4 +1,7 @@
-08/10/2004:  Benoit Grégoire  <bock@step.polymtl.ca>
+27/08/2005 Ace Jones <acejones@users.sf.net>
+	* Added fees and commission fields to transaction structure (and fill them in)
+
+31/07/2005:  Benoit Grégoire  <bock@step.polymtl.ca>
 	* Release 0.8.0
 	* configure.in:  Update libtool version number.  Make curl check fatal untill there is code to conditionally not compile ofxconnect when CURL is unavailable.
 	* Fix the build system so that discheck will finally run properly.
