@@ -1,6 +1,6 @@
 /* 
 
-   $Id: tree.hh,v 1.3 2004-04-09 06:51:45 benoitg Exp $
+   $Id: tree.hh,v 1.4 2005-09-24 22:25:40 acejones Exp $
 
    STL-like templated tree class.
    Copyright (C) 2001  Kasper Peeters <k.peeters@damtp.cam.ac.uk>
@@ -69,7 +69,7 @@ inline void constructor(T1* p)
    }
 
 template <class T1>
-inline void kp::destructor(T1* p)
+inline void destructor(T1* p)
    {
    p->~T1();
    }

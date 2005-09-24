@@ -1,7 +1,11 @@
-27/08/2005 Ace Jones <acejones@users.sf.net>
+24/9/2005 Ace Jones <acejones@users.sf.net>
+	* Fixed a namespace bug that's fatal on GCC4.0
+	  Submitted by Christian Stimming <stimming@tuhh.de>
+
+27/8/2005 Ace Jones <acejones@users.sf.net>
 	* Added fees and commission fields to transaction structure (and fill them in)
 
-31/07/2005:  Benoit Grégoire  <bock@step.polymtl.ca>
+31/7/2005:  Benoit Grégoire  <bock@step.polymtl.ca>
 	* Release 0.8.0
 	* configure.in:  Update libtool version number.  Make curl check fatal untill there is code to conditionally not compile ofxconnect when CURL is unavailable.
 	* Fix the build system so that discheck will finally run properly.
