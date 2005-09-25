@@ -1,3 +1,10 @@
+25/9/2005 Ace Jones <acejones@users.sf.net>
+	* Brought in new tree.hh from http://www.aei.mpg.de/~peekas/tree
+	* Removed a workaround in all uses of tree::number_of_siblings().
+	  This appears to work around a bug in tree.h which caused the siblings
+	  to be overcounted.  That bug is fixed, so this workaround is not
+	  needed.
+
 24/9/2005 Ace Jones <acejones@users.sf.net>
 	* Fixed a namespace bug that's fatal on GCC4.0
 	  Submitted by Christian Stimming <stimming@tuhh.de>

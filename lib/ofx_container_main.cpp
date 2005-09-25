@@ -84,7 +84,7 @@ int OfxMainContainer::add_container(OfxAccountContainer * container)
     {
       message_out(DEBUG,"OfxMainContainer::add_container, account is not the first account");
       tree<OfxGenericContainer *>::sibling_iterator tmp =  account_tree.begin();
-  tmp += (account_tree.number_of_siblings(tmp))-2; //Find last account
+      tmp += (account_tree.number_of_siblings(tmp)); //Find last account
       account_tree.insert_after(tmp, container);
     }  
   return true;
@@ -95,7 +95,7 @@ int OfxMainContainer::add_container(OfxStatementContainer * container)
   message_out(DEBUG,"OfxMainContainer::add_container, adding a statement");
   tree<OfxGenericContainer *>::sibling_iterator tmp =  account_tree.begin();
   //cerr<< "size="<<account_tree.size()<<"; num_sibblings="<<account_tree.number_of_siblings(tmp)<<endl;
-  tmp += (account_tree.number_of_siblings(tmp))-2; //Find last account
+  tmp += (account_tree.number_of_siblings(tmp)); //Find last account
   
   if(account_tree.is_valid(tmp))
     {
@@ -130,7 +130,7 @@ int OfxMainContainer::add_container(OfxTransactionContainer * container)
     {
   tree<OfxGenericContainer *>::sibling_iterator tmp =  account_tree.begin();
   //cerr<< "size="<<account_tree.size()<<"; num_sibblings="<<account_tree.number_of_siblings(tmp)<<endl;
-  tmp += (account_tree.number_of_siblings(tmp))-2; //Find last account
+  tmp += (account_tree.number_of_siblings(tmp)); //Find last account
       if(account_tree.is_valid(tmp))
 	{
 	  message_out(DEBUG,"OfxMainContainer::add_container: tmp is valid, Accounts are present");
