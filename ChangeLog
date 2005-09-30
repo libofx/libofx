@@ -1,3 +1,7 @@
+1/10/2005 Ace Jones <acejones@users.sf.net>
+	* Bumped version to 0.8.1 (due to transaction struct change)
+	* Added a pkg-config file
+
 25/9/2005 Ace Jones <acejones@users.sf.net>
 	* Brought in new tree.hh from http://www.aei.mpg.de/~peekas/tree
 	* Removed a workaround in all uses of tree::number_of_siblings().

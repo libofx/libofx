@@ -14,8 +14,12 @@ doc_DATA = \
 EXTRA_DIST = \
   libofx.spec.in \
   libofx.spec \
+  libofx.pc \
   totest.txt \
   libofx.lsm
+
+pkgconfigdir=$(libdir)/pkgconfig
+pkgconfig_DATA=libofx.pc
 
 .PHONY: doc
 doc:
