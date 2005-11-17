@@ -1,3 +1,8 @@
+
+17/11/2005 Martin Preuss <aquamaniac@users.sf.net>
+	* added pkg-config file to spec file
+	* fixed spec file (was mentioning libraries twice)
+
 1/10/2005 Ace Jones <acejones@users.sf.net>
 	* Bumped version to 0.8.1 (due to transaction struct change)
 	* Added a pkg-config file

@@ -60,8 +60,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/*
 %{_libdir}/*.a
 %{_libdir}/*.la
-%{_libdir}/*.so
 %{_libdir}/*.so*
+%{_libdir}/pkgconfig/libofx.pc
 %{_includedir}/*
 %{_datadir}/%{name}/dtd/*
 %{_datadir}/doc/%{name}
