@@ -33,6 +33,7 @@
 #include "libofx.h"
 #include <stdio.h>		/* for printf() */
 #include <config.h>		/* Include config constants, e.g., VERSION TF */
+#include <sys/stat.h>
 
 #include "cmdline.h" /* Gengetopt generated parser */
 
@@ -387,6 +388,20 @@ int main (int argc, char *argv[])
 	}
     }
 
+  const char* filename = args_info.inputs[0];
+  struct stat stat_buf;
+  int result = stat(filename,&stat_buf);
+  if ( result == -1 )
+  {
+	  cout << "Unable to open " << filename << ": " << strerror(errno) << endl;
+	  return 1;
+  }
+  if ( ! S_ISREG( stat_buf.st_mode ) ) 
+  {
+	  cout << "Unable to open " << filename << ": Not a regular file" << endl;
+	  return 1;
+  }
+		  
   LibofxContextPtr libofx_context = libofx_get_new_context();
 
   //char **inputs ; /* unamed options */
@@ -404,7 +419,7 @@ int main (int argc, char *argv[])
       /** @todo currently, only the first file is processed as the library can't deal with more right now.*/
       if(args_info.inputs_num  > 1)
         {
-          cout << "Sorry, currently, only the first file is processed as the library can't deal with more right now.  The followinf files were ignored:"<<endl;
+          cout << "Sorry, currently, only the first file is processed as the library can't deal with more right now.  The following files were ignored:"<<endl;
           for ( unsigned i = 1 ; i < args_info.inputs_num ; ++i )
             {
               cout << "file: " << args_info.inputs[i] << endl ;
