@@ -1,6 +1,9 @@
 17/12/2005 Ace Jones <acejones@users.sf.net>
 	* Fixed ofxdump to give a reasonable error if you run it on a file that
 	  doesn't exist.
+	* Added proper libcurl.m4 to check for existence & compilability of
+	  libcurl
+	* Make libcurl optional again by handling its absense in ofxconnect
 
 17/11/2005 Martin Preuss <aquamaniac@users.sf.net>
 	* added pkg-config file to spec file

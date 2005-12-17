@@ -32,15 +32,19 @@
 #include <string>
 #include "libofx.h"
 #include <config.h>		/* Include config constants, e.g., VERSION TF */
-#include <curl/curl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+#ifdef HAVE_LIBCURL
+#include <curl/curl.h>
+#endif
 
 #include "cmdline.h" /* Gengetopt generated parser */
 
 using namespace std;
 
+#ifdef HAVE_LIBCURL
 bool post(const char* request, const char* url, const char* filename)
 {
   CURL *curl = curl_easy_init();
@@ -75,6 +79,13 @@ bool post(const char* request, const char* url, const char* filename)
   
   return true;
 }
+#else
+bool post(const char*, const char*, const char*)
+{
+  cerr << "ERROR: libox must be configured with libcurl to post this request directly" << endl;
+  return false;
+}
+#endif
 
 int main (int argc, char *argv[])
 {
