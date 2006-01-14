@@ -72,7 +72,7 @@
 #define OFX_FID_LENGTH                 32 + 1
 #define OFX_USERID_LENGTH              32 + 1
 #define OFX_USERPASS_LENGTH            32 + 1
-
+#define OFX_URL_LENGTH                 500 + 1
 /*
 #define OFX_STATEMENT_CB               0;
 #define OFX_ACCOUNT_CB                 1;
@@ -261,6 +261,9 @@ struct OfxAccountData{
 
   char bank_id[OFX_BANKID_LENGTH];
   int bank_id_valid;
+
+  char broker_id[OFX_BROKERID_LENGTH];
+  int broker_id_valid;
 
   char branch_id[OFX_BRANCHID_LENGTH];
   int branch_id_valid;
@@ -660,6 +663,20 @@ CFCT int libofx_proc_buffer(LibofxContextPtr ctx,
  * This group deals with creating OFX files
  */
 //@{
+
+/**
+ * \brief Information returned by the OFX Partner Server about a financial institution 
+ */
+
+struct OfxFiServiceInfo{
+  char fid[OFX_FID_LENGTH];
+  char org[OFX_ORG_LENGTH];
+  char url[OFX_URL_LENGTH];
+  int accountlist; /**< Whether the FI makes a list of accounts available */ 
+  int statements; /**< Whether the FI supports online statement download */
+  int billpay; /**< Whether the FI supports online bill payment */
+  int investments; /**< Whether the FI supports investments */
+};
 
  /**
  * \brief Information sufficient to log into an financial institution

@@ -93,6 +93,8 @@ void OfxAccountContainer::add_attribute(const string identifier, const string va
   }
   else if( identifier=="BROKERID"){ /* For investment accounts */
     strncpy(brokerid,value.c_str(),OFX_BROKERID_LENGTH);
+    data.broker_id_valid=true;
+    strncpy(data.broker_id, value.c_str(), OFX_BROKERID_LENGTH);
   }
   else if((identifier=="ACCTTYPE")||(identifier=="ACCTTYPE2")){
     data.account_type_valid=true;

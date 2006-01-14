@@ -1,3 +1,8 @@
+16/1/2005 Ace Jones <acejones@users.sf.net>
+	* Added OfxFiServiceInfo struct.  Need this for communicating with the
+	  partner server.  Will add the code for that next.
+	* Added broker_id to OfxAccountData
+
 17/12/2005 Ace Jones <acejones@users.sf.net>
 	* Fixed ofxdump to give a reasonable error if you run it on a file that
 	  doesn't exist.
