@@ -34,6 +34,7 @@
 #include <stdio.h>		/* for printf() */
 #include <config.h>		/* Include config constants, e.g., VERSION TF */
 #include <sys/stat.h>
+#include <errno.h>
 
 #include "cmdline.h" /* Gengetopt generated parser */
 
@@ -315,6 +316,15 @@ int ofx_proc_account_cb(struct OfxAccountData data, void * account_data)
   if(data.currency_valid==true){
     cout<<"    Currency: "<<data.currency<<"\n";
   }
+
+  if (data.bank_id_valid)
+    cout<<"    Bank ID: "<<data.bank_id << endl;;
+
+  if (data.branch_id_valid)
+    cout<<"    Branch ID: "<<data.branch_id << endl;
+
+  if (data.account_number_valid)
+    cout<<"    Account #: "<<data.account_number << endl;
 
   cout<<"\n";
   return 0;
