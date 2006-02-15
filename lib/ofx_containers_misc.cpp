@@ -112,7 +112,7 @@ void OfxStatusContainer::add_attribute(const string identifier, const string val
     }
   }
   else if((identifier=="MESSAGE")||(identifier=="MESSAGE2")){
-    data.server_message=new char[value.length()];
+    data.server_message=new char[value.length()+1];
     strcpy(data.server_message,value.c_str());
     data.server_message_valid=true;
   }

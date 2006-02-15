@@ -1,9 +1,12 @@
-20/1/2005 Ace Jones <acejones@users.sf.net>
+15/2/2006 Ace Jones <acejones@users.sf.net>
+	* Fixed #1408764.  Buffer overrun in MESSAGE tag handling.
+
+20/1/2006 Ace Jones <acejones@users.sf.net>
 	* Print out bank id, branch id, and account number in ofxdump
 	* Fixed a bug under gcc 4.0.2 64-bit where errno is not found in ofxdump
 	* Fixed a build problem where @LIBOBJ@ was not being substituted 
 
-16/1/2005 Ace Jones <acejones@users.sf.net>
+16/1/2006 Ace Jones <acejones@users.sf.net>
 	* Added OfxFiServiceInfo struct.  Need this for communicating with the
 	  partner server.  Will add the code for that next.
 	* Added broker_id to OfxAccountData
