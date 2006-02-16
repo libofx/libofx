@@ -83,7 +83,11 @@ OfxStatusContainer::OfxStatusContainer(LibofxContext *p_libofx_context, OfxGener
 OfxStatusContainer::~OfxStatusContainer()
 {
   libofx_context->statusCallback(data);
+
+  if ( data.server_message_valid )
+    delete [] data.server_message;
 }
+
 void OfxStatusContainer::add_attribute(const string identifier, const string value)
 {
   ErrorMsg error_msg;

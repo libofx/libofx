@@ -1,5 +1,6 @@
 15/2/2006 Ace Jones <acejones@users.sf.net>
 	* Fixed #1408764.  Buffer overrun in MESSAGE tag handling.
+	* Fixed a memory leak in OfxStatusContainer::add_attribute()
 
 20/1/2006 Ace Jones <acejones@users.sf.net>
 	* Print out bank id, branch id, and account number in ofxdump
