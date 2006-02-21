@@ -40,8 +40,7 @@ cmdline_parser_print_help (void)
   printf("\n");
   printf("  -h, --help             Print help and exit\n");
   printf("  -V, --version          Print version and exit\n");
-  printf("  -s, --statement-req    Request for a statement  (default=off)\n");
-  printf("  -a, --accountinfo-req  Request for a list of accounts  (default=off)\n");
+  printf("      --fipid=STRING     FI partner identifier (looks up fid, org & url from \n                           partner server)\n");
   printf("      --fid=STRING       FI identifier\n");
   printf("      --org=STRING       FI org tag\n");
   printf("      --bank=STRING      IBAN bank identifier\n");
@@ -52,6 +51,14 @@ cmdline_parser_print_help (void)
   printf("      --type=INT         Account Type 1=checking 2=invest 3=ccard\n");
   printf("      --past=LONG        How far back to look from today (in days)\n");
   printf("      --url=STRING       Url to POST the data to (otherwise goes to stdout)\n");
+  printf("\n");
+  printf(" Group: command command to exectute\n");
+  printf("  -s, --statement-req    Request for a statement\n");
+  printf("  -a, --accountinfo-req  Request for a list of accounts\n");
+  printf("  -b, --bank-list        List all known banks\n");
+  printf("  -f, --bank-fipid       List all fipids for a given bank\n");
+  printf("  -v, --bank-services    List supported services for a given fipid\n");
+  printf("      --allsupport       List all banks which support online banking\n");
 }
 
 
@@ -74,11 +81,12 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
 {
   int c;	/* Character of the parsed option.  */
   int missing_required_options = 0;
+  int command_group_counter = 0;
+  
 
   args_info->help_given = 0 ;
   args_info->version_given = 0 ;
-  args_info->statement_req_given = 0 ;
-  args_info->accountinfo_req_given = 0 ;
+  args_info->fipid_given = 0 ;
   args_info->fid_given = 0 ;
   args_info->org_given = 0 ;
   args_info->bank_given = 0 ;
@@ -89,9 +97,14 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
   args_info->type_given = 0 ;
   args_info->past_given = 0 ;
   args_info->url_given = 0 ;
+  args_info->statement_req_given = 0 ;
+  args_info->accountinfo_req_given = 0 ;
+  args_info->bank_list_given = 0 ;
+  args_info->bank_fipid_given = 0 ;
+  args_info->bank_services_given = 0 ;
+  args_info->allsupport_given = 0 ;
 #define clear_args() { \
-  args_info->statement_req_flag = 0;\
-  args_info->accountinfo_req_flag = 0;\
+  args_info->fipid_arg = NULL; \
   args_info->fid_arg = NULL; \
   args_info->org_arg = NULL; \
   args_info->bank_arg = NULL; \
@@ -120,8 +133,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
       static struct option long_options[] = {
         { "help",	0, NULL, 'h' },
         { "version",	0, NULL, 'V' },
-        { "statement-req",	0, NULL, 's' },
-        { "accountinfo-req",	0, NULL, 'a' },
+        { "fipid",	1, NULL, 0 },
         { "fid",	1, NULL, 0 },
         { "org",	1, NULL, 0 },
         { "bank",	1, NULL, 0 },
@@ -132,11 +144,17 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
         { "type",	1, NULL, 0 },
         { "past",	1, NULL, 0 },
         { "url",	1, NULL, 0 },
+        { "statement-req",	0, NULL, 's' },
+        { "accountinfo-req",	0, NULL, 'a' },
+        { "bank-list",	0, NULL, 'b' },
+        { "bank-fipid",	0, NULL, 'f' },
+        { "bank-services",	0, NULL, 'v' },
+        { "allsupport",	0, NULL, 0 },
         { NULL,	0, NULL, 0 }
       };
 
       stop_char = 0;
-      c = getopt_long (argc, argv, "hVsa", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVsabfv", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -160,8 +178,8 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
               exit (EXIT_FAILURE);
             }
           args_info->statement_req_given = 1;
-          args_info->statement_req_flag = !(args_info->statement_req_flag);
-          break;
+          command_group_counter += 1;
+        break;
 
         case 'a':	/* Request for a list of accounts.  */
           if (args_info->accountinfo_req_given)
@@ -171,13 +189,60 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
               exit (EXIT_FAILURE);
             }
           args_info->accountinfo_req_given = 1;
-          args_info->accountinfo_req_flag = !(args_info->accountinfo_req_flag);
-          break;
+          command_group_counter += 1;
+        break;
+
+        case 'b':	/* List all known banks.  */
+          if (args_info->bank_list_given)
+            {
+              fprintf (stderr, "%s: `--bank-list' (`-b') option given more than once\n", CMDLINE_PARSER_PACKAGE);
+              clear_args ();
+              exit (EXIT_FAILURE);
+            }
+          args_info->bank_list_given = 1;
+          command_group_counter += 1;
+        break;
+
+        case 'f':	/* List all fipids for a given bank.  */
+          if (args_info->bank_fipid_given)
+            {
+              fprintf (stderr, "%s: `--bank-fipid' (`-f') option given more than once\n", CMDLINE_PARSER_PACKAGE);
+              clear_args ();
+              exit (EXIT_FAILURE);
+            }
+          args_info->bank_fipid_given = 1;
+          command_group_counter += 1;
+        break;
+
+        case 'v':	/* List supported services for a given fipid.  */
+          if (args_info->bank_services_given)
+            {
+              fprintf (stderr, "%s: `--bank-services' (`-v') option given more than once\n", CMDLINE_PARSER_PACKAGE);
+              clear_args ();
+              exit (EXIT_FAILURE);
+            }
+          args_info->bank_services_given = 1;
+          command_group_counter += 1;
+        break;
 
 
         case 0:	/* Long option with no short option */
+          /* FI partner identifier (looks up fid, org & url from partner server).  */
+          if (strcmp (long_options[option_index].name, "fipid") == 0)
+          {
+            if (args_info->fipid_given)
+              {
+                fprintf (stderr, "%s: `--fipid' option given more than once\n", CMDLINE_PARSER_PACKAGE);
+                clear_args ();
+                exit (EXIT_FAILURE);
+              }
+            args_info->fipid_given = 1;
+            args_info->fipid_arg = gengetopt_strdup (optarg);
+            break;
+          }
+          
           /* FI identifier.  */
-          if (strcmp (long_options[option_index].name, "fid") == 0)
+          else if (strcmp (long_options[option_index].name, "fid") == 0)
           {
             if (args_info->fid_given)
               {
@@ -316,6 +381,20 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
             break;
           }
           
+          /* List all banks which support online banking.  */
+          else if (strcmp (long_options[option_index].name, "allsupport") == 0)
+          {
+            if (args_info->allsupport_given)
+              {
+                fprintf (stderr, "%s: `--allsupport' option given more than once\n", CMDLINE_PARSER_PACKAGE);
+                clear_args ();
+                exit (EXIT_FAILURE);
+              }
+            args_info->allsupport_given = 1; command_group_counter += 1;
+          
+            break;
+          }
+          
 
         case '?':	/* Invalid option.  */
           /* `getopt_long' already printed an error message.  */
@@ -327,6 +406,12 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
         } /* switch */
     } /* while */
 
+  if ( command_group_counter > 1)
+    {
+      fprintf (stderr, "%s: %d options of group command were given. At most one is required\n", CMDLINE_PARSER_PACKAGE, command_group_counter);
+      missing_required_options = 1;
+    }
+  
 
   if ( missing_required_options )
     exit (EXIT_FAILURE);

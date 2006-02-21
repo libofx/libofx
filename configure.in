@@ -252,9 +252,20 @@ AM_CONDITIONAL(USE_GENGETOPT, test "x$gengetopt" = xyes)
 
 LIBCURL_CHECK_CONFIG([yes],[7.9.7])
 
+PKG_CHECK_MODULES(LIBXMLPP,libxml++-1.0 >= 1.0.1,
+	[AC_DEFINE(HAVE_LIBXMLPP, 1, [Defined if libxml++ is available])],
+        [AC_MSG_WARN([libxml++ is not available. Direct connect samples will not be fully functional.])])
+
+PKG_CHECK_MODULES(QT,qt-mt >= 3.2,
+	[AC_DEFINE(HAVE_QT, 1, [Defined if Qt Gui is available])])
+
 AC_SUBST(ofxconnect)
 AC_SUBST(OPENSPINCLUDES)
 AC_SUBST(OPENSPLIBS)
+AC_SUBST(LIBXMLPP_CFLAGS)
+AC_SUBST(LIBXMLPP_LIBS)
+AC_SUBST(QT_CFLAGS)
+AC_SUBST(QT_CFLAGS)
 
 LIBOFX_DTD_DIR='${datadir}/libofx/dtd'
 AC_SUBST(LIBOFX_DTD_DIR)
@@ -271,4 +282,3 @@ AC_OUTPUT( 		Makefile
 			ofxdump/Makefile
 			ofxconnect/Makefile
 			)
-

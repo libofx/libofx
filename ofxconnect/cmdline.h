@@ -24,8 +24,7 @@ extern "C" {
 
 struct gengetopt_args_info
 {
-  int statement_req_flag;	/* Request for a statement (default=off).  */
-  int accountinfo_req_flag;	/* Request for a list of accounts (default=off).  */
+  char * fipid_arg;	/* FI partner identifier (looks up fid, org & url from partner server).  */
   char * fid_arg;	/* FI identifier.  */
   char * org_arg;	/* FI org tag.  */
   char * bank_arg;	/* IBAN bank identifier.  */
@@ -39,8 +38,7 @@ struct gengetopt_args_info
 
   int help_given ;	/* Whether help was given.  */
   int version_given ;	/* Whether version was given.  */
-  int statement_req_given ;	/* Whether statement-req was given.  */
-  int accountinfo_req_given ;	/* Whether accountinfo-req was given.  */
+  int fipid_given ;	/* Whether fipid was given.  */
   int fid_given ;	/* Whether fid was given.  */
   int org_given ;	/* Whether org was given.  */
   int bank_given ;	/* Whether bank was given.  */
@@ -51,6 +49,12 @@ struct gengetopt_args_info
   int type_given ;	/* Whether type was given.  */
   int past_given ;	/* Whether past was given.  */
   int url_given ;	/* Whether url was given.  */
+  int statement_req_given ;	/* Whether statement-req was given.  */
+  int accountinfo_req_given ;	/* Whether accountinfo-req was given.  */
+  int bank_list_given ;	/* Whether bank-list was given.  */
+  int bank_fipid_given ;	/* Whether bank-fipid was given.  */
+  int bank_services_given ;	/* Whether bank-services was given.  */
+  int allsupport_given ;	/* Whether allsupport was given.  */
 
   char **inputs ; /* unamed options */
   unsigned inputs_num ; /* unamed options number */

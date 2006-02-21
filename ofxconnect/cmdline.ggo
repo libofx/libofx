@@ -6,12 +6,8 @@ purpose "prints to stdout the created OFX file based on the options you pass it.
 
 # Options
 # option <long> <short> <desc> {argtype} {typestr="<type descr>"} {default="<default value>"} {required} {argoptional} {multiple}
-
-#section "Commands"
-option "statement-req"  s  "Request for a statement" flag off
-option "accountinfo-req"  a  "Request for a list of accounts" flag off
-
 #section "Parameters"
+option "fipid" - "FI partner identifier (looks up fid, org & url from partner server)" string no
 option "fid" - "FI identifier" string no
 option "org" - "FI org tag" string no
 option "bank" - "IBAN bank identifier" string no
@@ -22,3 +18,12 @@ option "acct" - "Account ID" string no
 option "type" - "Account Type 1=checking 2=invest 3=ccard" int no
 option "past" - "How far back to look from today (in days)" long no
 option "url" - "Url to POST the data to (otherwise goes to stdout)" string no
+
+#section "Commands"
+defgroup "command" groupdesc="command to exectute"
+groupoption "statement-req"  s  "Request for a statement" group="command"
+groupoption "accountinfo-req"  a  "Request for a list of accounts" group="command"
+groupoption "bank-list"  b  "List all known banks" group="command"
+groupoption "bank-fipid"  f  "List all fipids for a given bank" group="command"
+groupoption "bank-services"  v  "List supported services for a given fipid" group="command"
+groupoption "allsupport"  -  "List all banks which support online banking" group="command"

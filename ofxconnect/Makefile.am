@@ -1,10 +1,11 @@
 bin_PROGRAMS = ofxconnect
-ofxconnect_LDADD = $(top_builddir)/lib/libofx.la @LIBCURL@ 
-ofxconnect_SOURCES = cmdline.h cmdline.c ofxconnect.cpp 
+ofxconnect_LDADD = $(top_builddir)/lib/libofx.la @LIBCURL@ @LIBXMLPP_LIBS@ 
+ofxconnect_SOURCES = cmdline.h cmdline.c nodeparser.cpp ofxpartner.cpp ofxconnect.cpp 
 
 AM_CPPFLAGS = \
 	-I${top_srcdir}/inc \
-	@LIBCURL_CPPFLAGS@	
+	@LIBCURL_CPPFLAGS@ \
+	@LIBXMLPP_CFLAGS@
 
 if USE_GENGETOPT 
 CLEANFILES = cmdline.c cmdline.h
