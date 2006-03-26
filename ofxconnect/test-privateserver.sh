@@ -12,10 +12,35 @@
 export serverlogin="`gpg -d login-privateserver.asc` --org=ReferenceFI --fid=00000 --bank=000000000 --broker=brokerdomain.com"
 
 #
+# Test a payment
+#
+
+#./ofxconnect -p $serverlogin --acct=10001010 --type=1 tmpfilex && cat tmpfilex
+
+#
+# Test a payment status inquiry
+#
+
+#./ofxconnect -i $serverlogin --trid=21384 tmpfilex && cat tmpfilex
+
+#exit
+
+#
 # Test the list of accounts
 #
 
-./ofxconnect -a $serverlogin tmpfilex && ../ofxdump/ofxdump tmpfilex
+#./ofxconnect -a $serverlogin tmpfilex && ../ofxdump/ofxdump tmpfilex
+
+
+#
+# Test checking accounts
+#
+
+./ofxconnect -s $serverlogin --acct=10001010 --type=1 --past=90 tmpfilex && ../ofxdump/ofxdump tmpfilex
+exit
+./ofxconnect -s $serverlogin --acct=10001001 --type=1 --past=90 tmpfilex && ../ofxdump/ofxdump tmpfilex
+./ofxconnect -s $serverlogin --acct=10001002 --type=1 --past=90 tmpfilex && ../ofxdump/ofxdump tmpfilex
+./ofxconnect -s $serverlogin --acct=10003001 --type=1 --past=90 tmpfilex && ../ofxdump/ofxdump tmpfilex
 
 #
 # Test investment accounts
@@ -27,15 +52,6 @@ export serverlogin="`gpg -d login-privateserver.asc` --org=ReferenceFI --fid=000
 ./ofxconnect -s $serverlogin --acct=10001401 --type=2 --past=90 tmpfilex && ../ofxdump/ofxdump tmpfilex
 ./ofxconnect -s $serverlogin --acct=10001000 --type=2 --past=90 tmpfilex && ../ofxdump/ofxdump tmpfilex
 ./ofxconnect -s $serverlogin --acct=20001001 --type=2 --past=90 tmpfilex && ../ofxdump/ofxdump tmpfilex
-
-#
-# Test checking accounts
-#
-
-./ofxconnect -s $serverlogin --acct=10001001 --type=1 --past=90 tmpfilex && ../ofxdump/ofxdump tmpfilex
-./ofxconnect -s $serverlogin --acct=10001002 --type=1 --past=90 tmpfilex && ../ofxdump/ofxdump tmpfilex
-./ofxconnect -s $serverlogin --acct=10001010 --type=1 --past=90 tmpfilex && ../ofxdump/ofxdump tmpfilex
-./ofxconnect -s $serverlogin --acct=10003001 --type=1 --past=90 tmpfilex && ../ofxdump/ofxdump tmpfilex
 
 #
 # These don't work yet because I mistakenly put "CHECKING" in for all "BANK" statments as the account type :-(

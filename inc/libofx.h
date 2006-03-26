@@ -50,6 +50,7 @@
 #define OFX_REFERENCE_NUMBER_LENGTH    32 + 1
 #define OFX_FITID_LENGTH               255 + 1
 #define OFX_TOKEN2_LENGTH              36 + 1
+#define OFX_MEMO_LENGTH                255 + 1
 #define OFX_MEMO2_LENGTH               390 + 1
 #define OFX_BALANCE_NAME_LENGTH        32 + 1
 #define OFX_BALANCE_DESCRIPTION_LENGTH 80 + 1
@@ -717,6 +718,28 @@ struct OfxAccountInfo{
   AccountType type;
 };
 
+#define OFX_AMOUNT_LENGTH 32 + 1
+#define OFX_PAYACCT_LENGTH 32 + 1
+#define OFX_STATE_LENGTH 5 + 1
+#define OFX_POSTALCODE_LENGTH 11 + 1
+#define OFX_NAME_LENGTH 32 + 1
+
+struct OfxPayment{
+  char amount[OFX_AMOUNT_LENGTH];
+  char account[OFX_PAYACCT_LENGTH];
+  char datedue[9];
+  char memo[OFX_MEMO_LENGTH];
+};
+
+struct OfxPayee{
+  char name[OFX_NAME_LENGTH];
+  char address1[OFX_NAME_LENGTH];
+  char city[OFX_NAME_LENGTH];
+  char state[OFX_STATE_LENGTH];
+  char postalcode[OFX_POSTALCODE_LENGTH];
+  char phone[OFX_NAME_LENGTH];
+};
+
 /**
  * \brief Creates an OFX statement request in string form
  *
@@ -743,6 +766,10 @@ CFCT char* libofx_request_statement( const struct OfxFiLogin* fi, const struct O
 */
 
 CFCT char* libofx_request_accountinfo( const struct OfxFiLogin* login );
+
+CFCT char* libofx_request_payment( const struct OfxFiLogin* login, const struct OfxAccountInfo* account, const struct OfxPayee* payee, const struct OfxPayment* payment );
+
+CFCT char* libofx_request_payment_status( const struct OfxFiLogin* login, const char* transactionid );
 
 //@}
 

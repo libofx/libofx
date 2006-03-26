@@ -29,6 +29,7 @@
  *                                                                         *
  ***************************************************************************/
 #include <iostream>
+#include <fstream>
 #include <string>
 #include "libofx.h"
 #include <config.h>		/* Include config constants, e.g., VERSION TF */
@@ -140,7 +141,7 @@ int main (int argc, char *argv[])
   bool ok = true;
   string url;
  
-  if ( args_info.statement_req_given || args_info.accountinfo_req_given )
+  if ( args_info.statement_req_given || args_info.accountinfo_req_given || args_info.payment_req_given || args_info.paymentinquiry_req_given )
   {
   // Get the FI Login information
   // 
@@ -285,6 +286,136 @@ int main (int argc, char *argv[])
     }
   }
 
+  if ( args_info.paymentinquiry_req_given )
+  {
+    char tridstr[33];
+    memset(tridstr,0,33);
+
+    bool ok = true;
+
+    if ( args_info.trid_given )
+    {
+      cerr << "trid " << args_info.trid_arg << endl;  
+      snprintf(tridstr,32,"%i",args_info.trid_arg);
+    }
+    else
+    {
+      cerr << "ERROR: --trid is required for a payment inquiry request" << endl;
+      ok = false;
+    }
+ 
+    if ( ok )
+    {
+      char* request = libofx_request_payment_status( &fi, tridstr );
+ 
+      filebuf fb;
+      fb.open ("query",ios::out);
+      ostream os(&fb);
+      os << request;
+      fb.close();
+      
+      if ( url.length() ) 
+        post(request,url.c_str(),args_info.inputs[0]);
+      else
+        cout << request;
+    
+      free(request);
+    }
+  }
+  
+  if ( args_info.payment_req_given )
+  {
+    OfxAccountInfo account;
+    memset(&account,0,sizeof(OfxAccountInfo));
+    OfxPayee payee;
+    memset(&payee,0,sizeof(OfxPayee));
+    OfxPayment payment;
+    memset(&payment,0,sizeof(OfxPayment));
+
+    strcpy(payee.name,"MARTIN PREUSS");
+    strcpy(payee.address1,"1 LAUREL ST");
+    strcpy(payee.city,"SAN CARLOS");
+    strcpy(payee.state,"CA");
+    strcpy(payee.postalcode,"94070");
+    strcpy(payee.phone,"866-555-1212");
+        
+    strcpy(payment.amount,"200.00");
+    strcpy(payment.account,"1234");
+    strcpy(payment.datedue,"20060301");
+    strcpy(payment.memo,"This is a test");
+
+    bool ok = true;
+
+    if ( args_info.bank_given )
+    {
+      cerr << "bank " << args_info.bank_arg << endl;  
+      strncpy(account.bankid,args_info.bank_arg,OFX_BANKID_LENGTH-1);
+    }
+    else    
+    {
+      if ( args_info.type_given && args_info.type_arg == 1 )
+      {
+        cerr << "ERROR: --bank is required for a bank request" << endl;
+        ok = false;
+      }
+    }
+    
+    if ( args_info.broker_given )
+    {
+      cerr << "broker " << args_info.broker_arg << endl;  
+      strncpy(account.brokerid,args_info.broker_arg,OFX_BROKERID_LENGTH-1);
+    }
+    else
+    {
+      if ( args_info.type_given && args_info.type_arg == 2 )
+      {
+        cerr << "ERROR: --broker is required for an investment statement request" << endl;
+        ok = false;
+      }
+    }
+    
+    if ( args_info.acct_given )
+    {
+      cerr << "acct " << args_info.acct_arg << endl;  
+      strncpy(account.accountid,args_info.acct_arg,OFX_ACCOUNT_ID_LENGTH-1);
+    }
+    else
+    {
+      cerr << "ERROR: --acct is required for a statement request" << endl;
+      ok = false;
+    }
+    
+    if ( args_info.type_given )
+    {
+      cerr << "type " << args_info.type_arg << endl;  
+      account.type = static_cast<AccountType>(args_info.type_arg);
+    }
+    else
+    {
+      cerr << "ERROR: --type is required for a statement request" << endl;
+      ok = false;
+    }
+    
+    if ( ok )
+    {
+      char* request = libofx_request_payment( &fi, &account, &payee, &payment );
+    
+      filebuf fb;
+      fb.open ("query",ios::out);
+      ostream os(&fb);
+      os << request;
+      fb.close();
+      
+      if ( url.length() ) 
+        post(request,url.c_str(),args_info.inputs[0]);
+      else
+        cout << request;
+    
+      free(request);
+    }
+        
+  }
+  
   if ( args_info.accountinfo_req_given )
   {
     if ( ok )

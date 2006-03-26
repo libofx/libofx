@@ -35,6 +35,7 @@ struct gengetopt_args_info
   int type_arg;	/* Account Type 1=checking 2=invest 3=ccard.  */
   long past_arg;	/* How far back to look from today (in days).  */
   char * url_arg;	/* Url to POST the data to (otherwise goes to stdout).  */
+  int trid_arg;	/* Transaction id.  */
 
   int help_given ;	/* Whether help was given.  */
   int version_given ;	/* Whether version was given.  */
@@ -49,8 +50,11 @@ struct gengetopt_args_info
   int type_given ;	/* Whether type was given.  */
   int past_given ;	/* Whether past was given.  */
   int url_given ;	/* Whether url was given.  */
+  int trid_given ;	/* Whether trid was given.  */
   int statement_req_given ;	/* Whether statement-req was given.  */
   int accountinfo_req_given ;	/* Whether accountinfo-req was given.  */
+  int payment_req_given ;	/* Whether payment-req was given.  */
+  int paymentinquiry_req_given ;	/* Whether paymentinquiry-req was given.  */
   int bank_list_given ;	/* Whether bank-list was given.  */
   int bank_fipid_given ;	/* Whether bank-fipid was given.  */
   int bank_services_given ;	/* Whether bank-services was given.  */

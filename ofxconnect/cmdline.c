@@ -38,27 +38,30 @@ cmdline_parser_print_help (void)
   "\n"
   "Usage: %s [OPTIONS]... [FILES]...\n", CMDLINE_PARSER_PACKAGE);
   printf("\n");
-  printf("  -h, --help             Print help and exit\n");
-  printf("  -V, --version          Print version and exit\n");
-  printf("      --fipid=STRING     FI partner identifier (looks up fid, org & url from \n                           partner server)\n");
-  printf("      --fid=STRING       FI identifier\n");
-  printf("      --org=STRING       FI org tag\n");
-  printf("      --bank=STRING      IBAN bank identifier\n");
-  printf("      --broker=STRING    Broker identifier\n");
-  printf("      --user=STRING      User name\n");
-  printf("      --pass=STRING      Password\n");
-  printf("      --acct=STRING      Account ID\n");
-  printf("      --type=INT         Account Type 1=checking 2=invest 3=ccard\n");
-  printf("      --past=LONG        How far back to look from today (in days)\n");
-  printf("      --url=STRING       Url to POST the data to (otherwise goes to stdout)\n");
+  printf("  -h, --help                Print help and exit\n");
+  printf("  -V, --version             Print version and exit\n");
+  printf("      --fipid=STRING        FI partner identifier (looks up fid, org & url \n                              from partner server)\n");
+  printf("      --fid=STRING          FI identifier\n");
+  printf("      --org=STRING          FI org tag\n");
+  printf("      --bank=STRING         IBAN bank identifier\n");
+  printf("      --broker=STRING       Broker identifier\n");
+  printf("      --user=STRING         User name\n");
+  printf("      --pass=STRING         Password\n");
+  printf("      --acct=STRING         Account ID\n");
+  printf("      --type=INT            Account Type 1=checking 2=invest 3=ccard\n");
+  printf("      --past=LONG           How far back to look from today (in days)\n");
+  printf("      --url=STRING          Url to POST the data to (otherwise goes to stdout)\n");
+  printf("      --trid=INT            Transaction id\n");
   printf("\n");
   printf(" Group: command command to exectute\n");
-  printf("  -s, --statement-req    Request for a statement\n");
-  printf("  -a, --accountinfo-req  Request for a list of accounts\n");
-  printf("  -b, --bank-list        List all known banks\n");
-  printf("  -f, --bank-fipid       List all fipids for a given bank\n");
-  printf("  -v, --bank-services    List supported services for a given fipid\n");
-  printf("      --allsupport       List all banks which support online banking\n");
+  printf("  -s, --statement-req       Request for a statement\n");
+  printf("  -a, --accountinfo-req     Request for a list of accounts\n");
+  printf("  -p, --payment-req         Request to make a payment\n");
+  printf("  -i, --paymentinquiry-req  Request to inquire about the status of a payment\n");
+  printf("  -b, --bank-list           List all known banks\n");
+  printf("  -f, --bank-fipid          List all fipids for a given bank\n");
+  printf("  -v, --bank-services       List supported services for a given fipid\n");
+  printf("      --allsupport          List all banks which support online banking\n");
 }
 
 
@@ -97,8 +100,11 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
   args_info->type_given = 0 ;
   args_info->past_given = 0 ;
   args_info->url_given = 0 ;
+  args_info->trid_given = 0 ;
   args_info->statement_req_given = 0 ;
   args_info->accountinfo_req_given = 0 ;
+  args_info->payment_req_given = 0 ;
+  args_info->paymentinquiry_req_given = 0 ;
   args_info->bank_list_given = 0 ;
   args_info->bank_fipid_given = 0 ;
   args_info->bank_services_given = 0 ;
@@ -144,8 +150,11 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
         { "type",	1, NULL, 0 },
         { "past",	1, NULL, 0 },
         { "url",	1, NULL, 0 },
+        { "trid",	1, NULL, 0 },
         { "statement-req",	0, NULL, 's' },
         { "accountinfo-req",	0, NULL, 'a' },
+        { "payment-req",	0, NULL, 'p' },
+        { "paymentinquiry-req",	0, NULL, 'i' },
         { "bank-list",	0, NULL, 'b' },
         { "bank-fipid",	0, NULL, 'f' },
         { "bank-services",	0, NULL, 'v' },
@@ -154,7 +163,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
       };
 
       stop_char = 0;
-      c = getopt_long (argc, argv, "hVsabfv", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVsapibfv", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -189,6 +198,28 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
               exit (EXIT_FAILURE);
             }
           args_info->accountinfo_req_given = 1;
+          command_group_counter += 1;
+        break;
+
+        case 'p':	/* Request to make a payment.  */
+          if (args_info->payment_req_given)
+            {
+              fprintf (stderr, "%s: `--payment-req' (`-p') option given more than once\n", CMDLINE_PARSER_PACKAGE);
+              clear_args ();
+              exit (EXIT_FAILURE);
+            }
+          args_info->payment_req_given = 1;
+          command_group_counter += 1;
+        break;
+
+        case 'i':	/* Request to inquire about the status of a payment.  */
+          if (args_info->paymentinquiry_req_given)
+            {
+              fprintf (stderr, "%s: `--paymentinquiry-req' (`-i') option given more than once\n", CMDLINE_PARSER_PACKAGE);
+              clear_args ();
+              exit (EXIT_FAILURE);
+            }
+          args_info->paymentinquiry_req_given = 1;
           command_group_counter += 1;
         break;
 
@@ -378,6 +409,20 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
               }
             args_info->url_given = 1;
             args_info->url_arg = gengetopt_strdup (optarg);
+            break;
+          }
+          
+          /* Transaction id.  */
+          else if (strcmp (long_options[option_index].name, "trid") == 0)
+          {
+            if (args_info->trid_given)
+              {
+                fprintf (stderr, "%s: `--trid' option given more than once\n", CMDLINE_PARSER_PACKAGE);
+                clear_args ();
+                exit (EXIT_FAILURE);
+              }
+            args_info->trid_given = 1;
+            args_info->trid_arg = strtol (optarg,&stop_char,0);
             break;
           }
           

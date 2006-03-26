@@ -389,28 +389,17 @@ int main (int argc, char *argv[])
   args_info.msg_info_flag ? ofx_INFO_msg = true : ofx_INFO_msg = false;
   args_info.msg_status_flag ? ofx_STATUS_msg = true : ofx_STATUS_msg;
 
+  bool skiphelp = false;
+  
   if(args_info.list_import_formats_given)
     {
+      skiphelp = true;
       cout <<"The supported file formats for the 'input-file-format' argument are:"<<endl;
       for(int i=0; LibofxImportFormatList[i].format!=LAST; i++)
 	{
 	  cout <<"     "<<LibofxImportFormatList[i].description<<endl;
 	}
     }
-
-  const char* filename = args_info.inputs[0];
-  struct stat stat_buf;
-  int result = stat(filename,&stat_buf);
-  if ( result == -1 )
-  {
-	  cout << "Unable to open " << filename << ": " << strerror(errno) << endl;
-	  return 1;
-  }
-  if ( ! S_ISREG( stat_buf.st_mode ) ) 
-  {
-	  cout << "Unable to open " << filename << ": Not a regular file" << endl;
-	  return 1;
-  }
 		  
   LibofxContextPtr libofx_context = libofx_get_new_context();
 
@@ -418,6 +407,19 @@ int main (int argc, char *argv[])
   //unsigned inputs_num ; /* unamed options number */
   if (args_info.inputs_num  > 0)
     {
+      const char* filename = args_info.inputs[0];
+      struct stat stat_buf;
+      int result = stat(filename,&stat_buf);
+      if ( result == -1 )
+      {
+              cout << "Unable to open " << filename << ": " << strerror(errno) << endl;
+              return 1;
+      }
+      if ( ! S_ISREG( stat_buf.st_mode ) ) 
+      {
+              cout << "Unable to open " << filename << ": Not a regular file" << endl;
+              return 1;
+      }
 
       ofx_set_statement_cb(libofx_context, ofx_proc_statement_cb, 0);
       ofx_set_account_cb(libofx_context, ofx_proc_account_cb, 0);
@@ -439,7 +441,8 @@ int main (int argc, char *argv[])
     }
   else
     {
-
+      if ( !skiphelp )
+        cmdline_parser_print_help();
     }
   return 0;
 }

@@ -20,7 +20,7 @@
 #ifndef OFXPARTNER_H
 #define OFXPARTNER_H
 
-#include <libofx/libofx.h>
+#include <libofx.h>
 #include <string>
 #include <vector>
 

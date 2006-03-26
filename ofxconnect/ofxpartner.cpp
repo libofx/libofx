@@ -21,7 +21,7 @@
 #include <config.h>
 #endif
 
-#include <libofx/libofx.h>
+#include <libofx.h>
 
 //#ifdef HAVE_LIBCURL
 #include <curl/curl.h>

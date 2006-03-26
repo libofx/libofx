@@ -18,11 +18,14 @@ option "acct" - "Account ID" string no
 option "type" - "Account Type 1=checking 2=invest 3=ccard" int no
 option "past" - "How far back to look from today (in days)" long no
 option "url" - "Url to POST the data to (otherwise goes to stdout)" string no
+option "trid" - "Transaction id" int no
 
 #section "Commands"
 defgroup "command" groupdesc="command to exectute"
 groupoption "statement-req"  s  "Request for a statement" group="command"
 groupoption "accountinfo-req"  a  "Request for a list of accounts" group="command"
+groupoption "payment-req"  p  "Request to make a payment" group="command"
+groupoption "paymentinquiry-req" i "Request to inquire about the status of a payment" group="command"
 groupoption "bank-list"  b  "List all known banks" group="command"
 groupoption "bank-fipid"  f  "List all fipids for a given bank" group="command"
 groupoption "bank-services"  v  "List supported services for a given fipid" group="command"

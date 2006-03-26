@@ -44,7 +44,8 @@ public:
    */
   OfxRequest(const OfxFiLogin& fi): OfxAggregate("OFX"), m_login(fi) {}
   
-protected:
+//protected:
+public:
   /**
    * Creates a signon request aggregate, <SIGNONMSGSRQV1> & <SONRQ>, sufficient
    * to log this user into this financial institution.

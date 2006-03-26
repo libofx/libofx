@@ -123,5 +123,95 @@ OfxAggregate OfxStatementRequest::InvestmentStatementRequest(void) const
   return RequestMessage("INVSTMT","INVSTMT", invstmtrqTag);
 }
 
+char* libofx_request_payment( const OfxFiLogin* login, const OfxAccountInfo* account, const OfxPayee* payee, const OfxPayment* payment )
+{
+  OfxPaymentRequest strq( *login, *account, *payee, *payment );
+  string request = OfxHeader() + strq.Output();
+
+  unsigned size = request.size();
+  char* result = (char*)malloc(size + 1);
+  request.copy(result,size);
+  result[size] = 0;
+  
+  return result;
+}
+
+OfxPaymentRequest::OfxPaymentRequest( const OfxFiLogin& fi, const OfxAccountInfo& account, const OfxPayee& payee, const OfxPayment& payment ):
+  OfxRequest(fi),
+  m_account(account),
+  m_payee(payee),
+  m_payment(payment)
+{
+  Add( SignOnRequest() );
+
+  OfxAggregate bankacctfromTag("BANKACCTFROM");
+  bankacctfromTag.Add( "BANKID", m_account.bankid );
+  bankacctfromTag.Add( "ACCTID", m_account.accountid );
+  bankacctfromTag.Add( "ACCTTYPE", "CHECKING" );
+  // FIXME "CHECKING" should not be hard-coded
+
+  OfxAggregate payeeTag("PAYEE");
+  payeeTag.Add( "NAME", m_payee.name );
+  payeeTag.Add( "ADDR1", m_payee.address1 );
+  payeeTag.Add( "CITY", m_payee.city );
+  payeeTag.Add( "STATE", m_payee.state );
+  payeeTag.Add( "POSTALCODE", m_payee.postalcode );
+  payeeTag.Add( "PHONE", m_payee.phone );
+  
+  OfxAggregate pmtinfoTag("PMTINFO");
+  pmtinfoTag.Add( bankacctfromTag );
+  pmtinfoTag.Add( "TRNAMT", m_payment.amount );
+  pmtinfoTag.Add( payeeTag );
+  pmtinfoTag.Add( "PAYACCT", m_payment.account );
+  pmtinfoTag.Add( "DTDUE", m_payment.datedue );
+  pmtinfoTag.Add( "MEMO", m_payment.memo );
+  
+  OfxAggregate pmtrqTag("PMTRQ");
+  pmtrqTag.Add( pmtinfoTag );
+
+  Add( RequestMessage("BILLPAY","PMT", pmtrqTag) );
+}
+
+CFCT char* libofx_request_payment_status( const struct OfxFiLogin* login, const char* transactionid )
+{
+#if 0
+  OfxAggregate pmtinqrqTag( "PMTINQRQ" );
+  pmtinqrqTag.Add( "SRVRTID", transactionid );
+  
+  OfxRequest ofx(*login);
+  ofx.Add( ofx.SignOnRequest() );
+  ofx.Add( ofx.RequestMessage("BILLPAY","PMTINQ", pmtinqrqTag) );
+  
+  string request = OfxHeader() + ofx.Output();
+
+  unsigned size = request.size();
+  char* result = (char*)malloc(size + 1);
+  request.copy(result,size);
+  result[size] = 0;
+#else
+  OfxAggregate payeesyncrq( "PAYEESYNCRQ" );
+  payeesyncrq.Add( "TOKEN", "0" );
+  payeesyncrq.Add( "TOKENONLY", "N" );
+  payeesyncrq.Add( "REFRESH", "Y" );
+  payeesyncrq.Add( "REJECTIFMISSING", "N" );
+  
+  OfxAggregate message( "BILLPAYMSGSRQV1" );
+  message.Add( payeesyncrq );
+
+  OfxRequest ofx(*login);
+  ofx.Add( ofx.SignOnRequest() );
+  ofx.Add( message );
+  
+  string request = OfxHeader() + ofx.Output();
+
+  unsigned size = request.size();
+  char* result = (char*)malloc(size + 1);
+  request.copy(result,size);
+  result[size] = 0;
+ 
+#endif
+  return result;
+}
+
 // vim:cin:si:ai:et:ts=2:sw=2:
 

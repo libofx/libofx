@@ -81,4 +81,26 @@ private:
   time_t m_date_from;
 };
 
+class OfxPaymentRequest: public OfxRequest
+{
+public:
+  /**
+   * Creates the request aggregate to submit a payment to this @p fi on
+   * this @p account, to this @p payee as described by this @payment.
+   *
+   * @param fi The information needed to log on user into one financial
+   *   institution
+   * @param account The account from which the payment should be made
+   * @param payee The payee who should receive the payment
+   * @param payment The details of the payment
+   */
+  OfxPaymentRequest( const OfxFiLogin& fi, const OfxAccountInfo& account, const OfxPayee& payee, const OfxPayment& payment );
+protected:
+ 
+private:
+  OfxAccountInfo m_account;
+  OfxPayee m_payee;
+  OfxPayment m_payment;
+};
+
 #endif // OFX_REQ_STATEMENT_H
