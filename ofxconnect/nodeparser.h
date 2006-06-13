@@ -34,7 +34,7 @@ public:
 
   NodeParser Path(const std::string& path) const;
   NodeParser Select(const std::string& key, const std::string& value) const;
-  std::vector<std::string> NodeParser::Text(void) const;
+  std::vector<std::string> Text(void) const;
 
 protected:
   static NodeParser Path(const xmlpp::Node* node,const std::string& path);
