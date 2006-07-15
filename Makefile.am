@@ -1,4 +1,4 @@
-SUBDIRS = inc dtd lib doc . ofx2qif ofxdump ofxconnect 
+SUBDIRS = inc dtd lib doc . ofx2qif ofxdump @OFXCONNECT_AM@
 
 docdir = ${prefix}/share/doc/libofx
 
