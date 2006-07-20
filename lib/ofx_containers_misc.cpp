@@ -1,7 +1,7 @@
 /***************************************************************************
          ofx_proc_rs.cpp 
                              -------------------
-    copyright            : (C) 2002 by Benoit Grégoire
+    copyright            : (C) 2002 by Benoit GrÃ©goire
     email                : bock@step.polymtl.ca
 ***************************************************************************/
 /**@file
@@ -82,6 +82,8 @@ OfxStatusContainer::OfxStatusContainer(LibofxContext *p_libofx_context, OfxGener
 }
 OfxStatusContainer::~OfxStatusContainer()
 {
+  message_out(DEBUG,"Entering the status's container's destructor");
+	
   libofx_context->statusCallback(data);
 
   if ( data.server_message_valid )

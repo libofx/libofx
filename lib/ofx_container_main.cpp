@@ -1,7 +1,7 @@
 /***************************************************************************
          ofx_container_main.cpp 
                              -------------------
-    copyright            : (C) 2002 by Benoit Grégoire
+    copyright            : (C) 2002 by Benoit GrÃ©goire
     email                : bock@step.polymtl.ca
 ***************************************************************************/
 /**@file
@@ -175,6 +175,8 @@ int  OfxMainContainer::gen_event()
       (*tmp)->gen_event();
       ++tmp;
     }
+      message_out(DEBUG,"End walking the trees of the main container to generate events");
+    
   return true;
 }
 

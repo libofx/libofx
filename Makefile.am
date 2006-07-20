@@ -1,4 +1,7 @@
-SUBDIRS = inc dtd lib doc . ofx2qif ofxdump @OFXCONNECT_AM@
+if BUILD_OFXCONNECT
+       MAYBE_OFXCONNECT = ofxconnect
+endif
+SUBDIRS = inc dtd lib doc . ofx2qif ofxdump $(MAYBE_OFXCONNECT)
 
 docdir = ${prefix}/share/doc/libofx
 

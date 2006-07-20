@@ -1,7 +1,7 @@
 /***************************************************************************
                           ofx_sgml.cpp
                           -------------------
-    copyright            : (C) 2002 by Benoit Grégoire
+    copyright            : (C) 2002 by Benoit GrÃ©goire
     email                : bock@step.polymtl.ca
 ***************************************************************************/
 /**@file
@@ -59,6 +59,10 @@ public:
     is_data_element = false;
     libofx_context=p_libofx_context;
   }
+  OFXApplication::~OFXApplication()
+{
+  message_out(DEBUG,"Entering the OFXApplication's destructor");
+}
   
   /** \brief Callback: Start of an OFX element
    *
@@ -358,6 +362,6 @@ int ofx_proc_sgml(LibofxContext * libofx_context, int argc, char *argv[])
   egp->inhibitMessages (true);	/* Error output is handled by libofx not OpenSP */
   OFXApplication *app = new OFXApplication(libofx_context);
   unsigned nErrors = egp->run (*app); /* Begin parsing */
-  delete egp;
+  delete egp;  //Note that this is where bug is triggered
   return nErrors > 0;
 }

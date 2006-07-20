@@ -1,7 +1,7 @@
 /***************************************************************************
                           ofxdump.cpp
                              -------------------
-    copyright            : (C) 2002 by Benoit Grégoire
+    copyright            : (C) 2002 by Benoit GrÃ©goire
     email                : bock@step.polymtl.ca
 ***************************************************************************/
 /**@file
@@ -33,7 +33,6 @@
 #include "libofx.h"
 #include <stdio.h>		/* for printf() */
 #include <config.h>		/* Include config constants, e.g., VERSION TF */
-#include <sys/stat.h>
 #include <errno.h>
 
 #include "cmdline.h" /* Gengetopt generated parser */
@@ -408,18 +407,7 @@ int main (int argc, char *argv[])
   if (args_info.inputs_num  > 0)
     {
       const char* filename = args_info.inputs[0];
-      struct stat stat_buf;
-      int result = stat(filename,&stat_buf);
-      if ( result == -1 )
-      {
-              cout << "Unable to open " << filename << ": " << strerror(errno) << endl;
-              return 1;
-      }
-      if ( ! S_ISREG( stat_buf.st_mode ) ) 
-      {
-              cout << "Unable to open " << filename << ": Not a regular file" << endl;
-              return 1;
-      }
+
 
       ofx_set_statement_cb(libofx_context, ofx_proc_statement_cb, 0);
       ofx_set_account_cb(libofx_context, ofx_proc_account_cb, 0);

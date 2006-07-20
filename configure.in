@@ -77,7 +77,7 @@ done
 ##
 
 #if 0
-##This test works for me, but breaks for most distro because the config.h installed isn't really the one that was used tu compile OpenSP
+##This test works for me, but breaks for most distro because the config.h installed isn't really the one that was used to compile OpenSP
 ## So --with-opensp-multibyte is now the default.
 AC_DEFUN([CHECK_SP_MULTI_BYTE],
  [
@@ -164,7 +164,7 @@ LIBS="$ac_save_LIBS"
  
 # check for doxygen, mostly stolen from http://log4cpp.sourceforge.net/
 # ----------------------------------------------------------------------------
-AC_DEFUN(BB_ENABLE_DOXYGEN,
+AC_DEFUN([BB_ENABLE_DOXYGEN],
 [
 AC_ARG_ENABLE(doxygen, [  --enable-doxygen        enable documentation generation with doxygen (auto)])
 AC_ARG_ENABLE(dot, [  --enable-dot            use 'dot' to generate graphs in doxygen (auto)])              
@@ -250,20 +250,30 @@ AM_CONDITIONAL(USE_GENGETOPT, test "x$gengetopt" = xyes)
 # check for curl
 # ----------------------------------------------------------------------------
 
-LIBCURL_CHECK_CONFIG([yes],[7.9.7])
+LIBCURL_CHECK_CONFIG([yes],[7.9.7], [libcurl_available=yes],  [libcurl_available=no])
+if  test "$libcurl_available" = no; then
+	AC_MSG_WARN([libcurl is not available. ofxconnect (Direct connect samples) will NOT be built.])
+fi
 
 PKG_CHECK_MODULES(LIBXMLPP,libxml++-1.0 >= 1.0.1,
 	[
-	 AC_DEFINE(HAVE_LIBXMLPP, 1, [Defined if libxml++-1.0 is available])
-	 OFXCONNECT_AM=ofxconnect
- 	],
-        [AC_MSG_WARN([libxml++=1.0 is not available. The direct connect sample will not be built.])])
+	AC_DEFINE(HAVE_LIBXMLPP, 1, [Defined if libxml++ is available])
+	have_libxmlpp=yes],
+        [AC_MSG_WARN([libxml++ 1.0 is not available. ofxconnect (Direct connect samples) will NOT be built.])
+	have_libxmlpp=no])
 
 PKG_CHECK_MODULES(QT,qt-mt >= 3.2,
 	[AC_DEFINE(HAVE_QT, 1, [Defined if Qt Gui is available])],
         [AC_MSG_WARN([Qt is not available. Some experimental direct connect samples will not be fully functional.])])
 
-AC_SUBST(OFXCONNECT_AM)
+build_ofxconnect=no
+if test "$libcurl_available" = yes; then
+	if test "$have_libxmlpp" = yes; then
+		build_ofxconnect=yes
+	fi
+fi
+AM_CONDITIONAL([BUILD_OFXCONNECT], [test "$build_ofxconnect" = yes])
+AC_SUBST(ofxconnect)
 AC_SUBST(OPENSPINCLUDES)
 AC_SUBST(OPENSPLIBS)
 AC_SUBST(LIBXMLPP_CFLAGS)
@@ -274,8 +284,8 @@ AC_SUBST(QT_CFLAGS)
 LIBOFX_DTD_DIR='${datadir}/libofx/dtd'
 AC_SUBST(LIBOFX_DTD_DIR)
 
-			
-AC_OUTPUT( 		Makefile 
+	AC_CONFIG_FILES([Makefile])
+AC_OUTPUT( 		
 	   		libofx.spec
 			libofx.pc
 			lib/Makefile

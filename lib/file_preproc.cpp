@@ -1,7 +1,7 @@
 /***************************************************************************
           file_preproc.cpp 
                              -------------------
-    copyright            : (C) 2004 by Benoit Grégoire
+    copyright            : (C) 2004 by Benoit GrÃ©goire
     email                : bock@step.polymtl.ca
 ***************************************************************************/
 /**@file
@@ -113,6 +113,7 @@ enum LibofxFileFormat libofx_detect_file_type(const char * p_filename)
       if(!input_file)
 	{
 	  message_out(ERROR,"libofx_detect_file_type():Unable to open the input file "+string(p_filename));
+	  return retval;
 	}
       else
 	{

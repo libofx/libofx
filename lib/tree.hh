@@ -1,14 +1,16 @@
 /* 
 
-   $Id: tree.hh,v 1.5 2005-09-25 20:16:36 acejones Exp $
+   $Id: tree.hh,v 1.6 2006-07-20 04:41:16 benoitg Exp $
 
    STL-like templated tree class.
-   Copyright (C) 2001-2005  Kasper Peeters <kasper.peeters@aei.mpg.de>
+   Copyright (C) 2001-2005  Kasper Peeters <kasper.peeters@aei.mpg.de>.
 
 */
 
 /** \mainpage tree.hh
     \author   Kasper Peeters
+    \version  2.02
+    \date     12-Oct-2005
     \see      http://www.aei.mpg.de/~peekas/tree/
     \see      http://www.aei.mpg.de/~peekas/tree/ChangeLog
 
@@ -19,6 +21,7 @@
    compatible with the STL or alternative algorithms are
    available. 
 */
+
 
 /*
    This program is free software; you can redistribute it and/or modify
@@ -376,11 +379,15 @@ class tree {
       template<class StrictWeakOrdering>
       class compare_nodes {
          public:
+            compare_nodes(StrictWeakOrdering comp) : comp_(comp) {};
+            
             bool operator()(const tree_node *a, const tree_node *b) 
                {
                static StrictWeakOrdering comp;
                return comp(a->data, b->data);
                }
+         private:
+            StrictWeakOrdering comp_;
       };
 };
 
@@ -1077,6 +1084,33 @@ template <typename iter> iter tree<T, tree_node_allocator>::reparent(iter positi
    }
 
 template <class T, class tree_node_allocator>
+template <typename iter> iter tree<T, tree_node_allocator>::move_after(iter target, iter source)
+   {
+   tree_node *dst=target.node;
+   tree_node *src=source.node;
+   assert(dst);
+   assert(src);
+
+   if(dst==src) return source;
+
+   // take src out of the tree
+   if(src->prev_sibling!=0) src->prev_sibling->next_sibling=src->next_sibling;
+   else                     src->parent->first_child=src->next_sibling;
+   if(src->next_sibling!=0) src->next_sibling->prev_sibling=src->prev_sibling;
+   else                     src->parent->last_child=src->prev_sibling;
+
+   // connect it to the new point
+   if(dst->next_sibling!=0) dst->next_sibling->prev_sibling=src;
+   else                     dst->parent->last_child=src;
+   src->next_sibling=dst->next_sibling;
+   dst->next_sibling=src;
+   src->prev_sibling=dst;
+   src->parent=dst->parent;
+   return src;
+   }
+
+
+template <class T, class tree_node_allocator>
 template <typename iter> iter tree<T, tree_node_allocator>::move_before(iter target, iter source)
    {
    tree_node *dst=target.node;
@@ -1177,7 +1211,7 @@ void tree<T, tree_node_allocator>::sort(sibling_iterator from, sibling_iterator 
    // make list of sorted nodes
    // CHECK: if multiset stores equivalent nodes in the order in which they
    // are inserted, then this routine should be called 'stable_sort'.
-   std::multiset<tree_node *, compare_nodes<StrictWeakOrdering> > nodes;
+   std::multiset<tree_node *, compare_nodes<StrictWeakOrdering> > nodes(comp);
    sibling_iterator it=from, it2=to;
    while(it != to) {
       nodes.insert(it.node);
@@ -1693,8 +1727,10 @@ template <class T, class tree_node_allocator>
 typename tree<T, tree_node_allocator>::post_order_iterator& tree<T, tree_node_allocator>::post_order_iterator::operator++()
    {
    assert(this->node!=0);
-   if(this->node->next_sibling==0) 
+   if(this->node->next_sibling==0) {
       this->node=this->node->parent;
+      this->skip_current_children_=false;
+      }
    else {
       this->node=this->node->next_sibling;
       if(this->skip_current_children_) {
