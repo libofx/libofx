@@ -512,6 +512,11 @@ char check_number[OFX_CHECK_NUMBER_LENGTH];
   int commission_valid;
   double fees;/**< Fees applied to trade (investment transactions only) */
   int fees_valid;
+  double oldunits;     /*number of units held before stock split */
+  int oldunits_valid;
+  double newunits;     /*number of units held after stock split */
+  int newunits_valid;
+
 
   /*********** NOT YET COMPLETE!!! *********************/
 };

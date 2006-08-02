@@ -371,6 +371,14 @@ void OfxInvestmentTransactionContainer::add_attribute(const string identifier, c
     data.fees=ofxamount_to_double(value);
     data.fees_valid = true;
   }
+  else if(identifier=="OLDUNITS"){
+    data.oldunits=ofxamount_to_double(value);
+    data.oldunits_valid = true;
+  }
+  else if(identifier=="NEWUNITS"){
+    data.newunits=ofxamount_to_double(value);
+    data.newunits_valid = true;
+  }
   else{
     /* Redirect unknown identifiers to the base class */
     OfxTransactionContainer::add_attribute(identifier, value);

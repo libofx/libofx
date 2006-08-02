@@ -142,6 +142,12 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
   if(data.units_valid==true){
     cout<<"    # of units: "<<setiosflags(ios::fixed)<<setiosflags(ios::showpoint)<<setprecision(2)<<data.units<<"\n";
   }
+  if(data.oldunits_valid==true){
+    cout<<"    # of units before split: "<<setiosflags(ios::fixed)<<setiosflags(ios::showpoint)<<setprecision(2)<<data.oldunits<<"\n";
+  }
+  if(data.newunits_valid==true){
+    cout<<"    # of units after split: "<<setiosflags(ios::fixed)<<setiosflags(ios::showpoint)<<setprecision(2)<<data.newunits<<"\n";
+  }
   if(data.unitprice_valid==true){
     cout<<"    Unit price: "<<setiosflags(ios::fixed)<<setiosflags(ios::showpoint)<<setprecision(2)<<data.unitprice<<"\n";
   }
