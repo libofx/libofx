@@ -1,3 +1,6 @@
+28/7/2006 Ace Jones <acejones@users.sf.net>
+	* Fixed a compilation bug on GCC 4.1
+
 20/7/2006:  Benoit Grégoire  <bock@step.polymtl.ca>
 	* Revert last change to ofxdump, as it requires a system-dependent header (plus it didn't compile on my system)
 	* Make both curl and libxml++ optional for compilation.

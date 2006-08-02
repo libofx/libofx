@@ -59,10 +59,10 @@ public:
     is_data_element = false;
     libofx_context=p_libofx_context;
   }
-  OFXApplication::~OFXApplication()
-{
-  message_out(DEBUG,"Entering the OFXApplication's destructor");
-}
+  ~OFXApplication()
+  {
+    message_out(DEBUG,"Entering the OFXApplication's destructor");
+  }
   
   /** \brief Callback: Start of an OFX element
    *
