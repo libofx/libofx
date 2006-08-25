@@ -11,6 +11,6 @@ cmdline.c cmdline.h: cmdline.ggo Makefile
 	gengetopt --unamed-opts < $<
 
 endif
-
+MAINTAINERCLEANFILES  = cmdline.c cmdline.h
 EXTRA_DIST = cmdline.ggo
 

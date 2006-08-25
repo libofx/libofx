@@ -1,3 +1,11 @@
+25/8/2006:  Benoit Grégoire  <bock@step.polymtl.ca>
+	* Fix datatype mismatch in ofx_preproc.cpp
+	* Fix gengetopt related build problems on debian based distribution.
+	* Remove massage about dependency on Qt, qhich is no longuer true
+	* Fix ofxconnect headers not being distributed
+	* Remove cmdline.c and cmdline.h which shouldn't be versionned
+	* Release 0.8.2
+
 3/8/2006 David Resier <dbreiser@earthlink.net>
 	* Added fields used in stock splits (newunits, oldunits)
 	Patch applied by Ace Jones <acejones@users.sf.net>

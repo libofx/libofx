@@ -1,3 +1,11 @@
+LibOFX 0.8.2:
+        - bug fixes for GCC4.x and 64-bit compatibility
+        - fix to enable OFXDirectConnect in Aqbanking
+        - improvements to ofxpartner functionality
+        - minor build system modifications
+        - new fields for fees, commissions and stock split data
+	- fix a memory leak and a potential crashing bug
+
 LibOFX 0.8.0:
 	- New DirectConnect API for statement downloads, thanks to Ace Jones and Martin Preuss
 	- Added ofxconnect sample app to demonstrate & test new API's (try "make check" in the ofxconnect folder).  Read README.privateserver first.

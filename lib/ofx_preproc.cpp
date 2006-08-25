@@ -1,7 +1,7 @@
 /***************************************************************************
           ofx_preproc.cpp 
                              -------------------
-    copyright            : (C) 2002 by Benoit Grégoir
+    copyright            : (C) 2002 by Benoit Grï¿½oir
     email                : bock@step.polymtl.ca
 ***************************************************************************/
 /**@file
@@ -204,7 +204,7 @@ CFCT int libofx_proc_buffer(LibofxContextPtr ctx,
   string s_buffer;
   char *filenames[3];
   char tmp_filename[50];
-  unsigned int pos;
+  int pos;
   LibofxContext *libofx_context;
 
   libofx_context=(LibofxContext*)ctx;

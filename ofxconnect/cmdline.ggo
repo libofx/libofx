@@ -21,7 +21,8 @@ option "url" - "Url to POST the data to (otherwise goes to stdout)" string no
 option "trid" - "Transaction id" int no
 
 #section "Commands"
-defgroup "command" groupdesc="command to exectute"
+defgroup "command"
+# groupdesc="command to exectute" (Does not work properly with gengetopt 2.10)
 groupoption "statement-req"  s  "Request for a statement" group="command"
 groupoption "accountinfo-req"  a  "Request for a list of accounts" group="command"
 groupoption "payment-req"  p  "Request to make a payment" group="command"
