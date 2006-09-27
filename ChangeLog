@@ -1,3 +1,10 @@
+27/9/2006 Martin Preuss <martin@aquamaniac.de>
+	* lib/ofx_preproc.cpp: Make sure all results of string::find are 
+          inside the string's length; make sure to erase parts of the string 
+          only if the string is long enough. 
+          Fixes crash http://bugzilla.gnome.org/show_bug.cgi?id=353986
+          Patch supplied by Christian Stimming from GnuCash
+
 25/8/2006:  Benoit Grégoire  <bock@step.polymtl.ca>
 	* Fix datatype mismatch in ofx_preproc.cpp
 	* Fix gengetopt related build problems on debian based distribution.

@@ -240,7 +240,7 @@ CFCT int libofx_proc_buffer(LibofxContextPtr ctx,
     message_out(ERROR,"ofx_proc(): unknown file type");
     return -1;
   }
-  if (pos==string::npos) {
+  if (pos==string::npos || pos > s_buffer.size()) {
     message_out(ERROR,"ofx_proc():<OFX> has not been found");
     return -1;
   }
@@ -265,13 +265,14 @@ CFCT int libofx_proc_buffer(LibofxContextPtr ctx,
     return -1;
   }
 
-  if (pos==string::npos) {
+  if (pos==string::npos || pos > s_buffer.size()) {
     message_out(ERROR,"ofx_proc():</OF?> has not been found");
     return -1;
   }
   else {
     // erase everything after the /OFX tag
-    s_buffer.erase(pos+6);
+    if (s_buffer.size() > pos+6)
+      s_buffer.erase(pos+6);
     message_out(DEBUG,"ofx_proc_file():<OFX> has been found");
   }
 
