@@ -210,13 +210,13 @@ int main (int argc, char *argv[])
   {
     cerr << "Statement request" << endl;
     
-    OfxAccountInfo account;
-    memset(&account,0,sizeof(OfxAccountInfo));
+    OfxAccountData account;
+    memset(&account,0,sizeof(OfxAccountData));
     
     if ( args_info.bank_given )
     {
       cerr << "bank " << args_info.bank_arg << endl;  
-      strncpy(account.bankid,args_info.bank_arg,OFX_BANKID_LENGTH-1);
+      strncpy(account.bank_id,args_info.bank_arg,OFX_BANKID_LENGTH-1);
     }
     else    
     {
@@ -230,7 +230,7 @@ int main (int argc, char *argv[])
     if ( args_info.broker_given )
     {
       cerr << "broker " << args_info.broker_arg << endl;  
-      strncpy(account.brokerid,args_info.broker_arg,OFX_BROKERID_LENGTH-1);
+      strncpy(account.broker_id,args_info.broker_arg,OFX_BROKERID_LENGTH-1);
     }
     else
     {
@@ -244,7 +244,7 @@ int main (int argc, char *argv[])
     if ( args_info.acct_given )
     {
       cerr << "acct " << args_info.acct_arg << endl;  
-      strncpy(account.accountid,args_info.acct_arg,OFX_ACCOUNT_ID_LENGTH-1);
+      strncpy(account.account_number,args_info.acct_arg,OFX_ACCTID_LENGTH-1);
     }
     else
     {
@@ -254,8 +254,18 @@ int main (int argc, char *argv[])
     
     if ( args_info.type_given )
     {
-      cerr << "type " << args_info.type_arg << endl;  
-      account.type = static_cast<AccountType>(args_info.type_arg);
+      cerr << "type " << args_info.type_arg << endl;
+      switch (args_info.type_arg) {
+      case 1: account.account_type = account.OFX_CHECKING;
+	break;
+      case 2: account.account_type = account.OFX_INVESTMENT;
+	break;
+      case 3: account.account_type = account.OFX_CREDITCARD ;
+	break;
+      default:
+	cerr << "ERROR: --type is not valid.  Must be between 1 and 3" << endl;
+	ok = false;
+      }
     }
     else
     {
@@ -325,8 +335,8 @@ int main (int argc, char *argv[])
   
   if ( args_info.payment_req_given )
   {
-    OfxAccountInfo account;
-    memset(&account,0,sizeof(OfxAccountInfo));
+    OfxAccountData account;
+    memset(&account,0,sizeof(OfxAccountData));
     OfxPayee payee;
     memset(&payee,0,sizeof(OfxPayee));
     OfxPayment payment;
@@ -349,7 +359,7 @@ int main (int argc, char *argv[])
     if ( args_info.bank_given )
     {
       cerr << "bank " << args_info.bank_arg << endl;  
-      strncpy(account.bankid,args_info.bank_arg,OFX_BANKID_LENGTH-1);
+      strncpy(account.bank_id,args_info.bank_arg,OFX_BANKID_LENGTH-1);
     }
     else    
     {
@@ -363,7 +373,7 @@ int main (int argc, char *argv[])
     if ( args_info.broker_given )
     {
       cerr << "broker " << args_info.broker_arg << endl;  
-      strncpy(account.brokerid,args_info.broker_arg,OFX_BROKERID_LENGTH-1);
+      strncpy(account.broker_id,args_info.broker_arg,OFX_BROKERID_LENGTH-1);
     }
     else
     {
@@ -377,7 +387,7 @@ int main (int argc, char *argv[])
     if ( args_info.acct_given )
     {
       cerr << "acct " << args_info.acct_arg << endl;  
-      strncpy(account.accountid,args_info.acct_arg,OFX_ACCOUNT_ID_LENGTH-1);
+      strncpy(account.account_number,args_info.acct_arg,OFX_ACCTID_LENGTH-1);
     }
     else
     {
@@ -386,9 +396,19 @@ int main (int argc, char *argv[])
     }
     
     if ( args_info.type_given )
-    {
-      cerr << "type " << args_info.type_arg << endl;  
-      account.type = static_cast<AccountType>(args_info.type_arg);
+    { 
+      cerr << "type " << args_info.type_arg << endl;
+      switch (args_info.type_arg) {
+      case 1: account.account_type = account.OFX_CHECKING;
+	break;
+      case 2: account.account_type = account.OFX_INVESTMENT;
+	break;
+      case 3: account.account_type = account.OFX_CREDITCARD ;
+	break;
+      default:
+	cerr << "ERROR: --type is not valid.  Must be between 1 and 3" << endl;
+	ok = false;
+      }
     }
     else
     {

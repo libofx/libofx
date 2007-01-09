@@ -224,7 +224,12 @@ CFCT typedef int (*LibofxProcStatusCallback)(const struct OfxStatusData data, vo
  *
  *  The OfxAccountData structure gives information about a specific account, 
  including it's type, currency and unique id. 
-*/
+ *
+ * When an OfxAccountData must be passed to functions which create OFX
+ * requests related to a specific account, it must contain all the info needed
+ * for an OFX request to identify an account.  That is:
+ * account_type, account_number, bank_id and branch_id
+ */
 struct OfxAccountData{
   
   /** @name OFX mandatory elements
@@ -260,6 +265,11 @@ struct OfxAccountData{
   char currency[OFX_CURRENCY_LENGTH]; /**< The currency is a string in ISO-4217 format */
   int currency_valid;
 
+  /** Corresponds to OFX <ACCTID> */
+  char account_number[OFX_ACCTID_LENGTH];
+  int account_number_valid;
+
+  /** Corresponds to OFX <BANKID> */
   char bank_id[OFX_BANKID_LENGTH];
   int bank_id_valid;
 
@@ -268,9 +278,6 @@ struct OfxAccountData{
 
   char branch_id[OFX_BRANCHID_LENGTH];
   int branch_id_valid;
-
-  char account_number[OFX_ACCTID_LENGTH];
-  int account_number_valid;
 
 };
 
@@ -700,29 +707,6 @@ struct OfxFiLogin{
   char userpass[OFX_USERPASS_LENGTH];
 };
 
-typedef enum{
-  OFX_NO_ACCOUNT=0,
-  OFX_BANK_ACCOUNT,
-  OFX_INVEST_ACCOUNT,
-  OFX_CREDITCARD_ACCOUNT,
-  OFX_INVALID_ACCOUNT
-} AccountType;
-
- /**
- * \brief Information sufficient to identify an account
- *
- * Contains all the info needed for an OFX request to identify an account.
- * An OfxAccountInfo must be passed to all functions which create OFX
- * requests related to a specific account.
- */
-
-struct OfxAccountInfo{
-  char accountid[OFX_ACCOUNT_ID_LENGTH];
-  char bankid[OFX_BANKID_LENGTH];
-  char brokerid[OFX_BROKERID_LENGTH];
-  AccountType type;
-};
-
 #define OFX_AMOUNT_LENGTH 32 + 1
 #define OFX_PAYACCT_LENGTH 32 + 1
 #define OFX_STATE_LENGTH 5 + 1
@@ -757,7 +741,7 @@ struct OfxPayee{
  * @return string pointer to the request.  This is allocated via malloc(), and is the callers responsibility to free.
 */
 
-CFCT char* libofx_request_statement( const struct OfxFiLogin* fi, const struct OfxAccountInfo* account, time_t date_from );
+CFCT char* libofx_request_statement( const struct OfxFiLogin* fi, const struct OfxAccountData* account, time_t date_from );
 
 /**
  * \brief Creates an OFX account info (list) request in string form
@@ -772,7 +756,7 @@ CFCT char* libofx_request_statement( const struct OfxFiLogin* fi, const struct O
 
 CFCT char* libofx_request_accountinfo( const struct OfxFiLogin* login );
 
-CFCT char* libofx_request_payment( const struct OfxFiLogin* login, const struct OfxAccountInfo* account, const struct OfxPayee* payee, const struct OfxPayment* payment );
+CFCT char* libofx_request_payment( const struct OfxFiLogin* login, const struct OfxAccountData* account, const struct OfxPayee* payee, const struct OfxPayment* payment );
 
 CFCT char* libofx_request_payment_status( const struct OfxFiLogin* login, const char* transactionid );
 

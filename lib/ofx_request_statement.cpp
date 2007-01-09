@@ -28,7 +28,7 @@
 
 using namespace std;
 
-char* libofx_request_statement( const OfxFiLogin* login, const OfxAccountInfo* account, time_t date_from )
+char* libofx_request_statement( const OfxFiLogin* login, const OfxAccountData* account, time_t date_from )
 {
   OfxStatementRequest strq( *login, *account, date_from );
   string request = OfxHeader() + strq.Output();
@@ -41,16 +41,16 @@ char* libofx_request_statement( const OfxFiLogin* login, const OfxAccountInfo* a
   return result;
 }
 
-OfxStatementRequest::OfxStatementRequest( const OfxFiLogin& fi, const OfxAccountInfo& account, time_t from ):
+OfxStatementRequest::OfxStatementRequest( const OfxFiLogin& fi, const OfxAccountData& account, time_t from ):
   OfxRequest(fi),
   m_account(account),
   m_date_from(from)
 {
   Add( SignOnRequest() );
 
-  if ( account.type == OFX_CREDITCARD_ACCOUNT )
+  if ( account.account_type == account.OFX_CREDITCARD )
     Add(CreditCardStatementRequest());
-  else if ( account.type == OFX_INVEST_ACCOUNT )
+  else if ( account.account_type == account.OFX_INVESTMENT )
     Add(InvestmentStatementRequest());
   else
     Add(BankStatementRequest());
@@ -59,10 +59,18 @@ OfxStatementRequest::OfxStatementRequest( const OfxFiLogin& fi, const OfxAccount
 OfxAggregate OfxStatementRequest::BankStatementRequest(void) const
 {
   OfxAggregate bankacctfromTag("BANKACCTFROM");
-  bankacctfromTag.Add( "BANKID", m_account.bankid );
-  bankacctfromTag.Add( "ACCTID", m_account.accountid );
-  bankacctfromTag.Add( "ACCTTYPE", "CHECKING" );
-  // FIXME "CHECKING" should not be hard-coded
+  bankacctfromTag.Add( "BANKID", m_account.bank_id );
+  bankacctfromTag.Add( "ACCTID", m_account.account_number );
+  if ( m_account.account_type ==  m_account.OFX_CHECKING )
+    bankacctfromTag.Add( "ACCTTYPE", "CHECKING" );
+  else if  ( m_account.account_type == m_account.OFX_SAVINGS )
+    bankacctfromTag.Add( "ACCTTYPE", "SAVINGS" );
+  else if  ( m_account.account_type == m_account.OFX_MONEYMRKT )
+    bankacctfromTag.Add( "ACCTTYPE", "MONEYMRKT" );
+  else if  ( m_account.account_type == m_account.OFX_CREDITLINE )
+    bankacctfromTag.Add( "ACCTTYPE", "CREDITLINE" );
+  else if  ( m_account.account_type == m_account.OFX_CMA )
+    bankacctfromTag.Add( "ACCTTYPE", "CMA" );
 
   OfxAggregate inctranTag("INCTRAN");
   inctranTag.Add( "DTSTART", time_t_to_ofxdate( m_date_from ) );
@@ -85,7 +93,7 @@ OfxAggregate OfxStatementRequest::CreditCardStatementRequest(void) const
 }
 */
   OfxAggregate ccacctfromTag("CCACCTFROM");
-  ccacctfromTag.Add( "ACCTID", m_account.accountid );
+  ccacctfromTag.Add( "ACCTID", m_account.account_number );
 
   OfxAggregate inctranTag("INCTRAN");
   inctranTag.Add( "DTSTART", time_t_to_ofxdate( m_date_from ) );
@@ -102,8 +110,8 @@ OfxAggregate OfxStatementRequest::InvestmentStatementRequest(void) const
 {
   OfxAggregate invacctfromTag("INVACCTFROM");
   
-  invacctfromTag.Add( "BROKERID", m_account.brokerid );
-  invacctfromTag.Add( "ACCTID", m_account.accountid );
+  invacctfromTag.Add( "BROKERID", m_account.broker_id );
+  invacctfromTag.Add( "ACCTID", m_account.account_number );
 
   OfxAggregate inctranTag("INCTRAN");
   inctranTag.Add( "DTSTART", time_t_to_ofxdate( m_date_from ) );
@@ -123,7 +131,7 @@ OfxAggregate OfxStatementRequest::InvestmentStatementRequest(void) const
   return RequestMessage("INVSTMT","INVSTMT", invstmtrqTag);
 }
 
-char* libofx_request_payment( const OfxFiLogin* login, const OfxAccountInfo* account, const OfxPayee* payee, const OfxPayment* payment )
+char* libofx_request_payment( const OfxFiLogin* login, const OfxAccountData* account, const OfxPayee* payee, const OfxPayment* payment )
 {
   OfxPaymentRequest strq( *login, *account, *payee, *payment );
   string request = OfxHeader() + strq.Output();
@@ -136,7 +144,7 @@ char* libofx_request_payment( const OfxFiLogin* login, const OfxAccountInfo* acc
   return result;
 }
 
-OfxPaymentRequest::OfxPaymentRequest( const OfxFiLogin& fi, const OfxAccountInfo& account, const OfxPayee& payee, const OfxPayment& payment ):
+OfxPaymentRequest::OfxPaymentRequest( const OfxFiLogin& fi, const OfxAccountData& account, const OfxPayee& payee, const OfxPayment& payment ):
   OfxRequest(fi),
   m_account(account),
   m_payee(payee),
@@ -145,10 +153,18 @@ OfxPaymentRequest::OfxPaymentRequest( const OfxFiLogin& fi, const OfxAccountInfo
   Add( SignOnRequest() );
 
   OfxAggregate bankacctfromTag("BANKACCTFROM");
-  bankacctfromTag.Add( "BANKID", m_account.bankid );
-  bankacctfromTag.Add( "ACCTID", m_account.accountid );
-  bankacctfromTag.Add( "ACCTTYPE", "CHECKING" );
-  // FIXME "CHECKING" should not be hard-coded
+  bankacctfromTag.Add( "BANKID", m_account.bank_id );
+  bankacctfromTag.Add( "ACCTID", m_account.account_number );
+  if ( m_account.account_type == m_account.OFX_CHECKING)
+    bankacctfromTag.Add( "ACCTTYPE", "CHECKING" );
+  else if  ( m_account.account_type == m_account.OFX_SAVINGS )
+    bankacctfromTag.Add( "ACCTTYPE", "SAVINGS" );
+  else if  ( m_account.account_type == m_account.OFX_MONEYMRKT )
+    bankacctfromTag.Add( "ACCTTYPE", "MONEYMRKT" );
+  else if  ( m_account.account_type ==  m_account.OFX_CREDITLINE )
+    bankacctfromTag.Add( "ACCTTYPE", "CREDITLINE" );
+  else if  ( m_account.account_type == m_account.OFX_CMA )
+    bankacctfromTag.Add( "ACCTTYPE", "CMA" );
 
   OfxAggregate payeeTag("PAYEE");
   payeeTag.Add( "NAME", m_payee.name );

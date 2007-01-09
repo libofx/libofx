@@ -46,7 +46,7 @@ public:
    * @param account The account for which a statement is desired
    * @param start The beginning time of the statement period desired
    */
-  OfxStatementRequest( const OfxFiLogin& fi, const OfxAccountInfo& account, time_t from );
+  OfxStatementRequest( const OfxFiLogin& fi, const OfxAccountData& account, time_t from );
 
 protected:
   /**
@@ -77,7 +77,7 @@ protected:
   OfxAggregate InvestmentStatementRequest(void) const;
   
 private:
-  OfxAccountInfo m_account;
+  OfxAccountData m_account;
   time_t m_date_from;
 };
 
@@ -94,11 +94,11 @@ public:
    * @param payee The payee who should receive the payment
    * @param payment The details of the payment
    */
-  OfxPaymentRequest( const OfxFiLogin& fi, const OfxAccountInfo& account, const OfxPayee& payee, const OfxPayment& payment );
+  OfxPaymentRequest( const OfxFiLogin& fi, const OfxAccountData& account, const OfxPayee& payee, const OfxPayment& payment );
 protected:
  
 private:
-  OfxAccountInfo m_account;
+  OfxAccountData m_account;
   OfxPayee m_payee;
   OfxPayment m_payment;
 };

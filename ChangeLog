@@ -1,3 +1,8 @@
+9/1/2007:  Benoit Grégoire  <bock@step.polymtl.ca>
+	* Adapted patch by Christian Lupien <lupien @at@ physique.usherbrooke.ca> to add processing of the different bank account types in OfxPaymentRequest.  Took this oportunity to correct an API duplication problem before it get's even more complicated to fix:  deleted OfxAccountInfo (OfxAccountData should be used instead) and the global scopt AccountType enum (use the one in OfxAccountData).
+	Both of these changes will require source code change in aqbanking.
+	* Bump the version ans soname right now so aqbanking can detect it.
+
 8/1/2007:  Benoit Grégoire  <bock@step.polymtl.ca>
 	* Release 0.8.3
 
