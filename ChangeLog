@@ -1,3 +1,6 @@
+8/1/2007:  Benoit Grégoire  <bock@step.polymtl.ca>
+	* Release 0.8.3
+
 27/9/2006 Martin Preuss <martin@aquamaniac.de>
 	* lib/ofx_preproc.cpp: Make sure all results of string::find are 
           inside the string's length; make sure to erase parts of the string 
