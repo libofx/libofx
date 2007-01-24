@@ -17,6 +17,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "../config.h"
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>
@@ -28,6 +29,12 @@
 #include "ofx_sgml.hh"
 #include "ofc_sgml.hh"
 #include "ofx_preproc.hh"
+#ifdef HAVE_ICONV
+#include <iconv.h>
+#endif
+
+#define LIBOFX_DEFAULT_INPUT_ENCODING "CP1252"
+#define LIBOFX_DEFAULT_OUTPUT_ENCODING "UTF-8"
 
 using namespace std;
 /**
@@ -64,6 +71,7 @@ CFCT int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
   ifstream input_file;
   ofstream tmp_file;
   char buffer[READ_BUFFER_SIZE];
+  char iconv_buffer[READ_BUFFER_SIZE];
   string s_buffer;
   char *filenames[3];
   char tmp_filename[50];
@@ -88,7 +96,14 @@ CFCT int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
     }
     else
       {
-
+	int header_separator_idx;
+	string header_name;
+	string header_value;
+	string ofx_encoding;
+	string ofx_charset;
+#ifdef HAVE_ICONV
+	iconv_t conversion_descriptor;
+#endif
 	do {
           input_file.getline(buffer, sizeof(buffer),'\n');
 	  //cout<<buffer<<"\n";
@@ -117,12 +132,66 @@ CFCT int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
               ofx_start=true;
               s_buffer.erase(0,ofx_start_idx);//Fix for really broken files that don't have a newline after the header.
               message_out(DEBUG,"ofx_proc_file():<OFX> or <OFC> has been found");
+#ifdef HAVE_ICONV
+	      string fromcode;
+	      string tocode; 
+	      if(ofx_encoding.compare("USASCII")==0){
+		if(ofx_charset.compare("ISO-8859-1")==0){
+		  fromcode="ISO-8859-1";
+		}
+		else if(ofx_charset.compare("1252")==0){
+		  fromcode="CP1252";
+		}
+		else if(ofx_charset.compare("NONE")==0){
+		  fromcode=LIBOFX_DEFAULT_INPUT_ENCODING;
+		}
+	      }
+	      else if(ofx_encoding.compare("USASCII")==0) {
+		fromcode="UTF-8";
+	      }
+	      else
+		{
+		  fromcode=LIBOFX_DEFAULT_INPUT_ENCODING;
+		}
+	      tocode = LIBOFX_DEFAULT_OUTPUT_ENCODING;
+	      message_out(DEBUG,"ofx_proc_file(): Setting up iconv for fromcode: "+fromcode+", tocode: "+tocode);
+	      conversion_descriptor = iconv_open (tocode.c_str(), fromcode.c_str());
+#endif
             }
+	  else {
+	    //We are still in the headers
+	    if ((header_separator_idx=s_buffer.find(':')) != string::npos) {
+	      //Header processing
+	      header_name.assign(s_buffer.substr(0,header_separator_idx));
+	      header_value.assign(s_buffer.substr(header_separator_idx+1));
+	      message_out(DEBUG,"ofx_proc_file():Header: "+header_name+" with value: "+header_value+" has been found");
+	      if(header_name.compare("ENCODING")==0) {
+		ofx_encoding.assign(header_value);
+	      }
+	      if(header_name.compare("CHARSET")==0) {
+		ofx_charset.assign(header_value);
+	      }
+	    }
+	  }
 
           if(ofx_start==true && ofx_end==false){
             s_buffer=sanitize_proprietary_tags(s_buffer);
             //cout<< s_buffer<<"\n";
-            tmp_file.write(s_buffer.c_str(), s_buffer.length());
+#ifdef HAVE_ICONV
+	    memset(iconv_buffer,0,READ_BUFFER_SIZE);
+	    size_t inbytesleft = strlen(s_buffer.c_str());
+	    size_t outbytesleft = READ_BUFFER_SIZE;
+	    char * inchar = (char *)s_buffer.c_str();
+	    char * outchar = iconv_buffer;
+	    int iconv_retval = iconv (conversion_descriptor,
+		    &inchar, &inbytesleft,
+		   &outchar, &outbytesleft);
+	    if(iconv_retval==-1){
+	      message_out(ERROR,"ofx_proc_file(): Conversion error");
+	    }
+	    s_buffer = iconv_buffer;
+#endif
+	      tmp_file.write(s_buffer.c_str(), s_buffer.length());
 	  }
 	  
           if (ofx_start==true &&

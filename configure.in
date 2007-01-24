@@ -72,7 +72,6 @@ for d in /usr/include/OpenSP /usr/local/include/OpenSP /usr/include/sp/generic /
     fi
 done
 
-
 ##Detect if OpenSP was compiled with SP_MULTI_BYTE, and put the result in config.h
 ##
 
@@ -273,6 +272,56 @@ if test "$libcurl_available" = yes; then
 	fi
 fi
 AM_CONDITIONAL([BUILD_OFXCONNECT], [test "$build_ofxconnect" = yes])
+
+# check for iconv
+# ----------------------------------------------------------------------------
+
+AC_ARG_WITH(iconv,
+[  --with-iconv[[=DIR]]      add ICONV support (on)])
+
+WITH_ICONV=0
+if test "$with_iconv" = "no" ; then
+    echo Disabling ICONV support
+else
+    if test "$with_iconv" != "yes" -a "$with_iconv" != "" ; then
+	CPPFLAGS="${CPPFLAGS} -I$with_iconv/include"
+	# Export this since our headers include iconv.h
+	XML_INCLUDEDIR="${XML_INCLUDEDIR} -I$with_iconv/include"
+	ICONV_LIBS="-L$with_iconv/lib"
+    fi
+
+    AC_CHECK_HEADER(iconv.h,
+	AC_MSG_CHECKING(for iconv)
+	AC_TRY_LINK([#include <stdlib.h>
+#include <iconv.h>],[
+iconv_t cd = iconv_open ("","");
+iconv (cd, NULL, NULL, NULL, NULL);],[
+	    AC_MSG_RESULT(yes)
+	    WITH_ICONV=1],[
+	    AC_MSG_RESULT(no)
+	    AC_MSG_CHECKING(for iconv in -liconv)
+
+	    _ldflags="${LDFLAGS}"
+	    _libs="${LIBS}"
+	    LDFLAGS="${LDFLAGS} ${ICONV_LIBS}"
+	    LIBS="${LIBS} -liconv"
+
+	    AC_TRY_LINK([#include <stdlib.h>
+#include <iconv.h>],[
+iconv_t cd = iconv_open ("","");
+iconv (cd, NULL, NULL, NULL, NULL);],[
+		AC_MSG_RESULT(yes)
+		WITH_ICONV=1
+		ICONV_LIBS="${ICONV_LIBS} -liconv"
+		LIBS="${_libs}"
+		LDFLAGS="${_ldflags}"],[
+		AC_MSG_RESULT(no)
+		LIBS="${_libs}"
+		LDFLAGS="${_ldflags}"])]))
+fi
+AC_DEFINE_UNQUOTED(HAVE_ICONV, $WITH_ICONV, [Defined if libxml++ is available])
+
+AC_SUBST(WITH_ICONV)
 AC_SUBST(ofxconnect)
 AC_SUBST(OPENSPINCLUDES)
 AC_SUBST(OPENSPLIBS)
