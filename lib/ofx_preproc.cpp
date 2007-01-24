@@ -75,7 +75,9 @@ CFCT int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
   string s_buffer;
   char *filenames[3];
   char tmp_filename[50];
-
+#ifdef HAVE_ICONV
+	iconv_t conversion_descriptor;
+#endif
   libofx_context=(LibofxContext*)ctx;
 
   if(p_filename!=NULL&&strcmp(p_filename,"")!=0)
@@ -101,9 +103,6 @@ CFCT int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
 	string header_value;
 	string ofx_encoding;
 	string ofx_charset;
-#ifdef HAVE_ICONV
-	iconv_t conversion_descriptor;
-#endif
 	do {
           input_file.getline(buffer, sizeof(buffer),'\n');
 	  //cout<<buffer<<"\n";
@@ -213,7 +212,9 @@ CFCT int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
       }
     input_file.close();
     tmp_file.close();
-
+#ifdef HAVE_ICONV
+	      iconv_close(conversion_descriptor);
+#endif
     char filename_openspdtd[255];
     char filename_dtd[255];
     char filename_ofx[255];
