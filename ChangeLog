@@ -1,3 +1,8 @@
+27/9/2006 Martin Preuss <martin@aquamaniac.de>
+	* ofx_request_statement.cpp: Incremented versions written to the
+          request
+        * libofx.h, ofx_utilities.cpp: replaced some char* with "const char*" to make GCC happy
+
 24/1/2007:  Benoit Grégoire  <bock@step.polymtl.ca>
 	* ofx_preproc.cpp:  Now parses the OFX headers to determine the input charset and encoding, and uses libiconv (if available) to convert the encoding since OpenSP can't do it.  The default output is now UTF-8.  This will "do the right thing" for Gnucash 2 and any client that uses UTF-8 strings, but we sould add an interface to let the client chose his prefered output encoding.
 

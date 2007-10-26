@@ -23,8 +23,8 @@
 struct ErrorMsg
 {
   int code;           /**< The error's code */
-  char * name;        /**< The error's name */
-  char * description; /**< The long description of the error */
+  const char * name;        /**< The error's name */
+  const char * description; /**< The long description of the error */
 };
 
 /// List known error codes.

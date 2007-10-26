@@ -52,7 +52,7 @@ string OfxHeader(void)
 {
   return string("OFXHEADER:100\r\n"
                  "DATA:OFXSGML\r\n"
-                 "VERSION:102\r\n"
+                 "VERSION:103\r\n"
                  "SECURITY:NONE\r\n"
                  "ENCODING:USASCII\r\n"
                  "CHARSET:1252\r\n"
@@ -77,7 +77,7 @@ OfxAggregate OfxRequest::SignOnRequest(void) const
   sonrqTag.Add( "LANGUAGE","ENG");
   sonrqTag.Add( fiTag );
   sonrqTag.Add( "APPID","QWIN");
-  sonrqTag.Add( "APPVER","1200");
+  sonrqTag.Add( "APPVER","1600");
   
   OfxAggregate signonmsgTag("SIGNONMSGSRQV1");
   signonmsgTag.Add( sonrqTag );

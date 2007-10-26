@@ -186,8 +186,8 @@ struct OfxStatusData{
    variables should all contain valid data but you should not trust the servers.
    Check if the associated *_valid is true before using them. */
   int code;            /**< Status code */
-  char* name;          /**< Code short name */
-  char* description;   /**< Code long description, from ofx_error_msg.h */
+  const char* name;          /**< Code short name */
+  const char* description;   /**< Code long description, from ofx_error_msg.h */
   int code_valid;      /**< If  code_valid is true, so is name and description
 			  (They are obtained from a lookup table) */
   /** Severity of the error */

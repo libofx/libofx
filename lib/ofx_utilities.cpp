@@ -188,8 +188,8 @@ string strip_whitespace(const string para_string)
   size_t index;
   size_t i;
   string temp_string = para_string;
-  char *whitespace = " \b\f\n\r\t\v";
-  char *abnormal_whitespace = "\b\f\n\r\t\v";//backspace,formfeed,newline,cariage return, horizontal and vertical tabs
+  const char *whitespace = " \b\f\n\r\t\v";
+  const char *abnormal_whitespace = "\b\f\n\r\t\v";//backspace,formfeed,newline,cariage return, horizontal and vertical tabs
   message_out(DEBUG4,"strip_whitespace() Before: |"+temp_string+"|");
   for(i=0;i<=temp_string.size()&&temp_string.find_first_of(whitespace, i)==i&&temp_string.find_first_of(whitespace, i)!=string::npos;i++);
   temp_string.erase(0,i);//Strip leading whitespace
