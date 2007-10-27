@@ -1,7 +1,7 @@
 /***************************************************************************
  $RCSfile: win32.cpp,v $
  -------------------
- cvs         : $Id: win32.cpp,v 1.2 2007-10-27 12:08:16 aquamaniac Exp $
+ cvs         : $Id: win32.cpp,v 1.3 2007-10-27 12:15:58 aquamaniac Exp $
  begin       : Sat Oct 27 2007
  copyright   : (C) 2007 by Martin Preuss
  email       : martin@libchipcard.de
@@ -22,13 +22,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <assert.h>
-
-
-#ifdef OS_WIN32
-# define DIRSEP "\\"
-#else
-# define DIRSEP "/"
-#endif
 
 
 
@@ -75,34 +68,5 @@ int mkstemp(char *tmpl) {
 
 
 #endif
-
-
-int mkUniqueFile(const char *tmpl, char *buffer, unsigned int size) {
-  const char *tmp_dir;
-
-  tmp_dir = getenv ("TMPDIR");
-  if (!tmp_dir)
-    tmp_dir = getenv ("TMP");
-  if (!tmp_dir)
-    tmp_dir = getenv ("TEMP");
-
-  if (!tmp_dir)
-    {
-#ifdef OS_WIN32
-      tmp_dir = "C:\\";
-#else  
-      tmp_dir = "/tmp";
-#endif	/* !OS_WIN32 */
-    }
-
-  strncpy(buffer, tmp_dir, size);
-  assert((strlen(buffer)+strlen(tmpl)+2)<size);
-  strcat(buffer, DIRSEP);
-  strcat(buffer, tmpl);
-  return 0;
-}
-
-
-
 
 

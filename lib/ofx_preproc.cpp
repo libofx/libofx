@@ -29,6 +29,7 @@
 #include "ofx_sgml.hh"
 #include "ofc_sgml.hh"
 #include "ofx_preproc.hh"
+#include "ofx_utilities.hh"
 #ifdef HAVE_ICONV
 #include <iconv.h>
 #endif
@@ -89,7 +90,7 @@ CFCT int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
     message_out(DEBUG, string("ofx_proc_file():Opening file: ")+ p_filename);
     
     input_file.open(p_filename);
-    mkUniqueFile("libofxtmpXXXXXX", tmp_filename, sizeof(tmp_filename));
+    mkTempFileName("libofxtmpXXXXXX", tmp_filename, sizeof(tmp_filename));
     mkstemp(tmp_filename);
     tmp_file.open(tmp_filename);
 
@@ -294,7 +295,7 @@ CFCT int libofx_proc_buffer(LibofxContextPtr ctx,
   }
   s_buffer=string(s, size);
 
-  mkUniqueFile("libofxtmpXXXXXX", tmp_filename, sizeof(tmp_filename));
+  mkTempFileName("libofxtmpXXXXXX", tmp_filename, sizeof(tmp_filename));
   mkstemp(tmp_filename);
   tmp_file.open(tmp_filename);
 

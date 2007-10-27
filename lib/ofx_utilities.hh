@@ -45,4 +45,7 @@ double ofxamount_to_double(const string ofxamount);
 
 ///Sanitize a string coming from OpenSP
 string strip_whitespace(const string para_string);
+
+int mkTempFileName(const char *tmpl, char *buffer, unsigned int size);
+
 #endif

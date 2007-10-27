@@ -17,6 +17,8 @@
  ***************************************************************************/
 #include <config.h>
 #include <iostream>
+#include <assert.h>
+
 #include "ParserEventGeneratorKit.h"
 #include "SGMLApplication.h"
 #include <time.h>
@@ -24,6 +26,13 @@
 #include <locale.h>
 #include "messages.hh"
 #include "ofx_utilities.hh"
+
+#ifdef OS_WIN32
+# define DIRSEP "\\"
+#else
+# define DIRSEP "/"
+#endif
+
 
 using namespace std;
 /**
@@ -205,3 +214,32 @@ while ((index = temp_string.find_first_of(abnormal_whitespace))!=string::npos)
  
  return temp_string;
 }
+
+
+int mkTempFileName(const char *tmpl, char *buffer, unsigned int size) {
+  const char *tmp_dir;
+
+  tmp_dir = getenv ("TMPDIR");
+  if (!tmp_dir)
+    tmp_dir = getenv ("TMP");
+  if (!tmp_dir)
+    tmp_dir = getenv ("TEMP");
+
+  if (!tmp_dir)
+    {
+#ifdef OS_WIN32
+      tmp_dir = "C:\\";
+#else  
+      tmp_dir = "/tmp";
+#endif	/* !OS_WIN32 */
+    }
+
+  strncpy(buffer, tmp_dir, size);
+  assert((strlen(buffer)+strlen(tmpl)+2)<size);
+  strcat(buffer, DIRSEP);
+  strcat(buffer, tmpl);
+  return 0;
+}
+
+
+

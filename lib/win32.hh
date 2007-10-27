@@ -1,7 +1,7 @@
 /***************************************************************************
  $RCSfile: win32.hh,v $
  -------------------
- cvs         : $Id: win32.hh,v 1.2 2007-10-27 12:08:16 aquamaniac Exp $
+ cvs         : $Id: win32.hh,v 1.3 2007-10-27 12:15:58 aquamaniac Exp $
  begin       : Sat Oct 27 2007
  copyright   : (C) 2007 by Martin Preuss
  email       : martin@libchipcard.de
@@ -27,9 +27,6 @@ int mkstemp(char *tmpl);
 
 
 #endif
-
-
-int mkUniqueFile(const char *tmpl, char *buffer, unsigned int size);
 
 
 #endif
