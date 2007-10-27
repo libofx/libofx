@@ -20,6 +20,9 @@ m4_include([libcurl.m4])
 LIBOFX_MAJOR_VERSION=0
 LIBOFX_MINOR_VERSION=8
 LIBOFX_MICRO_VERSION=4
+# this number is just incremented for every major change in CVS, also across
+# releases to emulate the Revision variable of SVN (which isn't available
+# with CVS)
 LIBOFX_BUILD_VERSION=1
 LIBOFX_TAG_VERSION="svn"
 
