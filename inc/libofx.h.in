@@ -103,6 +103,9 @@ CFCT LibofxContextPtr libofx_get_new_context();
 */
 CFCT int libofx_free_context( LibofxContextPtr );
 
+CFCT void libofx_set_dtd_dir(LibofxContextPtr libofx_context,
+	 	       	    const char *s);
+
 /** List of possible file formats */
 enum LibofxFileFormat{ AUTODETECT, /**< Not really a file format, used to tell the library to try to autodetect the format*/
 		     OFX, /**< Open Financial eXchange (OFX/QFX) file */

@@ -18,7 +18,8 @@ libofx_la_SOURCES =  messages.cpp \
 		ofx_request_accountinfo.cpp \
 		ofx_request_statement.cpp \
 		ofx_sgml.cpp \
-		ofc_sgml.cpp
+		ofc_sgml.cpp \
+		win32.cpp
 
 noinst_HEADERS = ${top_srcdir}/inc/libofx.h \
 		messages.hh \
@@ -34,7 +35,8 @@ noinst_HEADERS = ${top_srcdir}/inc/libofx.h \
 		ofx_request_accountinfo.hh \
 		ofx_request_statement.hh \
 		ofx_utilities.hh \
-		tree.hh
+		tree.hh \
+		win32.hh
 
 AM_CPPFLAGS = \
 	-I. \
@@ -42,8 +44,9 @@ AM_CPPFLAGS = \
 	-I${OPENSPINCLUDES} \
 	-DMAKEFILE_DTD_PATH=\"${LIBOFX_DTD_DIR}/\"
 
-libofx_la_LIBADD = @LIBOBJS@ ${OPENSPLIBS} -lstdc++
-libofx_la_LDFLAGS = -version-info @LIBOFX_SO_CURRENT@:@LIBOFX_SO_REVISION@:@LIBOFX_SO_AGE@
+#libofx_la_LIBADD = @LIBOBJS@ ${OPENSPLIBS} -lstdc++
+libofx_la_LIBADD = $(OPENSPLIBS) $(ICONV_LIBS) -lstdc++
+libofx_la_LDFLAGS = -no-undefined -version-info @LIBOFX_SO_CURRENT@:@LIBOFX_SO_REVISION@:@LIBOFX_SO_AGE@
 
 
 

@@ -8,7 +8,10 @@
           is used to create libofx.h which now includes some subst variables
           conveying the version of LibOFX to source files. Introduced 
           LIBOFX_BUILD_VERSION and LIBOFX_VERSION_RELEASE_STRING to
-          distinguish even CVS versions
+          distinguish even CVS versions.
+          Added function libofx_set_dtd_dir() which allows to set the
+          folder in which DTD files are stored. This is needed for local
+          installations (e.g. WIN32)
         * libofx.pc.in: depending libraries don't need to link against
           OpenSP themselves, since LibOFX encapsulates it, no need to
           propagate unnecessary dependencies

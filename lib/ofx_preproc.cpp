@@ -33,6 +33,10 @@
 #include <iconv.h>
 #endif
 
+#ifdef OS_WIN32
+# include "win32.hh"
+#endif
+
 #define LIBOFX_DEFAULT_INPUT_ENCODING "CP1252"
 #define LIBOFX_DEFAULT_OUTPUT_ENCODING "UTF-8"
 
@@ -180,7 +184,11 @@ CFCT int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
 	    memset(iconv_buffer,0,READ_BUFFER_SIZE);
 	    size_t inbytesleft = strlen(s_buffer.c_str());
 	    size_t outbytesleft = READ_BUFFER_SIZE;
+#ifdef OS_WIN32
+	    const char * inchar = (const char *)s_buffer.c_str();
+#else
 	    char * inchar = (char *)s_buffer.c_str();
+#endif
 	    char * outchar = iconv_buffer;
 	    int iconv_retval = iconv (conversion_descriptor,
 		    &inchar, &inbytesleft,
@@ -218,14 +226,14 @@ CFCT int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
     char filename_openspdtd[255];
     char filename_dtd[255];
     char filename_ofx[255];
-    strncpy(filename_openspdtd,find_dtd(OPENSPDCL_FILENAME).c_str(),255);//The opensp sgml dtd file
+    strncpy(filename_openspdtd,find_dtd(ctx, OPENSPDCL_FILENAME).c_str(),255);//The opensp sgml dtd file
     if(libofx_context->currentFileType()==OFX)
       {
-        strncpy(filename_dtd,find_dtd(OFX160DTD_FILENAME).c_str(),255);//The ofx dtd file
+        strncpy(filename_dtd,find_dtd(ctx, OFX160DTD_FILENAME).c_str(),255);//The ofx dtd file
       }
     else if(libofx_context->currentFileType()==OFC)
       {
-        strncpy(filename_dtd,find_dtd(OFCDTD_FILENAME).c_str(),255);//The ofc dtd file
+        strncpy(filename_dtd,find_dtd(ctx, OFCDTD_FILENAME).c_str(),255);//The ofc dtd file
       }
     else
       {
@@ -274,7 +282,7 @@ CFCT int libofx_proc_buffer(LibofxContextPtr ctx,
   string s_buffer;
   char *filenames[3];
   char tmp_filename[50];
-  int pos;
+  ssize_t pos;
   LibofxContext *libofx_context;
 
   libofx_context=(LibofxContext*)ctx;
@@ -354,12 +362,12 @@ CFCT int libofx_proc_buffer(LibofxContextPtr ctx,
   char filename_openspdtd[255];
   char filename_dtd[255];
   char filename_ofx[255];
-  strncpy(filename_openspdtd,find_dtd(OPENSPDCL_FILENAME).c_str(),255);//The opensp sgml dtd file
+  strncpy(filename_openspdtd,find_dtd(ctx, OPENSPDCL_FILENAME).c_str(),255);//The opensp sgml dtd file
   if(libofx_context->currentFileType()==OFX){
-    strncpy(filename_dtd,find_dtd(OFX160DTD_FILENAME).c_str(),255);//The ofx dtd file
+    strncpy(filename_dtd,find_dtd(ctx, OFX160DTD_FILENAME).c_str(),255);//The ofx dtd file
   }
   else if(libofx_context->currentFileType()==OFC){
-    strncpy(filename_dtd,find_dtd(OFCDTD_FILENAME).c_str(),255);//The ofc dtd file
+    strncpy(filename_dtd,find_dtd(ctx, OFCDTD_FILENAME).c_str(),255);//The ofc dtd file
   }
   else {
     message_out(ERROR,string("ofx_proc_file(): Error unknown file format for the OFX parser"));
@@ -502,27 +510,42 @@ string sanitize_proprietary_tags(string input_string)
    *
    Please note that currently the function will ALWAYS look for version 160, since OpenSP can't parse the 201 DTD correctly
 */
-string find_dtd(string dtd_filename)
+string find_dtd(LibofxContextPtr ctx, string dtd_filename)
 {
   int i;
   ifstream dtd_file;
   string dtd_path_filename;
   bool dtd_found=false;
 
-  for(i=0;i<DTD_SEARCH_PATH_NUM&&dtd_found==false;i++){
-    dtd_path_filename=DTD_SEARCH_PATH[i];
+  dtd_path_filename=((LibofxContext*)ctx)->dtdDir();
+  if (!dtd_path_filename.empty()) {
     dtd_path_filename.append(dtd_filename);
     dtd_file.clear();
     dtd_file.open(dtd_path_filename.c_str());
-    if(!dtd_file){
-      message_out(DEBUG,"find_dtd():Unable to open the file "+dtd_path_filename);
-    }
-    else{
+    if(dtd_file){
       message_out(STATUS,"find_dtd():DTD found: "+dtd_path_filename);
       dtd_file.close();
       dtd_found=true;
     }
   }
+
+  if (!dtd_found) {
+    for(i=0;i<DTD_SEARCH_PATH_NUM&&dtd_found==false;i++){
+      dtd_path_filename=DTD_SEARCH_PATH[i];
+      dtd_path_filename.append(dtd_filename);
+      dtd_file.clear();
+      dtd_file.open(dtd_path_filename.c_str());
+      if(!dtd_file){
+	message_out(DEBUG,"find_dtd():Unable to open the file "+dtd_path_filename);
+      }
+      else{
+	message_out(STATUS,"find_dtd():DTD found: "+dtd_path_filename);
+	dtd_file.close();
+	dtd_found=true;
+      }
+    }
+  }
+
   if(dtd_found==false){
     message_out(ERROR,"find_dtd():Unable to find the DTD named " + dtd_filename);
     dtd_path_filename="";

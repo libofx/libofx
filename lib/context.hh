@@ -18,6 +18,9 @@
 #include "libofx.h"
 #include "ParserEventGeneratorKit.h"
 
+#include <string>
+
+
 using namespace std;
 class LibofxContext {
 private:
@@ -35,12 +38,17 @@ private:
   void * _securityData;
   void * _statusData;
 
+  std::string _dtdDir;
+
 public:
   LibofxContext();
   ~LibofxContext();
 
   LibofxFileFormat currentFileType() const;
   void setCurrentFileType(LibofxFileFormat t);
+
+  const std::string &dtdDir() const { return _dtdDir;};
+  void setDtdDir(const std::string &s) {_dtdDir=s;};
 
   int statementCallback(const struct OfxStatementData data);
   int accountCallback(const struct OfxAccountData data);

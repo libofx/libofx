@@ -39,8 +39,8 @@
 #define LIBOFX_MAJOR_VERSION 0
 #define LIBOFX_MINOR_VERSION 8
 #define LIBOFX_MICRO_VERSION 4
-#define LIBOFX_BUILD_VERSION 2
-#define LIBOFX_VERSION_RELEASE_STRING "0.8.4.r2"
+#define LIBOFX_BUILD_VERSION 1
+#define LIBOFX_VERSION_RELEASE_STRING "0.8.4.r1"
 
 
 #ifdef __cplusplus
@@ -102,6 +102,9 @@ CFCT LibofxContextPtr libofx_get_new_context();
  @return 0 if successfull.
 */
 CFCT int libofx_free_context( LibofxContextPtr );
+
+CFCT void libofx_set_dtd_dir(LibofxContextPtr libofx_context,
+	 	       	    const char *s);
 
 /** List of possible file formats */
 enum LibofxFileFormat{ AUTODETECT, /**< Not really a file format, used to tell the library to try to autodetect the format*/

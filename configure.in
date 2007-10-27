@@ -65,12 +65,17 @@ AM_MAINTAINER_MODE
 AC_PROG_INSTALL
 
 AC_LIBTOOL_DLOPEN
+AC_LIBTOOL_WIN32_DLL
+AC_LIBTOOL_RC
 AM_PROG_LIBTOOL
 
 AC_ISC_POSIX
 AC_C_BIGENDIAN
 AC_PROG_MAKE_SET
 AC_HEADER_STDC
+
+AQ_CHECK_OS
+
 
 AC_ARG_WITH(opensp-includes, 
 [  --with-opensp-includes=PATH     specify where to look for OpenSP includes  
@@ -346,6 +351,7 @@ fi
 AC_DEFINE_UNQUOTED(HAVE_ICONV, $WITH_ICONV, [Defined if libxml++ is available])
 
 AC_SUBST(WITH_ICONV)
+AC_SUBST(ICONV_LIBS)
 AC_SUBST(ofxconnect)
 AC_SUBST(OPENSPINCLUDES)
 AC_SUBST(OPENSPLIBS)
@@ -361,6 +367,7 @@ AC_SUBST(LIBOFX_DTD_DIR)
 AC_OUTPUT( 		
 	   		libofx.spec
 			libofx.pc
+			m4/Makefile
 			lib/Makefile
 			inc/Makefile
 			inc/libofx.h

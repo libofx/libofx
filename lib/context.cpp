@@ -148,6 +148,15 @@ CFCT int libofx_free_context( LibofxContextPtr libofx_context_param){
 
 
 
+CFCT void libofx_set_dtd_dir(LibofxContextPtr libofx_context,
+			    const char *s) {
+  ((LibofxContext*)libofx_context)->setDtdDir(s);
+}
+
+
+
+
+
 
 extern "C" {
   void ofx_set_status_cb(LibofxContextPtr ctx,

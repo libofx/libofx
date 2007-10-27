@@ -6,7 +6,7 @@ mkdir -p config
 echo "Running libtoolize --force"
 libtoolize --force
 echo "Running aclocal"
-aclocal
+aclocal -I ./m4
 echo "Running autoheader"
 autoheader
 echo "Running automake -a"
