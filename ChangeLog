@@ -9,6 +9,9 @@
           conveying the version of LibOFX to source files. Introduced 
           LIBOFX_BUILD_VERSION and LIBOFX_VERSION_RELEASE_STRING to
           distinguish even CVS versions
+        * libofx.pc.in: depending libraries don't need to link against
+          OpenSP themselves, since LibOFX encapsulates it, no need to
+          propagate unnecessary dependencies
 
 24/1/2007:  Benoit Grégoire  <bock@step.polymtl.ca>
 	* ofx_preproc.cpp:  Now parses the OFX headers to determine the input charset and encoding, and uses libiconv (if available) to convert the encoding since OpenSP can't do it.  The default output is now UTF-8.  This will "do the right thing" for Gnucash 2 and any client that uses UTF-8 strings, but we sould add an interface to let the client chose his prefered output encoding.

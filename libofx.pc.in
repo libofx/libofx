@@ -10,5 +10,7 @@ Description: libofx is a library for processing Open Financial eXchange (OFX) da
 Version: @VERSION@
 Requires:
 Conflicts:
-Libs: -L${libdir} @OPENSPLIBS@ -lofx
-Cflags: -I${includedir} -I@OPENSPINCLUDES@ 
+#Libs: -L${libdir} @OPENSPLIBS@ -lofx
+#Cflags: -I${includedir} -I@OPENSPINCLUDES@ 
+Libs: -L${libdir} -lofx
+Cflags: -I${includedir}
