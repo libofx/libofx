@@ -23,7 +23,7 @@ LIBOFX_MICRO_VERSION=4
 LIBOFX_TAG_VERSION="svn"
 
 # let cvs write the revision directly here
-LIBOFX_BUILD_VERSION=`echo "$Rev: 2 $ " | cut -d' ' -f2`
+LIBOFX_BUILD_VERSION=`echo "$Revision: 1.35 $ " | cut -d' ' -f2`
 
 case "$LIBOFX_TAG_VERSION" in
   cvs|svn)
