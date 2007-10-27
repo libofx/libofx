@@ -20,10 +20,8 @@ m4_include([libcurl.m4])
 LIBOFX_MAJOR_VERSION=0
 LIBOFX_MINOR_VERSION=8
 LIBOFX_MICRO_VERSION=4
+LIBOFX_BUILD_VERSION=1
 LIBOFX_TAG_VERSION="svn"
-
-# let cvs write the revision directly here
-LIBOFX_BUILD_VERSION=`echo "$Revision: 1.35 $ " | cut -d' ' -f2`
 
 case "$LIBOFX_TAG_VERSION" in
   cvs|svn)
