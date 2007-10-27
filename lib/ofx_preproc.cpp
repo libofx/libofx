@@ -89,7 +89,7 @@ CFCT int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
     message_out(DEBUG, string("ofx_proc_file():Opening file: ")+ p_filename);
     
     input_file.open(p_filename);
-    strncpy(tmp_filename,"/tmp/libofxtmpXXXXXX",50);
+    mkUniqueFile("libofxtmpXXXXXX", tmp_filename, sizeof(tmp_filename));
     mkstemp(tmp_filename);
     tmp_file.open(tmp_filename);
 
@@ -294,7 +294,7 @@ CFCT int libofx_proc_buffer(LibofxContextPtr ctx,
   }
   s_buffer=string(s, size);
 
-  strncpy(tmp_filename,"/tmp/libofxtmpXXXXXX",50);
+  mkUniqueFile("libofxtmpXXXXXX", tmp_filename, sizeof(tmp_filename));
   mkstemp(tmp_filename);
   tmp_file.open(tmp_filename);
 
