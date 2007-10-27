@@ -1,7 +1,14 @@
-27/9/2006 Martin Preuss <martin@aquamaniac.de>
+27/9/2007 Martin Preuss <martin@aquamaniac.de>
 	* ofx_request_statement.cpp: Incremented versions written to the
           request
-        * libofx.h, ofx_utilities.cpp: replaced some char* with "const char*" to make GCC happy
+        * libofx.h, ofx_utilities.cpp: replaced some char* with "const char*" to make GCC happy,
+          wrapped arithmetic calculations in macro definitions in brackets
+          to avoid mathematical problems
+        * libofx.h: Removed this file, replaced it with libofx.h.in. This
+          is used to create libofx.h which now includes some subst variables
+          conveying the version of LibOFX to source files. Introduced 
+          LIBOFX_BUILD_VERSION and LIBOFX_VERSION_RELEASE_STRING to
+          distinguish even CVS versions
 
 24/1/2007:  Benoit Grégoire  <bock@step.polymtl.ca>
 	* ofx_preproc.cpp:  Now parses the OFX headers to determine the input charset and encoding, and uses libiconv (if available) to convert the encoding since OpenSP can't do it.  The default output is now UTF-8.  This will "do the right thing" for Gnucash 2 and any client that uses UTF-8 strings, but we sould add an interface to let the client chose his prefered output encoding.
