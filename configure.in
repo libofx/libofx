@@ -8,7 +8,7 @@ dnl Process this file with autoconf to produce a configure script.
 # FUNCTION:
 # implements checks for a variety of system-specific functions
 
-AC_INIT(inc/libofx.h)
+AC_INIT(inc/libofx.h.in)
 AM_CONFIG_HEADER(config.h)
 AC_CONFIG_AUX_DIR(config)
 AC_PROG_CC
