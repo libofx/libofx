@@ -81,6 +81,10 @@
 #define OFX_USERID_LENGTH              (32 + 1)
 #define OFX_USERPASS_LENGTH            (32 + 1)
 #define OFX_URL_LENGTH                 (500 + 1)
+#define OFX_APPID_LENGTH               (32)
+#define OFX_APPVER_LENGTH              (32)
+#define OFX_HEADERVERSION_LENGTH       (32)
+
 /*
 #define OFX_STATEMENT_CB               0;
 #define OFX_ACCOUNT_CB                 1;
@@ -715,6 +719,9 @@ struct OfxFiLogin{
   char org[OFX_ORG_LENGTH];
   char userid[OFX_USERID_LENGTH];
   char userpass[OFX_USERPASS_LENGTH];
+  char header_version[OFX_HEADERVERSION_LENGTH];
+  char appid[OFX_APPID_LENGTH];
+  char appver[OFX_APPVER_LENGTH];
 };
 
 #define OFX_AMOUNT_LENGTH (32 + 1)

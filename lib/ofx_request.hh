@@ -78,7 +78,7 @@ protected:
 
 string time_t_to_ofxdatetime( time_t time );
 string time_t_to_ofxdate( time_t time );
-string OfxHeader(void);
+string OfxHeader(const char *hver);
 
 //@}
 

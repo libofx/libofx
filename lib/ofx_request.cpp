@@ -48,19 +48,35 @@ string time_t_to_ofxdate( time_t time )
   return string(buffer);
 }
 
-string OfxHeader(void)
-{
-  return string("OFXHEADER:100\r\n"
-                 "DATA:OFXSGML\r\n"
-                 "VERSION:103\r\n"
-                 "SECURITY:NONE\r\n"
-                 "ENCODING:USASCII\r\n"
-                 "CHARSET:1252\r\n"
-                 "COMPRESSION:NONE\r\n"
-                 "OLDFILEUID:NONE\r\n"
-                 "NEWFILEUID:")
-                 + time_t_to_ofxdatetime( time(NULL) )
-                 + string("\r\n\r\n");
+string OfxHeader(const char *hver){
+  if (hver==NULL || hver[0]==0)
+    hver="102";
+
+  if (strcmp(hver, "103")==0)
+    /* TODO: check for differences in version 102 and 103 */
+    return string("OFXHEADER:100\r\n"
+		  "DATA:OFXSGML\r\n"
+		  "VERSION:103\r\n"
+		  "SECURITY:NONE\r\n"
+		  "ENCODING:USASCII\r\n"
+		  "CHARSET:1252\r\n"
+		  "COMPRESSION:NONE\r\n"
+		  "OLDFILEUID:NONE\r\n"
+		  "NEWFILEUID:")
+      + time_t_to_ofxdatetime( time(NULL) )
+      + string("\r\n\r\n");
+  else
+    return string("OFXHEADER:100\r\n"
+		  "DATA:OFXSGML\r\n"
+		  "VERSION:102\r\n"
+		  "SECURITY:NONE\r\n"
+		  "ENCODING:USASCII\r\n"
+		  "CHARSET:1252\r\n"
+		  "COMPRESSION:NONE\r\n"
+		  "OLDFILEUID:NONE\r\n"
+		  "NEWFILEUID:")
+      + time_t_to_ofxdatetime( time(NULL) )
+      + string("\r\n\r\n");
 }
 
 OfxAggregate OfxRequest::SignOnRequest(void) const
@@ -76,9 +92,15 @@ OfxAggregate OfxRequest::SignOnRequest(void) const
   sonrqTag.Add( "USERPASS", m_login.userpass);
   sonrqTag.Add( "LANGUAGE","ENG");
   sonrqTag.Add( fiTag );
-  sonrqTag.Add( "APPID","QWIN");
-  sonrqTag.Add( "APPVER","1600");
-  
+  if ( strlen(m_login.appid) > 0 )
+      sonrqTag.Add( "APPID", m_login.appid);
+  else
+      sonrqTag.Add( "APPID","QWIN");
+  if ( strlen(m_login.appver) > 0 )
+    sonrqTag.Add( "APPVER", m_login.appver);
+  else
+    sonrqTag.Add( "APPVER","1400");
+
   OfxAggregate signonmsgTag("SIGNONMSGSRQV1");
   signonmsgTag.Add( sonrqTag );
 

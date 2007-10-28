@@ -1,3 +1,12 @@
+
+28/9/2007 Martin Preuss <martin@aquamaniac.de>
+        * libofx.h: added some fields to OfxFiLogin:
+          - header_version
+          - appid
+          - appver
+          It seems to become necessary with some new servers to modify
+          these fields by the application.
+          
 27/9/2007 Martin Preuss <martin@aquamaniac.de>
 	* ofx_request_statement.cpp: Incremented versions written to the
           request
