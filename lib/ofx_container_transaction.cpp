@@ -222,7 +222,7 @@ void OfxBankTransactionContainer::add_attribute(const string identifier, const s
     data.amount_valid=true;
     data.units = -data.amount;
     data.units_valid=true;
-    data.unitprice = 1,00;
+    data.unitprice = 1.00;
     data.unitprice_valid=true;
   }
   else if(identifier=="CHECKNUM"){
