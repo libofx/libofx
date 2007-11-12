@@ -1,4 +1,9 @@
 
+12/11/2007 Martin Preuss <martin@aquamaniac.de>
+	* ofx_preproc.cpp: Increased size of file name buffer (50 was too
+          small)
+
+
 28/9/2007 Martin Preuss <martin@aquamaniac.de>
         * libofx.h: added some fields to OfxFiLogin:
           - header_version

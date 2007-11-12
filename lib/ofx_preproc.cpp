@@ -79,7 +79,7 @@ CFCT int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
   char iconv_buffer[READ_BUFFER_SIZE];
   string s_buffer;
   char *filenames[3];
-  char tmp_filename[50];
+  char tmp_filename[256];
 #ifdef HAVE_ICONV
 	iconv_t conversion_descriptor;
 #endif
@@ -282,7 +282,7 @@ CFCT int libofx_proc_buffer(LibofxContextPtr ctx,
   ofstream tmp_file;
   string s_buffer;
   char *filenames[3];
-  char tmp_filename[50];
+  char tmp_filename[256];
   ssize_t pos;
   LibofxContext *libofx_context;
 
