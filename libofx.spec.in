@@ -10,7 +10,7 @@ Release: %{release}
 Source: http://download.sourceforge.net/libofx/%{name}-%{version}.tar.gz
 Requires: openjade >= 1.3.1
 Group:	Libraries/System
-Copyright: GPL
+License:  GPL
 Packager: Chris Lyttle <chris@wilddev.net>
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 Prereq: /sbin/ldconfig
