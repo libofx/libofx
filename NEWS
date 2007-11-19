@@ -1,3 +1,18 @@
+LibOFX 0.9.0:
+	- this release now exports version information thus allowing depending applications
+          to determine the version of LibOFX to compile against
+        - some fields have been added to OfxFiLogin to allow for modification of some
+          OFX header fields in outgoing requests. Together with the latest AqBanking3 this
+          should fix the problem with servers suddenly rejecting connections from LibOFX
+          applications
+        - the calling application can now tell libofx where the data files reside. This allows
+          for relocatable binaries (most importantly on Windows)
+        - some warnings from recent versions of GCC have been fixed
+        - libOFX can now easily be cross-compiled for Windows on Linux
+        - the OFX header is now scanned for a hint regarding the encoding of the document and
+          convert the data to UTF8 if iconv is available at compile time.
+        - the API for online requests has been cleaned up
+
 LibOFX 0.8.3:
 	- Fix problem with string lengths.  Fixes Gnucash bug http://bugzilla.gnome.org/show_bug.cgi?id=353986
 
