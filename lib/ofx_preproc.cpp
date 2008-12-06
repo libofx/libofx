@@ -479,7 +479,7 @@ string sanitize_proprietary_tags(string input_string)
       tagname_idx++;
     }
     //cerr <<i<<endl;
-    if(strip==true)
+    if(strip==true && orig_tag_open_idx < input_string.size())
       {
 	input_string.copy(buffer,(crop_end_idx-orig_tag_open_idx)+1,orig_tag_open_idx);
 	message_out(INFO,"sanitize_proprietary_tags() (end tag or new tag) removed: "+string(buffer));
@@ -493,7 +493,7 @@ string sanitize_proprietary_tags(string input_string)
       }
 
   }//end for
-  if(proprietary_tag==true){
+  if(proprietary_tag==true && orig_tag_open_idx < input_string.size()){
     if(crop_end_idx==0){//no closing tag
       crop_end_idx=input_string.size()-1;
     }

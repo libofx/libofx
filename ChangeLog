@@ -1,5 +1,9 @@
 2008-12-06  Christian Stimming  <stimming@tuhh.de>
 
+	* lib/ofx_preproc.cpp: Add more sanity checks on string length. I
+	forgot the bug which required those to be fixed, but I fixed them
+	anyway.
+
 	* lib/ofx_preproc.cpp: Fix gnucash crash on OFX files with
 	non-ascii characters and very long lines. See
 	http://bugzilla.gnome.org/show_bug.cgi?id=528306 and
