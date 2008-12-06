@@ -1,3 +1,10 @@
+2008-12-06  Christian Stimming  <stimming@tuhh.de>
+
+	* lib/ofx_preproc.cpp: Fix gnucash crash on OFX files with
+	non-ascii characters and very long lines. See
+	http://bugzilla.gnome.org/show_bug.cgi?id=528306 and
+	http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=493597. Patch was
+	copied from the latter. Patch by Jerome Vouillon.
 
 20/11/2007 Martin Preuss <martin@aquamaniac.de>
 	* updated specfile

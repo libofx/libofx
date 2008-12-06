@@ -76,7 +76,7 @@ CFCT int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
   ifstream input_file;
   ofstream tmp_file;
   char buffer[READ_BUFFER_SIZE];
-  char iconv_buffer[READ_BUFFER_SIZE];
+  char iconv_buffer[READ_BUFFER_SIZE * 2];
   string s_buffer;
   char *filenames[3];
   char tmp_filename[256];
@@ -182,9 +182,9 @@ CFCT int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
             s_buffer=sanitize_proprietary_tags(s_buffer);
             //cout<< s_buffer<<"\n";
 #ifdef HAVE_ICONV
-	    memset(iconv_buffer,0,READ_BUFFER_SIZE);
+	    memset(iconv_buffer,0,READ_BUFFER_SIZE * 2);
 	    size_t inbytesleft = strlen(s_buffer.c_str());
-	    size_t outbytesleft = READ_BUFFER_SIZE;
+	    size_t outbytesleft = READ_BUFFER_SIZE * 2 - 1;
 #ifdef OS_WIN32
 	    const char * inchar = (const char *)s_buffer.c_str();
 #else
