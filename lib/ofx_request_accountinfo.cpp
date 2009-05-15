@@ -21,6 +21,7 @@
 #include <config.h>
 #endif
 
+#include <cstdlib>
 #include <string>
 #include "libofx.h"
 #include "ofx_request_accountinfo.hh"

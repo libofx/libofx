@@ -21,7 +21,8 @@
 
 #include "ParserEventGeneratorKit.h"
 #include "SGMLApplication.h"
-#include <time.h>
+#include <ctime>
+#include <cstdlib>
 #include <string>
 #include <locale.h>
 #include "messages.hh"

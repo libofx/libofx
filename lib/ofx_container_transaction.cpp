@@ -21,6 +21,7 @@
 #include <config.h>
 #endif
 
+#include <cstdlib>
 #include <string>
 #include "messages.hh"
 #include "libofx.h"

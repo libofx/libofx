@@ -29,6 +29,8 @@
  ***************************************************************************/
 #include <iostream>
 #include <iomanip>
+#include <cstdlib>
+#include <cstring>
 #include <string>
 #include "libofx.h"
 #include <stdio.h>		/* for printf() */
