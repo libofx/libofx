@@ -114,8 +114,10 @@ time_t ofxdate_to_time_t(const string ofxdate)
   char time_zone_specified = false;
 
   time_t temptime;
+
+  time.tm_isdst = daylight; // iniitialize dst setting
   std::time(&temptime);
-  local_offset = difftime(mktime(localtime(&temptime)), mktime(gmtime(&temptime)));
+  local_offset = difftime(mktime(localtime(&temptime)), mktime(gmtime(&temptime))) + (3600*daylight);
   
   if(ofxdate.size()!=0){
     time.tm_year=atoi(ofxdate.substr(0,4).c_str())-1900;
