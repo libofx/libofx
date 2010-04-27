@@ -2,7 +2,7 @@
                           ofx_preproc.h
                              -------------------
     copyright            : (C) 2002 by Benoit Gr�goire
-    email                : bock@step.polymtl.ca
+    email                : benoitg@coeus.ca
  ***************************************************************************/
 /**@file
  * \brief Preprocessing of the OFX files before parsing 

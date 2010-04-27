@@ -1,8 +1,8 @@
 /***************************************************************************
                           ofx_util.cpp
                              -------------------
-    copyright            : (C) 2002 by Benoit Grégoire
-    email                : bock@step.polymtl.ca
+    copyright            : (C) 2002 by Benoit Grï¿½goire
+    email                : benoitg@coeus.ca
  ***************************************************************************/
 /**@file
  * \brief Various simple functions for type conversion & al
@@ -97,7 +97,7 @@ string AppendCharStringtostring(const SGMLApplication::CharString source, string
  * @li The library always returns the time in the systems local time
  * @li OFX defines the date up to the millisecond.  The library ignores those milliseconds, since ANSI C does not handle such precision cleanly.  The date provided by LibOFX is precise to the second, assuming that information this precise was provided in the ofx file.  So you wont know the millisecond you were ruined...
  
- * @note DEVIATION FROM THE SPECS : The OFX specifications (both version 1.6 and 2.02) state that a client should assume that if the server returns a date without à specific time, we assume it means 0h00 GMT.  As such, when we apply the local timezone and for example you are in the EST timezone, we will remove 5h, and the transaction will have occurred on the prior day!  This is probably not what the bank intended (and will lead to systematic errors), but the spec is quite explicit in this respect (Ref:  OFX 2.01 spec pp. 66-68)<BR><BR>
+ * @note DEVIATION FROM THE SPECS : The OFX specifications (both version 1.6 and 2.02) state that a client should assume that if the server returns a date without ï¿½ specific time, we assume it means 0h00 GMT.  As such, when we apply the local timezone and for example you are in the EST timezone, we will remove 5h, and the transaction will have occurred on the prior day!  This is probably not what the bank intended (and will lead to systematic errors), but the spec is quite explicit in this respect (Ref:  OFX 2.01 spec pp. 66-68)<BR><BR>
  * To solve this problem (since usually a time error is relatively unimportant, but date error is), and to avoid problems in Australia caused by the behaviour in libofx up to 0.6.4, it was decided starting with 0.6.5 to use the following behavior:<BR><BR>
  * -No specific time is given in the file (date only):  Considering that most banks seem to be sending dates in this format represented as local time (not compliant with the specs), the transaction is assumed to have occurred 11h59 (just before noon) LOCAL TIME.  This way, we should never change the date, since you'd have to travel in a timezone at least 11 hours backwards or 13 hours forward from your own to introduce mistakes.  However, if you are in timezone +13 or +14, and your bank meant the data to be interpreted by the spec, you will get the wrong date.  We hope that banks in those timezone will either represent in local time like most, or specify the timezone properly.<BR><BR>
  * -No timezone is specified, but exact time is, the same behavior is mostly used, as many banks just append zeros instead of using the short notation.  However, the time specified is used, even if 0 (midnight).<BR><BR>

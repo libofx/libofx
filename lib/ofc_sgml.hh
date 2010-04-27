@@ -2,8 +2,8 @@
                           ofx_sgml.h
                              -------------------
     begin                : Tue Mar 19 2002
-    copyright            : (C) 2002 by Benoit Grégoire
-    email                : bock@step.polymtl.ca
+    copyright            : (C) 2002 by Benoit Grï¿½goire
+    email                : benoitg@coeus.ca
  ***************************************************************************/
 /** @file
  * \brief OFX/SGML parsing functionnality.

@@ -1,8 +1,8 @@
 /***************************************************************************
                                    ofx2qif.c
                              -------------------
-    copyright            : (C) 2002 by Benoit Grégoire
-    email                : bock@step.polymtl.ca
+    copyright            : (C) 2002 by Benoit Grï¿½goire
+    email                : benoitg@coeus.ca
 ***************************************************************************/
 /**@file
  * \brief Code for ofx2qif utility.  C example code

@@ -2,8 +2,8 @@
                           ofx_data_struct.h  -  description
                              -------------------
     begin                : Tue Mar 19 2002
-    copyright            : (C) 2002 by Benoit Grégoire
-    email                : bock@step.polymtl.ca
+    copyright            : (C) 2002 by Benoit Grï¿½goire
+    email                : benoitg@coeus.ca
  ***************************************************************************/
 /**@file
  *  \brief OFX error code management functionnality.

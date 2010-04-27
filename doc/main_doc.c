@@ -24,5 +24,5 @@ News about LibOFX as well as the latest version can always be found at http://li
 \subsection email Email
 If you have any questions not covered in this documentation or the web site, do not hesitate to email me:
 
-Benoit Grégoire mailto:bock@step.polymtl.ca
+Benoit Grï¿½goire mailto:benoitg@coeus.ca
  */

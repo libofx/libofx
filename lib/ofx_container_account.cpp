@@ -1,8 +1,8 @@
 /***************************************************************************
          ofx_container_account.cpp 
                              -------------------
-    copyright            : (C) 2002 by Benoit Grégoire
-    email                : bock@step.polymtl.ca
+    copyright            : (C) 2002 by Benoit Grï¿½goire
+    email                : benoitg@coeus.ca
 ***************************************************************************/
 /**@file
  * \brief Implementation of OfxAccountContainer for bank, credit card and 

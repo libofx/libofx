@@ -2,7 +2,7 @@
          ofx_proc_rs.cpp 
                              -------------------
     copyright            : (C) 2002 by Benoit Grégoire
-    email                : bock@step.polymtl.ca
+    email                : benoitg@coeus.ca
 ***************************************************************************/
 /**@file
  * \brief LibOFX internal object code.

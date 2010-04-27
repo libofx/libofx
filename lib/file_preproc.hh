@@ -1,8 +1,8 @@
 /***************************************************************************
                           file_preproc.hh
                              -------------------
-    copyright            : (C) 2004 by Benoit Grégoire
-    email                : bock@step.polymtl.ca
+    copyright            : (C) 2004 by Benoit Grï¿½goire
+    email                : benoitg@coeus.ca
  ***************************************************************************/
 /**@file
  * \brief Preprocessing of the OFX files before parsing 

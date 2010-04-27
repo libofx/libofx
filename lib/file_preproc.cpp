@@ -2,7 +2,7 @@
           file_preproc.cpp 
                              -------------------
     copyright            : (C) 2004 by Benoit Grégoire
-    email                : bock@step.polymtl.ca
+    email                : benoitg@coeus.ca
 ***************************************************************************/
 /**@file
  * \brief File type detection, etc. 
