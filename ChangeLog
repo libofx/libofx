@@ -61,14 +61,14 @@
         * ofx_utilities.{cpp,h}: added a function to generate a temp file name
           (works on WIN32 and Linux)
 
-24/1/2007:  Benoit Grégoire  <bock@step.polymtl.ca>
+24/1/2007:  Benoit Grégoire  <benoitg@coeus.ca>
 	* ofx_preproc.cpp:  Now parses the OFX headers to determine the input charset and 
           encoding, and uses libiconv (if available) to convert the encoding since OpenSP 
           can't do it.  The default output is now UTF-8.  This will "do the right thing" 
           for Gnucash 2 and any client that uses UTF-8 strings, but we should add an interface 
           to let the client chose his prefered output encoding.
 
-9/1/2007:  Benoit Grégoire  <bock@step.polymtl.ca>
+9/1/2007:  Benoit Grégoire  <benoitg@coeus.ca>
 	* Adapted patch by Christian Lupien <lupien @at@ physique.usherbrooke.ca> to add 
           processing of the different bank account types in OfxPaymentRequest.  Took this
           oportunity to correct an API duplication problem before it get's even more 
@@ -77,7 +77,7 @@
 	  Both of these changes will require source code change in aqbanking.
 	* Bump the version and soname right now so aqbanking can detect it.
 
-8/1/2007:  Benoit Grégoire  <bock@step.polymtl.ca>
+8/1/2007:  Benoit Grégoire  <benoitg@coeus.ca>
 	* Release 0.8.3
 
 27/9/2006 Martin Preuss <martin@aquamaniac.de>
@@ -87,7 +87,7 @@
           Fixes crash http://bugzilla.gnome.org/show_bug.cgi?id=353986
           Patch supplied by Christian Stimming from GnuCash
 
-25/8/2006:  Benoit Grégoire  <bock@step.polymtl.ca>
+25/8/2006:  Benoit Grégoire  <benoitg@coeus.ca>
 	* Fix datatype mismatch in ofx_preproc.cpp
 	* Fix gengetopt related build problems on debian based distribution.
 	* Remove massage about dependency on Qt, qhich is no longuer true
@@ -102,7 +102,7 @@
 28/7/2006 Ace Jones <acejones@users.sf.net>
 	* Fixed a compilation bug on GCC 4.1
 
-20/7/2006:  Benoit Grégoire  <bock@step.polymtl.ca>
+20/7/2006:  Benoit Grégoire  <benoitg@coeus.ca>
 	* Revert last change to ofxdump, as it requires a system-dependent header (plus it didn't compile on my system)
 	* Make both curl and libxml++ optional for compilation.
 	* Add some debug output.
@@ -169,7 +169,7 @@
 27/8/2005 Ace Jones <acejones@users.sf.net>
 	* Added fees and commission fields to transaction structure (and fill them in)
 
-31/7/2005:  Benoit Grégoire  <bock@step.polymtl.ca>
+31/7/2005:  Benoit Grégoire  <benoitg@coeus.ca>
 	* Release 0.8.0
 	* configure.in:  Update libtool version number.  Make curl check fatal untill there is code to conditionally not compile ofxconnect when CURL is unavailable.
 	* Fix the build system so that discheck will finally run properly.
@@ -198,19 +198,19 @@
 	* Added libofx_request_accountinfo API to create an OFX account into request
 	* Added ofxconnect sample app to demonstrate & test new API's (try "make check" in the ofxconnect folder).  Read README.privateserver first.
 
-24/11/2004:  Benoit Grégoire  <bock@step.polymtl.ca>
+24/11/2004:  Benoit Grégoire  <benoitg@coeus.ca>
 	* Apply Christian Stimming's patch for rpm building.  Also adds a make rpm target.
 	
-08/10/2004:  Benoit Grégoire  <bock@step.polymtl.ca>
+08/10/2004:  Benoit Grégoire  <benoitg@coeus.ca>
 	* Release 0.7.0
 	* configure.in:  Update libtool version number.
 
-21/9/2004  Benoit Grégoire  <bock@step.polymtl.ca>
+21/9/2004  Benoit Grégoire  <benoitg@coeus.ca>
 	* Really remove callback.hh and callback.cpp
 	* Fix compile with gcc 3.4.  This also needs to be applied to the stable branch.
 	* Fix tree handling for securities, which caused the callbacks never to be called. 
 
-31/8/2004  Benoit Grégoire  <bock@step.polymtl.ca>
+31/8/2004  Benoit Grégoire  <benoitg@coeus.ca>
 	* Remove obsolete files callback.hh and callback.cpp
 	* More makefile fixes in lib
 	
@@ -225,11 +225,11 @@
         * a few Makefile fixes in lib
         * adjusted ofxdump and ofx2qif to these changes
 
-31/8/2004  Benoit Grégoire  <bock@step.polymtl.ca>
+31/8/2004  Benoit Grégoire  <benoitg@coeus.ca>
 	* Revamp the callback architecture according to discussion with Martin Preuss.  This is much cleaner and extensible, although a long way from perfect.
 	* Autoconf fixes from Martin Preuss
 
-23/4/2004  Benoit Grégoire  <bock@step.polymtl.ca>
+23/4/2004  Benoit Grégoire  <benoitg@coeus.ca>
 	* At long last, a flexible and extendable command line parser is used in ofxdump.  This was essential for debuging, and even more essential for developing Direct Connect.  Immediate benefits are that you can set the desired debug output without recompiling.  Check ofxdump --help for options.
 	* configure.in:  gengetopt will be used if available. 
 	* lib/Makefile.am:
@@ -245,23 +245,23 @@
 	* lib/file_preproc.cpp 
 	* lib/file_preproc.hh 
 	
-8/4/2004  Benoit Grégoire  <bock@step.polymtl.ca>
+8/4/2004  Benoit Grégoire  <benoitg@coeus.ca>
 	* Multiple files: Working (but incomplete) OFC import.  Still need cleanup.  Pass context everywhere.  Begin cleaning up tree handling.
 	* lib/tree.hh:  Upgrade to latest version
 
-31/3/2004  Benoit Grégoire  <bock@step.polymtl.ca>
+31/3/2004  Benoit Grégoire  <benoitg@coeus.ca>
 	* lib/context.cpp,hh: New files.  Create a global libofx object to allow the library to cleanly keep state.  This will allow much cleanup, and is needed for the move to a DOM style interface.  Other files ajusted to match.
 
-7/3/2004  Benoit Grégoire  <bock@step.polymtl.ca>
+7/3/2004  Benoit Grégoire  <benoitg@coeus.ca>
 	* lib/ofc_sgml.cpp/hh: New files.  Splits code path for OFC and OFX to keep things understandeable.  Some more OFC parsing.  Now waiting to implement global libofx context object passed everywhere to make further progress.
 	* lib/messages.cpp:  Move the definition of the required globals for displaying line numbers there, as it's the only place they are read.
 
-3/3/2004  Benoit Grégoire  <bock@step.polymtl.ca>
+3/3/2004  Benoit Grégoire  <benoitg@coeus.ca>
 	* Many...
 	* lib/file_preproc.cpp, lib/file_preproc.hh: Add file format autodetection architecture, can currently distinguish between OFX and OFC files.  Note that because of this change, the main entry point of the library is now in file_preproc.cpp.
 	* dtd/ofc.dtd, lib/ofx_sgml.cpp, lib/ofx_preproc.cpp:  Add embryo of OFC (Microsoft Open Financial Connectivity) to LibOFX.  The SGML parses succesfully, but LibOFX does not yet know what to do with it.  Big thanks to Jeremy Jongsma jeremy at jongsma.org for finally finding the required DTD.  I haven't yet decided if its better to to add this support to ofx_proc_sgml.cpp (easier to maintain, less code duplication), or to create a ofc_proc_sgml.cpp (easier to understand, cleaner code).
 
-3/2/2004  Benoit Grégoire  <bock@step.polymtl.ca>
+3/2/2004  Benoit Grégoire  <benoitg@coeus.ca>
 	* inc/libofx.h lib/ofx_preproc.cpp lib/tree.hh ofx2qif/ofx2qif.c ofxdump/ofxdump.cpp:  Make it compile.  I may have misunderstood what Ryan wanted to do with the prototypes in libofx.h.  If so, sorry.  Note:  I don't think that the void * passed as arguments are saved in the registry yet.
 
 18/1/2004 Ryan P Bobko <ryan@ostrich-emulators.com>
@@ -275,25 +275,25 @@
 	* ofx2qif/ofx2qif.c: all these files: improved callback registry by including a void pointer to arbitrary data (which can be set by the client in ofx_prep_cb). The pointer gets passed to the callback function as the second argument.
 	
 	
-14/1/2004  Benoit Grégoire  <bock@step.polymtl.ca>
+14/1/2004  Benoit Grégoire  <benoitg@coeus.ca>
 	* Merge initial Callback registration patch by Ryan P Bobko.  Touches most files.
 	
-14/1/2004  Benoit Grégoire  <bock@step.polymtl.ca>
+14/1/2004  Benoit Grégoire  <benoitg@coeus.ca>
 	RELEASE LibOfx 0.6.6
 	* configure.in: Change version number
 	* NEWS: Update for release
 	* Makefile.am: Add version number to docdir name
 	* libofx.spec.in: Remove known_bugs.txt
 
-14/1/2004 Benoit Grégoire  <bock@step.polymtl.ca>
+14/1/2004 Benoit Grégoire  <benoitg@coeus.ca>
 	* dtd/Makefile.am, dtd/opensp.dcl, * lib/ofx_preproc.[cpp,hh],:  Add SGML declaration to be parsed before the DTD.  Makes us immune to changes to default settings.  Should get rid of "end tag for "MEMO" omitted, but OMITTAG NO was specified" type of messages and greatly help the parser.
 	* lib/ofx_sgml.cpp:  Get rid of OpenSP 1.3.1 compatibility code, which makes the code much easier to understand and debug.  Combined with the change obove, it should practically eliminate the parsing ambiguity that made libofx so verbose and ocasionally miss data.  More defensive coding to warn of malformed files.  This probably means that compatibility with OpenSP 1.3.1 cannot come back.  However with the change above it may work after all.  Somebody please test this...
 	* lib/messages.cpp:  Finally implement displaying line numbers in the error output.  This can be turned off by the clients by setting the ofx_show_position global.  These should all get setter functions in the API re-write.
 
-6/12/2003 Benoit Grégoire  <bock@step.polymtl.ca>
+6/12/2003 Benoit Grégoire  <benoitg@coeus.ca>
 	* lib/ofx_container_transaction.cpp:  Fix an infinite loop when searching for a parent statement for a transaction if it isn't the immediate parent.  Thanks to stephen.a.prior A T ntlworld.ie for the catch.
 
-12/9/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+12/9/2003  Benoit Grégoire  <benoitg@coeus.ca>
 	RELEASE LibOfx 0.6.5
 	* configure.in: Change version number
 	* NEWS: Update for release
@@ -301,70 +301,70 @@
 	* doc/implementation_notes.txt:  Moved contents in the doxygen docs.
 	* doc/Makefile.am:  Fix the path for the html docs.
 	
-2/5/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+2/5/2003  Benoit Grégoire  <benoitg@coeus.ca>
 	* lib/ofx_utilities.cpp:  Add #include <locale.h> to fix compile error on freebsd and possibly all gcc2 based distro.
 
-15/4/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+15/4/2003  Benoit Grégoire  <benoitg@coeus.ca>
 	* lib/ofx_preproc.cpp:  Fix for really broken files that do not have a newline after the ofx header.  Fixes bug #721732
 	
-12/4/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+12/4/2003  Benoit Grégoire  <benoitg@coeus.ca>
 	RELEASE LibOfx 0.6.4
 	* configure.in: Change version number
 	* NEWS: Update for release
 	* lib/ofx_utilities.cpp: Fix bug in ofxamount_to_double() triggered by the client setting the locale.  If the locale used ',' as decimal separator, it would get normalised to '.' and atof() would fail.  Now normalises to (localeconv())->decimal_point.  Closes gnucash bug 105481
 
-18/3/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+18/3/2003  Benoit Grégoire  <benoitg@coeus.ca>
 	RELEASE LibOfx 0.6.3
 	* NEWS: Update for release
 	* Makefile.am: Remove references to known_bugx.txt
 
-16/3/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+16/3/2003  Benoit Grégoire  <benoitg@coeus.ca>
 	* configure.in: Remove --with-opensp-multibyte configure option (it is now the default).  There is now a --with-no-opensp-multibyte instead, to force libofx to assume that OpenSP was NOT compiled with SP_MULTI_BYTE defined.
 	* doc/doxygen.cfg: Remove, this file is now generated from doc/doxygen.cfg.in
 	* known_bugx.txt: Remove file, since we now have a bugtracker.
 	* README: Update
 	* INSTALL: Delete and replace by FAQ, update content.
 	
-11/3/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+11/3/2003  Benoit Grégoire  <benoitg@coeus.ca>
 	* ofxdump/ofxdump.cpp: Remove comand line arguments debug output.
 	* lib/ofx_container_main.cpp: Fix compiler warnings reported by Derek Atkins
 	* Misc build system cleanup
 
-24/2/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+24/2/2003  Benoit Grégoire  <benoitg@coeus.ca>
 	* ofx2qif/ofx2qif.c: Apply patch by Scott Gifford <sgifford@suspectclass.com> to fix ofx2qif crash.
 	* Add a bunch of .cvsignore files
 
-3/2/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+3/2/2003  Benoit Grégoire  <benoitg@coeus.ca>
 	* dtd/ofx160.dtd: Correct the dtd to fix the "content model is ambiguous" errors reported by opensp.
 	
 27/1/2003 Thomas Frayne <TomF@sjpc.org>
 	* ofxdump/ofxdump.cpp: Add command options: --version, -V, --help
 
-3/2/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+3/2/2003  Benoit Grégoire  <benoitg@coeus.ca>
 	* lib/ofx_utilities.cpp: Fix ofxdate_to_time_t() that wouldn't compile on sun.
 
-23/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+23/1/2003  Benoit Grégoire  <benoitg@coeus.ca>
 	* lib/ofx_container_transaction.cpp: Explicitely ignore <MKTVAL> since it should always be equal to UNITS*UNITPRICE, and using it may lead to rounding errors.
 
-22/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+22/1/2003  Benoit Grégoire  <benoitg@coeus.ca>
 	* autogen.sh: Run libtoolize, and reorder the commands.  The order is now: libtoolize,aclocal, autoheader, automake, autoconf and configure
 
-11/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+11/1/2003  Benoit Grégoire  <benoitg@coeus.ca>
 	* lib/ofx_utilities.cpp: Really fix problems for big endian machines.
 	* INSTALL:  Document the --with-opensp-multibyte workaround for when headers in package lie about the compile option of OpenSP (usually because they were not compiled at the same time).  This is the case with the OpenJade package distributed in Mandrake cooker, and perhaps others. 
 	* configure.in: add --with-opensp-multibyte option
 	
-10/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+10/1/2003  Benoit Grégoire  <benoitg@coeus.ca>
 	* lib/ofx_utilities.cpp: Try to fix problems for big endian machines.
 
-9/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+9/1/2003  Benoit Grégoire  <benoitg@coeus.ca>
 	* configure.in: Add /usr/local/include to OpenSP's include search path.
 	* INSTALL: Add FAQ for "bug" http://sourceforge.net/tracker/index.php?func=detail&aid=654591&group_id=61170&atid=496353
 
-9/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+9/1/2003  Benoit Grégoire  <benoitg@coeus.ca>
 	* lib/ofx_utilities.cpp: Remove the ugly get_sp_char_size() hack and use SP_MULTI_BYTE in config.h instead.  This probably fixes the "libofx not working on big endian machines" bug.
 
-9/1/2003  Benoit Grégoire  <bock@step.polymtl.ca>
+9/1/2003  Benoit Grégoire  <benoitg@coeus.ca>
 	* configure.in: Now detect if OpenSP was compiled with SP_MULTI_BYTE, and put the result in config.
 	* INSTALL: Update for GNU build system.
 
@@ -375,10 +375,10 @@
 24/11/2002  Chris Lyttle  <chris@wilddev.net>
 	* libofx.spec.in: updated for new docs
 
-24/11/2002  Benoit Grégoire  <bock@step.polymtl.ca>
+24/11/2002  Benoit Grégoire  <benoitg@coeus.ca>
 	* configure.in, doc/Makefile.am: Improve doxygen doc generation, and enable make install without the doc.
 
-24/11/2002  Benoit Grégoire  <bock@step.polymtl.ca>
+24/11/2002  Benoit Grégoire  <benoitg@coeus.ca>
 	* ofx_sgml.cpp: Hopefully fix incompatibilities with BOTH OpenSP 1.3.x and OpenSP >= 1.4
 	* Makefile.am, doc/Makefile.am: Doxygen API and internal doc now integrated in the build system.  It will be distributed and install with the tarballs,	and can be build in libofx-cvs using make doc.
 	* autogen.sh: Re-enable maintainer-mode. 
@@ -391,43 +391,43 @@
 	* configure.in: added spec.in line
 	* autogen.sh: changed configure line to see arguments
 	
-18/11/2002  Benoit Grégoire  <bock@step.polymtl.ca>
+18/11/2002  Benoit Grégoire  <benoitg@coeus.ca>
 	* ofx_sgml.cpp:  Fix critical bug.  Parsing of a file would fail and hang for users of OpenSP 1.5pre5 (and possibly others).  Simplify workaround of OpenSP 1.3 bugs, more code is now shared.
 	* configure.in:  Update for release 0.6.1
 
-18/11/2002  Benoit Grégoire  <bock@step.polymtl.ca>
+18/11/2002  Benoit Grégoire  <benoitg@coeus.ca>
 	* Update build files for release of libofx 0.6.0
 
-30/10/2002  Benoit Grégoire  <bock@step.polymtl.ca>
+30/10/2002  Benoit Grégoire  <benoitg@coeus.ca>
 	* inc/libofx.h lib/ofx_container_transaction.cpp ofxdump/ofxdump.cpp: Created a new invtransactiontype enum to replace the invtranstype string
 
-30/10/2002  Benoit Grégoire  <bock@step.polymtl.ca>
+30/10/2002  Benoit Grégoire  <benoitg@coeus.ca>
 	* lib/ofx_sgml.cpp: Added yet more spagetti code and global variables to improve the work around for OpenSP 1.3 bugs.  I beg of you, please convince your distro to make openjade and the OpenSP library independently upgradable.
 
-30/10/2002  Benoit Grégoire  <bock@step.polymtl.ca>
+30/10/2002  Benoit Grégoire  <benoitg@coeus.ca>
 	* configure.in: 
 	Apply Derek Atkins <warlord@MIT.EDU> patch needed to build on
 > RH7.3 using the "distributed" version of openjade.
 
-29/10/2002  Benoit Grégoire  <bock@step.polymtl.ca>
+29/10/2002  Benoit Grégoire  <benoitg@coeus.ca>
 	* lib/ofx_preproc.cpp doc/tag_striper_test.txt: 
 	Proprietary tag striper is now much smarter and read routines have been fixed.  Importing a file written on a single line should now be possible.  
 	Added a test file for the proprietary tag striper .
 
-29/10/2002  Benoit Grégoire  <bock@step.polymtl.ca>
+29/10/2002  Benoit Grégoire  <benoitg@coeus.ca>
 	* configure.in: Work around autoconf 2.1 not supporting AC_LANG()
 
-21/10/2002  Benoit Grégoire  <bock@step.polymtl.ca>
+21/10/2002  Benoit Grégoire  <benoitg@coeus.ca>
 	* ofxdump/ofxdump.cpp: Add support for invtranstype in ofx_proc_transaction_cb()
 
-21/10/2002  Benoit Grégoire  <bock@step.polymtl.ca>
+21/10/2002  Benoit Grégoire  <benoitg@coeus.ca>
 	* lib/ofx_preproc.cpp: Abort if DTD was not found
 	
-20/10/2002  Benoit Grégoire  <bock@step.polymtl.ca>
+20/10/2002  Benoit Grégoire  <benoitg@coeus.ca>
 	* Fix debug output
 	* Begin fixing ofx2qif for the new transaction ordering code
 	
-17/10/2002  Benoit Grégoire  <bock@step.polymtl.ca>
+17/10/2002  Benoit Grégoire  <benoitg@coeus.ca>
 	* Implemented internal container trees, allowing transaction reordering and security lookups
 	* Complete investment transaction support
 	* Converted the build system to automake/autoconf, mostly contributed by "Peter O'Gorman" <peter@pogma.com>
