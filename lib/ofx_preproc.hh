@@ -1,7 +1,7 @@
 /***************************************************************************
                           ofx_preproc.h
                              -------------------
-    copyright            : (C) 2002 by Benoit Grégoire
+    copyright            : (C) 2002 by Benoit Grï¿½goire
     email                : bock@step.polymtl.ca
  ***************************************************************************/
 /**@file
@@ -36,6 +36,6 @@ string find_dtd(LibofxContextPtr ctx, string dtd_filename);
  *  libofx_proc_file must be called  with a list of 1 or more OFX
  files to be parsed in command line format.
 */
-CFCT int ofx_proc_file(LibofxContextPtr libofx_context, const char *);
+int ofx_proc_file(LibofxContextPtr libofx_context, const char *);
 
 #endif

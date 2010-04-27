@@ -64,7 +64,7 @@ enum LibofxFileFormat libofx_get_file_format_from_str(const struct LibofxFileFor
   return retval;
 }
 
-CFCT int libofx_proc_file(LibofxContextPtr p_libofx_context, const char * p_filename, LibofxFileFormat p_file_type)
+int libofx_proc_file(LibofxContextPtr p_libofx_context, const char * p_filename, LibofxFileFormat p_file_type)
 {
   LibofxContext * libofx_context = (LibofxContext *) p_libofx_context;
 

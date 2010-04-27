@@ -35,6 +35,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <string.h>
 
 using std::string;
 using std::vector;

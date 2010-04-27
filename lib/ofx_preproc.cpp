@@ -67,7 +67,7 @@ const unsigned int READ_BUFFER_SIZE = 1024;
 *
 * Takes care of comment striping, dtd locating, etc.
 */
-CFCT int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
+int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
   {
   LibofxContext *libofx_context;
   bool ofx_start=false;
@@ -277,7 +277,7 @@ CFCT int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
 
 
 
-CFCT int libofx_proc_buffer(LibofxContextPtr ctx,
+int libofx_proc_buffer(LibofxContextPtr ctx,
                             const char *s, unsigned int size){
   ofstream tmp_file;
   string s_buffer;

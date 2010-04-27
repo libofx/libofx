@@ -44,9 +44,8 @@
 
 
 #ifdef __cplusplus
-#define CFCT extern "C"
+extern "C" {
 #else
-#define CFCT
 #define true 1
 #define false 0
 #endif
@@ -99,15 +98,15 @@ typedef void * LibofxContextPtr;
  *
  @return the new context, to be used by the other functions.
 */
-CFCT LibofxContextPtr libofx_get_new_context();
+LibofxContextPtr libofx_get_new_context();
 /**
  * \brief Free all ressources used by this context. 
  *
  @return 0 if successfull.
 */
-CFCT int libofx_free_context( LibofxContextPtr );
+int libofx_free_context( LibofxContextPtr );
 
-CFCT void libofx_set_dtd_dir(LibofxContextPtr libofx_context,
+void libofx_set_dtd_dir(LibofxContextPtr libofx_context,
 	 	       	    const char *s);
 
 /** List of possible file formats */
@@ -150,7 +149,7 @@ const struct LibofxFileFormatInfo LibofxExportFormatList[] =
  @file_type_string The string which contain the file format matching one of the format_name of the list.
  @return the file format, or UNKNOWN if the format wasn't recognised.
 */
-CFCT enum LibofxFileFormat libofx_get_file_format_from_str(const struct LibofxFileFormatInfo format_list[], const char * file_type_string);
+enum LibofxFileFormat libofx_get_file_format_from_str(const struct LibofxFileFormatInfo format_list[], const char * file_type_string);
 
 /**
  * \brief get_file_format_description returns a string description of a LibofxFileType. 
@@ -159,7 +158,7 @@ CFCT enum LibofxFileFormat libofx_get_file_format_from_str(const struct LibofxFi
  @file_format The file format which should match one of the formats in the list.
  @return null terminated string suitable for debugging output or user communication.
 */
-CFCT const char * libofx_get_file_format_description(const struct LibofxFileFormatInfo format_list[], enum LibofxFileFormat file_format);
+const char * libofx_get_file_format_description(const struct LibofxFileFormatInfo format_list[], enum LibofxFileFormat file_format);
 
 #endif
 
@@ -169,7 +168,7 @@ CFCT const char * libofx_get_file_format_description(const struct LibofxFileForm
  *  libofx_proc_file must be called by the client, with a list of 1 or more OFX
  files to be parsed in command line format.
 */
-CFCT int libofx_proc_file(LibofxContextPtr libofx_context,
+int libofx_proc_file(LibofxContextPtr libofx_context,
                           const char * p_filename,
                           enum LibofxFileFormat ftype);
 
@@ -231,7 +230,7 @@ struct OfxStatusData{
  other events).  An OfxStatusData structure is passed to this event, as well as
  a pointer to an arbitrary data structure.
 */
-CFCT typedef int (*LibofxProcStatusCallback)(const struct OfxStatusData data, void * status_data);
+typedef int (*LibofxProcStatusCallback)(const struct OfxStatusData data, void * status_data);
 
 /**
  * \brief An abstraction of an account
@@ -307,7 +306,7 @@ struct OfxAccountData{
  part of OfxStatementData structure passed to ofx_proc_statement event, 
  as well as a pointer to an arbitrary data structure.
 */
-CFCT typedef int (*LibofxProcAccountCallback)(const struct OfxAccountData data, void * account_data);
+typedef int (*LibofxProcAccountCallback)(const struct OfxAccountData data, void * account_data);
 
 /**
  * \brief An abstraction of a security, such as a stock, mutual fund, etc.
@@ -363,7 +362,7 @@ struct OfxSecurityData{
  An OfxSecurityData structure is passed to this event, as well as
  a pointer to an arbitrary data structure.
 */
-CFCT typedef int (*LibofxProcSecurityCallback)(const struct OfxSecurityData data, void * security_data);
+typedef int (*LibofxProcSecurityCallback)(const struct OfxSecurityData data, void * security_data);
 
 typedef enum {
     OFX_CREDIT,     /**< Generic credit */
@@ -550,7 +549,7 @@ char check_number[OFX_CHECK_NUMBER_LENGTH];
  generated. An OfxTransactionData structure is passed to this event, as well as
  a pointer to an arbitrary data structure.
 */
-CFCT typedef int (*LibofxProcTransactionCallback)(const struct OfxTransactionData data, void * transaction_data);
+typedef int (*LibofxProcTransactionCallback)(const struct OfxTransactionData data, void * transaction_data);
 
 /** 
  * \brief An abstraction of an account statement. 
@@ -619,7 +618,7 @@ struct OfxStatementData{
  events have been sent. An OfxStatementData is passed to this event, as well as
  a pointer to an arbitrary data structure.
 */
-CFCT typedef int (*LibofxProcStatementCallback)(const struct OfxStatementData data, void * statement_data);
+typedef int (*LibofxProcStatementCallback)(const struct OfxStatementData data, void * statement_data);
 
 /** 
     \brief NOT YET SUPPORTED
@@ -637,7 +636,7 @@ struct OfxCurrency{
  * @param cb callback function
  * @param user_data user data to be passed to the callback
  */
-CFCT void ofx_set_status_cb(LibofxContextPtr ctx,
+void ofx_set_status_cb(LibofxContextPtr ctx,
                             LibofxProcStatusCallback cb,
                             void *user_data);
 /**
@@ -646,7 +645,7 @@ CFCT void ofx_set_status_cb(LibofxContextPtr ctx,
  * @param cb callback function
  * @param user_data user data to be passed to the callback
  */
-CFCT void ofx_set_account_cb(LibofxContextPtr ctx,
+void ofx_set_account_cb(LibofxContextPtr ctx,
                              LibofxProcAccountCallback cb,
                              void *user_data);
 /**
@@ -655,7 +654,7 @@ CFCT void ofx_set_account_cb(LibofxContextPtr ctx,
  * @param cb callback function
  * @param user_data user data to be passed to the callback
  */
-CFCT void ofx_set_security_cb(LibofxContextPtr ctx,
+void ofx_set_security_cb(LibofxContextPtr ctx,
                               LibofxProcSecurityCallback cb,
                               void *user_data);
 /**
@@ -664,7 +663,7 @@ CFCT void ofx_set_security_cb(LibofxContextPtr ctx,
  * @param cb callback function
  * @param user_data user data to be passed to the callback
  */
-CFCT void ofx_set_transaction_cb(LibofxContextPtr ctx,
+void ofx_set_transaction_cb(LibofxContextPtr ctx,
                                  LibofxProcTransactionCallback cb,
                                  void *user_data);
 
@@ -674,7 +673,7 @@ CFCT void ofx_set_transaction_cb(LibofxContextPtr ctx,
  * @param cb callback function
  * @param user_data user data to be passed to the callback
  */
-CFCT void ofx_set_statement_cb(LibofxContextPtr ctx,
+void ofx_set_statement_cb(LibofxContextPtr ctx,
                                LibofxProcStatementCallback cb,
                                void *user_data);
 
@@ -682,7 +681,7 @@ CFCT void ofx_set_statement_cb(LibofxContextPtr ctx,
 /**
  * Parses the content of the given buffer.
  */
-CFCT int libofx_proc_buffer(LibofxContextPtr ctx,
+int libofx_proc_buffer(LibofxContextPtr ctx,
                             const char *s, unsigned int size);
                             
 /** @name Creating OFX Files
@@ -758,7 +757,7 @@ struct OfxPayee{
  * @return string pointer to the request.  This is allocated via malloc(), and is the callers responsibility to free.
 */
 
-CFCT char* libofx_request_statement( const struct OfxFiLogin* fi, const struct OfxAccountData* account, time_t date_from );
+char* libofx_request_statement( const struct OfxFiLogin* fi, const struct OfxAccountData* account, time_t date_from );
 
 /**
  * \brief Creates an OFX account info (list) request in string form
@@ -771,13 +770,15 @@ CFCT char* libofx_request_statement( const struct OfxFiLogin* fi, const struct O
  * @return string pointer to the request.  This is allocated via malloc(), and is the callers responsibility to free.
 */
 
-CFCT char* libofx_request_accountinfo( const struct OfxFiLogin* login );
+char* libofx_request_accountinfo( const struct OfxFiLogin* login );
 
-CFCT char* libofx_request_payment( const struct OfxFiLogin* login, const struct OfxAccountData* account, const struct OfxPayee* payee, const struct OfxPayment* payment );
+char* libofx_request_payment( const struct OfxFiLogin* login, const struct OfxAccountData* account, const struct OfxPayee* payee, const struct OfxPayment* payment );
 
-CFCT char* libofx_request_payment_status( const struct OfxFiLogin* login, const char* transactionid );
+char* libofx_request_payment_status( const struct OfxFiLogin* login, const char* transactionid );
 
 //@}
 
+#ifdef __cplusplus
+} // end of extern "C"
 #endif
-
+#endif // end of LIBOFX_H

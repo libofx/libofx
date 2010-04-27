@@ -1,3 +1,6 @@
+2010-04-27  Benoit Grégoire <benoitg@coeus.ca>
+	* Patch by ajseward with some additional fixes to allow wraping the library in python. 
+
 2009-05-09  Benoit Grégoire <benoitg@coeus.ca>
 	* Various C++ include fixes for building with recent compilers.  Patch by Bill Nottingham <notting@redhat.com>
 

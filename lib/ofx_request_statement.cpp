@@ -189,7 +189,7 @@ OfxPaymentRequest::OfxPaymentRequest( const OfxFiLogin& fi, const OfxAccountData
   Add( RequestMessage("BILLPAY","PMT", pmtrqTag) );
 }
 
-CFCT char* libofx_request_payment_status( const struct OfxFiLogin* login, const char* transactionid )
+char* libofx_request_payment_status( const struct OfxFiLogin* login, const char* transactionid )
 {
 #if 0
   OfxAggregate pmtinqrqTag( "PMTINQRQ" );
