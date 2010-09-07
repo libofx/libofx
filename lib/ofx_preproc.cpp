@@ -150,7 +150,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
 		  fromcode=LIBOFX_DEFAULT_INPUT_ENCODING;
 		}
 	      }
-	      else if(ofx_encoding.compare("USASCII")==0) {
+	      else if(ofx_encoding.compare("UTF-8")==0) {
 		fromcode="UTF-8";
 	      }
 	      else
@@ -168,6 +168,9 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
 	      //Header processing
 	      header_name.assign(s_buffer.substr(0,header_separator_idx));
 	      header_value.assign(s_buffer.substr(header_separator_idx+1));
+              while ( header_value[header_value.length() -1 ] == '\n' ||
+                      header_value[header_value.length() -1 ] == '\r' ) 
+                      header_value.erase(header_value.length()-1);
 	      message_out(DEBUG,"ofx_proc_file():Header: "+header_name+" with value: "+header_value+" has been found");
 	      if(header_name.compare("ENCODING")==0) {
 		ofx_encoding.assign(header_value);
