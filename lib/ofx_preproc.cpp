@@ -140,13 +140,16 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
 	      string fromcode;
 	      string tocode; 
 	      if(ofx_encoding.compare("USASCII")==0){
-		if(ofx_charset.compare("ISO-8859-1")==0){
+		if(ofx_charset.compare("ISO-8859-1")==0||ofx_charset.compare("8859-1")==0){
 		  fromcode="ISO-8859-1";
 		}
 		else if(ofx_charset.compare("1252")==0){
 		  fromcode="CP1252";
 		}
 		else if(ofx_charset.compare("NONE")==0){
+		  fromcode=LIBOFX_DEFAULT_INPUT_ENCODING;
+		}
+		else {
 		  fromcode=LIBOFX_DEFAULT_INPUT_ENCODING;
 		}
 	      }
