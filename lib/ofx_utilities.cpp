@@ -120,9 +120,16 @@ time_t ofxdate_to_time_t(const string ofxdate)
   local_offset = difftime(mktime(localtime(&temptime)), mktime(gmtime(&temptime))) + (3600*daylight);
   
   if(ofxdate.size()!=0){
-    time.tm_year=atoi(ofxdate.substr(0,4).c_str())-1900;
-    time.tm_mon=atoi(ofxdate.substr(4,2).c_str())-1;
-    time.tm_mday=atoi(ofxdate.substr(6,2).c_str());
+    if (ofxdate.substr(0,8).find_first_not_of("0123456789") != string::npos ){
+    /* Catch invalid string format */
+      message_out(ERROR, "ofxdate_to_time_t():  Unable to convert time, string is not in proper YYYYMMDDHHMMSS.XXX[gmt offset:tz name] format!");
+      return mktime(&time);
+    }
+    else{
+      time.tm_year=atoi(ofxdate.substr(0,4).c_str())-1900;
+      time.tm_mon=atoi(ofxdate.substr(4,2).c_str())-1;
+      time.tm_mday=atoi(ofxdate.substr(6,2).c_str());
+    }
     if(ofxdate.size()>8) {
     /* if exact time is specified */
 exact_time_specified = true;
