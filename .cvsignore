@@ -2,6 +2,9 @@
 *.lo
 .deps
 .libs
+.cproject
+.directory
+.project
 Makefile
 Makefile.in
 aclocal.m4
