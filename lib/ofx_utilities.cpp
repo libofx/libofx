@@ -226,25 +226,29 @@ while ((index = temp_string.find_first_of(abnormal_whitespace))!=string::npos)
 }
 
 
-int mkTempFileName(const char *tmpl, char *buffer, unsigned int size) {
-  const char *tmp_dir;
-
-  tmp_dir = getenv ("TMPDIR");
-  if (!tmp_dir)
-    tmp_dir = getenv ("TMP");
-  if (!tmp_dir)
-    tmp_dir = getenv ("TEMP");
-
-  if (!tmp_dir)
-    {
+std::string get_tmp_dir()
+{
+  // Tries to mimic the behaviour of
+  // http://developer.gnome.org/doc/API/2.0/glib/glib-Miscellaneous-Utility-Functions.html#g-get-tmp-dir
+  char *var;
+  var = getenv("TMPDIR");
+  if (var) return var;
+  var = getenv("TMP");
+  if (var) return var;
+  var = getenv("TEMP");
+  if (var) return var;
 #ifdef OS_WIN32
-      tmp_dir = "C:\\";
-#else  
-      tmp_dir = "/tmp";
-#endif	/* !OS_WIN32 */
-    }
+  return "C:\\";
+#else
+  return "/tmp";
+#endif
+}
 
-  strncpy(buffer, tmp_dir, size);
+int mkTempFileName(const char *tmpl, char *buffer, unsigned int size) {
+
+  std::string tmp_dir = get_tmp_dir();
+
+  strncpy(buffer, tmp_dir.c_str(), size);
   assert((strlen(buffer)+strlen(tmpl)+2)<size);
   strcat(buffer, DIRSEP);
   strcat(buffer, tmpl);

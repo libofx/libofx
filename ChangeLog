@@ -1,3 +1,8 @@
+2011-01-12  Christian Stimming  <stimming@tuhh.de>
+
+	* lib/ofx_preproc.cpp: Win32: Add gnucash patch that looks up the
+	dtd installation directory from the current executable's location.
+
 2010-04-27  Benoit Grégoire <benoitg@coeus.ca>
 	* Patch by ajseward with some additional fixes to allow wraping the library in python. 
 

@@ -36,6 +36,9 @@
 
 #ifdef OS_WIN32
 # include "win32.hh"
+# include <windows.h> // for GetModuleFileName()
+# undef ERROR
+# undef DELETE
 #endif
 
 #define LIBOFX_DEFAULT_INPUT_ENCODING "CP1252"
@@ -511,6 +514,31 @@ string sanitize_proprietary_tags(string input_string)
 }
 
 
+#ifdef OS_WIN32
+static std::string get_dtd_installation_directory()
+{
+  // Partial implementation of 
+  // http://developer.gnome.org/doc/API/2.0/glib/glib-Windows-Compatibility-Functions.html#g-win32-get-package-installation-directory
+  char ch_fn[MAX_PATH], *p;
+  std::string str_fn;
+
+  if (!GetModuleFileName(NULL, ch_fn, MAX_PATH)) return "";
+
+  if ((p = strrchr(ch_fn, '\\')) != NULL)
+    *p = '\0';
+
+  p = strrchr(ch_fn, '\\');
+  if (p && (_stricmp(p+1, "bin") == 0 ||
+            _stricmp(p+1, "lib") == 0))
+    *p = '\0';
+
+  str_fn = ch_fn;
+  str_fn += "\\share\\libofx\\dtd\\";
+
+  return str_fn;
+}
+#endif
+
 
 /**
    This function will try to find a DTD matching the requested_version and return the full path of the DTD found (or an empty string if unsuccessfull)
@@ -519,45 +547,45 @@ string sanitize_proprietary_tags(string input_string)
 */
 string find_dtd(LibofxContextPtr ctx, string dtd_filename)
 {
-  int i;
-  ifstream dtd_file;
   string dtd_path_filename;
-  bool dtd_found=false;
 
-  dtd_path_filename=((LibofxContext*)ctx)->dtdDir();
+  dtd_path_filename = reinterpret_cast<const LibofxContext*>(ctx)->dtdDir();
   if (!dtd_path_filename.empty()) {
     dtd_path_filename.append(dtd_filename);
-    dtd_file.clear();
-    dtd_file.open(dtd_path_filename.c_str());
+    ifstream dtd_file(dtd_path_filename.c_str());
     if(dtd_file){
       message_out(STATUS,"find_dtd():DTD found: "+dtd_path_filename);
-      dtd_file.close();
-      dtd_found=true;
+      return dtd_path_filename;
     }
   }
 
-  if (!dtd_found) {
-    for(i=0;i<DTD_SEARCH_PATH_NUM&&dtd_found==false;i++){
+#ifdef OS_WIN32
+  dtd_path_filename = get_dtd_installation_directory();
+  if (!dtd_path_filename.empty()) {
+    dtd_path_filename.append(dtd_filename);
+    ifstream dtd_file(dtd_path_filename.c_str());
+    if(dtd_file){
+      message_out(STATUS,"find_dtd():DTD found: "+dtd_path_filename);
+      return dtd_path_filename;
+    }
+  }
+#endif
+
+  for(int i=0;i<DTD_SEARCH_PATH_NUM;i++){
       dtd_path_filename=DTD_SEARCH_PATH[i];
       dtd_path_filename.append(dtd_filename);
-      dtd_file.clear();
-      dtd_file.open(dtd_path_filename.c_str());
+      ifstream dtd_file(dtd_path_filename.c_str());
       if(!dtd_file){
 	message_out(DEBUG,"find_dtd():Unable to open the file "+dtd_path_filename);
       }
       else{
 	message_out(STATUS,"find_dtd():DTD found: "+dtd_path_filename);
-	dtd_file.close();
-	dtd_found=true;
+	return dtd_path_filename;
       }
-    }
   }
 
-  if(dtd_found==false){
-    message_out(ERROR,"find_dtd():Unable to find the DTD named " + dtd_filename);
-    dtd_path_filename="";
-  }
-  return dtd_path_filename;
+  message_out(ERROR,"find_dtd():Unable to find the DTD named " + dtd_filename);
+  return "";
 }
 
 
