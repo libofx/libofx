@@ -5,10 +5,16 @@
 	* lib/ofx_preproc.cpp: Win32: Add gnucash patch that looks up the
 	dtd installation directory from the current executable's location.
 
-2010-04-27  Benoit Grégoire <benoitg@coeus.ca>
-	* Patch by ajseward with some additional fixes to allow wraping the library in python. 
+2010-10-26  Benoit Grégoire <benoitg@coeus.ca>
+	* Apply patch by Geert Janssens to fix crash on invalid date format 
 
-2009-05-09  Benoit Grégoire <benoitg@coeus.ca>
+2010-04-27  Benoit Grégoire <benoitg@coeus.ca>
+	* Patch by ajseward with some additional fixes to allow wraping the library in python.
+
+2010-02-04  Benoit Grégoire <benoitg@coeus.ca>
+	* Applied a patch provided by Thomas Baumgart which fixes bug #5 (Transaction posting date off by one)
+
+2009-05-15  Benoit Grégoire <benoitg@coeus.ca>
 	* Various C++ include fixes for building with recent compilers.  Patch by Bill Nottingham <notting@redhat.com>
 
 2009-02-09  Christian Stimming  <stimming@tuhh.de>
