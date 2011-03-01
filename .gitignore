@@ -22,3 +22,5 @@ stamp-h1
 libofx.spec
 libofx.pc
 
+build
+INSTALL
