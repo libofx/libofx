@@ -13,5 +13,5 @@ echo "Running automake -a"
 automake -a
 echo "Running autoconf"
 autoconf
-echo "Running ./configure --enable-maintainer-mode  $conf_flags $@"
-./configure --enable-maintainer-mode $conf_flags "$@"
+echo "You can now run ./configure  $conf_flags $@ (potentially in a separate build directory)"
+#./configure $conf_flags "$@"
