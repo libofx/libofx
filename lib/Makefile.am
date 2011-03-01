@@ -21,7 +21,7 @@ libofx_la_SOURCES =  messages.cpp \
 		ofc_sgml.cpp \
 		win32.cpp
 
-noinst_HEADERS = ${top_srcdir}/inc/libofx.h \
+noinst_HEADERS = ${top_builddir}/inc/libofx.h \
 		messages.hh \
 		ofx_preproc.hh \
 		file_preproc.hh \
@@ -40,7 +40,7 @@ noinst_HEADERS = ${top_srcdir}/inc/libofx.h \
 
 AM_CPPFLAGS = \
 	-I. \
-	-I${top_srcdir}/inc \
+	-I${top_builddir}/inc \
 	-I${OPENSPINCLUDES} \
 	-DMAKEFILE_DTD_PATH=\"${LIBOFX_DTD_DIR}/\"
 
