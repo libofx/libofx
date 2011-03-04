@@ -18,9 +18,10 @@
 #ifndef OFX_MESSAGES_H
 #define OFX_MESSAGES_H
 
-/** The OfxMsgType enum describe's the type of message being sent, so the 
+/** The OfxMsgType enum describe's the type of message being sent, so the
     application/user/library can decide if it will be printed to stdout */
-enum OfxMsgType{
+enum OfxMsgType
+{
   DEBUG,       /**< General debug messages */
   DEBUG1,      /**< Debug level 1 */
   DEBUG2,      /**< Debug level 2 */

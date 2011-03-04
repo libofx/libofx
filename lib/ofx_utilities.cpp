@@ -38,7 +38,7 @@
 using namespace std;
 /**
    Convert an OpenSP CharString directly to a C++ stream, to enable the use of cout directly for debugging.
-*/ 
+*/
 /*ostream &operator<<(ostream &os, SGMLApplication::CharString s)
   {
   for (size_t i = 0; i < s.len; i++)
@@ -52,7 +52,7 @@ using namespace std;
   {
   for (size_t i = 0; i < s.len; i++)
   {//cout<<i;
-  os << wchar_t(s.ptr[i*MULTIPLY4]);  
+  os << wchar_t(s.ptr[i*MULTIPLY4]);
   }
   return os;
   }            */
@@ -72,9 +72,10 @@ string CharStringtostring(const SGMLApplication::CharString source, string &dest
   size_t i;
   dest.assign("");//Empty the provided string
   //  cout<<"Length: "<<source.len<<"sizeof(Char)"<<sizeof(SGMLApplication::Char)<<endl;
-  for (i = 0; i < source.len; i++){
-    dest+=(char)(((source.ptr)[i]));  
-    //    cout<<i<<" "<<(char)(((source.ptr)[i]))<<endl; 
+  for (i = 0; i < source.len; i++)
+  {
+    dest += (char)(((source.ptr)[i]));
+    //    cout<<i<<" "<<(char)(((source.ptr)[i]))<<endl;
   }
   return dest;
 }
@@ -83,20 +84,20 @@ string AppendCharStringtostring(const SGMLApplication::CharString source, string
 {
   size_t i;
   for (i = 0; i < source.len; i++)
-    {
-      dest+=(char)(((source.ptr)[i]));
-    }
+  {
+    dest += (char)(((source.ptr)[i]));
+  }
   return dest;
 }
 
-/** 
+/**
  * Converts a date from the YYYYMMDDHHMMSS.XXX[gmt offset:tz name] OFX format (see OFX 2.01 spec p.66) to a C time_t.
  * @param ofxdate date from the YYYYMMDDHHMMSS.XXX[gmt offset:tz name] OFX format
  * @return C time_t in the local time zone
  * @note
  * @li The library always returns the time in the systems local time
  * @li OFX defines the date up to the millisecond.  The library ignores those milliseconds, since ANSI C does not handle such precision cleanly.  The date provided by LibOFX is precise to the second, assuming that information this precise was provided in the ofx file.  So you wont know the millisecond you were ruined...
- 
+
  * @note DEVIATION FROM THE SPECS : The OFX specifications (both version 1.6 and 2.02) state that a client should assume that if the server returns a date without � specific time, we assume it means 0h00 GMT.  As such, when we apply the local timezone and for example you are in the EST timezone, we will remove 5h, and the transaction will have occurred on the prior day!  This is probably not what the bank intended (and will lead to systematic errors), but the spec is quite explicit in this respect (Ref:  OFX 2.01 spec pp. 66-68)<BR><BR>
  * To solve this problem (since usually a time error is relatively unimportant, but date error is), and to avoid problems in Australia caused by the behaviour in libofx up to 0.6.4, it was decided starting with 0.6.5 to use the following behavior:<BR><BR>
  * -No specific time is given in the file (date only):  Considering that most banks seem to be sending dates in this format represented as local time (not compliant with the specs), the transaction is assumed to have occurred 11h59 (just before noon) LOCAL TIME.  This way, we should never change the date, since you'd have to travel in a timezone at least 11 hours backwards or 13 hours forward from your own to introduce mistakes.  However, if you are in timezone +13 or +14, and your bank meant the data to be interpreted by the spec, you will get the wrong date.  We hope that banks in those timezone will either represent in local time like most, or specify the timezone properly.<BR><BR>
@@ -117,61 +118,68 @@ time_t ofxdate_to_time_t(const string ofxdate)
 
   time.tm_isdst = daylight; // iniitialize dst setting
   std::time(&temptime);
-  local_offset = difftime(mktime(localtime(&temptime)), mktime(gmtime(&temptime))) + (3600*daylight);
-  
-  if(ofxdate.size()!=0){
-    if (ofxdate.substr(0,8).find_first_not_of("0123456789") != string::npos ){
-    /* Catch invalid string format */
+  local_offset = difftime(mktime(localtime(&temptime)), mktime(gmtime(&temptime))) + (3600 * daylight);
+
+  if (ofxdate.size() != 0)
+  {
+    if (ofxdate.substr(0, 8).find_first_not_of("0123456789") != string::npos )
+    {
+      /* Catch invalid string format */
       message_out(ERROR, "ofxdate_to_time_t():  Unable to convert time, string is not in proper YYYYMMDDHHMMSS.XXX[gmt offset:tz name] format!");
       return mktime(&time);
     }
-    else{
-      time.tm_year=atoi(ofxdate.substr(0,4).c_str())-1900;
-      time.tm_mon=atoi(ofxdate.substr(4,2).c_str())-1;
-      time.tm_mday=atoi(ofxdate.substr(6,2).c_str());
+    else
+    {
+      time.tm_year = atoi(ofxdate.substr(0, 4).c_str()) - 1900;
+      time.tm_mon = atoi(ofxdate.substr(4, 2).c_str()) - 1;
+      time.tm_mday = atoi(ofxdate.substr(6, 2).c_str());
     }
-    if(ofxdate.size()>8) {
-    /* if exact time is specified */
-exact_time_specified = true;
-      time.tm_hour=atoi(ofxdate.substr(8,2).c_str());
-      time.tm_min=atoi(ofxdate.substr(10,2).c_str());
-      time.tm_sec=atoi(ofxdate.substr(12,2).c_str());
+    if (ofxdate.size() > 8)
+    {
+      /* if exact time is specified */
+      exact_time_specified = true;
+      time.tm_hour = atoi(ofxdate.substr(8, 2).c_str());
+      time.tm_min = atoi(ofxdate.substr(10, 2).c_str());
+      time.tm_sec = atoi(ofxdate.substr(12, 2).c_str());
     }
-    
+
     /* Check if the timezone has been specified */
     string::size_type startidx = ofxdate.find("[");
     string::size_type endidx;
-    if(startidx!=string::npos){
+    if (startidx != string::npos)
+    {
       /* Time zone was specified */
       time_zone_specified = true;
       startidx++;
-      endidx = ofxdate.find(":", startidx)-1;
-      ofx_gmt_offset=atof(ofxdate.substr(startidx,(endidx-startidx)+1).c_str());
-      startidx = endidx+2;
-      strncpy(timezone,ofxdate.substr(startidx,3).c_str(),4);
+      endidx = ofxdate.find(":", startidx) - 1;
+      ofx_gmt_offset = atof(ofxdate.substr(startidx, (endidx - startidx) + 1).c_str());
+      startidx = endidx + 2;
+      strncpy(timezone, ofxdate.substr(startidx, 3).c_str(), 4);
     }
-    else{
+    else
+    {
       /* Time zone was not specified, assume GMT (provisionnaly) in case exact time is specified */
-      ofx_gmt_offset=0;
+      ofx_gmt_offset = 0;
       strcpy(timezone, "GMT");
     }
 
-    if(time_zone_specified == true)
-      {
-	/* If the timezone is specified always correct the timezone */
-	/* If the timezone is not specified, but the exact time is, correct the timezone, assuming GMT following the spec */
-	/* Correct the time for the timezone */
-	time.tm_sec = time.tm_sec + (int)(local_offset - (ofx_gmt_offset*60*60));//Convert from fractionnal hours to seconds
-      }
+    if (time_zone_specified == true)
+    {
+      /* If the timezone is specified always correct the timezone */
+      /* If the timezone is not specified, but the exact time is, correct the timezone, assuming GMT following the spec */
+      /* Correct the time for the timezone */
+      time.tm_sec = time.tm_sec + (int)(local_offset - (ofx_gmt_offset * 60 * 60)); //Convert from fractionnal hours to seconds
+    }
     else if (exact_time_specified == false)
-      {
-	/*Time zone data missing and exact time not specified, diverge from the OFX spec ans assume 11h59 local time */
-       time.tm_hour=11;
-       time.tm_min=59;
-       time.tm_sec=0;
-      }
+    {
+      /*Time zone data missing and exact time not specified, diverge from the OFX spec ans assume 11h59 local time */
+      time.tm_hour = 11;
+      time.tm_min = 59;
+      time.tm_sec = 0;
+    }
   }
-  else{
+  else
+  {
     message_out(ERROR, "ofxdate_to_time_t():  Unable to convert time, string is 0 length!");
   }
   return mktime(&time);
@@ -180,7 +188,7 @@ exact_time_specified = true;
 /**
  * Convert a C++ string containing an amount of money as specified by the OFX standard and convert it to a double float.
  *\note The ofx number format is the following:  "." or "," as decimal separator, NO thousands separator.
- */ 
+ */
 double ofxamount_to_double(const string ofxamount)
 {
   //Replace commas and decimal points for atof()
@@ -188,12 +196,14 @@ double ofxamount_to_double(const string ofxamount)
   string tmp = ofxamount;
 
   idx = tmp.find(',');
-  if(idx==string::npos){
+  if (idx == string::npos)
+  {
     idx = tmp.find('.');
   }
-  
-  if(idx!=string::npos){
-    tmp.replace(idx,1,1,((localeconv())->decimal_point)[0]);
+
+  if (idx != string::npos)
+  {
+    tmp.replace(idx, 1, 1, ((localeconv())->decimal_point)[0]);
   }
 
   return atof(tmp.c_str());
@@ -209,20 +219,20 @@ string strip_whitespace(const string para_string)
   string temp_string = para_string;
   const char *whitespace = " \b\f\n\r\t\v";
   const char *abnormal_whitespace = "\b\f\n\r\t\v";//backspace,formfeed,newline,cariage return, horizontal and vertical tabs
-  message_out(DEBUG4,"strip_whitespace() Before: |"+temp_string+"|");
-  for(i=0;i<=temp_string.size()&&temp_string.find_first_of(whitespace, i)==i&&temp_string.find_first_of(whitespace, i)!=string::npos;i++);
-  temp_string.erase(0,i);//Strip leading whitespace
-  for(i=temp_string.size()-1;(i>=0)&&(temp_string.find_last_of(whitespace, i)==i)&&(temp_string.find_last_of(whitespace, i)!=string::npos);i--);
-  temp_string.erase(i+1,temp_string.size()-(i+1));//Strip trailing whitespace
-  
-while ((index = temp_string.find_first_of(abnormal_whitespace))!=string::npos)
+  message_out(DEBUG4, "strip_whitespace() Before: |" + temp_string + "|");
+  for (i = 0; i <= temp_string.size() && temp_string.find_first_of(whitespace, i) == i && temp_string.find_first_of(whitespace, i) != string::npos; i++);
+  temp_string.erase(0, i); //Strip leading whitespace
+  for (i = temp_string.size() - 1; (i >= 0) && (temp_string.find_last_of(whitespace, i) == i) && (temp_string.find_last_of(whitespace, i) != string::npos); i--);
+  temp_string.erase(i + 1, temp_string.size() - (i + 1)); //Strip trailing whitespace
+
+  while ((index = temp_string.find_first_of(abnormal_whitespace)) != string::npos)
   {
-    temp_string.erase(index,1);//Strip leading whitespace
+    temp_string.erase(index, 1); //Strip leading whitespace
   };
- 
- message_out(DEBUG4,"strip_whitespace() After:  |"+temp_string+"|");
- 
- return temp_string;
+
+  message_out(DEBUG4, "strip_whitespace() After:  |" + temp_string + "|");
+
+  return temp_string;
 }
 
 
@@ -244,12 +254,13 @@ std::string get_tmp_dir()
 #endif
 }
 
-int mkTempFileName(const char *tmpl, char *buffer, unsigned int size) {
+int mkTempFileName(const char *tmpl, char *buffer, unsigned int size)
+{
 
   std::string tmp_dir = get_tmp_dir();
 
   strncpy(buffer, tmp_dir.c_str(), size);
-  assert((strlen(buffer)+strlen(tmpl)+2)<size);
+  assert((strlen(buffer) + strlen(tmpl) + 2) < size);
   strcat(buffer, DIRSEP);
   strcat(buffer, tmpl);
   return 0;

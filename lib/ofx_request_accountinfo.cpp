@@ -1,5 +1,5 @@
 /***************************************************************************
-         ofx_request_accountinfo.cpp 
+         ofx_request_accountinfo.cpp
                              -------------------
     copyright            : (C) 2005 by Ace Jones
     email                : acejones@users.sourceforge.net
@@ -35,9 +35,9 @@ char* libofx_request_accountinfo( const OfxFiLogin* login )
 
   unsigned size = request.size();
   char* result = (char*)malloc(size + 1);
-  request.copy(result,size);
+  request.copy(result, size);
   result[size] = 0;
-  
+
   return result;
 }
 
@@ -79,5 +79,5 @@ OfxAccountInfoRequest::OfxAccountInfoRequest( const OfxFiLogin& fi ):
 
   OfxAggregate acctinforqTag("ACCTINFORQ");
   acctinforqTag.Add( "DTACCTUP", time_t_to_ofxdate( 0 ) );
-  Add ( RequestMessage("SIGNUP","ACCTINFO", acctinforqTag) );
+  Add ( RequestMessage("SIGNUP", "ACCTINFO", acctinforqTag) );
 }

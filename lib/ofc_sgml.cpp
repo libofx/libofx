@@ -41,22 +41,23 @@ extern OfxMainContainer * MainContainer;
 
 /** \brief This object is driven by OpenSP as it parses the SGML from the ofx file(s)
  */
-class OFCApplication : public SGMLApplication{
+class OFCApplication : public SGMLApplication
+{
 private:
   OfxGenericContainer *curr_container_element; /**< The currently open object from ofx_proc_rs.cpp */
   OfxGenericContainer *tmp_container_element;
   bool is_data_element; /**< If the SGML element contains data, this flag is raised */
   string incoming_data; /**< The raw data from the SGML data element */
   LibofxContext * libofx_context;
- public:
+public:
   OFCApplication (LibofxContext * p_libofx_context)
   {
-    MainContainer=NULL;
+    MainContainer = NULL;
     curr_container_element = NULL;
     is_data_element = false;
-    libofx_context=p_libofx_context;
+    libofx_context = p_libofx_context;
   }
-  
+
   /** \brief Callback: Start of an OFX element
    *
    An OpenSP callback, get's called when the opening tag of an OFX element appears in the file
@@ -65,136 +66,141 @@ private:
   {
     string identifier;
     CharStringtostring (event.gi, identifier);
-    message_out(PARSER,"startElement event received from OpenSP for element " + identifier);
-    
+    message_out(PARSER, "startElement event received from OpenSP for element " + identifier);
+
     position = event.pos;
 
     switch (event.contentType)
-      {
-      case StartElementEvent::empty:	message_out(ERROR,"StartElementEvent::empty\n");
-	break;
-      case StartElementEvent::cdata:	message_out(ERROR,"StartElementEvent::cdata\n");
-	break;
-      case StartElementEvent::rcdata:   message_out(ERROR,"StartElementEvent::rcdata\n");
-	break;
-      case StartElementEvent::mixed:	message_out(PARSER,"StartElementEvent::mixed");
-	is_data_element = true;
-	break;
-      case StartElementEvent::element:	message_out(PARSER,"StartElementEvent::element");
-	is_data_element = false;
-	break;
-      default:
-	message_out(ERROR,"Unknow SGML content type?!?!?!? OpenSP interface changed?");
-      }
-    
+    {
+    case StartElementEvent::empty:
+      message_out(ERROR, "StartElementEvent::empty\n");
+      break;
+    case StartElementEvent::cdata:
+      message_out(ERROR, "StartElementEvent::cdata\n");
+      break;
+    case StartElementEvent::rcdata:
+      message_out(ERROR, "StartElementEvent::rcdata\n");
+      break;
+    case StartElementEvent::mixed:
+      message_out(PARSER, "StartElementEvent::mixed");
+      is_data_element = true;
+      break;
+    case StartElementEvent::element:
+      message_out(PARSER, "StartElementEvent::element");
+      is_data_element = false;
+      break;
+    default:
+      message_out(ERROR, "Unknow SGML content type?!?!?!? OpenSP interface changed?");
+    }
+
     if (is_data_element == false)
+    {
+      /*------- The following are OFC entities ---------------*/
+
+      if (identifier == "OFC")
       {
-	/*------- The following are OFC entities ---------------*/
-
-	if (identifier == "OFC")
-	  {
-	    message_out (PARSER, "Element " + identifier + " found");
-	    MainContainer = new OfxMainContainer (libofx_context, curr_container_element, identifier);
-	    curr_container_element = MainContainer;
-	  }
-	else if (identifier == "STATUS")
-	  {
-	    message_out (PARSER, "Element " + identifier + " found");
-	    curr_container_element = new OfxStatusContainer (libofx_context, curr_container_element, identifier);
-	  }
-	else if (identifier == "ACCTSTMT")
-	  {
-	    message_out (PARSER, "Element " + identifier + " found");
-	    curr_container_element = new OfxStatementContainer (libofx_context, curr_container_element, identifier);
-	  }
-	else if (identifier == "STMTRS")
-	  {
-	    message_out (PARSER, "Element " + identifier + " found");
-	    //STMTRS ignored, we will process it's attributes directly inside the STATEMENT,
-	    if(curr_container_element->type!="STATEMENT")
-	      {
-		message_out(ERROR,"Element " + identifier + " found while not inside a STATEMENT container");
-	      }
-	    else
-	      {
-		curr_container_element = new OfxPushUpContainer (libofx_context, curr_container_element, identifier);
-	      }
-	  }
-	else if (identifier == "GENTRN" ||
-		 identifier == "STMTTRN")
-	  {
-	    message_out (PARSER, "Element " + identifier + " found");
-	    curr_container_element = new OfxBankTransactionContainer (libofx_context, curr_container_element, identifier);
-	  }
-	else if(identifier == "BUYDEBT" ||
-		identifier == "BUYMF" ||
-		identifier == "BUYOPT" ||
-		identifier == "BUYOTHER" ||
-		identifier == "BUYSTOCK" ||
-		identifier == "CLOSUREOPT" ||
-		identifier == "INCOME" ||
-		identifier == "INVEXPENSE" ||
-		identifier == "JRNLFUND" ||
-		identifier == "JRNLSEC" ||
-		identifier == "MARGININTEREST" ||
-		identifier == "REINVEST" ||
-		identifier == "RETOFCAP" ||
-		identifier == "SELLDEBT" ||
-		identifier == "SELLMF" ||
-		identifier == "SELLOPT" ||
-		identifier == "SELLOTHER" ||
-		identifier == "SELLSTOCK" ||
-		identifier == "SPLIT" ||
-		identifier == "TRANSFER" )
-	  {
-	    message_out (PARSER, "Element " + identifier + " found");
-	    curr_container_element = new OfxInvestmentTransactionContainer (libofx_context, curr_container_element, identifier);
-	  }
-	/*The following is a list of OFX elements whose attributes will be processed by the parent container*/
-	else if (identifier == "INVBUY" ||
-		 identifier == "INVSELL" ||
-		 identifier == "INVTRAN" ||
-		 identifier == "SECID")
-	  {
-	    message_out (PARSER, "Element " + identifier + " found");
-	    curr_container_element = new OfxPushUpContainer (libofx_context, curr_container_element, identifier);
-	  }
-
-	/* The different types of accounts */
-	else if (identifier == "ACCOUNT"||
-		 identifier == "ACCTFROM" )
-	  {
-	    message_out (PARSER, "Element " + identifier + " found");
-	    curr_container_element = new OfxAccountContainer (libofx_context, curr_container_element, identifier);
-	  }
-	else if (identifier == "SECINFO")
-	  {
-	    message_out (PARSER, "Element " + identifier + " found");
-	    curr_container_element = new OfxSecurityContainer (libofx_context, curr_container_element, identifier);
-	  }
-       	/* The different types of balances */
-	else if (identifier == "LEDGERBAL" || identifier == "AVAILBAL")
-	  {
-	    message_out (PARSER, "Element " + identifier + " found");
-	    curr_container_element = new OfxBalanceContainer (libofx_context, curr_container_element, identifier);
-	  }
-	else
-	  {
-	    /* We dont know this OFX element, so we create a dummy container */
-	    curr_container_element = new OfxDummyContainer(libofx_context, curr_container_element, identifier);
-	  }
+        message_out (PARSER, "Element " + identifier + " found");
+        MainContainer = new OfxMainContainer (libofx_context, curr_container_element, identifier);
+        curr_container_element = MainContainer;
       }
+      else if (identifier == "STATUS")
+      {
+        message_out (PARSER, "Element " + identifier + " found");
+        curr_container_element = new OfxStatusContainer (libofx_context, curr_container_element, identifier);
+      }
+      else if (identifier == "ACCTSTMT")
+      {
+        message_out (PARSER, "Element " + identifier + " found");
+        curr_container_element = new OfxStatementContainer (libofx_context, curr_container_element, identifier);
+      }
+      else if (identifier == "STMTRS")
+      {
+        message_out (PARSER, "Element " + identifier + " found");
+        //STMTRS ignored, we will process it's attributes directly inside the STATEMENT,
+        if (curr_container_element->type != "STATEMENT")
+        {
+          message_out(ERROR, "Element " + identifier + " found while not inside a STATEMENT container");
+        }
+        else
+        {
+          curr_container_element = new OfxPushUpContainer (libofx_context, curr_container_element, identifier);
+        }
+      }
+      else if (identifier == "GENTRN" ||
+               identifier == "STMTTRN")
+      {
+        message_out (PARSER, "Element " + identifier + " found");
+        curr_container_element = new OfxBankTransactionContainer (libofx_context, curr_container_element, identifier);
+      }
+      else if (identifier == "BUYDEBT" ||
+               identifier == "BUYMF" ||
+               identifier == "BUYOPT" ||
+               identifier == "BUYOTHER" ||
+               identifier == "BUYSTOCK" ||
+               identifier == "CLOSUREOPT" ||
+               identifier == "INCOME" ||
+               identifier == "INVEXPENSE" ||
+               identifier == "JRNLFUND" ||
+               identifier == "JRNLSEC" ||
+               identifier == "MARGININTEREST" ||
+               identifier == "REINVEST" ||
+               identifier == "RETOFCAP" ||
+               identifier == "SELLDEBT" ||
+               identifier == "SELLMF" ||
+               identifier == "SELLOPT" ||
+               identifier == "SELLOTHER" ||
+               identifier == "SELLSTOCK" ||
+               identifier == "SPLIT" ||
+               identifier == "TRANSFER" )
+      {
+        message_out (PARSER, "Element " + identifier + " found");
+        curr_container_element = new OfxInvestmentTransactionContainer (libofx_context, curr_container_element, identifier);
+      }
+      /*The following is a list of OFX elements whose attributes will be processed by the parent container*/
+      else if (identifier == "INVBUY" ||
+               identifier == "INVSELL" ||
+               identifier == "INVTRAN" ||
+               identifier == "SECID")
+      {
+        message_out (PARSER, "Element " + identifier + " found");
+        curr_container_element = new OfxPushUpContainer (libofx_context, curr_container_element, identifier);
+      }
+
+      /* The different types of accounts */
+      else if (identifier == "ACCOUNT" ||
+               identifier == "ACCTFROM" )
+      {
+        message_out (PARSER, "Element " + identifier + " found");
+        curr_container_element = new OfxAccountContainer (libofx_context, curr_container_element, identifier);
+      }
+      else if (identifier == "SECINFO")
+      {
+        message_out (PARSER, "Element " + identifier + " found");
+        curr_container_element = new OfxSecurityContainer (libofx_context, curr_container_element, identifier);
+      }
+      /* The different types of balances */
+      else if (identifier == "LEDGERBAL" || identifier == "AVAILBAL")
+      {
+        message_out (PARSER, "Element " + identifier + " found");
+        curr_container_element = new OfxBalanceContainer (libofx_context, curr_container_element, identifier);
+      }
+      else
+      {
+        /* We dont know this OFX element, so we create a dummy container */
+        curr_container_element = new OfxDummyContainer(libofx_context, curr_container_element, identifier);
+      }
+    }
     else
+    {
+      /* The element was a data element.  OpenSP will call one or several data() callback with the data */
+      message_out (PARSER, "Data element " + identifier + " found");
+      /* There is a bug in OpenSP 1.3.4, which won't send endElement Event for some elements, and will instead send an error like "document type does not allow element "MESSAGE" here".  Incoming_data should be empty in such a case, but it will not be if the endElement event was skiped. So we empty it, so at least the last element has a chance of having valid data */
+      if (incoming_data != "")
       {
-	/* The element was a data element.  OpenSP will call one or several data() callback with the data */
-	message_out (PARSER, "Data element " + identifier + " found");
-	/* There is a bug in OpenSP 1.3.4, which won't send endElement Event for some elements, and will instead send an error like "document type does not allow element "MESSAGE" here".  Incoming_data should be empty in such a case, but it will not be if the endElement event was skiped. So we empty it, so at least the last element has a chance of having valid data */ 
-	if (incoming_data != "")
-	  {
-	    message_out (ERROR, "startElement: incoming_data should be empty! You are probably using OpenSP <= 1.3.4.  The folowing data was lost: " + incoming_data );
-	    incoming_data.assign ("");
-	  }
+        message_out (ERROR, "startElement: incoming_data should be empty! You are probably using OpenSP <= 1.3.4.  The folowing data was lost: " + incoming_data );
+        incoming_data.assign ("");
       }
+    }
   }
 
   /** \brief Callback: End of an OFX element
@@ -207,68 +213,68 @@ private:
     bool end_element_for_data_element;
 
     CharStringtostring (event.gi, identifier);
-    end_element_for_data_element=is_data_element;
-    message_out(PARSER,"endElement event received from OpenSP for element " + identifier);
+    end_element_for_data_element = is_data_element;
+    message_out(PARSER, "endElement event received from OpenSP for element " + identifier);
 
     position = event.pos;
     if (curr_container_element == NULL)
+    {
+      message_out (ERROR, "Tried to close a " + identifier + " without a open element (NULL pointer)");
+      incoming_data.assign ("");
+    }
+    else     //curr_container_element != NULL
+    {
+      if (end_element_for_data_element == true)
       {
-	message_out (ERROR,"Tried to close a "+identifier+" without a open element (NULL pointer)");
-	incoming_data.assign ("");
-      }
-    else //curr_container_element != NULL
-      {
-	if (end_element_for_data_element == true)
-	  {
-	    incoming_data = strip_whitespace(incoming_data);
-	    
-	    curr_container_element->add_attribute (identifier, incoming_data);
-	    message_out (PARSER,"endElement: Added data '" + incoming_data + "' from " + identifier + " to " + curr_container_element->type + " container_element");
-	    incoming_data.assign ("");
-	    is_data_element=false;
-	  }
-	else
-	  {
-	    if (identifier == curr_container_element->tag_identifier)
-	      {
-		if(incoming_data!="")
-		  {
-		    message_out(ERROR,"End tag for non data element "+identifier+", incoming data should be empty but contains: "+incoming_data+" DATA HAS BEEN LOST SOMEWHERE!");
-		  }
+        incoming_data = strip_whitespace(incoming_data);
 
-		if(identifier == "OFX")
-		  {
-		    /* The main container is a special case */
-		    tmp_container_element = curr_container_element;
-		    curr_container_element = curr_container_element->getparent ();
-		    MainContainer->gen_event();
-		    delete MainContainer;
-		    MainContainer = NULL;
-		    message_out (DEBUG, "Element " + identifier + " closed, MainContainer destroyed");
-		  }
-		else 
-		  {
-		    tmp_container_element = curr_container_element;
-		    curr_container_element = curr_container_element->getparent ();
-		    if(MainContainer != NULL)
-		      {
-			tmp_container_element->add_to_main_tree();
-			message_out (PARSER, "Element " + identifier + " closed, object added to MainContainer");
-		      }
-		    else
-		      {
-			message_out (ERROR, "MainContainer is NULL trying to add element " + identifier);
-		      }
-		  }
-	      }
-	    else
-	      {
-		message_out (ERROR, "Tried to close a "+identifier+" but a "+curr_container_element->type+" is currently open.");
-	      }
-	  }
+        curr_container_element->add_attribute (identifier, incoming_data);
+        message_out (PARSER, "endElement: Added data '" + incoming_data + "' from " + identifier + " to " + curr_container_element->type + " container_element");
+        incoming_data.assign ("");
+        is_data_element = false;
       }
+      else
+      {
+        if (identifier == curr_container_element->tag_identifier)
+        {
+          if (incoming_data != "")
+          {
+            message_out(ERROR, "End tag for non data element " + identifier + ", incoming data should be empty but contains: " + incoming_data + " DATA HAS BEEN LOST SOMEWHERE!");
+          }
+
+          if (identifier == "OFX")
+          {
+            /* The main container is a special case */
+            tmp_container_element = curr_container_element;
+            curr_container_element = curr_container_element->getparent ();
+            MainContainer->gen_event();
+            delete MainContainer;
+            MainContainer = NULL;
+            message_out (DEBUG, "Element " + identifier + " closed, MainContainer destroyed");
+          }
+          else
+          {
+            tmp_container_element = curr_container_element;
+            curr_container_element = curr_container_element->getparent ();
+            if (MainContainer != NULL)
+            {
+              tmp_container_element->add_to_main_tree();
+              message_out (PARSER, "Element " + identifier + " closed, object added to MainContainer");
+            }
+            else
+            {
+              message_out (ERROR, "MainContainer is NULL trying to add element " + identifier);
+            }
+          }
+        }
+        else
+        {
+          message_out (ERROR, "Tried to close a " + identifier + " but a " + curr_container_element->type + " is currently open.");
+        }
+      }
+    }
   }
-  
+
   /** \brief Callback: Data from an OFX element
    *
    An OpenSP callback, get's called when the raw data of an OFX element appears in the file.  Is usually called more than once for a single element, so we must concatenate the data.
@@ -293,7 +299,8 @@ private:
 
     position = event.pos;
     message = message + "OpenSP parser: ";
-    switch (event.type){
+    switch (event.type)
+    {
     case SGMLApplication::ErrorEvent::quantity:
       message = message + "quantity (Exceeding a quantity limit):";
       error_type = ERROR;
@@ -331,7 +338,7 @@ private:
   */
   void openEntityChange (const OpenEntityPtr & para_entity_ptr)
   {
-    message_out(DEBUG,"openEntityChange()\n");
+    message_out(DEBUG, "openEntityChange()\n");
     entity_ptr = para_entity_ptr;
 
   };
@@ -344,11 +351,11 @@ private:
 */
 int ofc_proc_sgml(LibofxContext * libofx_context, int argc, char *argv[])
 {
-  message_out(DEBUG,"Begin ofx_proc_sgml()");
-  message_out(DEBUG,argv[0]);
-  message_out(DEBUG,argv[1]);
-  message_out(DEBUG,argv[2]);
-  
+  message_out(DEBUG, "Begin ofx_proc_sgml()");
+  message_out(DEBUG, argv[0]);
+  message_out(DEBUG, argv[1]);
+  message_out(DEBUG, argv[2]);
+
   ParserEventGeneratorKit parserKit;
   parserKit.setOption (ParserEventGeneratorKit::showOpenEntities);
   EventGenerator *egp =	parserKit.makeEventGenerator (argc, argv);

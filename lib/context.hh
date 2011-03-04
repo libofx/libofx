@@ -22,7 +22,8 @@
 
 
 using namespace std;
-class LibofxContext {
+class LibofxContext
+{
 private:
   LibofxFileFormat _current_file_type;
 
@@ -47,8 +48,14 @@ public:
   LibofxFileFormat currentFileType() const;
   void setCurrentFileType(LibofxFileFormat t);
 
-  const std::string &dtdDir() const { return _dtdDir;};
-  void setDtdDir(const std::string &s) {_dtdDir=s;};
+  const std::string &dtdDir() const
+  {
+    return _dtdDir;
+  };
+  void setDtdDir(const std::string &s)
+  {
+    _dtdDir = s;
+  };
 
   int statementCallback(const struct OfxStatementData data);
   int accountCallback(const struct OfxAccountData data);

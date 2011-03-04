@@ -1,5 +1,5 @@
 /***************************************************************************
-         ofx_request_statement.cpp 
+         ofx_request_statement.cpp
                              -------------------
     copyright            : (C) 2005 by Ace Jones
     email                : acejones@users.sourceforge.net
@@ -36,9 +36,9 @@ char* libofx_request_statement( const OfxFiLogin* login, const OfxAccountData* a
 
   unsigned size = request.size();
   char* result = (char*)malloc(size + 1);
-  request.copy(result,size);
+  request.copy(result, size);
   result[size] = 0;
-  
+
   return result;
 }
 
@@ -75,61 +75,62 @@ OfxAggregate OfxStatementRequest::BankStatementRequest(void) const
 
   OfxAggregate inctranTag("INCTRAN");
   inctranTag.Add( "DTSTART", time_t_to_ofxdate( m_date_from ) );
-  inctranTag.Add( "INCLUDE","Y" );
-  
+  inctranTag.Add( "INCLUDE", "Y" );
+
   OfxAggregate stmtrqTag("STMTRQ");
   stmtrqTag.Add( bankacctfromTag );
   stmtrqTag.Add( inctranTag );
 
-  return RequestMessage("BANK","STMT", stmtrqTag);
+  return RequestMessage("BANK", "STMT", stmtrqTag);
 }
 
 OfxAggregate OfxStatementRequest::CreditCardStatementRequest(void) const
-{/*
-  QString dtstart_string = _dtstart.toString(Qt::ISODate).remove(QRegExp("[^0-9]"));
+{
+  /*
+   QString dtstart_string = _dtstart.toString(Qt::ISODate).remove(QRegExp("[^0-9]"));
 
-  return message("CREDITCARD","CCSTMT",Tag("CCSTMTRQ")
-    .subtag(Tag("CCACCTFROM").element("ACCTID",accountnum()))
-    .subtag(Tag("INCTRAN").element("DTSTART",dtstart_string).element("INCLUDE","Y")));
-}
-*/
+   return message("CREDITCARD","CCSTMT",Tag("CCSTMTRQ")
+     .subtag(Tag("CCACCTFROM").element("ACCTID",accountnum()))
+     .subtag(Tag("INCTRAN").element("DTSTART",dtstart_string).element("INCLUDE","Y")));
+  }
+  */
   OfxAggregate ccacctfromTag("CCACCTFROM");
   ccacctfromTag.Add( "ACCTID", m_account.account_number );
 
   OfxAggregate inctranTag("INCTRAN");
   inctranTag.Add( "DTSTART", time_t_to_ofxdate( m_date_from ) );
-  inctranTag.Add( "INCLUDE","Y" );
-  
+  inctranTag.Add( "INCLUDE", "Y" );
+
   OfxAggregate ccstmtrqTag("CCSTMTRQ");
   ccstmtrqTag.Add( ccacctfromTag );
   ccstmtrqTag.Add( inctranTag );
 
-  return RequestMessage("CREDITCARD","CCSTMT", ccstmtrqTag);
+  return RequestMessage("CREDITCARD", "CCSTMT", ccstmtrqTag);
 }
 
 OfxAggregate OfxStatementRequest::InvestmentStatementRequest(void) const
 {
   OfxAggregate invacctfromTag("INVACCTFROM");
-  
+
   invacctfromTag.Add( "BROKERID", m_account.broker_id );
   invacctfromTag.Add( "ACCTID", m_account.account_number );
 
   OfxAggregate inctranTag("INCTRAN");
   inctranTag.Add( "DTSTART", time_t_to_ofxdate( m_date_from ) );
-  inctranTag.Add( "INCLUDE","Y" );
+  inctranTag.Add( "INCLUDE", "Y" );
 
   OfxAggregate incposTag("INCPOS");
   incposTag.Add( "DTASOF", time_t_to_ofxdatetime( time(NULL) ) );
-  incposTag.Add( "INCLUDE","Y" );
-    
+  incposTag.Add( "INCLUDE", "Y" );
+
   OfxAggregate invstmtrqTag("INVSTMTRQ");
   invstmtrqTag.Add( invacctfromTag );
   invstmtrqTag.Add( inctranTag );
-  invstmtrqTag.Add( "INCOO","Y" );
-  invstmtrqTag.Add( incposTag );  
-  invstmtrqTag.Add( "INCBAL","Y" );
+  invstmtrqTag.Add( "INCOO", "Y" );
+  invstmtrqTag.Add( incposTag );
+  invstmtrqTag.Add( "INCBAL", "Y" );
 
-  return RequestMessage("INVSTMT","INVSTMT", invstmtrqTag);
+  return RequestMessage("INVSTMT", "INVSTMT", invstmtrqTag);
 }
 
 char* libofx_request_payment( const OfxFiLogin* login, const OfxAccountData* account, const OfxPayee* payee, const OfxPayment* payment )
@@ -139,9 +140,9 @@ char* libofx_request_payment( const OfxFiLogin* login, const OfxAccountData* acc
 
   unsigned size = request.size();
   char* result = (char*)malloc(size + 1);
-  request.copy(result,size);
+  request.copy(result, size);
   result[size] = 0;
-  
+
   return result;
 }
 
@@ -174,7 +175,7 @@ OfxPaymentRequest::OfxPaymentRequest( const OfxFiLogin& fi, const OfxAccountData
   payeeTag.Add( "STATE", m_payee.state );
   payeeTag.Add( "POSTALCODE", m_payee.postalcode );
   payeeTag.Add( "PHONE", m_payee.phone );
-  
+
   OfxAggregate pmtinfoTag("PMTINFO");
   pmtinfoTag.Add( bankacctfromTag );
   pmtinfoTag.Add( "TRNAMT", m_payment.amount );
@@ -182,11 +183,11 @@ OfxPaymentRequest::OfxPaymentRequest( const OfxFiLogin& fi, const OfxAccountData
   pmtinfoTag.Add( "PAYACCT", m_payment.account );
   pmtinfoTag.Add( "DTDUE", m_payment.datedue );
   pmtinfoTag.Add( "MEMO", m_payment.memo );
-  
+
   OfxAggregate pmtrqTag("PMTRQ");
   pmtrqTag.Add( pmtinfoTag );
 
-  Add( RequestMessage("BILLPAY","PMT", pmtrqTag) );
+  Add( RequestMessage("BILLPAY", "PMT", pmtrqTag) );
 }
 
 char* libofx_request_payment_status( const struct OfxFiLogin* login, const char* transactionid )
@@ -194,16 +195,16 @@ char* libofx_request_payment_status( const struct OfxFiLogin* login, const char*
 #if 0
   OfxAggregate pmtinqrqTag( "PMTINQRQ" );
   pmtinqrqTag.Add( "SRVRTID", transactionid );
-  
+
   OfxRequest ofx(*login);
   ofx.Add( ofx.SignOnRequest() );
-  ofx.Add( ofx.RequestMessage("BILLPAY","PMTINQ", pmtinqrqTag) );
-  
+  ofx.Add( ofx.RequestMessage("BILLPAY", "PMTINQ", pmtinqrqTag) );
+
   string request = OfxHeader() + ofx.Output();
 
   unsigned size = request.size();
   char* result = (char*)malloc(size + 1);
-  request.copy(result,size);
+  request.copy(result, size);
   result[size] = 0;
 #else
   OfxAggregate payeesyncrq( "PAYEESYNCRQ" );
@@ -211,21 +212,21 @@ char* libofx_request_payment_status( const struct OfxFiLogin* login, const char*
   payeesyncrq.Add( "TOKENONLY", "N" );
   payeesyncrq.Add( "REFRESH", "Y" );
   payeesyncrq.Add( "REJECTIFMISSING", "N" );
-  
+
   OfxAggregate message( "BILLPAYMSGSRQV1" );
   message.Add( payeesyncrq );
 
   OfxRequest ofx(*login);
   ofx.Add( ofx.SignOnRequest() );
   ofx.Add( message );
-  
+
   string request = OfxHeader(login->header_version) + ofx.Output();
 
   unsigned size = request.size();
   char* result = (char*)malloc(size + 1);
-  request.copy(result,size);
+  request.copy(result, size);
   result[size] = 0;
- 
+
 #endif
   return result;
 }

@@ -5,7 +5,7 @@
     email                : benoitg@coeus.ca
  ***************************************************************************/
 /**@file
- * \brief Preprocessing of the OFX files before parsing 
+ * \brief Preprocessing of the OFX files before parsing
  *
  Implements the pre-treatement of the OFX file prior to parsing:  OFX header striping, OFX proprietary tags and SGML comment striping, locating the appropriate DTD.
 */
@@ -21,7 +21,7 @@
 #define FILE_PREPROC_H
 
 /**
- * \brief  libofx_detect_file_type tries to analyze a file to determine it's format. 
+ * \brief  libofx_detect_file_type tries to analyze a file to determine it's format.
  *
 @param p_filename File name of the file to process
  @return Detected file format, UNKNOWN if unsuccessfull.

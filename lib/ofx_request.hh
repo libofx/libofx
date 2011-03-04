@@ -1,5 +1,5 @@
 /***************************************************************************
-                          ofx_request.hh 
+                          ofx_request.hh
                              -------------------
     copyright            : (C) 2005 by Ace Jones
     email                : acejones@users.sourceforge.net
@@ -43,7 +43,7 @@ public:
    *   institution
    */
   OfxRequest(const OfxFiLogin& fi): OfxAggregate("OFX"), m_login(fi) {}
-  
+
 //protected:
 public:
   /**
@@ -53,7 +53,7 @@ public:
    * @return The request aggregate created
    */
   OfxAggregate SignOnRequest(void) const;
-  
+
   /**
    * Creates a message aggregate
    *

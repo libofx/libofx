@@ -1,5 +1,5 @@
 /***************************************************************************
-                          ofx_proc_rs.h 
+                          ofx_proc_rs.h
                              -------------------
     copyright            : (C) 2002 by Benoit Gr�goire
     email                : benoitg@coeus.ca
@@ -30,8 +30,9 @@ using namespace std;
  *
  A hierarchy of containers is built as the file is parsed.  The supported OFX elements all have a matching container.  The others are assigned a OfxDummyContainer, so every OFX element creates a container as the file is par Note however that containers are destroyed as soon as the corresponding SGML element is closed.
 */
-class OfxGenericContainer {
- public:
+class OfxGenericContainer
+{
+public:
   string type;/**< The type of the object, often == tag_identifier */
   string tag_identifier; /**< The identifer of the creating tag */
   OfxGenericContainer *parentcontainer;
@@ -41,39 +42,40 @@ class OfxGenericContainer {
   OfxGenericContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer);
   OfxGenericContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
 
-  virtual ~OfxGenericContainer(){};
-  
+  virtual ~OfxGenericContainer() {};
+
   /** \brief Add data to a container object.
    *
    Must be called once completed parsing an OFX SGML data element.  The parent container should know what to do with it.
    \param identifier The name of the data element
    \param value The concatenated string of the data
-  */ 
+  */
   virtual void add_attribute(const string identifier, const string value);
   /** \brief Generate libofx.h events.
    *
    gen_event will call the appropriate ofx_proc_XXX_cb defined in libofx.h if one is available.
    \return true if a callback function vas called, false otherwise.
-  */ 
+  */
   virtual int gen_event();
 
   /** \brief Add this container to the main tree.
    *
    add_to_main_treegen_event will add the container to the main trees stored int the OfxMainContainer.
    \return true if successfull, false otherwise.
-  */ 
+  */
   virtual int add_to_main_tree();
 
   /// Returns the parent container object (the one representing the containing OFX SGML element)
-    OfxGenericContainer* getparent();
+  OfxGenericContainer* getparent();
 };//End class OfxGenericObject
 
 /** \brief A container to holds OFX SGML elements that LibOFX knows nothing about
  *
  The OfxDummyContainer is used for elements (not data elements) that are not recognised.  Note that recognised objects may very well be a children of an OfxDummyContainer.
 */
-class OfxDummyContainer:public OfxGenericContainer {
- public:
+class OfxDummyContainer: public OfxGenericContainer
+{
+public:
   OfxDummyContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   void add_attribute(const string identifier, const string value);
 };
@@ -82,29 +84,32 @@ class OfxDummyContainer:public OfxGenericContainer {
  *
  When you use add_attribute on an OfxPushUpContainer, the add_attribute is redirected to the parent container.
 */
-class OfxPushUpContainer:public OfxGenericContainer {
- public:
-  
+class OfxPushUpContainer: public OfxGenericContainer
+{
+public:
+
   OfxPushUpContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   void add_attribute(const string identifier, const string value);
 };
 
 /** \brief Represents the <STATUS> OFX SGML entity */
-class OfxStatusContainer:public OfxGenericContainer {
- public:
+class OfxStatusContainer: public OfxGenericContainer
+{
+public:
   OfxStatusData data;
-  
+
   OfxStatusContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   ~OfxStatusContainer();
   void add_attribute(const string identifier, const string value);
 };
 
-/** \brief Represents the <BALANCE> OFX SGML entity 
+/** \brief Represents the <BALANCE> OFX SGML entity
  *
  OfxBalanceContainer is an auxiliary container (there is no matching data object in libofx.h)
 */
-class OfxBalanceContainer:public OfxGenericContainer {
- public:
+class OfxBalanceContainer: public OfxGenericContainer
+{
+public:
   /* Not yet complete see spec 1.6 p.63 */
   //char name[OFX_BALANCE_NAME_LENGTH];
   //char description[OFX_BALANCE_DESCRIPTION_LENGTH];
@@ -113,7 +118,7 @@ class OfxBalanceContainer:public OfxGenericContainer {
   int amount_valid;
   time_t date; /**< Effective date of the given balance */
   int date_valid;
-  
+
   OfxBalanceContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   ~OfxBalanceContainer();
   void add_attribute(const string identifier, const string value);
@@ -124,12 +129,13 @@ class OfxBalanceContainer:public OfxGenericContainer {
  ***************************************************************************/
 /** \brief  Represents a statement for either a bank account or a credit card account.
  *
- Can be built from either a <STMTRS> or a <CCSTMTRS> OFX SGML entity 
+ Can be built from either a <STMTRS> or a <CCSTMTRS> OFX SGML entity
  */
-class OfxStatementContainer:public OfxGenericContainer {
- public:
+class OfxStatementContainer: public OfxGenericContainer
+{
+public:
   OfxStatementData data;
-  
+
   OfxStatementContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   ~OfxStatementContainer();
   void add_attribute(const string identifier, const string value);
@@ -146,18 +152,19 @@ class OfxStatementContainer:public OfxGenericContainer {
  ***************************************************************************/
 /** \brief  Represents a bank account or a credit card account.
  *
- Can be built from either a <BANKACCTFROM> or <CCACCTFROM> OFX SGML entity 
+ Can be built from either a <BANKACCTFROM> or <CCACCTFROM> OFX SGML entity
  */
-class OfxAccountContainer:public OfxGenericContainer {
- public:
+class OfxAccountContainer: public OfxGenericContainer
+{
+public:
   OfxAccountData data;
-  
+
   OfxAccountContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   ~OfxAccountContainer();
   void add_attribute(const string identifier, const string value);
   int add_to_main_tree();
   virtual int gen_event();
- private:
+private:
   void gen_account_id(void);
   char bankid[OFX_BANKID_LENGTH];
   char branchid[OFX_BRANCHID_LENGTH];
@@ -171,16 +178,17 @@ class OfxAccountContainer:public OfxGenericContainer {
  ***************************************************************************/
 /** \brief  Represents a security, such as a stock or bond.
  */
-class OfxSecurityContainer:public OfxGenericContainer {
- public:
-  OfxSecurityData data;  
+class OfxSecurityContainer: public OfxGenericContainer
+{
+public:
+  OfxSecurityData data;
 
   OfxSecurityContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   ~OfxSecurityContainer();
   void add_attribute(const string identifier, const string value);
   virtual int gen_event();
   virtual int add_to_main_tree();
- private:
+private:
   OfxStatementContainer * parent_statement;
 };
 
@@ -190,9 +198,10 @@ class OfxSecurityContainer:public OfxGenericContainer {
  ***************************************************************************/
 /** \brief  Represents a generic transaction.
  */
-class OfxTransactionContainer:public OfxGenericContainer {
- public:
-  OfxTransactionData data;  
+class OfxTransactionContainer: public OfxGenericContainer
+{
+public:
+  OfxTransactionData data;
 
   OfxTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   ~OfxTransactionContainer();
@@ -201,26 +210,28 @@ class OfxTransactionContainer:public OfxGenericContainer {
 
   virtual int gen_event();
   virtual int add_to_main_tree();
- private:
+private:
   OfxStatementContainer * parent_statement;
 };
 
 /** \brief  Represents a bank or credid card transaction.
  *
- Built from <STMTTRN> OFX SGML entity 
+ Built from <STMTTRN> OFX SGML entity
  */
-class OfxBankTransactionContainer:public OfxTransactionContainer {
- public:
+class OfxBankTransactionContainer: public OfxTransactionContainer
+{
+public:
   OfxBankTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   void add_attribute(const string identifier, const string value);
 };
 
 /** \brief  Represents a bank or credid card transaction.
  *
- Built from the diferent investment transaction OFX entity 
+ Built from the diferent investment transaction OFX entity
  */
-class OfxInvestmentTransactionContainer:public OfxTransactionContainer {
- public:
+class OfxInvestmentTransactionContainer: public OfxTransactionContainer
+{
+public:
   OfxInvestmentTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
 
   void add_attribute(const string identifier, const string value);
@@ -233,7 +244,8 @@ class OfxInvestmentTransactionContainer:public OfxTransactionContainer {
  *
  The OfxMainContainer maintains trees of processed ofx data structures which can be used to generate events in the right order, and eventually export in OFX and QIF formats and even generate matching OFX querys.
 */
-class OfxMainContainer:public OfxGenericContainer {
+class OfxMainContainer: public OfxGenericContainer
+{
 public:
   OfxMainContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   ~OfxMainContainer();

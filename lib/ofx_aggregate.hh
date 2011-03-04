@@ -1,5 +1,5 @@
 /***************************************************************************
-                          ofx_aggregate.hh 
+                          ofx_aggregate.hh
                              -------------------
     copyright            : (C) 2005 by Ace Jones
     email                : acejones@users.sourceforge.net
@@ -42,40 +42,40 @@ using namespace std;
 class OfxAggregate
 {
 public:
- /**
-   * Creates a new aggregate, using this tag
-   *
-   * @param tag The tag of this aggregate
-   */
-  OfxAggregate( const string& tag ): m_tag( tag ) 
+  /**
+    * Creates a new aggregate, using this tag
+    *
+    * @param tag The tag of this aggregate
+    */
+  OfxAggregate( const string& tag ): m_tag( tag )
   {}
-  
- /**
-   * Adds an element to this aggregate
-   *
-   * @param tag The tag of the element to be added
-   * @param data The data of the element to be added
-   */
+
+  /**
+    * Adds an element to this aggregate
+    *
+    * @param tag The tag of the element to be added
+    * @param data The data of the element to be added
+    */
   void Add( const string& tag, const string& data )
   {
     m_contents += string("<") + tag + string(">") + data + string("\r\n");
   }
-  
- /**
-   * Adds a subordinate aggregate to this aggregate
-   *
-   * @param sub The aggregate to be added
-  */
-  void Add( const OfxAggregate& sub ) 
+
+  /**
+    * Adds a subordinate aggregate to this aggregate
+    *
+    * @param sub The aggregate to be added
+   */
+  void Add( const OfxAggregate& sub )
   {
     m_contents += sub.Output();
   }
- 
- /**
-   * Composes this aggregate into a string
-   *
-   * @return string form of this aggregate
-   */
+
+  /**
+    * Composes this aggregate into a string
+    *
+    * @return string form of this aggregate
+    */
   string Output( void ) const
   {
     return string("<") + m_tag + string(">\r\n") + m_contents + string("</") + m_tag + string(">\r\n");

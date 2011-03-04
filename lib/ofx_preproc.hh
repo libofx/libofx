@@ -5,7 +5,7 @@
     email                : benoitg@coeus.ca
  ***************************************************************************/
 /**@file
- * \brief Preprocessing of the OFX files before parsing 
+ * \brief Preprocessing of the OFX files before parsing
  *
  Implements the pre-treatement of the OFX file prior to parsing:  OFX header striping, OFX proprietary tags and SGML comment striping, locating the appropriate DTD.
 */
@@ -31,7 +31,7 @@ string sanitize_proprietary_tags(string input_string);
 ///Find the appropriate DTD for the file version.
 string find_dtd(LibofxContextPtr ctx, string dtd_filename);
 /**
- * \brief ofx_proc_file process an ofx or ofc file.  
+ * \brief ofx_proc_file process an ofx or ofc file.
  *
  *  libofx_proc_file must be called  with a list of 1 or more OFX
  files to be parsed in command line format.

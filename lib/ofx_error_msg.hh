@@ -29,9 +29,10 @@ struct ErrorMsg
 
 /// List known error codes.
 /**
-   The error_msgs_list table contains all past and present OFX error codes up to the OFX 2.01 specification 
+   The error_msgs_list table contains all past and present OFX error codes up to the OFX 2.01 specification
 */
-const ErrorMsg error_msgs_list[] = {
+const ErrorMsg error_msgs_list[] =
+{
   {0, "Success", "The server successfully processed the request."},
   {1, "Client is up-to-date", "Based on the client timestamp, the client has the latest information. The response does not supply any additional information."},
   {2000, "General error", "Error other than those specified by the remaining error codes. (Note: Servers should provide a more specific error whenever possible. Error code 2000 should be reserved for cases in which a more specific code is not available.)"},
@@ -119,7 +120,8 @@ const ErrorMsg error_msgs_list[] = {
   {16501, "Unknown mail To:", "The server was unable to send mail to the specified Internet address."},
   {16502, "Invalid URL", "The server could not parse the URL."},
   {16503, "Unable to get URL", "The server was unable to retrieve the information at this URL (e.g., an HTTP 400 or 500 series error)."},
-  {-1, "Unknown code", "The description of this code is unknown to libOfx"}};
+  { -1, "Unknown code", "The description of this code is unknown to libOfx"}
+};
 
 ///Retreive error code descriptions
 /**
@@ -129,12 +131,14 @@ const ErrorMsg find_error_msg(int param_code)
 {
   ErrorMsg return_val;
   int i;
-  bool code_found=false;
-  
-  for(i=0;i<2000&&(code_found==false);i++){
-    if((error_msgs_list[i].code==param_code)||(error_msgs_list[i].code==-1)){
-      return_val=error_msgs_list[i];
-      code_found=true;
+  bool code_found = false;
+
+  for (i = 0; i < 2000 && (code_found == false); i++)
+  {
+    if ((error_msgs_list[i].code == param_code) || (error_msgs_list[i].code == -1))
+    {
+      return_val = error_msgs_list[i];
+      code_found = true;
     }
   }
   return return_val;

@@ -21,15 +21,15 @@
 #include <time.h>		// for time_t
 #include "ParserEventGeneratorKit.h"
 using namespace std;
- /* This file contains various simple functions for type conversion & al */
+/* This file contains various simple functions for type conversion & al */
 
 /*wostream &operator<<(wostream &os, SGMLApplication::CharString s); */
 
-///Convert OpenSP CharString to a C++ stream 
+///Convert OpenSP CharString to a C++ stream
 ostream &operator<<(ostream &os, SGMLApplication::CharString s);
 
 ///Convert OpenSP CharString and put it in the C wchar_t string provided
-wchar_t* CharStringtowchar_t(SGMLApplication::CharString source, wchar_t *dest);  
+wchar_t* CharStringtowchar_t(SGMLApplication::CharString source, wchar_t *dest);
 
 ///Convert OpenSP CharString to a C++ STL string
 string CharStringtostring(const SGMLApplication::CharString source, string &dest);

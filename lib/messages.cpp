@@ -1,5 +1,5 @@
 /***************************************************************************
-                          ofx_messages.cpp  
+                          ofx_messages.cpp
                              -------------------
     copyright            : (C) 2002 by Benoit Gr�goire
     email                : benoitg@coeus.ca
@@ -44,12 +44,12 @@ void show_line_number()
   extern SGMLApplication::Position position;
 
 
-  if((ofx_show_position == true))
-    {
-      SGMLApplication::Location *location = new SGMLApplication::Location(entity_ptr, position);
-      cerr << "(Above message occured on Line "<<location->lineNumber<<", Column "<<location->columnNumber<<")"<<endl;
-      delete location;
-    }
+  if ((ofx_show_position == true))
+  {
+    SGMLApplication::Location *location = new SGMLApplication::Location(entity_ptr, position);
+    cerr << "(Above message occured on Line " << location->lineNumber << ", Column " << location->columnNumber << ")" << endl;
+    delete location;
+  }
 }
 
 /**
@@ -59,70 +59,82 @@ int message_out(OfxMsgType error_type, const string message)
 {
 
 
-  switch  (error_type){
+  switch  (error_type)
+  {
   case DEBUG :
-    if(ofx_DEBUG_msg==true){
-      cerr << "LibOFX DEBUG: " << message<<"\n";
+    if (ofx_DEBUG_msg == true)
+    {
+      cerr << "LibOFX DEBUG: " << message << "\n";
       show_line_number();
     }
     break;
   case DEBUG1 :
-    if(ofx_DEBUG1_msg==true){
-      cerr << "LibOFX DEBUG1: " << message<<"\n";
+    if (ofx_DEBUG1_msg == true)
+    {
+      cerr << "LibOFX DEBUG1: " << message << "\n";
       show_line_number();
     }
     break;
   case DEBUG2 :
-    if(ofx_DEBUG2_msg==true){
-      cerr << "LibOFX DEBUG2: " << message<<"\n";
+    if (ofx_DEBUG2_msg == true)
+    {
+      cerr << "LibOFX DEBUG2: " << message << "\n";
       show_line_number();
     }
     break;
   case DEBUG3 :
-    if(ofx_DEBUG3_msg==true){
-      cerr << "LibOFX DEBUG3: " << message<<"\n";
+    if (ofx_DEBUG3_msg == true)
+    {
+      cerr << "LibOFX DEBUG3: " << message << "\n";
       show_line_number();
     }
     break;
   case DEBUG4 :
-    if(ofx_DEBUG4_msg==true){
-      cerr << "LibOFX DEBUG4: " << message<<"\n";
+    if (ofx_DEBUG4_msg == true)
+    {
+      cerr << "LibOFX DEBUG4: " << message << "\n";
       show_line_number();
     }
     break;
   case DEBUG5 :
-    if(ofx_DEBUG5_msg==true){
-      cerr << "LibOFX DEBUG5: " << message<<"\n";
+    if (ofx_DEBUG5_msg == true)
+    {
+      cerr << "LibOFX DEBUG5: " << message << "\n";
       show_line_number();
     }
     break;
   case STATUS :
-    if(ofx_STATUS_msg==true){
-      cerr << "LibOFX STATUS: " << message<<"\n";
+    if (ofx_STATUS_msg == true)
+    {
+      cerr << "LibOFX STATUS: " << message << "\n";
       show_line_number();
     }
     break;
   case INFO :
-    if(ofx_INFO_msg==true){
-      cerr << "LibOFX INFO: " << message<<"\n";
+    if (ofx_INFO_msg == true)
+    {
+      cerr << "LibOFX INFO: " << message << "\n";
       show_line_number();
     }
     break;
   case WARNING :
-    if(ofx_WARNING_msg==true){
-      cerr << "LibOFX WARNING: " << message<<"\n";
+    if (ofx_WARNING_msg == true)
+    {
+      cerr << "LibOFX WARNING: " << message << "\n";
       show_line_number();
     }
     break;
   case ERROR :
-    if(ofx_ERROR_msg==true){
-      cerr << "LibOFX ERROR: " << message<<"\n";
+    if (ofx_ERROR_msg == true)
+    {
+      cerr << "LibOFX ERROR: " << message << "\n";
       show_line_number();
     }
     break;
   case PARSER :
-    if(ofx_PARSER_msg==true){
-      cerr << "LibOFX PARSER: " << message<<"\n";
+    if (ofx_PARSER_msg == true)
+    {
+      cerr << "LibOFX PARSER: " << message << "\n";
       show_line_number();
     }
     break;

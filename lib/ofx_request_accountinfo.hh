@@ -1,5 +1,5 @@
 /***************************************************************************
-                          ofx_request_accountinfo.hh 
+                          ofx_request_accountinfo.hh
                              -------------------
     copyright            : (C) 2005 by Ace Jones
     email                : acejones@users.sourceforge.net

@@ -1,5 +1,5 @@
 /***************************************************************************
-         ofx_request.cpp 
+         ofx_request.cpp
                              -------------------
     copyright            : (C) 2005 by Ace Jones
     email                : acejones@users.sourceforge.net
@@ -35,7 +35,7 @@ string time_t_to_ofxdatetime( time_t time )
 
   strftime( buffer, 50, "%Y%m%d%H%M%S.000", localtime(&time) );
   buffer[50] = 0;
-  
+
   return string(buffer);
 }
 
@@ -45,39 +45,40 @@ string time_t_to_ofxdate( time_t time )
 
   strftime( buffer, 50, "%Y%m%d", localtime(&time) );
   buffer[50] = 0;
-  
+
   return string(buffer);
 }
 
-string OfxHeader(const char *hver){
-  if (hver==NULL || hver[0]==0)
-    hver="102";
+string OfxHeader(const char *hver)
+{
+  if (hver == NULL || hver[0] == 0)
+    hver = "102";
 
-  if (strcmp(hver, "103")==0)
+  if (strcmp(hver, "103") == 0)
     /* TODO: check for differences in version 102 and 103 */
     return string("OFXHEADER:100\r\n"
-		  "DATA:OFXSGML\r\n"
-		  "VERSION:103\r\n"
-		  "SECURITY:NONE\r\n"
-		  "ENCODING:USASCII\r\n"
-		  "CHARSET:1252\r\n"
-		  "COMPRESSION:NONE\r\n"
-		  "OLDFILEUID:NONE\r\n"
-		  "NEWFILEUID:")
-      + time_t_to_ofxdatetime( time(NULL) )
-      + string("\r\n\r\n");
+                  "DATA:OFXSGML\r\n"
+                  "VERSION:103\r\n"
+                  "SECURITY:NONE\r\n"
+                  "ENCODING:USASCII\r\n"
+                  "CHARSET:1252\r\n"
+                  "COMPRESSION:NONE\r\n"
+                  "OLDFILEUID:NONE\r\n"
+                  "NEWFILEUID:")
+           + time_t_to_ofxdatetime( time(NULL) )
+           + string("\r\n\r\n");
   else
     return string("OFXHEADER:100\r\n"
-		  "DATA:OFXSGML\r\n"
-		  "VERSION:102\r\n"
-		  "SECURITY:NONE\r\n"
-		  "ENCODING:USASCII\r\n"
-		  "CHARSET:1252\r\n"
-		  "COMPRESSION:NONE\r\n"
-		  "OLDFILEUID:NONE\r\n"
-		  "NEWFILEUID:")
-      + time_t_to_ofxdatetime( time(NULL) )
-      + string("\r\n\r\n");
+                  "DATA:OFXSGML\r\n"
+                  "VERSION:102\r\n"
+                  "SECURITY:NONE\r\n"
+                  "ENCODING:USASCII\r\n"
+                  "CHARSET:1252\r\n"
+                  "COMPRESSION:NONE\r\n"
+                  "OLDFILEUID:NONE\r\n"
+                  "NEWFILEUID:")
+           + time_t_to_ofxdatetime( time(NULL) )
+           + string("\r\n\r\n");
 }
 
 OfxAggregate OfxRequest::SignOnRequest(void) const
@@ -91,16 +92,16 @@ OfxAggregate OfxRequest::SignOnRequest(void) const
   sonrqTag.Add( "DTCLIENT", time_t_to_ofxdatetime( time(NULL) ) );
   sonrqTag.Add( "USERID", m_login.userid);
   sonrqTag.Add( "USERPASS", m_login.userpass);
-  sonrqTag.Add( "LANGUAGE","ENG");
+  sonrqTag.Add( "LANGUAGE", "ENG");
   sonrqTag.Add( fiTag );
   if ( strlen(m_login.appid) > 0 )
-      sonrqTag.Add( "APPID", m_login.appid);
+    sonrqTag.Add( "APPID", m_login.appid);
   else
-      sonrqTag.Add( "APPID","QWIN");
+    sonrqTag.Add( "APPID", "QWIN");
   if ( strlen(m_login.appver) > 0 )
     sonrqTag.Add( "APPVER", m_login.appver);
   else
-    sonrqTag.Add( "APPVER","1400");
+    sonrqTag.Add( "APPVER", "1400");
 
   OfxAggregate signonmsgTag("SIGNONMSGSRQV1");
   signonmsgTag.Add( sonrqTag );
@@ -110,12 +111,12 @@ OfxAggregate OfxRequest::SignOnRequest(void) const
 
 OfxAggregate OfxRequest::RequestMessage(const string& _msgType, const string& _trnType, const OfxAggregate& _request) const
 {
-  OfxAggregate trnrqTag( _trnType+"TRNRQ" );
+  OfxAggregate trnrqTag( _trnType + "TRNRQ" );
   trnrqTag.Add( "TRNUID", time_t_to_ofxdatetime( time(NULL) ) );
-  trnrqTag.Add( "CLTCOOKIE","1" ); 
+  trnrqTag.Add( "CLTCOOKIE", "1" );
   trnrqTag.Add( _request );
-    
-  OfxAggregate result( _msgType+"MSGSRQV1" );
+
+  OfxAggregate result( _msgType + "MSGSRQV1" );
   result.Add( trnrqTag );
 
   return result;

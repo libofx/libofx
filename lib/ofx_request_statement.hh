@@ -1,5 +1,5 @@
 /***************************************************************************
-                          ofx_request_statement.hh 
+                          ofx_request_statement.hh
                              -------------------
     copyright            : (C) 2005 by Ace Jones
     email                : acejones@users.sourceforge.net
@@ -57,7 +57,7 @@ protected:
    * @return The request aggregate created
    */
   OfxAggregate BankStatementRequest(void) const;
-  
+
   /**
    * Creates a credit card statement request aggregate, <CREDITCARDMSGSRQV1>,
    * <CCSTMTTRNRQ> & <CCSTMTRQ> for this account.  Should only be used if this
@@ -66,7 +66,7 @@ protected:
    * @return The request aggregate created
    */
   OfxAggregate CreditCardStatementRequest(void) const;
-  
+
   /**
    * Creates an investment statement request aggregate, <INSTMTMSGSRQV1>,
    * <INVSTMTTRNRQ> & <INVSTMTRQ> for this account.  Should only be used if this
@@ -75,7 +75,7 @@ protected:
    * @return The request aggregate created
    */
   OfxAggregate InvestmentStatementRequest(void) const;
-  
+
 private:
   OfxAccountData m_account;
   time_t m_date_from;
@@ -96,7 +96,7 @@ public:
    */
   OfxPaymentRequest( const OfxFiLogin& fi, const OfxAccountData& account, const OfxPayee& payee, const OfxPayment& payment );
 protected:
- 
+
 private:
   OfxAccountData m_account;
   OfxPayee m_payee;

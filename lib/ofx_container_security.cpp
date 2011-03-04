@@ -1,5 +1,5 @@
 /***************************************************************************
-         ofx_container_security.cpp 
+         ofx_container_security.cpp
                              -------------------
     copyright            : (C) 2002 by Benoit Gr�goire
     email                : benoitg@coeus.ca
@@ -36,47 +36,56 @@ extern OfxMainContainer * MainContainer;
 OfxSecurityContainer::OfxSecurityContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
   OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
 {
-  memset(&data,0,sizeof(data));
-  type="SECURITY";
+  memset(&data, 0, sizeof(data));
+  type = "SECURITY";
 }
 OfxSecurityContainer::~OfxSecurityContainer()
 {
 }
 void OfxSecurityContainer::add_attribute(const string identifier, const string value)
 {
-  if(identifier=="UNIQUEID"){
-    strncpy(data.unique_id,value.c_str(), sizeof(data.unique_id));
+  if (identifier == "UNIQUEID")
+  {
+    strncpy(data.unique_id, value.c_str(), sizeof(data.unique_id));
     data.unique_id_valid = true;
   }
-  else if(identifier=="UNIQUEIDTYPE"){
-    strncpy(data.unique_id_type,value.c_str(), sizeof(data.unique_id_type));
+  else if (identifier == "UNIQUEIDTYPE")
+  {
+    strncpy(data.unique_id_type, value.c_str(), sizeof(data.unique_id_type));
     data.unique_id_type_valid = true;
   }
-  else if(identifier=="SECNAME"){
-    strncpy(data.secname,value.c_str(), sizeof(data.secname));
+  else if (identifier == "SECNAME")
+  {
+    strncpy(data.secname, value.c_str(), sizeof(data.secname));
     data.secname_valid = true;
   }
-  else if(identifier=="TICKER"){
-    strncpy(data.ticker,value.c_str(), sizeof(data.ticker));
+  else if (identifier == "TICKER")
+  {
+    strncpy(data.ticker, value.c_str(), sizeof(data.ticker));
     data.ticker_valid = true;
   }
-  else if(identifier=="UNITPRICE"){
-    data.unitprice=ofxamount_to_double(value);
+  else if (identifier == "UNITPRICE")
+  {
+    data.unitprice = ofxamount_to_double(value);
     data.unitprice_valid = true;
   }
-  else if(identifier=="DTASOF"){
+  else if (identifier == "DTASOF")
+  {
     data.date_unitprice = ofxdate_to_time_t(value);
     data.date_unitprice_valid = true;
   }
-  else if(identifier=="CURDEF"){
-    strncpy(data.currency,value.c_str(),OFX_CURRENCY_LENGTH);
-    data.currency_valid=true;
+  else if (identifier == "CURDEF")
+  {
+    strncpy(data.currency, value.c_str(), OFX_CURRENCY_LENGTH);
+    data.currency_valid = true;
   }
-  else if(identifier=="MEMO" || identifier=="MEMO2"){
-    strncpy(data.memo,value.c_str(), sizeof(data.memo));
+  else if (identifier == "MEMO" || identifier == "MEMO2")
+  {
+    strncpy(data.memo, value.c_str(), sizeof(data.memo));
     data.memo_valid = true;
- }
-  else{
+  }
+  else
+  {
     /* Redirect unknown identifiers to the base class */
     OfxGenericContainer::add_attribute(identifier, value);
   }
@@ -89,13 +98,13 @@ int  OfxSecurityContainer::gen_event()
 
 int  OfxSecurityContainer::add_to_main_tree()
 {
-  if(MainContainer != NULL)
-    {
-      return MainContainer->add_container(this);
-    }
+  if (MainContainer != NULL)
+  {
+    return MainContainer->add_container(this);
+  }
   else
-    {
-      return false;
-    }
+  {
+    return false;
+  }
 }
-  
+
