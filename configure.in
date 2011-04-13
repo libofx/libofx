@@ -283,11 +283,11 @@ if  test "$libcurl_available" = no; then
 	AC_MSG_WARN([libcurl is not available. ofxconnect (Direct connect samples) will NOT be built.])
 fi
 
-PKG_CHECK_MODULES(LIBXMLPP,libxml++-1.0 >= 1.0.1,
+PKG_CHECK_MODULES(LIBXMLPP,libxml++-2.6 >= 2.6,
 	[
 	AC_DEFINE(HAVE_LIBXMLPP, 1, [Defined if libxml++ is available])
 	have_libxmlpp=yes],
-        [AC_MSG_WARN([libxml++ 1.0 is not available. ofxconnect (Direct connect samples) will NOT be built.])
+        [AC_MSG_WARN([libxml++ 2.6 is not available. ofxconnect (Direct connect samples) will NOT be built.])
 	have_libxmlpp=no])
 
 #PKG_CHECK_MODULES(QT,qt-mt >= 3.2,
