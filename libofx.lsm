@@ -1,13 +1,13 @@
 Begin3
 Title:          LibOFX 
-Version:        0.9.4
+Version:        0.24
 Entered-date:   
 Description:    
 Keywords:        
-Author:         Benoit GrÃ©goire <benoitg@coeus.ca> 
-Maintained-by:  Benoit GrÃ©goire <benoitg@coeus.ca> 
+Author:         Benoit Grégoire <bock@step.polymtl.ca> 
+Maintained-by:  Benoit Grégoire <bock@step.polymtl.ca> 
 Primary-site:   	        
-Home-page:      http://libofx.sourceforge.net/
+Home-page:      http://step.polymtl.ca/~bock/libofx/
 Original-site:  
 Platforms:       Linux and other Unices
 Copying-policy: GNU Public License

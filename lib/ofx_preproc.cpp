@@ -35,6 +35,12 @@
 #endif
 
 #ifdef OS_WIN32
+# define DIRSEP "\\"
+#else
+# define DIRSEP "/"
+#endif
+
+#ifdef OS_WIN32
 # include "win32.hh"
 # include <windows.h> // for GetModuleFileName()
 # undef ERROR
@@ -62,9 +68,9 @@ const char *DTD_SEARCH_PATH[DTD_SEARCH_PATH_NUM] =
 #ifdef MAKEFILE_DTD_PATH
   MAKEFILE_DTD_PATH ,
 #endif
-  "/usr/local/share/libofx/dtd/",
-  "/usr/share/libofx/dtd/",
-  "~/"
+  "/usr/local/share/libofx/dtd",
+  "/usr/share/libofx/dtd",
+  "~"
 };
 const unsigned int READ_BUFFER_SIZE = 1024;
 
@@ -85,6 +91,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
   string s_buffer;
   char *filenames[3];
   char tmp_filename[256];
+  int tmp_file_fd;
 #ifdef HAVE_ICONV
   iconv_t conversion_descriptor;
 #endif
@@ -95,20 +102,31 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
     message_out(DEBUG, string("ofx_proc_file():Opening file: ") + p_filename);
 
     input_file.open(p_filename);
-    mkTempFileName("libofxtmpXXXXXX", tmp_filename, sizeof(tmp_filename));
-    mkstemp(tmp_filename);
-    tmp_file.open(tmp_filename);
-
-    message_out(DEBUG, "ofx_proc_file(): Creating temp file: " + string(tmp_filename));
     if (!input_file)
     {
       message_out(ERROR, "ofx_proc_file():Unable to open the input file " + string(p_filename));
     }
-    else if (!tmp_file)
+
+    mkTempFileName("libofxtmpXXXXXX", tmp_filename, sizeof(tmp_filename));
+
+    message_out(DEBUG, "ofx_proc_file(): Creating temp file: " + string(tmp_filename));
+    tmp_file_fd = mkstemp(tmp_filename);
+    if(tmp_file_fd)
     {
-      message_out(ERROR, "ofx_proc_file():Unable to open the output file " + string(tmp_filename));
+    tmp_file.open(tmp_filename);
+    if (!tmp_file)
+      {
+        message_out(ERROR, "ofx_proc_file():Unable to open the created temp file " + string(tmp_filename));
+        return -1;
+      }
     }
     else
+    {
+        message_out(ERROR, "ofx_proc_file():Unable to create a temp file at " + string(tmp_filename));
+        return -1;
+    }
+
+    if (input_file && tmp_file)
     {
       int header_separator_idx;
       string header_name;
@@ -312,6 +330,7 @@ int libofx_proc_buffer(LibofxContextPtr ctx,
   string s_buffer;
   char *filenames[3];
   char tmp_filename[256];
+  int tmp_file_fd;
   ssize_t pos;
   LibofxContext *libofx_context;
 
@@ -326,14 +345,21 @@ int libofx_proc_buffer(LibofxContextPtr ctx,
   s_buffer = string(s, size);
 
   mkTempFileName("libofxtmpXXXXXX", tmp_filename, sizeof(tmp_filename));
-  mkstemp(tmp_filename);
-  tmp_file.open(tmp_filename);
-
   message_out(DEBUG, "ofx_proc_file(): Creating temp file: " + string(tmp_filename));
-  if (!tmp_file)
+  tmp_file_fd = mkstemp(tmp_filename);
+  if(tmp_file_fd)
   {
-    message_out(ERROR, "ofx_proc_file():Unable to open the output file " + string(tmp_filename));
-    return -1;
+  tmp_file.open(tmp_filename);
+  if (!tmp_file)
+    {
+      message_out(ERROR, "ofx_proc_file():Unable to open the created output file " + string(tmp_filename));
+      return -1;
+    }
+  }
+  else
+  {
+      message_out(ERROR, "ofx_proc_file():Unable to create a temp file at " + string(tmp_filename));
+      return -1;
   }
 
   if (libofx_context->currentFileType() == OFX)
@@ -588,7 +614,7 @@ static std::string get_dtd_installation_directory()
     *p = '\0';
 
   str_fn = ch_fn;
-  str_fn += "\\share\\libofx\\dtd\\";
+  str_fn += "\\share\\libofx\\dtd";
 
   return str_fn;
 }
@@ -596,13 +622,21 @@ static std::string get_dtd_installation_directory()
 
 
 /**
-   This function will try to find a DTD matching the requested_version and return the full path of the DTD found (or an empty string if unsuccessfull)
+   This function will try to find a DTD matching the requested_version and return the full path of the DTD found (or an empty string if unsuccessful)
    *
    Please note that currently the function will ALWAYS look for version 160, since OpenSP can't parse the 201 DTD correctly
+
+   It will look, in (order)
+
+   1- The environment variable OFX_DTD_PATH (if present)
+   2- On windows only, a relative path specified by get_dtd_installation_directory()
+   3- The path specified by the makefile in MAKEFILE_DTD_PATH, thru LIBOFX_DTD_DIR in configure (if present)
+   4- Any hardcoded paths in DTD_SEARCH_PATH
 */
 string find_dtd(LibofxContextPtr ctx, string dtd_filename)
 {
   string dtd_path_filename;
+  char *env_dtd_path;
 
   dtd_path_filename = reinterpret_cast<const LibofxContext*>(ctx)->dtdDir();
   if (!dtd_path_filename.empty())
@@ -620,6 +654,7 @@ string find_dtd(LibofxContextPtr ctx, string dtd_filename)
   dtd_path_filename = get_dtd_installation_directory();
   if (!dtd_path_filename.empty())
   {
+	dtd_path_filename.append(DIRSEP);
     dtd_path_filename.append(dtd_filename);
     ifstream dtd_file(dtd_path_filename.c_str());
     if (dtd_file)
@@ -629,10 +664,29 @@ string find_dtd(LibofxContextPtr ctx, string dtd_filename)
     }
   }
 #endif
+  /* Search in environement variable OFX_DTD_PATH */
+  env_dtd_path = getenv("OFX_DTD_PATH");
+  if (env_dtd_path)
+  {
+    dtd_path_filename.append(env_dtd_path);
+    dtd_path_filename.append(DIRSEP);
+    dtd_path_filename.append(dtd_filename);
+    ifstream dtd_file(dtd_path_filename.c_str());
+    if (!dtd_file)
+    {
+      message_out(STATUS, "find_dtd():OFX_DTD_PATH env variable was was present, but unable to open the file " + dtd_path_filename);
+    }
+    else
+    {
+      message_out(STATUS, "find_dtd():DTD found: " + dtd_path_filename);
+      return dtd_path_filename;
+    }
+  }
 
   for (int i = 0; i < DTD_SEARCH_PATH_NUM; i++)
   {
     dtd_path_filename = DTD_SEARCH_PATH[i];
+    dtd_path_filename.append(DIRSEP);
     dtd_path_filename.append(dtd_filename);
     ifstream dtd_file(dtd_path_filename.c_str());
     if (!dtd_file)

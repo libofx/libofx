@@ -42,7 +42,7 @@ AM_CPPFLAGS = \
 	-I. \
 	-I${top_builddir}/inc \
 	-I${OPENSPINCLUDES} \
-	-DMAKEFILE_DTD_PATH=\"${LIBOFX_DTD_DIR}/\"
+	-DMAKEFILE_DTD_PATH=\"${LIBOFX_DTD_DIR}\"
 
 #libofx_la_LIBADD = @LIBOBJS@ ${OPENSPLIBS} -lstdc++
 libofx_la_LIBADD = $(OPENSPLIBS) $(ICONV_LIBS) -lstdc++

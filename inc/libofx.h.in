@@ -1,8 +1,8 @@
 /*-*-c-*-*******************************************************************
               libofx.h  -  Main header file for the libofx API
                              -------------------
-    copyright            : (C) 2002-2010 Benoit GrÃ©goire
-    email                : benoitg@coeus.ca
+    copyright            : (C) 2002 by Benoit Grégoire
+    email                : bock@step.polymtl.ca
 ***************************************************************************/
 /**@file
  * \brief Main header file containing the LibOfx API
@@ -22,9 +22,6 @@
  pointers are valid and strings point to a null terminated string.
  Elements listed as mandatory are for information purpose only, do not
  trust the bank not to send you non-conforming data...
- 
- Note tha Libofx will look for DTDs in a path specified by the env variable 
- OFX_DTD_PATH (if present) before any paths specified at compile time.
 */
 /***************************************************************************
  *                                                                         *
