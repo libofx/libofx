@@ -19,7 +19,7 @@ m4_include([libcurl.m4])
 
 LIBOFX_MAJOR_VERSION=0
 LIBOFX_MINOR_VERSION=9
-LIBOFX_MICRO_VERSION=3
+LIBOFX_MICRO_VERSION=4
 # this number is just incremented for every major change in CVS, also across
 # releases to emulate the Revision variable of SVN (which isn't available
 # with CVS)
@@ -27,7 +27,7 @@ LIBOFX_BUILD_VERSION=0
 LIBOFX_TAG_VERSION="stable"
 
 case "$LIBOFX_TAG_VERSION" in
-  cvs|svn)
+  cvs|svn|git)
      LIBOFX_VERSION_RELEASE_STRING="$LIBOFX_MAJOR_VERSION.$LIBOFX_MINOR_VERSION.$LIBOFX_MICRO_VERSION.r${LIBOFX_BUILD_VERSION}"
      ;;
   stable)
@@ -367,6 +367,7 @@ AC_SUBST(LIBOFX_DTD_DIR)
 AC_OUTPUT( 		
 	   		libofx.spec
 			libofx.pc
+			libofx.lsm
 			m4/Makefile
 			lib/Makefile
 			inc/Makefile

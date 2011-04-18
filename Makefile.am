@@ -20,6 +20,7 @@ EXTRA_DIST = \
   libofx.spec \
   libofx.pc \
   totest.txt \
+  libofx.lsm.in \
   libofx.lsm
 
 pkgconfigdir=$(libdir)/pkgconfig
