@@ -109,39 +109,50 @@ time_t ofxdate_to_time_t(const string ofxdate)
 {
   struct tm time;
   double local_offset; /* in seconds */
-  float ofx_gmt_offset; /* in fractionnal hours */
+  float ofx_gmt_offset; /* in fractional hours */
   char timezone[4]; /* Original timezone: the library does not expose this value*/
   char exact_time_specified = false;
   char time_zone_specified = false;
-
+  string ofxdate_whole;
   time_t temptime;
 
-  time.tm_isdst = daylight; // iniitialize dst setting
+  time.tm_isdst = daylight; // initialize dst setting
   std::time(&temptime);
   local_offset = difftime(mktime(localtime(&temptime)), mktime(gmtime(&temptime))) + (3600 * daylight);
 
   if (ofxdate.size() != 0)
   {
-    if (ofxdate.substr(0, 8).find_first_not_of("0123456789") != string::npos )
+	ofxdate_whole = ofxdate.substr(0,ofxdate.find_first_not_of("0123456789"));
+    if (ofxdate_whole.size()>=8)
     {
-      /* Catch invalid string format */
-      message_out(ERROR, "ofxdate_to_time_t():  Unable to convert time, string is not in proper YYYYMMDDHHMMSS.XXX[gmt offset:tz name] format!");
-      return mktime(&time);
+      time.tm_year = atoi(ofxdate_whole.substr(0, 4).c_str()) - 1900;
+      time.tm_mon = atoi(ofxdate_whole.substr(4, 2).c_str()) - 1;
+      time.tm_mday = atoi(ofxdate_whole.substr(6, 2).c_str());
+
+      if (ofxdate_whole.size() > 8)
+      {
+        if (ofxdate_whole.size() == 14)
+        {
+        /* if exact time is specified */
+        exact_time_specified = true;
+        time.tm_hour = atoi(ofxdate_whole.substr(8, 2).c_str());
+        time.tm_min = atoi(ofxdate_whole.substr(10, 2).c_str());
+        time.tm_sec = atoi(ofxdate_whole.substr(12, 2).c_str());
+        }
+        else
+        {
+        	message_out(WARNING, "ofxdate_to_time_t():  Successfully parsed date part, but unable to parse time part of string " + ofxdate_whole + ". It is not in proper YYYYMMDDHHMMSS.XXX[gmt offset:tz name] format!");
+        }
+      }
+
     }
     else
     {
-      time.tm_year = atoi(ofxdate.substr(0, 4).c_str()) - 1900;
-      time.tm_mon = atoi(ofxdate.substr(4, 2).c_str()) - 1;
-      time.tm_mday = atoi(ofxdate.substr(6, 2).c_str());
+          /* Catch invalid string format */
+          message_out(ERROR, "ofxdate_to_time_t():  Unable to convert time, string " + ofxdate + " is not in proper YYYYMMDDHHMMSS.XXX[gmt offset:tz name] format!");
+          return mktime(&time);
     }
-    if (ofxdate.size() > 8)
-    {
-      /* if exact time is specified */
-      exact_time_specified = true;
-      time.tm_hour = atoi(ofxdate.substr(8, 2).c_str());
-      time.tm_min = atoi(ofxdate.substr(10, 2).c_str());
-      time.tm_sec = atoi(ofxdate.substr(12, 2).c_str());
-    }
+
 
     /* Check if the timezone has been specified */
     string::size_type startidx = ofxdate.find("[");
@@ -177,6 +188,7 @@ time_t ofxdate_to_time_t(const string ofxdate)
       time.tm_min = 59;
       time.tm_sec = 0;
     }
+    return mktime(&time);
   }
   else
   {
