@@ -1,4 +1,4 @@
-LibOFX 0.9.3:
+LibOFX 0.9.4:
     - Patch to fix segfault on some malformed date formats.  Inspired by Zach's patch on launchpad.
     - Packages-oriented changes:
         - LibOFX will now look for DTDs in env variable OFX_DTD_PATH (if present).  
@@ -6,6 +6,7 @@ LibOFX 0.9.3:
         - No longer ignore return value of mkstemp()
         - Integrate all changes in Ubuntu's package that weren't already upstream
         - Move to LibXML++ 2.6, as 1.0 is deprecated
+	- Add generated man pages with html2man
     
 LibOFX 0.9.3:
 	- Fix segfault on some files containing missing closing tags (bug #2969817)
