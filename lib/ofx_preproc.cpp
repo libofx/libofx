@@ -111,10 +111,10 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
 
     message_out(DEBUG, "ofx_proc_file(): Creating temp file: " + string(tmp_filename));
     tmp_file_fd = mkstemp(tmp_filename);
-    if(tmp_file_fd)
+    if (tmp_file_fd)
     {
-    tmp_file.open(tmp_filename);
-    if (!tmp_file)
+      tmp_file.open(tmp_filename);
+      if (!tmp_file)
       {
         message_out(ERROR, "ofx_proc_file():Unable to open the created temp file " + string(tmp_filename));
         return -1;
@@ -122,8 +122,8 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
     }
     else
     {
-        message_out(ERROR, "ofx_proc_file():Unable to create a temp file at " + string(tmp_filename));
-        return -1;
+      message_out(ERROR, "ofx_proc_file():Unable to create a temp file at " + string(tmp_filename));
+      return -1;
     }
 
     if (input_file && tmp_file)
@@ -347,10 +347,10 @@ int libofx_proc_buffer(LibofxContextPtr ctx,
   mkTempFileName("libofxtmpXXXXXX", tmp_filename, sizeof(tmp_filename));
   message_out(DEBUG, "ofx_proc_file(): Creating temp file: " + string(tmp_filename));
   tmp_file_fd = mkstemp(tmp_filename);
-  if(tmp_file_fd)
+  if (tmp_file_fd)
   {
-  tmp_file.open(tmp_filename);
-  if (!tmp_file)
+    tmp_file.open(tmp_filename);
+    if (!tmp_file)
     {
       message_out(ERROR, "ofx_proc_file():Unable to open the created output file " + string(tmp_filename));
       return -1;
@@ -358,8 +358,8 @@ int libofx_proc_buffer(LibofxContextPtr ctx,
   }
   else
   {
-      message_out(ERROR, "ofx_proc_file():Unable to create a temp file at " + string(tmp_filename));
-      return -1;
+    message_out(ERROR, "ofx_proc_file():Unable to create a temp file at " + string(tmp_filename));
+    return -1;
   }
 
   if (libofx_context->currentFileType() == OFX)
@@ -654,7 +654,7 @@ string find_dtd(LibofxContextPtr ctx, string dtd_filename)
   dtd_path_filename = get_dtd_installation_directory();
   if (!dtd_path_filename.empty())
   {
-	dtd_path_filename.append(DIRSEP);
+    dtd_path_filename.append(DIRSEP);
     dtd_path_filename.append(dtd_filename);
     ifstream dtd_file(dtd_path_filename.c_str());
     if (dtd_file)

@@ -253,15 +253,17 @@ public:
             /* The main container is a special case */
             tmp_container_element = curr_container_element;
             curr_container_element = curr_container_element->getparent ();
-            if(curr_container_element==NULL) {
+            if (curr_container_element == NULL)
+            {
               //Defensive coding, this isn't supposed to happen
-              curr_container_element=tmp_container_element;
+              curr_container_element = tmp_container_element;
             }
-            if(MainContainer!=NULL){
-            MainContainer->gen_event();
-            delete MainContainer;
-            MainContainer = NULL;
-            message_out (DEBUG, "Element " + identifier + " closed, MainContainer destroyed");
+            if (MainContainer != NULL)
+            {
+              MainContainer->gen_event();
+              delete MainContainer;
+              MainContainer = NULL;
+              message_out (DEBUG, "Element " + identifier + " closed, MainContainer destroyed");
             }
             else
             {

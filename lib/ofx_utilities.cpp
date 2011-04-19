@@ -122,8 +122,8 @@ time_t ofxdate_to_time_t(const string ofxdate)
 
   if (ofxdate.size() != 0)
   {
-	ofxdate_whole = ofxdate.substr(0,ofxdate.find_first_not_of("0123456789"));
-    if (ofxdate_whole.size()>=8)
+    ofxdate_whole = ofxdate.substr(0, ofxdate.find_first_not_of("0123456789"));
+    if (ofxdate_whole.size() >= 8)
     {
       time.tm_year = atoi(ofxdate_whole.substr(0, 4).c_str()) - 1900;
       time.tm_mon = atoi(ofxdate_whole.substr(4, 2).c_str()) - 1;
@@ -133,24 +133,24 @@ time_t ofxdate_to_time_t(const string ofxdate)
       {
         if (ofxdate_whole.size() == 14)
         {
-        /* if exact time is specified */
-        exact_time_specified = true;
-        time.tm_hour = atoi(ofxdate_whole.substr(8, 2).c_str());
-        time.tm_min = atoi(ofxdate_whole.substr(10, 2).c_str());
-        time.tm_sec = atoi(ofxdate_whole.substr(12, 2).c_str());
+          /* if exact time is specified */
+          exact_time_specified = true;
+          time.tm_hour = atoi(ofxdate_whole.substr(8, 2).c_str());
+          time.tm_min = atoi(ofxdate_whole.substr(10, 2).c_str());
+          time.tm_sec = atoi(ofxdate_whole.substr(12, 2).c_str());
         }
         else
         {
-        	message_out(WARNING, "ofxdate_to_time_t():  Successfully parsed date part, but unable to parse time part of string " + ofxdate_whole + ". It is not in proper YYYYMMDDHHMMSS.XXX[gmt offset:tz name] format!");
+          message_out(WARNING, "ofxdate_to_time_t():  Successfully parsed date part, but unable to parse time part of string " + ofxdate_whole + ". It is not in proper YYYYMMDDHHMMSS.XXX[gmt offset:tz name] format!");
         }
       }
 
     }
     else
     {
-          /* Catch invalid string format */
-          message_out(ERROR, "ofxdate_to_time_t():  Unable to convert time, string " + ofxdate + " is not in proper YYYYMMDDHHMMSS.XXX[gmt offset:tz name] format!");
-          return mktime(&time);
+      /* Catch invalid string format */
+      message_out(ERROR, "ofxdate_to_time_t():  Unable to convert time, string " + ofxdate + " is not in proper YYYYMMDDHHMMSS.XXX[gmt offset:tz name] format!");
+      return mktime(&time);
     }
 
 
