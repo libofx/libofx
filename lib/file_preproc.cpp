@@ -36,7 +36,7 @@ const unsigned int READ_BUFFER_SIZE = 1024;
  */
 const char * libofx_get_file_format_description(const struct LibofxFileFormatInfo format_list[], enum LibofxFileFormat file_format)
 {
-  const char * retval = "UNKNOWN (File format couldn't be sucessfully identified)";
+  const char * retval = "UNKNOWN (File format couldn't be successfully identified)";
 
   for (int i = 0; LibofxImportFormatList[i].format != LAST; i++)
   {
