@@ -6,7 +6,9 @@ dist_man_MANS = ofxconnect.1
 AM_CPPFLAGS = \
 	-I${top_srcdir}/inc \
 	@LIBCURL_CPPFLAGS@ \
-	@LIBXMLPP_CFLAGS@
+	@LIBXMLPP_CFLAGS@ \
+	'-DCMDLINE_PARSER_PACKAGE="ofxconnect"'
+
 
 if USE_GENGETOPT 
 CLEANFILES = cmdline.c cmdline.h
@@ -25,4 +27,4 @@ TESTS = test-privateserver.sh
 
 ofxconnect.1: ofxconnect.cpp $(top_srcdir)/configure.in
 	$(MAKE) $(AM_MAKEFLAGS) ofxconnect$(EXEEXT)
-	help2man --output=ofxconnect.1 ./ofxconnect$(EXEEXT)
+	help2man -n 'Create a statement request file' -N --output=ofxconnect.1 ./ofxconnect$(EXEEXT)

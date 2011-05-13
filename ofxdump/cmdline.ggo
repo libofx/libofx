@@ -3,9 +3,9 @@
 # Version of your program
 # don't use version if you're using automake
 purpose "ofxdump prints to stdout, in human readable form, everything the library 
- understands about a particular file or response, and sends errors to 
- stderr.  To know exactly what the library understands about of a particular
- ofx response file, just call ofxdump on that file."
+understands about a particular file or response, and sends errors to
+stderr.  To know exactly what the library understands about of a particular
+ofx response file, just call ofxdump on that file."
 
 # Options
 # option <long> <short> <desc> {argtype} {typestr="<type descr>"} {default="<default value>"} {required} {argoptional} {multiple}
