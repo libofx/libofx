@@ -11,9 +11,9 @@ dnl Process this file with autoconf to produce a configure script.
 AC_INIT(inc/libofx.h.in)
 AM_CONFIG_HEADER(config.h)
 AC_CONFIG_AUX_DIR(config)
+AC_CONFIG_MACRO_DIR(m4)
 AC_PROG_CC
 AC_PROG_CXX
-#AC_PROG_RANLIB
 
 m4_include([libcurl.m4])
 
@@ -64,18 +64,15 @@ AC_SUBST(LIBOFX_SO_AGE)
 
 AC_PROG_INSTALL
 
+AC_PROG_LIBTOOL
 AC_LIBTOOL_DLOPEN
 AC_LIBTOOL_WIN32_DLL
 AC_LIBTOOL_RC
-AM_PROG_LIBTOOL
 
 AC_ISC_POSIX
 AC_C_BIGENDIAN
 AC_PROG_MAKE_SET
 AC_HEADER_STDC
-
-AQ_CHECK_OS
-
 
 AC_ARG_WITH(opensp-includes, 
 [  --with-opensp-includes=PATH     specify where to look for OpenSP includes  

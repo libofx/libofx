@@ -1,3 +1,5 @@
+ACLOCAL_AMFLAGS = -I m4
+
 if BUILD_OFXCONNECT
   MAYBE_OFXCONNECT = ofxconnect
 endif
