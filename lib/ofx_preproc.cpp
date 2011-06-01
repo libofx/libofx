@@ -169,10 +169,12 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
           {
             if (ofx_charset.compare("ISO-8859-1") == 0 || ofx_charset.compare("8859-1") == 0)
             {
+              //Only "ISO-8859-1" is actually a legal value, but since the banks follows the spec SO well...
               fromcode = "ISO-8859-1";
             }
-            else if (ofx_charset.compare("1252") == 0)
+            else if (ofx_charset.compare("1252") == 0 || ofx_charset.compare("CP1252") == 0)
             {
+              //Only "1252" is actually a legal value, but since the banks follows the spec SO well...
               fromcode = "CP1252";
             }
             else if (ofx_charset.compare("NONE") == 0)
@@ -184,8 +186,9 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
               fromcode = LIBOFX_DEFAULT_INPUT_ENCODING;
             }
           }
-          else if (ofx_encoding.compare("UTF-8") == 0)
+          else if (ofx_encoding.compare("UTF-8") == 0 || ofx_encoding.compare("UNICODE") == 0)
           {
+        	//While "UNICODE" isn't a legal value, some cyrilic files do specify it as such...
             fromcode = "UTF-8";
           }
           else
@@ -699,6 +702,25 @@ string find_dtd(LibofxContextPtr ctx, string dtd_filename)
       return dtd_path_filename;
     }
   }
+
+  /* Last resort, look in source tree relative path (useful for development) */
+  dtd_path_filename = "";
+  dtd_path_filename.append("..");
+  dtd_path_filename.append(DIRSEP);
+  dtd_path_filename.append("dtd");
+  dtd_path_filename.append(DIRSEP);
+  dtd_path_filename.append(dtd_filename);
+  ifstream dtd_file(dtd_path_filename.c_str());
+  if (!dtd_file)
+  {
+    message_out(DEBUG, "find_dtd(): Unable to open the file " + dtd_path_filename + ", most likely we are not in the source tree.");
+  }
+  else
+  {
+    message_out(STATUS, "find_dtd():DTD found: " + dtd_path_filename);
+    return dtd_path_filename;
+  }
+
 
   message_out(ERROR, "find_dtd():Unable to find the DTD named " + dtd_filename);
   return "";
