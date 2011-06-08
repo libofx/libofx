@@ -636,7 +636,7 @@ static std::string get_dtd_installation_directory()
    3- The path specified by the makefile in MAKEFILE_DTD_PATH, thru LIBOFX_DTD_DIR in configure (if present)
    4- Any hardcoded paths in DTD_SEARCH_PATH
 */
-string find_dtd(LibofxContextPtr ctx, string dtd_filename)
+std::string find_dtd(LibofxContextPtr ctx, const std::string& dtd_filename)
 {
   string dtd_path_filename;
   char *env_dtd_path;

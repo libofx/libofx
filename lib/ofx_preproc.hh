@@ -29,7 +29,7 @@
 ///Removes proprietary tags and comments.
 string sanitize_proprietary_tags(string input_string);
 ///Find the appropriate DTD for the file version.
-string find_dtd(LibofxContextPtr ctx, string dtd_filename);
+std::string find_dtd(LibofxContextPtr ctx, const std::string& dtd_filename);
 /**
  * \brief ofx_proc_file process an ofx or ofc file.
  *
