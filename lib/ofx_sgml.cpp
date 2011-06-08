@@ -25,6 +25,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <string>
+#include <cassert>
 #include "ParserEventGeneratorKit.h"
 #include "libofx.h"
 #include "ofx_utilities.hh"
@@ -367,9 +368,10 @@ private:
 /**
    ofx_proc_sgml will take a list of files in command line format.  The first file must be the DTD, and then any number of OFX files.
 */
-int ofx_proc_sgml(LibofxContext * libofx_context, int argc, char *argv[])
+int ofx_proc_sgml(LibofxContext * libofx_context, int argc, char * const* argv)
 {
   message_out(DEBUG, "Begin ofx_proc_sgml()");
+  assert(argc >= 3);
   message_out(DEBUG, argv[0]);
   message_out(DEBUG, argv[1]);
   message_out(DEBUG, argv[2]);

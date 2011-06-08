@@ -21,6 +21,6 @@
 #include "context.hh"
 
 ///Parses a DTD and OFX file(s)
-int ofc_proc_sgml(LibofxContext * libofx_context, int argc, char *argv[]);
+int ofc_proc_sgml(LibofxContext * libofx_context, int argc, char * const* argv);
 
 #endif
