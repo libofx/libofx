@@ -17,7 +17,11 @@ endif
 
 ofxdump.1: ofxdump.cpp $(top_srcdir)/configure.in
 	$(MAKE) $(AM_MAKEFLAGS) ofxdump$(EXEEXT)
-	help2man -n 'Dump content of OFX files as human-readable text' -N --output=ofxdump.1 ./ofxdump$(EXEEXT)
+if HAVE_HELP2MAN
+	$(HELP2MAN) -n 'Dump content of OFX files as human-readable text' -N --output=ofxdump.1 ./ofxdump$(EXEEXT)
+else
+	echo "*** No man page available because of missing help2man tool" > $@
+endif
 
 MAINTAINERCLEANFILES  = cmdline.c cmdline.h
 EXTRA_DIST = cmdline.ggo

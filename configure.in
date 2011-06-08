@@ -302,6 +302,9 @@ fi
 
 AM_CONDITIONAL(USE_GENGETOPT, test "x$gengetopt" = xyes)
 
+AC_PATH_PROG([HELP2MAN], [help2man], [no])
+AM_CONDITIONAL(HAVE_HELP2MAN, test "x$HELP2MAN" != "xno")
+
 # check for curl
 # ----------------------------------------------------------------------------
 
