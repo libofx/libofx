@@ -63,6 +63,7 @@ extern "C" {
 #define OFX_FITID_LENGTH               (255 + 1)
 #define OFX_TOKEN2_LENGTH              (36 + 1)
 #define OFX_MEMO_LENGTH                (255 + 1)
+#define OFX_FIID_LENGTH                (32 + 1)
 #define OFX_MEMO2_LENGTH               (390 + 1)
 #define OFX_BALANCE_NAME_LENGTH        (32 + 1)
 #define OFX_BALANCE_DESCRIPTION_LENGTH (80 + 1)
@@ -388,6 +389,12 @@ extern "C" {
 
     char memo[OFX_MEMO2_LENGTH];/**< Extra information not included in name */
     int memo_valid;
+
+    /** The currency is a string in ISO-4217 format.  It overrides the
+        one defined in the statement for the unit price */
+    char fiid[OFX_FIID_LENGTH];
+    int fiid_valid;
+
   };/* end struct OfxSecurityData */
 
   /**

@@ -84,6 +84,11 @@ void OfxSecurityContainer::add_attribute(const string identifier, const string v
     strncpy(data.memo, value.c_str(), sizeof(data.memo));
     data.memo_valid = true;
   }
+  else if (identifier == "FIID")
+  {
+    strncpy(data.fiid, value.c_str(), OFX_FIID_LENGTH);
+    data.fiid_valid = true;
+  }
   else
   {
     /* Redirect unknown identifiers to the base class */
