@@ -21,6 +21,8 @@
 #include "ParserEventGeneratorKit.h"
 #include "ofx_utilities.hh"
 #include "messages.hh"
+#include "config.h"
+#include "libofx.h"
 
 SGMLApplication::OpenEntityPtr entity_ptr; /**< Global for determining the line number in OpenSP */
 SGMLApplication::Position position; /**< Global for determining the line number in OpenSP */

@@ -370,14 +370,6 @@ int ofx_proc_status_cb(struct OfxStatusData data, void * status_data)
 
 int main (int argc, char *argv[])
 {
-  /** Tell ofxdump what you want it to send to stderr.  See messages.cpp for more details */
-  extern int ofx_PARSER_msg;
-  extern int ofx_DEBUG_msg;
-  extern int ofx_WARNING_msg;
-  extern int ofx_ERROR_msg;
-  extern int ofx_INFO_msg;
-  extern int ofx_STATUS_msg;
-
   gengetopt_args_info args_info;
 
   /* let's call our cmdline parser */

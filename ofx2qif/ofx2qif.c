@@ -201,12 +201,6 @@ int ofx_proc_account_cb(const struct OfxAccountData data, void * account_data)
 
 int main (int argc, char *argv[])
 {
-extern int ofx_PARSER_msg;
-extern int ofx_DEBUG_msg;
-extern int ofx_WARNING_msg;
-extern int ofx_ERROR_msg;
-extern int ofx_INFO_msg;
-extern int ofx_STATUS_msg;
  ofx_PARSER_msg = false;
  ofx_DEBUG_msg = false;
  ofx_WARNING_msg = false;

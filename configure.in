@@ -41,6 +41,36 @@ case "$LIBOFX_TAG_VERSION" in
      ;;
 esac
 
+### Check for GCC symbol visibility extensions
+AC_CACHE_CHECK([for symbol visibility extensions],
+	ac_cv_sym_visibility, [
+		echo '#pragma GCC visibility push(default)' > conftest.c
+		echo 'int foo (void) { return 1; }' >> conftest.c
+		echo '#pragma GCC visibility pop' >> conftest.c
+		echo 'int bar (void) { return 1; }' >> conftest.c
+		ac_cv_sym_visibility=no
+		if AC_TRY_COMMAND(${CXX-cxx} -fvisibility-inlines-hidden -fvisibility=hidden -Werror -S conftest.c -o conftest.s 1>&AS_MESSAGE_LOG_FD);
+		then
+			if grep '\.hidden.*bar' conftest.s > /dev/null && grep -v '\.hidden.*foo' conftest.s >/dev/null;
+			then
+				ac_cv_sym_visibility=yes
+			fi
+		fi
+		rm -f conftest.*
+	])
+if test $ac_cv_sym_visibility = yes;
+then
+	AC_DEFINE(HAVE_GCC_VISIBILITY_EXTS, 1,
+			  [Define if GCC visibility extensions are supported])
+	VISIBILITY_FLAGS="-fvisibility=hidden"
+	CFLAGS="$VISIBILITY_FLAGS $CFLAGS"
+	CXXFLAGS="$VISIBILITY_FLAGS -fvisibility-inlines-hidden $CFLAGS"
+fi
+
+## Pass -DIN_LIBOFX to the compiler so we can detect it and include config.h
+## in libofx.h safely
+CFLAGS="-DIN_LIBOFX $CFLAGS"
+CXXFLAGS="-DIN_LIBOFX $CXXFLAGS"
 
 LIBOFX_VERSION=$LIBOFX_MAJOR_VERSION.$LIBOFX_MINOR_VERSION.$LIBOFX_MICRO_VERSION
 
@@ -52,8 +82,8 @@ AC_SUBST(LIBOFX_VERSION_RELEASE_STRING)
 AC_SUBST(LIBOFX_VERSION)
 AM_INIT_AUTOMAKE(libofx,$LIBOFX_VERSION_RELEASE_STRING)
 
-LIBOFX_SO_CURRENT=4
-LIBOFX_SO_REVISION=2
+LIBOFX_SO_CURRENT=5
+LIBOFX_SO_REVISION=0
 LIBOFX_SO_AGE=0
 LIBOFX_SO_EFFECTIVE="`echo \$(($LIBOFX_SO_CURRENT-$LIBOFX_SO_AGE))`"
 AC_SUBST(LIBOFX_SO_CURRENT)

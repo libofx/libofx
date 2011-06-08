@@ -42,6 +42,12 @@
 #define LIBOFX_BUILD_VERSION @LIBOFX_BUILD_VERSION@
 #define LIBOFX_VERSION_RELEASE_STRING "@LIBOFX_VERSION_RELEASE_STRING@"
 
+#ifdef IN_LIBOFX
+#  include "config.h"
+#  ifdef HAVE_GCC_VISIBILITY_EXTS
+#    pragma GCC visibility push(default)
+#  endif
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -855,7 +861,25 @@ extern "C" {
 
 //@}
 
+extern volatile int ofx_PARSER_msg; /**< If set to true, parser events will be printed to the console */
+extern volatile int ofx_DEBUG_msg;/**< If set to true, general debug messages will be printed to the console */
+extern volatile int ofx_DEBUG1_msg;/**< If set to true, debug level 1 messages will be printed to the console */
+extern volatile int ofx_DEBUG2_msg;/**< If set to true, debug level 2 messages will be printed to the console */
+extern volatile int ofx_DEBUG3_msg;/**< If set to true, debug level 3 messages will be printed to the console */
+extern volatile int ofx_DEBUG4_msg;/**< If set to true, debug level 4 messages will be printed to the console */
+extern volatile int ofx_DEBUG5_msg;/**< If set to true, debug level 5 messages will be printed to the console */
+extern volatile int ofx_STATUS_msg;/**< If set to true, status messages will be printed to the console */
+extern volatile int ofx_INFO_msg;/**< If set to true, information messages will be printed to the console */
+extern volatile int ofx_WARNING_msg;/**< If set to true, warning messages will be printed to the console */
+extern volatile int ofx_ERROR_msg;/**< If set to true, error messages will be printed to the console */
+extern volatile int ofx_show_position;/**< If set to true, the line number will be shown after any error */
+
 #ifdef __cplusplus
 } // end of extern "C"
 #endif
+
+#if defined(HAVE_GCC_VISIBILITY_EXTS) && defined(IN_LIBOFX)
+#  pragma GCC visibility pop
+#endif
+
 #endif // end of LIBOFX_H
