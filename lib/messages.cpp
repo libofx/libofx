@@ -27,18 +27,18 @@
 SGMLApplication::OpenEntityPtr entity_ptr; /**< Global for determining the line number in OpenSP */
 SGMLApplication::Position position; /**< Global for determining the line number in OpenSP */
 
-volatile int ofx_PARSER_msg = false; /**< If set to true, parser events will be printed to the console */
-volatile int ofx_DEBUG_msg = false;/**< If set to true, general debug messages will be printed to the console */
-volatile int ofx_DEBUG1_msg = false;/**< If set to true, debug level 1 messages will be printed to the console */
-volatile int ofx_DEBUG2_msg = false;/**< If set to true, debug level 2 messages will be printed to the console */
-volatile int ofx_DEBUG3_msg = false;/**< If set to true, debug level 3 messages will be printed to the console */
-volatile int ofx_DEBUG4_msg = false;/**< If set to true, debug level 4 messages will be printed to the console */
-volatile int ofx_DEBUG5_msg = false;/**< If set to true, debug level 5 messages will be printed to the console */
-volatile int ofx_STATUS_msg = false;/**< If set to true, status messages will be printed to the console */
-volatile int ofx_INFO_msg = false;/**< If set to true, information messages will be printed to the console */
-volatile int ofx_WARNING_msg = false;/**< If set to true, warning messages will be printed to the console */
-volatile int ofx_ERROR_msg = false;/**< If set to true, error messages will be printed to the console */
-volatile int ofx_show_position = true;/**< If set to true, the line number will be shown after any error */
+int ofx_PARSER_msg = false; /**< If set to true, parser events will be printed to the console */
+int ofx_DEBUG_msg = false;/**< If set to true, general debug messages will be printed to the console */
+int ofx_DEBUG1_msg = false;/**< If set to true, debug level 1 messages will be printed to the console */
+int ofx_DEBUG2_msg = false;/**< If set to true, debug level 2 messages will be printed to the console */
+int ofx_DEBUG3_msg = false;/**< If set to true, debug level 3 messages will be printed to the console */
+int ofx_DEBUG4_msg = false;/**< If set to true, debug level 4 messages will be printed to the console */
+int ofx_DEBUG5_msg = false;/**< If set to true, debug level 5 messages will be printed to the console */
+int ofx_STATUS_msg = false;/**< If set to true, status messages will be printed to the console */
+int ofx_INFO_msg = false;/**< If set to true, information messages will be printed to the console */
+int ofx_WARNING_msg = false;/**< If set to true, warning messages will be printed to the console */
+int ofx_ERROR_msg = false;/**< If set to true, error messages will be printed to the console */
+int ofx_show_position = true;/**< If set to true, the line number will be shown after any error */
 
 void show_line_number()
 {
