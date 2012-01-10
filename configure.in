@@ -24,7 +24,7 @@ LIBOFX_MICRO_VERSION=5
 # releases to emulate the Revision variable of SVN (which isn't available
 # with CVS)
 LIBOFX_BUILD_VERSION=0
-LIBOFX_TAG_VERSION="git"
+LIBOFX_TAG_VERSION="stable"
 
 case "$LIBOFX_TAG_VERSION" in
   cvs|svn|git)

@@ -1,3 +1,20 @@
+LibOFX 0.9.5:
+	Benoit Grégoire <benoitg@coeus.ca>
+ 		- Workaround OFX files specifying invalid encoding values 
+ 		   (specifically:  UNICODE and CP1252).  This should fix most encoding
+ 		   problems reported.
+		- Look for DTD in source directory (simplifies developpement)
+	Christian Stimming <christian@cstimming.de>
+		- Add minor argument checking
+		- Expose field: OfxSecurityData::fiid in API
+		- Make string arguments a const reference where appropriate
+		- Add configure check for help2man tool
+    Ryan Donlan <bdonlan@gmail.com>
+		- Improve build system and autoconf 2.68 compatibility
+		- Improve generated man pages
+		- Use GCC's -fvisibility=hidden to hide internal symbols from external 
+		   users.
+
 LibOFX 0.9.4:
     - Patch to fix segfault on some malformed date formats.  Inspired by Zach's patch on launchpad.
     - Packages-oriented changes:
