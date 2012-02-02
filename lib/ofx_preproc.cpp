@@ -20,7 +20,7 @@
 #include "../config.h"
 #include <iostream>
 #include <fstream>
-#include <stdlib.h>
+#include <cstdlib>
 #include <stdio.h>
 #include <string>
 #include "ParserEventGeneratorKit.h"
@@ -83,6 +83,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
   LibofxContext *libofx_context;
   bool ofx_start = false;
   bool ofx_end = false;
+  bool file_is_xml = false;
 
   ifstream input_file;
   ofstream tmp_file;
@@ -147,6 +148,13 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
         {
           input_file.clear();
         }
+
+        if (ofx_start == false && (s_buffer.find("<?xml") != string::npos))
+        {
+          message_out(DEBUG, "ofx_proc_file(): File is an actual XML file, iconv conversion will be skipped.");
+          file_is_xml = true;
+        }
+
         int ofx_start_idx;
         if (ofx_start == false &&
             (
@@ -160,8 +168,44 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
            )
         {
           ofx_start = true;
-          s_buffer.erase(0, ofx_start_idx); //Fix for really broken files that don't have a newline after the header.
+          if(file_is_xml==false)
+          {
+            s_buffer.erase(0, ofx_start_idx); //Fix for really broken files that don't have a newline after the header.
+          }
           message_out(DEBUG, "ofx_proc_file():<OFX> or <OFC> has been found");
+
+          if(file_is_xml==true)
+          {
+            static char sp_charset_fixed[] = "SP_CHARSET_FIXED=1";
+            if(putenv(sp_charset_fixed)!=0)
+            {
+              message_out(ERROR, "ofx_proc_file(): putenv failed");
+            }
+            /* Normally the following would be "xml".
+             * Unfortunately, opensp's generic api will garble UTF-8 if this is
+             * set to xml.  So we set any single byte encoding to avoid messing
+             * up UTF-8.  Unfortunately this means that non-UTF-8 files will not
+             * get properly translated.  We'd need to manually detect the
+             * encoding in the XML header and convert the xml with iconv like we
+             * do for SGML to work around the problem.  Most unfortunate. */
+            static char sp_encoding[] = "SP_ENCODING=ms-dos";
+            if(putenv(sp_encoding)!=0)
+            {
+              message_out(ERROR, "ofx_proc_file(): putenv failed");
+            }
+          }
+          else
+          {
+            static char sp_charset_fixed[] = "SP_CHARSET_FIXED=1";
+            if(putenv(sp_charset_fixed)!=0)
+            {
+              message_out(ERROR, "ofx_proc_file(): putenv failed");
+            }
+            static char sp_encoding[] = "SP_ENCODING=ms-dos"; //Any single byte encoding will do, we don't want opensp messing up UTF-8;
+            if(putenv(sp_encoding)!=0)
+            {
+              message_out(ERROR, "ofx_proc_file(): putenv failed");
+            }
 #ifdef HAVE_ICONV
           string fromcode;
           string tocode;
@@ -199,6 +243,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
           message_out(DEBUG, "ofx_proc_file(): Setting up iconv for fromcode: " + fromcode + ", tocode: " + tocode);
           conversion_descriptor = iconv_open (tocode.c_str(), fromcode.c_str());
 #endif
+          }
         }
         else
         {
@@ -223,29 +268,40 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
           }
         }
 
-        if (ofx_start == true && ofx_end == false)
+        if (file_is_xml==true || (ofx_start == true && ofx_end == false))
         {
-          s_buffer = sanitize_proprietary_tags(s_buffer);
-          //cout<< s_buffer<<"\n";
-#ifdef HAVE_ICONV
-          memset(iconv_buffer, 0, READ_BUFFER_SIZE * 2);
-          size_t inbytesleft = strlen(s_buffer.c_str());
-          size_t outbytesleft = READ_BUFFER_SIZE * 2 - 1;
-#ifdef OS_WIN32
-          const char * inchar = (const char *)s_buffer.c_str();
-#else
-          char * inchar = (char *)s_buffer.c_str();
-#endif
-          char * outchar = iconv_buffer;
-          int iconv_retval = iconv (conversion_descriptor,
-                                    &inchar, &inbytesleft,
-                                    &outchar, &outbytesleft);
-          if (iconv_retval == -1)
+          if(ofx_start == true)
           {
-            message_out(ERROR, "ofx_proc_file(): Conversion error");
+            /* The above test won't help us if the <OFX> tag is on the same line
+             * as the xml header, but as opensp can't be used to parse it anyway
+             * this isn't a great loss for now.
+             */
+            s_buffer = sanitize_proprietary_tags(s_buffer);
           }
-          s_buffer = iconv_buffer;
+          //cout<< s_buffer<<"\n";
+          if(file_is_xml==false)
+          {
+#ifdef HAVE_ICONV
+            memset(iconv_buffer, 0, READ_BUFFER_SIZE * 2);
+            size_t inbytesleft = strlen(s_buffer.c_str());
+            size_t outbytesleft = READ_BUFFER_SIZE * 2 - 1;
+#ifdef OS_WIN32
+            const char * inchar = (const char *)s_buffer.c_str();
+#else
+            char * inchar = (char *)s_buffer.c_str();
 #endif
+            char * outchar = iconv_buffer;
+            int iconv_retval = iconv (conversion_descriptor,
+                                      &inchar, &inbytesleft,
+                                      &outchar, &outbytesleft);
+            if (iconv_retval == -1)
+            {
+              message_out(ERROR, "ofx_proc_file(): Conversion error");
+            }
+            s_buffer = iconv_buffer;
+#endif
+          }
+          cout<<s_buffer<<"\n";
           tmp_file.write(s_buffer.c_str(), s_buffer.length());
         }
 
@@ -270,7 +326,10 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
     input_file.close();
     tmp_file.close();
 #ifdef HAVE_ICONV
-    iconv_close(conversion_descriptor);
+    if(file_is_xml==false)
+    {
+      iconv_close(conversion_descriptor);
+    }
 #endif
     char filename_openspdtd[255];
     char filename_dtd[255];
@@ -323,164 +382,6 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
   }
   return 0;
 }
-
-
-
-int libofx_proc_buffer(LibofxContextPtr ctx,
-                       const char *s, unsigned int size)
-{
-  ofstream tmp_file;
-  string s_buffer;
-  char *filenames[3];
-  char tmp_filename[256];
-  int tmp_file_fd;
-  ssize_t pos;
-  LibofxContext *libofx_context;
-
-  libofx_context = (LibofxContext*)ctx;
-
-  if (size == 0)
-  {
-    message_out(ERROR,
-                "ofx_proc_file(): bad size");
-    return -1;
-  }
-  s_buffer = string(s, size);
-
-  mkTempFileName("libofxtmpXXXXXX", tmp_filename, sizeof(tmp_filename));
-  message_out(DEBUG, "ofx_proc_file(): Creating temp file: " + string(tmp_filename));
-  tmp_file_fd = mkstemp(tmp_filename);
-  if (tmp_file_fd)
-  {
-    tmp_file.open(tmp_filename);
-    if (!tmp_file)
-    {
-      message_out(ERROR, "ofx_proc_file():Unable to open the created output file " + string(tmp_filename));
-      return -1;
-    }
-  }
-  else
-  {
-    message_out(ERROR, "ofx_proc_file():Unable to create a temp file at " + string(tmp_filename));
-    return -1;
-  }
-
-  if (libofx_context->currentFileType() == OFX)
-  {
-    pos = s_buffer.find("<OFX>");
-    if (pos == string::npos)
-      pos = s_buffer.find("<ofx>");
-  }
-  else if (libofx_context->currentFileType() == OFC)
-  {
-    pos = s_buffer.find("<OFC>");
-    if (pos == string::npos)
-      pos = s_buffer.find("<ofc>");
-  }
-  else
-  {
-    message_out(ERROR, "ofx_proc(): unknown file type");
-    return -1;
-  }
-  if (pos == string::npos || pos > s_buffer.size())
-  {
-    message_out(ERROR, "ofx_proc():<OFX> has not been found");
-    return -1;
-  }
-  else
-  {
-    // erase everything before the OFX tag
-    s_buffer.erase(0, pos);
-    message_out(DEBUG, "ofx_proc_file():<OF?> has been found");
-  }
-
-  if (libofx_context->currentFileType() == OFX)
-  {
-    pos = s_buffer.find("</OFX>");
-    if (pos == string::npos)
-      pos = s_buffer.find("</ofx>");
-  }
-  else if (libofx_context->currentFileType() == OFC)
-  {
-    pos = s_buffer.find("</OFC>");
-    if (pos == string::npos)
-      pos = s_buffer.find("</ofc>");
-  }
-  else
-  {
-    message_out(ERROR, "ofx_proc(): unknown file type");
-    return -1;
-  }
-
-  if (pos == string::npos || pos > s_buffer.size())
-  {
-    message_out(ERROR, "ofx_proc():</OF?> has not been found");
-    return -1;
-  }
-  else
-  {
-    // erase everything after the /OFX tag
-    if (s_buffer.size() > pos + 6)
-      s_buffer.erase(pos + 6);
-    message_out(DEBUG, "ofx_proc_file():<OFX> has been found");
-  }
-
-  s_buffer = sanitize_proprietary_tags(s_buffer);
-  tmp_file.write(s_buffer.c_str(), s_buffer.length());
-
-  tmp_file.close();
-
-  char filename_openspdtd[255];
-  char filename_dtd[255];
-  char filename_ofx[255];
-  strncpy(filename_openspdtd, find_dtd(ctx, OPENSPDCL_FILENAME).c_str(), 255); //The opensp sgml dtd file
-  if (libofx_context->currentFileType() == OFX)
-  {
-    strncpy(filename_dtd, find_dtd(ctx, OFX160DTD_FILENAME).c_str(), 255); //The ofx dtd file
-  }
-  else if (libofx_context->currentFileType() == OFC)
-  {
-    strncpy(filename_dtd, find_dtd(ctx, OFCDTD_FILENAME).c_str(), 255); //The ofc dtd file
-  }
-  else
-  {
-    message_out(ERROR, string("ofx_proc_file(): Error unknown file format for the OFX parser"));
-  }
-
-  if ((string)filename_dtd != "" && (string)filename_openspdtd != "")
-  {
-    strncpy(filename_ofx, tmp_filename, 255); //The processed ofx file
-    filenames[0] = filename_openspdtd;
-    filenames[1] = filename_dtd;
-    filenames[2] = filename_ofx;
-    if (libofx_context->currentFileType() == OFX)
-    {
-      ofx_proc_sgml(libofx_context, 3, filenames);
-    }
-    else if (libofx_context->currentFileType() == OFC)
-    {
-      ofc_proc_sgml(libofx_context, 3, filenames);
-    }
-    else
-    {
-      message_out(ERROR, string("ofx_proc_file(): Error unknown file format for the OFX parser"));
-    }
-    if (remove(tmp_filename) != 0)
-    {
-      message_out(ERROR, "ofx_proc_file(): Error deleting temporary file " + string(tmp_filename));
-    }
-  }
-  else
-  {
-    message_out(ERROR, "ofx_proc_file(): FATAL: Missing DTD, aborting");
-  }
-
-  return 0;
-}
-
-
-
-
 
 
 /**
