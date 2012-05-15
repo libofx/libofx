@@ -294,8 +294,13 @@ esac],[gengetopt=yes])
 if test x$gengetopt = xyes ; then
    AC_CHECK_PROG(have_gengetopt, gengetopt, yes, no)
 
-   if test x$have_gengetopt = xno ; then
-     AC_MSG_WARN([*** Not rebuilding command line parser as gengetopt is not found ***])
+   if test x$have_gengetopt = xno; then
+     if test -f "${srcdir}/ofxdump/cmdline.c"; then
+       AC_MSG_WARN([*** Not rebuilding command line parser as gengetopt is not found ***])
+     else
+       AC_MSG_ERROR([*** Gengetopt is not found, and generated files (cmdline.c) are missing (probably because you checked out from git).  You need to install gengetopt ***])
+     fi
+     
      gengetopt=no
    fi
 fi
