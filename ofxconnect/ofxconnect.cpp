@@ -57,7 +57,7 @@ bool post(const char* request, const char* url, const char* filename)
   if(! curl)
     return false;
 
-  unlink("tmpout");  
+  remove("tmpout");
   FILE* file = fopen(filename,"wb");
   if (! file )
   {

@@ -195,7 +195,7 @@ bool post(const string& request, const string& url, const string& filename)
   if(! curl)
     return false;
 
-  unlink(filename.c_str());  
+  remove(filename.c_str());
   FILE* file = fopen(filename.c_str(),"wb");
   if (! file )
   {
