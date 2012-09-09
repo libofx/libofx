@@ -193,6 +193,7 @@ time_t ofxdate_to_time_t(const string ofxdate)
   else
   {
     message_out(ERROR, "ofxdate_to_time_t():  Unable to convert time, string is 0 length!");
+    return 0; // MUST RETURN ZERO here because otherwise the uninitialized &time will be returned!
   }
   return mktime(&time);
 }
