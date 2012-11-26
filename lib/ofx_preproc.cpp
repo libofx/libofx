@@ -88,7 +88,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
   ifstream input_file;
   ofstream tmp_file;
   char buffer[READ_BUFFER_SIZE];
-  char iconv_buffer[READ_BUFFER_SIZE * 2];
+  char *iconv_buffer;
   string s_buffer;
   char *filenames[3];
   char tmp_filename[256];
@@ -134,20 +134,29 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
       string header_value;
       string ofx_encoding;
       string ofx_charset;
+      bool end_of_line;
       do
       {
-        input_file.getline(buffer, sizeof(buffer), '\n');
-        //cout<<buffer<<"\n";
-        s_buffer.assign(buffer);
-        //cout<<"input_file.gcount(): "<<input_file.gcount()<<" sizeof(buffer): "<<sizeof(buffer)<<endl;
-        if (input_file.gcount() < (sizeof(buffer) - 1))
+        s_buffer.clear();
+        bool end_of_line = false;
+        do
         {
-          s_buffer.append("\n");
+          input_file.get(buffer, sizeof(buffer), '\n');
+          //cout<<buffer<<"\n";
+          s_buffer.append(buffer);
+          //cout<<"input_file.gcount(): "<<input_file.gcount()<<" sizeof(buffer): "<<sizeof(buffer)<<endl;
+          if ( !input_file.eof() && (input_file.peek() == '\n'))
+          {
+            input_file.get(); // Discard the newline
+            s_buffer.append("\n");
+            end_of_line = true;
+          }
+          else if ( !input_file.eof() && input_file.fail())
+          {
+            input_file.clear();
+          }
         }
-        else if ( !input_file.eof() && input_file.fail())
-        {
-          input_file.clear();
-        }
+        while (!input_file.eof() || !end_of_line);
 
         if (ofx_start == false && (s_buffer.find("<?xml") != string::npos))
         {
@@ -282,9 +291,10 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
           if(file_is_xml==false)
           {
 #ifdef HAVE_ICONV
-            memset(iconv_buffer, 0, READ_BUFFER_SIZE * 2);
             size_t inbytesleft = strlen(s_buffer.c_str());
-            size_t outbytesleft = READ_BUFFER_SIZE * 2 - 1;
+            size_t outbytesleft = inbytesleft * 2 - 1;
+            iconv_buffer = (char*) malloc (inbytesleft * 2);
+            memset(iconv_buffer, 0, inbytesleft * 2);
 #ifdef OS_WIN32
             const char * inchar = (const char *)s_buffer.c_str();
 #else
@@ -299,6 +309,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
               message_out(ERROR, "ofx_proc_file(): Conversion error");
             }
             s_buffer = iconv_buffer;
+            free (iconv_buffer);
 #endif
           }
           cout<<s_buffer<<"\n";
