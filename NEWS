@@ -1,3 +1,28 @@
+2013-03-30, LibOFX 0.9.6:
+
+        - Extend buffer for TRANSACTION_NAME to 96 bytes due to UTF-8
+        multibyte characters.
+
+        - Patch by Geert Janssens to fix typo in info message
+
+        - Patch by Geert Janssens to allow lines longer than 1024
+        caracters
+
+        - Fix treatment of empty date strings: Must return a zero date
+        instead of a bogus one.
+
+        - Replace unlink() with remove() to fix compile problems with
+        gcc 4.7
+
+        - Make configure fail if gengetopt is missing and generated
+        files are not present (as is the case when we checkout from
+        git)
+
+        - Fix garbled character encoding for UTF-8 encoded OFX 2.0
+        (XML) files.  Sadly, because of a bug in OpenSP with xml
+        decoding this currently means that iso-8859-1 OFX-2.0 files
+        will still not be properly decoded.
+
 LibOFX 0.9.5:
 	Benoit Grégoire <benoitg@coeus.ca>
  		- Workaround OFX files specifying invalid encoding values 
