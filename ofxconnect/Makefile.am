@@ -4,7 +4,7 @@ ofxconnect_SOURCES = cmdline.h cmdline.c nodeparser.cpp nodeparser.h ofxpartner.
 dist_man_MANS = ofxconnect.1
 
 AM_CPPFLAGS = \
-	-I${top_srcdir}/inc \
+	-I${top_builddir}/inc \
 	@LIBCURL_CPPFLAGS@ \
 	@LIBXMLPP_CFLAGS@ \
 	'-DCMDLINE_PARSER_PACKAGE="ofxconnect"'
