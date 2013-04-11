@@ -142,8 +142,14 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
         do
         {
           input_file.get(buffer, sizeof(buffer), '\n');
-          //cout<<buffer<<"\n";
+          //cout<< "got: " << buffer<<"\n";
           s_buffer.append(buffer);
+
+          // Watch out: If input_file is in eof(), any subsequent read or
+          // peek() will fail. However, the while() condition will
+          // correctly catch this. Otherwise we need to check for this like so:
+          //if (input_file.eof()) break;
+
           //cout<<"input_file.gcount(): "<<input_file.gcount()<<" sizeof(buffer): "<<sizeof(buffer)<<endl;
           if ( !input_file.eof() && (input_file.peek() == '\n'))
           {
@@ -156,7 +162,9 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
             input_file.clear();
           }
         }
-        while (!input_file.eof() || !end_of_line);
+        // Continue reading as long as we're not at EOF *and* we've not yet
+        // reached an end-of-line.
+        while (!input_file.eof() && !end_of_line);
 
         if (ofx_start == false && (s_buffer.find("<?xml") != string::npos))
         {
