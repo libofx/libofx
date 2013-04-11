@@ -1,3 +1,7 @@
+2013-04-11, LibOFX 0.9.7:
+
+        - Fix errorneous reading of files with long lines
+
 2013-03-30, LibOFX 0.9.6:
 
         - Extend buffer for TRANSACTION_NAME to 96 bytes due to UTF-8
