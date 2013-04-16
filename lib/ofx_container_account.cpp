@@ -191,7 +191,7 @@ void OfxAccountContainer::gen_account_id(void)
     strncat(data.account_name, "Bank account ", OFX_ACCOUNT_NAME_LENGTH - strlen(data.account_name));
     strncat(data.account_name, acctid, OFX_ACCOUNT_NAME_LENGTH - strlen(data.account_name));
   }
-  if (strlen(data.account_id) >= 0)
+  //if (strlen(data.account_id) >= 0) // The strlen() is always non-negative
   {
     data.account_id_valid = true;
   }

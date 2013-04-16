@@ -46,7 +46,7 @@ void show_line_number()
   extern SGMLApplication::Position position;
 
 
-  if ((ofx_show_position == true))
+  if (ofx_show_position == true)
   {
     SGMLApplication::Location *location = new SGMLApplication::Location(entity_ptr, position);
     cerr << "(Above message occured on Line " << location->lineNumber << ", Column " << location->columnNumber << ")" << endl;

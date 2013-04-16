@@ -230,12 +230,20 @@ string strip_whitespace(const string para_string)
   size_t index;
   size_t i;
   string temp_string = para_string;
+  if (temp_string.empty())
+    return temp_string; // so that size()-1 is allowed below
+
   const char *whitespace = " \b\f\n\r\t\v";
   const char *abnormal_whitespace = "\b\f\n\r\t\v";//backspace,formfeed,newline,cariage return, horizontal and vertical tabs
   message_out(DEBUG4, "strip_whitespace() Before: |" + temp_string + "|");
   for (i = 0; i <= temp_string.size() && temp_string.find_first_of(whitespace, i) == i && temp_string.find_first_of(whitespace, i) != string::npos; i++);
   temp_string.erase(0, i); //Strip leading whitespace
-  for (i = temp_string.size() - 1; (i >= 0) && (temp_string.find_last_of(whitespace, i) == i) && (temp_string.find_last_of(whitespace, i) != string::npos); i--);
+
+  for (i = temp_string.size() - 1;
+       (i > 0)
+       && (temp_string.find_last_of(whitespace, i) == i)
+       && (temp_string.find_last_of(whitespace, i) != string::npos);
+       i--);
   temp_string.erase(i + 1, temp_string.size() - (i + 1)); //Strip trailing whitespace
 
   while ((index = temp_string.find_first_of(abnormal_whitespace)) != string::npos)
