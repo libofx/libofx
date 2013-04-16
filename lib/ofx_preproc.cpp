@@ -185,16 +185,16 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
            )
         {
           ofx_start = true;
-          if(file_is_xml==false)
+          if (file_is_xml == false)
           {
             s_buffer.erase(0, ofx_start_idx); //Fix for really broken files that don't have a newline after the header.
           }
           message_out(DEBUG, "ofx_proc_file():<OFX> or <OFC> has been found");
 
-          if(file_is_xml==true)
+          if (file_is_xml == true)
           {
             static char sp_charset_fixed[] = "SP_CHARSET_FIXED=1";
-            if(putenv(sp_charset_fixed)!=0)
+            if (putenv(sp_charset_fixed) != 0)
             {
               message_out(ERROR, "ofx_proc_file(): putenv failed");
             }
@@ -206,7 +206,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
              * encoding in the XML header and convert the xml with iconv like we
              * do for SGML to work around the problem.  Most unfortunate. */
             static char sp_encoding[] = "SP_ENCODING=ms-dos";
-            if(putenv(sp_encoding)!=0)
+            if (putenv(sp_encoding) != 0)
             {
               message_out(ERROR, "ofx_proc_file(): putenv failed");
             }
@@ -214,51 +214,51 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
           else
           {
             static char sp_charset_fixed[] = "SP_CHARSET_FIXED=1";
-            if(putenv(sp_charset_fixed)!=0)
+            if (putenv(sp_charset_fixed) != 0)
             {
               message_out(ERROR, "ofx_proc_file(): putenv failed");
             }
             static char sp_encoding[] = "SP_ENCODING=ms-dos"; //Any single byte encoding will do, we don't want opensp messing up UTF-8;
-            if(putenv(sp_encoding)!=0)
+            if (putenv(sp_encoding) != 0)
             {
               message_out(ERROR, "ofx_proc_file(): putenv failed");
             }
 #ifdef HAVE_ICONV
-          string fromcode;
-          string tocode;
-          if (ofx_encoding.compare("USASCII") == 0)
-          {
-            if (ofx_charset.compare("ISO-8859-1") == 0 || ofx_charset.compare("8859-1") == 0)
+            string fromcode;
+            string tocode;
+            if (ofx_encoding.compare("USASCII") == 0)
             {
-              //Only "ISO-8859-1" is actually a legal value, but since the banks follows the spec SO well...
-              fromcode = "ISO-8859-1";
+              if (ofx_charset.compare("ISO-8859-1") == 0 || ofx_charset.compare("8859-1") == 0)
+              {
+                //Only "ISO-8859-1" is actually a legal value, but since the banks follows the spec SO well...
+                fromcode = "ISO-8859-1";
+              }
+              else if (ofx_charset.compare("1252") == 0 || ofx_charset.compare("CP1252") == 0)
+              {
+                //Only "1252" is actually a legal value, but since the banks follows the spec SO well...
+                fromcode = "CP1252";
+              }
+              else if (ofx_charset.compare("NONE") == 0)
+              {
+                fromcode = LIBOFX_DEFAULT_INPUT_ENCODING;
+              }
+              else
+              {
+                fromcode = LIBOFX_DEFAULT_INPUT_ENCODING;
+              }
             }
-            else if (ofx_charset.compare("1252") == 0 || ofx_charset.compare("CP1252") == 0)
+            else if (ofx_encoding.compare("UTF-8") == 0 || ofx_encoding.compare("UNICODE") == 0)
             {
-              //Only "1252" is actually a legal value, but since the banks follows the spec SO well...
-              fromcode = "CP1252";
-            }
-            else if (ofx_charset.compare("NONE") == 0)
-            {
-              fromcode = LIBOFX_DEFAULT_INPUT_ENCODING;
+              //While "UNICODE" isn't a legal value, some cyrilic files do specify it as such...
+              fromcode = "UTF-8";
             }
             else
             {
               fromcode = LIBOFX_DEFAULT_INPUT_ENCODING;
             }
-          }
-          else if (ofx_encoding.compare("UTF-8") == 0 || ofx_encoding.compare("UNICODE") == 0)
-          {
-        	//While "UNICODE" isn't a legal value, some cyrilic files do specify it as such...
-            fromcode = "UTF-8";
-          }
-          else
-          {
-            fromcode = LIBOFX_DEFAULT_INPUT_ENCODING;
-          }
-          tocode = LIBOFX_DEFAULT_OUTPUT_ENCODING;
-          message_out(DEBUG, "ofx_proc_file(): Setting up iconv for fromcode: " + fromcode + ", tocode: " + tocode);
-          conversion_descriptor = iconv_open (tocode.c_str(), fromcode.c_str());
+            tocode = LIBOFX_DEFAULT_OUTPUT_ENCODING;
+            message_out(DEBUG, "ofx_proc_file(): Setting up iconv for fromcode: " + fromcode + ", tocode: " + tocode);
+            conversion_descriptor = iconv_open (tocode.c_str(), fromcode.c_str());
 #endif
           }
         }
@@ -285,9 +285,9 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
           }
         }
 
-        if (file_is_xml==true || (ofx_start == true && ofx_end == false))
+        if (file_is_xml == true || (ofx_start == true && ofx_end == false))
         {
-          if(ofx_start == true)
+          if (ofx_start == true)
           {
             /* The above test won't help us if the <OFX> tag is on the same line
              * as the xml header, but as opensp can't be used to parse it anyway
@@ -296,7 +296,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
             s_buffer = sanitize_proprietary_tags(s_buffer);
           }
           //cout<< s_buffer<<"\n";
-          if(file_is_xml==false)
+          if (file_is_xml == false)
           {
 #ifdef HAVE_ICONV
             size_t inbytesleft = strlen(s_buffer.c_str());
@@ -320,7 +320,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
             free (iconv_buffer);
 #endif
           }
-          cout<<s_buffer<<"\n";
+          cout << s_buffer << "\n";
           tmp_file.write(s_buffer.c_str(), s_buffer.length());
         }
 
@@ -345,7 +345,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
     input_file.close();
     tmp_file.close();
 #ifdef HAVE_ICONV
-    if(file_is_xml==false)
+    if (file_is_xml == false)
     {
       iconv_close(conversion_descriptor);
     }
