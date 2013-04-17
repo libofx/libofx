@@ -134,7 +134,6 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
       string header_value;
       string ofx_encoding;
       string ofx_charset;
-      bool end_of_line;
       do
       {
         s_buffer.clear();
@@ -142,24 +141,32 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
         do
         {
           input_file.get(buffer, sizeof(buffer), '\n');
-          //cout<< "got: " << buffer<<"\n";
+          //cout<< "got: \"" << buffer<<"\"\n";
           s_buffer.append(buffer);
 
           // Watch out: If input_file is in eof(), any subsequent read or
-          // peek() will fail. However, the while() condition will
-          // correctly catch this. Otherwise we need to check for this like so:
-          //if (input_file.eof()) break;
+          // peek() will fail and we must exit this loop.
+          if (input_file.eof())
+            break;
 
-          //cout<<"input_file.gcount(): "<<input_file.gcount()<<" sizeof(buffer): "<<sizeof(buffer)<<endl;
-          if ( !input_file.eof() && (input_file.peek() == '\n'))
+          //cout<<"input_file.gcount(): "<<input_file.gcount()<< " s_buffer.size=" << s_buffer.size()<<" sizeof(buffer): "<<sizeof(buffer) << " peek=\"" << int(input_file.peek()) << "\"" <<endl;
+          if (input_file.fail()) // If no characters were extracted above, the failbit is set.
           {
-            input_file.get(); // Discard the newline
-            s_buffer.append("\n");
-            end_of_line = true;
-          }
-          else if ( !input_file.eof() && input_file.fail())
-          {
+            // No characters extracted means that we've reached the newline
+            // delimiter (because we already checked for EOF). We will check
+            // for and remove that newline in the next if-clause, but must
+            // remove the failbit so that peek() will work again.
             input_file.clear();
+          }
+
+          // Is the next character really the newline?
+          if (input_file.peek() == '\n')
+          {
+            // Yes. Then discard that newline character from the stream and
+            // append it manually to the output string.
+            input_file.get();
+            s_buffer.append("\n");
+            end_of_line = true; // We found the end-of-line.
           }
         }
         // Continue reading as long as we're not at EOF *and* we've not yet
