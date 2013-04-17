@@ -1,3 +1,11 @@
+2013-04-17, LibOFX 0.9.8:
+
+        - Fix errorneous reading of files with empty lines
+
+        - bug#24: Fix build error on solaris.
+
+        - bug#40: Fix compiler warnings of OFX clang
+
 2013-04-11, LibOFX 0.9.7:
 
         - Fix errorneous reading of files with long lines

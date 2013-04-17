@@ -19,7 +19,7 @@ m4_include([libcurl.m4])
 
 LIBOFX_MAJOR_VERSION=0
 LIBOFX_MINOR_VERSION=9
-LIBOFX_MICRO_VERSION=7
+LIBOFX_MICRO_VERSION=8
 # this number is just incremented for every major change in CVS, also across
 # releases to emulate the Revision variable of SVN (which isn't available
 # with CVS)
@@ -83,7 +83,7 @@ AC_SUBST(LIBOFX_VERSION)
 AM_INIT_AUTOMAKE(libofx,$LIBOFX_VERSION_RELEASE_STRING)
 
 LIBOFX_SO_CURRENT=5
-LIBOFX_SO_REVISION=0
+LIBOFX_SO_REVISION=1
 LIBOFX_SO_AGE=0
 LIBOFX_SO_EFFECTIVE="`echo \$(($LIBOFX_SO_CURRENT-$LIBOFX_SO_AGE))`"
 AC_SUBST(LIBOFX_SO_CURRENT)
