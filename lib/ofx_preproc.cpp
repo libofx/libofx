@@ -440,7 +440,7 @@ string sanitize_proprietary_tags(string input_string)
 
   input_string_size = input_string.size();
 
-  for (i = 0; i <= input_string_size; i++)
+  for (i = 0; i < input_string_size; i++)
   {
     if (input_string.c_str()[i] == '<')
     {
@@ -508,6 +508,8 @@ string sanitize_proprietary_tags(string input_string)
       closing_tag_open = false;
       tag_open = false;
       strip = false;
+
+      input_string_size = input_string.size();
     }
 
   }//end for
@@ -520,6 +522,7 @@ string sanitize_proprietary_tags(string input_string)
     input_string.copy(buffer, (crop_end_idx - orig_tag_open_idx) + 1, orig_tag_open_idx);
     message_out(INFO, "sanitize_proprietary_tags() (end of line) removed: " + string(buffer));
     input_string.erase(orig_tag_open_idx, (crop_end_idx - orig_tag_open_idx) + 1);
+    input_string_size = input_string.size();
   }
   return input_string;
 }
