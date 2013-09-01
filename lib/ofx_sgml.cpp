@@ -264,6 +264,7 @@ public:
               MainContainer->gen_event();
               delete MainContainer;
               MainContainer = NULL;
+              curr_container_element = NULL;
               message_out (DEBUG, "Element " + identifier + " closed, MainContainer destroyed");
             }
             else
