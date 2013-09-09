@@ -1,3 +1,11 @@
+2013-09-09, LibOFX 0.9.0:
+
+        - Fix missing increment of SO_CURRENT number in libofx-0.9.6
+        to avoid crashes when mixing this with older applications
+
+        - bug#41: Fix a crash that occurs while importing a possibly
+        invalid OFX file. Patch by Cristian Onet.
+
 2013-04-17, LibOFX 0.9.8:
 
         - Fix errorneous reading of files with empty lines
