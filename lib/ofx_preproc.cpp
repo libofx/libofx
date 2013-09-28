@@ -327,7 +327,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
             free (iconv_buffer);
 #endif
           }
-          cout << s_buffer << "\n";
+          //cout << s_buffer << "\n";
           tmp_file.write(s_buffer.c_str(), s_buffer.length());
         }
 
