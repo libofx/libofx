@@ -81,11 +81,15 @@ void OfxStatementContainer::add_balance(OfxBalanceContainer* ptr_balance_contain
   {
     data.ledger_balance = ptr_balance_container->amount;
     data.ledger_balance_valid = ptr_balance_container->amount_valid;
+    data.ledger_balance_date = ptr_balance_container->date;
+    data.ledger_balance_date_valid = ptr_balance_container->date_valid;
   }
   else if (ptr_balance_container->tag_identifier == "AVAILBAL")
   {
     data.available_balance = ptr_balance_container->amount;
     data.available_balance_valid = ptr_balance_container->amount_valid;
+    data.available_balance_date = ptr_balance_container->date;
+    data.available_balance_date_valid = ptr_balance_container->date_valid;
   }
   else
   {
