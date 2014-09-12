@@ -1,4 +1,8 @@
-2013-09-09, LibOFX 0.9.0:
+2014-09-12, LibOFX 0.9.10:
+
+        - Fix missing balance dates (ledger_balance_date, available_balance_date)
+
+2013-09-09, LibOFX 0.9.9:
 
         - Fix missing increment of SO_CURRENT number in libofx-0.9.6
         to avoid crashes when mixing this with older applications
