@@ -1,3 +1,7 @@
+2016-08-14, LibOFX 0.9.11:
+
+	- Add support for client uid, from KDE bug 366326
+
 2014-09-12, LibOFX 0.9.10:
 
         - Fix missing balance dates (ledger_balance_date, available_balance_date)
