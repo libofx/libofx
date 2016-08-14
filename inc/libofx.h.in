@@ -90,6 +90,7 @@ extern "C" {
 #define OFX_APPID_LENGTH               (32)
 #define OFX_APPVER_LENGTH              (32)
 #define OFX_HEADERVERSION_LENGTH       (32)
+#define OFX_CLIENTUID_LENGTH           (36 + 1)
 
   /*
   #define OFX_STATEMENT_CB               0;
@@ -811,6 +812,7 @@ extern "C" {
     char header_version[OFX_HEADERVERSION_LENGTH];
     char appid[OFX_APPID_LENGTH];
     char appver[OFX_APPVER_LENGTH];
+    char clientuid[OFX_CLIENTUID_LENGTH];
   };
 
 #define OFX_AMOUNT_LENGTH (32 + 1)

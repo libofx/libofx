@@ -103,6 +103,9 @@ OfxAggregate OfxRequest::SignOnRequest(void) const
   else
     sonrqTag.Add( "APPVER", "1400");
 
+  if ( strlen(m_login.clientuid) > 0 )
+    sonrqTag.Add( "CLIENTUID", m_login.clientuid);
+
   OfxAggregate signonmsgTag("SIGNONMSGSRQV1");
   signonmsgTag.Add( sonrqTag );
 
