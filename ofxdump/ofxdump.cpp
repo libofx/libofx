@@ -12,7 +12,7 @@
  stderr.  To know exactly what the library understands about of a particular
  ofx response file, just call ofxdump on that file.
  *
- * ofxdump is meant as both a C++ code example and a developper/debuging
+ * ofxdump is meant as both a C++ code example and a developper/debugging
  tool.  It uses every function and every structure of the LibOFX API.  By
  default, WARNING, INFO, ERROR and STATUS messages are enabled.  You can
  change these defaults at the top of ofxdump.cpp
@@ -398,7 +398,7 @@ int ofx_proc_status_cb(struct OfxStatusData data, void * status_data)
   cout << "ofx_proc_status():\n";
   if (data.ofx_element_name_valid == true)
   {
-    cout << "    Ofx entity this status is relevent to: " << data.ofx_element_name << " \n";
+    cout << "    Ofx entity this status is relevant to: " << data.ofx_element_name << " \n";
   }
   if (data.severity_valid == true)
   {

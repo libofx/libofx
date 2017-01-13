@@ -159,7 +159,7 @@ OfxBalanceContainer::~OfxBalanceContainer()
   }
   else
   {
-    message_out (ERROR, "I completed a " + type + " element, but I havent found a suitable parent to save it");
+    message_out (ERROR, "I completed a " + type + " element, but I haven't found a suitable parent to save it");
   }
 }
 void OfxBalanceContainer::add_attribute(const string identifier, const string value)
