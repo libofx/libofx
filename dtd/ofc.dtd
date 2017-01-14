@@ -232,7 +232,7 @@
 <!--  Payment Inquiry Transaction: Sent to request information
 	regarding a payment from a user's account to a payee. 
 	A successful PAYMTRQ/PAYMTRS transaction set must have 
-	previously occured in a prior session before a payment
+	previously occurred in a prior session before a payment
 	request is possible. The SRVRTID for that payment must be 
 	known to inquire on a payment.
 -->

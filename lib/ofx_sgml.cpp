@@ -97,7 +97,7 @@ public:
       is_data_element = false;
       break;
     default:
-      message_out(ERROR, "Unknow SGML content type?!?!?!? OpenSP interface changed?");
+      message_out(ERROR, "Unknown SGML content type?!?!?!? OpenSP interface changed?");
     }
 
     if (is_data_element == false)
@@ -204,7 +204,7 @@ public:
       /* There is a bug in OpenSP 1.3.4, which won't send endElement Event for some elements, and will instead send an error like "document type does not allow element "MESSAGE" here".  Incoming_data should be empty in such a case, but it will not be if the endElement event was skiped. So we empty it, so at least the last element has a chance of having valid data */
       if (incoming_data != "")
       {
-        message_out (ERROR, "startElement: incoming_data should be empty! You are probably using OpenSP <= 1.3.4.  The folowing data was lost: " + incoming_data );
+        message_out (ERROR, "startElement: incoming_data should be empty! You are probably using OpenSP <= 1.3.4.  The following data was lost: " + incoming_data );
         incoming_data.assign ("");
       }
     }
@@ -309,7 +309,7 @@ public:
 
   /** \brief Callback: SGML parse error
    *
-   An OpenSP callback, get's called when a parser error has occured.
+   An OpenSP callback, get's called when a parser error has occurred.
   */
   void error (const ErrorEvent & event)
   {
