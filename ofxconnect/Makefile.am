@@ -25,6 +25,6 @@ EXTRA_DIST = cmdline.ggo test-privateserver.sh
 # the key needed to run this test.
 TESTS = test-privateserver.sh 
 
-ofxconnect.1: ofxconnect.cpp $(top_srcdir)/configure.in
+ofxconnect.1: ofxconnect.cpp $(top_srcdir)/configure.ac
 	$(MAKE) $(AM_MAKEFLAGS) ofxconnect$(EXEEXT)
 	help2man -n 'Create a statement request file' -N --output=ofxconnect.1 ./ofxconnect$(EXEEXT)
