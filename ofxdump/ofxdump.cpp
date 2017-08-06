@@ -325,7 +325,7 @@ int ofx_proc_statement_cb(struct OfxStatementData data, void * statement_data)
   if (data.available_balance_date_valid == true)
   {
     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.available_balance_date)));
-    cout << "    Ledger balance date: " << dest_string << "\n";
+    cout << "    Available balance date: " << dest_string << "\n";
   }
   if (data.marketing_info_valid == true)
   {
