@@ -1,3 +1,7 @@
+2017-09-17, LibOFX 0.9.12:
+
+	- Fix a buffer overflow on unexpected tag names.
+
 2016-08-14, LibOFX 0.9.11:
 
 	- Add support for client uid, from KDE bug 366326
