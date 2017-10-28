@@ -88,7 +88,6 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
   ifstream input_file;
   ofstream tmp_file;
   char buffer[READ_BUFFER_SIZE];
-  char *iconv_buffer;
   string s_buffer;
   char *filenames[3];
   char tmp_filename[256];
@@ -306,9 +305,9 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
           if (file_is_xml == false)
           {
 #ifdef HAVE_ICONV
-            size_t inbytesleft = strlen(s_buffer.c_str());
+            size_t inbytesleft = s_buffer.size();
             size_t outbytesleft = inbytesleft * 2 - 1;
-            iconv_buffer = (char*) malloc (inbytesleft * 2);
+            char * iconv_buffer = (char*) malloc (inbytesleft * 2);
             memset(iconv_buffer, 0, inbytesleft * 2);
 #if defined(OS_WIN32) || defined(__sun) || defined(__NetBSD__)
             const char * inchar = (const char *)s_buffer.c_str();
@@ -321,9 +320,11 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
                                       &outchar, &outbytesleft);
             if (iconv_retval == -1)
             {
-              message_out(ERROR, "ofx_proc_file(): Conversion error");
+              message_out(ERROR, "ofx_proc_file(): Iconv conversion error");
             }
-            s_buffer = iconv_buffer;
+            // All validly converted bytes will be copied to the
+            // original buffer
+            s_buffer = std::string(iconv_buffer, outchar - iconv_buffer);
             free (iconv_buffer);
 #endif
           }
