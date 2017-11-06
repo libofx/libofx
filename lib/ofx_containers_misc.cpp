@@ -62,7 +62,8 @@ OfxPushUpContainer::OfxPushUpContainer(LibofxContext *p_libofx_context, OfxGener
 void OfxPushUpContainer::add_attribute(const string identifier, const string value)
 {
   //message_out(DEBUG, "OfxPushUpContainer for "+tag_identifier+" will push up a "+identifier+" ("+value+") to a "+ parentcontainer->type + " container");
-  parentcontainer->add_attribute(identifier, value);
+  if (parentcontainer)
+    parentcontainer->add_attribute(identifier, value);
 }
 
 /***************************************************************************
