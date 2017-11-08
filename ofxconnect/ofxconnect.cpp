@@ -124,6 +124,7 @@ int main (int argc, char *argv[])
     else
     {
       cerr << "ERROR: You must specify an output file" << endl;
+      exit(1);
     }
   }
   else if ( args_info.bank_fipid_given || args_info.bank_services_given )
@@ -135,6 +136,7 @@ int main (int argc, char *argv[])
     else
     {
       cerr << "ERROR: You must specify an bank" << endl;
+      exit(1);
     }
   }
 
@@ -293,7 +295,7 @@ int main (int argc, char *argv[])
     {
       char* request = libofx_request_statement( &fi, &account, time(NULL) - args_info.past_arg * 86400L );
 
-      if ( url.length() )
+      if ( url.length() && args_info.inputs_num > 0 )
         post(request, url.c_str(), args_info.inputs[0]);
       else
         cout << request;
@@ -330,7 +332,7 @@ int main (int argc, char *argv[])
       os << request;
       fb.close();
 
-      if ( url.length() )
+      if ( url.length() && args_info.inputs_num > 0 )
         post(request, url.c_str(), args_info.inputs[0]);
       else
         cout << request;
@@ -436,7 +438,7 @@ int main (int argc, char *argv[])
       os << request;
       fb.close();
 
-      if ( url.length() )
+      if ( url.length() && args_info.inputs_num > 0 )
         post(request, url.c_str(), args_info.inputs[0]);
       else
         cout << request;
@@ -452,7 +454,7 @@ int main (int argc, char *argv[])
     {
       char* request = libofx_request_accountinfo( &fi );
 
-      if ( url.length() )
+      if ( url.length() && args_info.inputs_num > 0 )
         post(request, url.c_str(), args_info.inputs[0]);
       else
         cout << request;
@@ -466,12 +468,12 @@ int main (int argc, char *argv[])
     cout << OfxPartner::BankNames();
   }
 
-  if ( args_info.bank_fipid_given )
+  if ( args_info.bank_fipid_given && args_info.inputs_num > 0 )
   {
     cout << OfxPartner::FipidForBank(args_info.inputs[0]);
   }
 
-  if ( args_info.bank_services_given )
+  if ( args_info.bank_services_given && args_info.inputs_num > 0 )
   {
     OfxFiServiceInfo svcinfo = OfxPartner::ServiceInfo(args_info.inputs[0]);
     cout << "Account List? " << (svcinfo.accountlist ? "Yes" : "No") << endl;
