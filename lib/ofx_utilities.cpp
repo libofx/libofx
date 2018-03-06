@@ -90,6 +90,29 @@ string AppendCharStringtostring(const SGMLApplication::CharString source, string
   return dest;
 }
 
+/* Since we don't know for an arbitrary date-time whether or not it represents daylight time and we have to tell mktime something, we tell it yes if the current environment's TZ uses daylight time. If mktime finds that the supplied date-time isn't in daylight time for that time zone, it will adjust the struct tm to reflect the same time-point in not-daylight time and correct the value of tm_isdst. We check for that change and if it happens restore timeptr's date and time values and call mktime again with the correct value of tm_isdst. */
+static time_t
+checked_mktime(struct tm* timeptr)
+{
+  int is_dst = timeptr->tm_isdst;
+  int min = timeptr->tm_min;
+  int hour = timeptr->tm_hour;
+  int mday = timeptr->tm_mday;
+  int mon = timeptr->tm_mon;
+  int year = timeptr->tm_year;
+  time_t result = mktime(timeptr);
+  if (is_dst == timeptr->tm_isdst) // mktime didn't change it, OK to use the result.
+    return result;
+
+  //Restore the date & time to what it was, but use the new isdst value:
+  timeptr->tm_min = min;
+  timeptr->tm_hour = hour;
+  timeptr->tm_mday = mday;
+  timeptr->tm_mon = mon;
+  timeptr->tm_year = year;
+  return mktime(timeptr);
+}
+
 /**
  * Converts a date from the YYYYMMDDHHMMSS.XXX[gmt offset:tz name] OFX format (see OFX 2.01 spec p.66) to a C time_t.
  * @param ofxdate date from the YYYYMMDDHHMMSS.XXX[gmt offset:tz name] OFX format
@@ -116,9 +139,10 @@ time_t ofxdate_to_time_t(const string ofxdate)
   string ofxdate_whole;
   time_t temptime;
 
-  time.tm_isdst = daylight; // initialize dst setting
   std::time(&temptime);
-  local_offset = difftime(mktime(localtime(&temptime)), mktime(gmtime(&temptime))) + (3600 * daylight);
+  local_offset = difftime(mktime(localtime(&temptime)), mktime(gmtime(&temptime)));
+  /* daylight is set to 1 if the timezone indicated by the environment (either TZ or /etc/localtime) uses daylight savings time (aka summer time). We use it here to provisionally set tm_isdst. */
+  time.tm_isdst = daylight;
 
   if (ofxdate.size() != 0)
   {
@@ -150,7 +174,7 @@ time_t ofxdate_to_time_t(const string ofxdate)
     {
       /* Catch invalid string format */
       message_out(ERROR, "ofxdate_to_time_t():  Unable to convert time, string " + ofxdate + " is not in proper YYYYMMDDHHMMSS.XXX[gmt offset:tz name] format!");
-      return mktime(&time);
+      return checked_mktime(&time);
     }
 
 
@@ -171,6 +195,7 @@ time_t ofxdate_to_time_t(const string ofxdate)
     {
       /* Time zone was not specified, assume GMT (provisionnaly) in case exact time is specified */
       ofx_gmt_offset = 0;
+      time.tm_isdst = 0; //GMT doesn't use daylight time.
       strcpy(timezone, "GMT");
     }
 
@@ -188,14 +213,14 @@ time_t ofxdate_to_time_t(const string ofxdate)
       time.tm_min = 59;
       time.tm_sec = 0;
     }
-    return mktime(&time);
+    return checked_mktime(&time);
   }
   else
   {
     message_out(ERROR, "ofxdate_to_time_t():  Unable to convert time, string is 0 length!");
     return 0; // MUST RETURN ZERO here because otherwise the uninitialized &time will be returned!
   }
-  return mktime(&time);
+  return checked_mktime(&time);
 }
 
 /**
