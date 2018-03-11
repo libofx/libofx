@@ -4,7 +4,7 @@
 echo "Running mkdir -p config"
 mkdir -p config
 echo "Running libtoolize --force"
-libtoolize --force
+libtoolize --force || glibtoolize --force
 echo "Running aclocal"
 aclocal -I ./m4
 echo "Running autoheader"
