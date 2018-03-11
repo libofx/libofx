@@ -107,7 +107,7 @@ extern "C" {
    *
    @return the new context, to be used by the other functions.
   */
-  LibofxContextPtr libofx_get_new_context();
+  LibofxContextPtr libofx_get_new_context(void);
 
   /**
    * \brief Free all ressources used by this context.
