@@ -3,7 +3,12 @@
 set -e
 echo "Running mkdir -p config"
 mkdir -p config
-${LIBTOOLIZE=libtoolize} #Allow overriding for homebrew which uses glibtoolize
+if command -v glibtoolize
+then
+	LIBTOOLIZE=glibtoolize
+else
+	LIBTOOLIZE=libtoolize
+fi
 echo "Running ${LIBTOOLIZE} --force"
 ${LIBTOOLIZE} --force
 echo "Running aclocal"
