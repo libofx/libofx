@@ -25,9 +25,9 @@
 
 
 
-#ifdef OS_WIN32
+#ifdef __WIN32__
 
-int mkstemp(char *tmpl)
+int mkstemp_win32(char *tmpl)
 {
   int fd = -1;
   int len;

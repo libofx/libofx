@@ -34,13 +34,13 @@
 #include <iconv.h>
 #endif
 
-#ifdef OS_WIN32
+#ifdef __WIN32__
 # define DIRSEP "\\"
 #else
 # define DIRSEP "/"
 #endif
 
-#ifdef OS_WIN32
+#ifdef __WIN32__
 # include "win32.hh"
 # include <windows.h> // for GetModuleFileName()
 # undef ERROR
@@ -110,7 +110,11 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
     mkTempFileName("libofxtmpXXXXXX", tmp_filename, sizeof(tmp_filename));
 
     message_out(DEBUG, "ofx_proc_file(): Creating temp file: " + string(tmp_filename));
+#ifdef __WIN32__
+    tmp_file_fd = mkstemp_win32(tmp_filename);
+#else
     tmp_file_fd = mkstemp(tmp_filename);
+#endif
     if (tmp_file_fd)
     {
       tmp_file.open(tmp_filename);
@@ -309,7 +313,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
             size_t outbytesleft = inbytesleft * 2 - 1;
             char * iconv_buffer = (char*) malloc (inbytesleft * 2);
             memset(iconv_buffer, 0, inbytesleft * 2);
-#if defined(OS_WIN32) || defined(__sun) || defined(__NetBSD__)
+#if defined(__sun) || defined(__NetBSD__)
             const char * inchar = (const char *)s_buffer.c_str();
 #else
             char * inchar = (char *)s_buffer.c_str();
@@ -536,7 +540,7 @@ string sanitize_proprietary_tags(string input_string)
 }
 
 
-#ifdef OS_WIN32
+#ifdef __WIN32__
 static std::string get_dtd_installation_directory()
 {
   // Partial implementation of
@@ -591,7 +595,7 @@ std::string find_dtd(LibofxContextPtr ctx, const std::string& dtd_filename)
     }
   }
 
-#ifdef OS_WIN32
+#ifdef __WIN32__
   dtd_path_filename = get_dtd_installation_directory();
   if (!dtd_path_filename.empty())
   {
