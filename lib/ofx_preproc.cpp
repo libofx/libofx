@@ -183,114 +183,116 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
         }
 
         int ofx_start_idx;
-        if (ofx_start == false &&
-            (
+        if (ofx_start == false)
+        {
+          if (
               (libofx_context->currentFileType() == OFX &&
-               ((ofx_start_idx = s_buffer.find("<OFX>")) !=
-                string::npos || (ofx_start_idx = s_buffer.find("<ofx>")) != string::npos))
-              || (libofx_context->currentFileType() == OFC &&
+               ((ofx_start_idx = s_buffer.find("<OFX>")) != string::npos ||
+                (ofx_start_idx = s_buffer.find("<ofx>")) != string::npos))
+              ||
+              (libofx_context->currentFileType() == OFC &&
                   ((ofx_start_idx = s_buffer.find("<OFC>")) != string::npos ||
                    (ofx_start_idx = s_buffer.find("<ofc>")) != string::npos))
-            )
-           )
-        {
-          ofx_start = true;
-          if (file_is_xml == false)
+             )
           {
-            s_buffer.erase(0, ofx_start_idx); //Fix for really broken files that don't have a newline after the header.
-          }
-          message_out(DEBUG, "ofx_proc_file():<OFX> or <OFC> has been found");
-
-          if (file_is_xml == true)
-          {
-            static char sp_charset_fixed[] = "SP_CHARSET_FIXED=1";
-            if (putenv(sp_charset_fixed) != 0)
+            ofx_start = true;
+            if (file_is_xml == false)
             {
-              message_out(ERROR, "ofx_proc_file(): putenv failed");
+                s_buffer.erase(0, ofx_start_idx); //Fix for really broken files that don't have a newline after the header.
             }
-            /* Normally the following would be "xml".
-             * Unfortunately, opensp's generic api will garble UTF-8 if this is
-             * set to xml.  So we set any single byte encoding to avoid messing
-             * up UTF-8.  Unfortunately this means that non-UTF-8 files will not
-             * get properly translated.  We'd need to manually detect the
-             * encoding in the XML header and convert the xml with iconv like we
-             * do for SGML to work around the problem.  Most unfortunate. */
-            static char sp_encoding[] = "SP_ENCODING=ms-dos";
-            if (putenv(sp_encoding) != 0)
+            message_out(DEBUG, "ofx_proc_file():<OFX> or <OFC> has been found");
+
+            if (file_is_xml == true)
             {
-              message_out(ERROR, "ofx_proc_file(): putenv failed");
+                static char sp_charset_fixed[] = "SP_CHARSET_FIXED=1";
+                if (putenv(sp_charset_fixed) != 0)
+                {
+                    message_out(ERROR, "ofx_proc_file(): putenv failed");
+                }
+                /* Normally the following would be "xml".
+                * Unfortunately, opensp's generic api will garble UTF-8 if this is
+                * set to xml.  So we set any single byte encoding to avoid messing
+                * up UTF-8.  Unfortunately this means that non-UTF-8 files will not
+                * get properly translated.  We'd need to manually detect the
+                * encoding in the XML header and convert the xml with iconv like we
+                * do for SGML to work around the problem.  Most unfortunate. */
+                static char sp_encoding[] = "SP_ENCODING=ms-dos";
+                if (putenv(sp_encoding) != 0)
+                {
+                    message_out(ERROR, "ofx_proc_file(): putenv failed");
+                }
+            }
+            else
+            {
+                static char sp_charset_fixed[] = "SP_CHARSET_FIXED=1";
+                if (putenv(sp_charset_fixed) != 0)
+                {
+                    message_out(ERROR, "ofx_proc_file(): putenv failed");
+                }
+                static char sp_encoding[] = "SP_ENCODING=ms-dos"; //Any single byte encoding will do, we don't want opensp messing up UTF-8;
+                if (putenv(sp_encoding) != 0)
+                {
+                    message_out(ERROR, "ofx_proc_file(): putenv failed");
+                }
+#ifdef HAVE_ICONV
+                string fromcode;
+                string tocode;
+                if (ofx_encoding.compare("USASCII") == 0)
+                {
+                    if (ofx_charset.compare("ISO-8859-1") == 0 || ofx_charset.compare("8859-1") == 0)
+                    {
+                        //Only "ISO-8859-1" is actually a legal value, but since the banks follows the spec SO well...
+                        fromcode = "ISO-8859-1";
+                    }
+                    else if (ofx_charset.compare("1252") == 0 || ofx_charset.compare("CP1252") == 0)
+                    {
+                        //Only "1252" is actually a legal value, but since the banks follows the spec SO well...
+                        fromcode = "CP1252";
+                    }
+                    else if (ofx_charset.compare("NONE") == 0)
+                    {
+                        fromcode = LIBOFX_DEFAULT_INPUT_ENCODING;
+                    }
+                    else
+                    {
+                        fromcode = LIBOFX_DEFAULT_INPUT_ENCODING;
+                    }
+                }
+                else if (ofx_encoding.compare("UTF-8") == 0 || ofx_encoding.compare("UNICODE") == 0)
+                {
+                    //While "UNICODE" isn't a legal value, some cyrilic files do specify it as such...
+                    fromcode = "UTF-8";
+                }
+                else
+                {
+                    fromcode = LIBOFX_DEFAULT_INPUT_ENCODING;
+                }
+                tocode = LIBOFX_DEFAULT_OUTPUT_ENCODING;
+                message_out(DEBUG, "ofx_proc_file(): Setting up iconv for fromcode: " + fromcode + ", tocode: " + tocode);
+                conversion_descriptor = iconv_open (tocode.c_str(), fromcode.c_str());
+#endif
             }
           }
           else
           {
-            static char sp_charset_fixed[] = "SP_CHARSET_FIXED=1";
-            if (putenv(sp_charset_fixed) != 0)
+            //We are still in the headers
+            if ((header_separator_idx = s_buffer.find(':')) != string::npos)
             {
-              message_out(ERROR, "ofx_proc_file(): putenv failed");
-            }
-            static char sp_encoding[] = "SP_ENCODING=ms-dos"; //Any single byte encoding will do, we don't want opensp messing up UTF-8;
-            if (putenv(sp_encoding) != 0)
-            {
-              message_out(ERROR, "ofx_proc_file(): putenv failed");
-            }
-#ifdef HAVE_ICONV
-            string fromcode;
-            string tocode;
-            if (ofx_encoding.compare("USASCII") == 0)
-            {
-              if (ofx_charset.compare("ISO-8859-1") == 0 || ofx_charset.compare("8859-1") == 0)
-              {
-                //Only "ISO-8859-1" is actually a legal value, but since the banks follows the spec SO well...
-                fromcode = "ISO-8859-1";
-              }
-              else if (ofx_charset.compare("1252") == 0 || ofx_charset.compare("CP1252") == 0)
-              {
-                //Only "1252" is actually a legal value, but since the banks follows the spec SO well...
-                fromcode = "CP1252";
-              }
-              else if (ofx_charset.compare("NONE") == 0)
-              {
-                fromcode = LIBOFX_DEFAULT_INPUT_ENCODING;
-              }
-              else
-              {
-                fromcode = LIBOFX_DEFAULT_INPUT_ENCODING;
-              }
-            }
-            else if (ofx_encoding.compare("UTF-8") == 0 || ofx_encoding.compare("UNICODE") == 0)
-            {
-              //While "UNICODE" isn't a legal value, some cyrilic files do specify it as such...
-              fromcode = "UTF-8";
-            }
-            else
-            {
-              fromcode = LIBOFX_DEFAULT_INPUT_ENCODING;
-            }
-            tocode = LIBOFX_DEFAULT_OUTPUT_ENCODING;
-            message_out(DEBUG, "ofx_proc_file(): Setting up iconv for fromcode: " + fromcode + ", tocode: " + tocode);
-            conversion_descriptor = iconv_open (tocode.c_str(), fromcode.c_str());
-#endif
-          }
-        }
-        else
-        {
-          //We are still in the headers
-          if ((header_separator_idx = s_buffer.find(':')) != string::npos)
-          {
-            //Header processing
-            header_name.assign(s_buffer.substr(0, header_separator_idx));
-            header_value.assign(s_buffer.substr(header_separator_idx + 1));
-            while ( header_value[header_value.length() -1 ] == '\n' ||
-                    header_value[header_value.length() -1 ] == '\r' )
-              header_value.erase(header_value.length() - 1);
-            message_out(DEBUG, "ofx_proc_file():Header: " + header_name + " with value: " + header_value + " has been found");
-            if (header_name.compare("ENCODING") == 0)
-            {
-              ofx_encoding.assign(header_value);
-            }
-            if (header_name.compare("CHARSET") == 0)
-            {
-              ofx_charset.assign(header_value);
+                //Header processing
+                header_name.assign(s_buffer.substr(0, header_separator_idx));
+                header_value.assign(s_buffer.substr(header_separator_idx + 1));
+                while ( header_value[header_value.length() -1 ] == '\n' ||
+                        header_value[header_value.length() -1 ] == '\r' )
+                header_value.erase(header_value.length() - 1);
+                message_out(DEBUG, "ofx_proc_file():Header: " + header_name + " with value: " + header_value + " has been found");
+                if (header_name.compare("ENCODING") == 0)
+                {
+                    ofx_encoding.assign(header_value);
+                }
+                if (header_name.compare("CHARSET") == 0)
+                {
+                    ofx_charset.assign(header_value);
+                }
             }
           }
         }
