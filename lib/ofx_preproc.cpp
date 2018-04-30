@@ -73,7 +73,6 @@ const char *DTD_SEARCH_PATH[DTD_SEARCH_PATH_NUM] =
   "/usr/share/libofx/dtd",
   "~"
 };
-const unsigned int READ_BUFFER_SIZE = 1024;
 
 /** @brief File pre-processing of OFX AND for OFC files
 *
@@ -408,127 +407,89 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
   return 0;
 }
 
+/* Searches input string for a tag starting from pos.
+ * If found will return the tag_name and pos will be set to the string position of the closing '>'
+ * If the tag doesn't have a closing '>', pos will be set to string::npos.
+ */
+static string find_tag_open (string& input_string, size_t& pos)
+{
+    size_t start_idx = input_string.find ('<', pos);
+
+    if (start_idx == string::npos)
+    {
+        pos = string::npos;
+        return string();
+    }
+
+    size_t end_idx = input_string.find ('>', start_idx + 1);
+    if (end_idx != string::npos)
+        pos = end_idx + 1;
+    end_idx = end_idx - (start_idx + 1);
+    return input_string.substr(start_idx + 1, end_idx);
+}
+
+/* Searches input string for a closing tag matching tag_name starting from pos.
+ * If found will pos will be set to the position right after of the closing '>'
+ * If no matching closing tag is found pos will be set to the start of the next tag
+ * found.
+ */
+static void find_tag_close (string& input_string, string& tag_name, size_t& pos)
+{
+    size_t start_idx = input_string.find ("</" + tag_name + ">", pos);
+
+    if (start_idx == string::npos)
+    {
+        string new_tag_name = find_tag_open (input_string, pos);
+        if (!new_tag_name.empty())
+        {
+            // find_tag_open returns the *end* of an opening tag, but in this
+            // case we want its start, so we need to rewind a bit..
+            pos = pos - new_tag_name.length() - 2;
+        }
+    }
+    else
+    {
+        pos = std::min(input_string.length(), start_idx + tag_name.length() + 3);
+    }
+    return;
+}
+
 
 /**
    This function will strip all the OFX proprietary tags and SGML comments from the SGML string passed to it
+   Note this function assumes in case a proprietary tag comes in an open and closing pair,
+   they both appear on the same line (and hence are part of the same input_string passed to this function).
+   So an ofx file with a single line like this <proprietary>abc</proprietary> will properly sanitized
+   But an ofx file where this is split on multiple lines will not:
+   <proprietary>
+     abc
+   </proprietary>
 */
 
 string sanitize_proprietary_tags(string input_string)
 {
-  unsigned int i;
-  bool strip = false;
-  bool tag_open = false;
-  int tag_open_idx = 0; //Are we within < > ?
-  bool closing_tag_open = false; //Are we within </ > ?
-  int orig_tag_open_idx = 0;
-  bool proprietary_tag = false; //Are we within a proprietary element?
-  bool proprietary_closing_tag = false;
-  int crop_end_idx = 0;
-  char buffer[READ_BUFFER_SIZE] = "";
-  char tagname[READ_BUFFER_SIZE] = "";
-  int tagname_idx = 0;
-  char close_tagname[READ_BUFFER_SIZE] = "";
-
-  for (i = 0; i < READ_BUFFER_SIZE; i++)
+  size_t last_known_good_pos = 0;
+  size_t find_pos = last_known_good_pos;
+  string tag_name = find_tag_open(input_string, find_pos);
+  while (!tag_name.empty())
   {
-    buffer[i] = 0;
-    tagname[i] = 0;
-    close_tagname[i] = 0;
-  }
-
-  size_t input_string_size = input_string.size();
-
-  // Minimum workaround to prevent buffer overflow: Stop iterating
-  // once the (fixed!) size of the output buffers is reached. In
-  // response to
-  // https://www.talosintelligence.com/vulnerability_reports/TALOS-2017-0317
-  //
-  // However, this code is a huge mess anyway and is in no way
-  // anything like up-to-date C++ code. Please, anyone, replace it
-  // with something more modern. Thanks. - cstim, 2017-09-17.
-  for (i = 0; i < std::min(input_string_size, size_t(READ_BUFFER_SIZE)); i++)
-  {
-    if (input_string.c_str()[i] == '<')
+    // Determine whether the current tag is proprietary.
+    if (tag_name.find('.') != string::npos)
     {
-      tag_open = true;
-      tag_open_idx = i;
-      if (proprietary_tag == true && input_string.c_str()[i+1] == '/')
-      {
-        //We are now in a closing tag
-        closing_tag_open = true;
-        //cout<<"Comparaison: "<<tagname<<"|"<<&(input_string.c_str()[i+2])<<"|"<<strlen(tagname)<<endl;
-        if (strncmp(tagname, &(input_string.c_str()[i+2]), strlen(tagname)) != 0)
-        {
-          //If it is the begining of an other tag
-          //cout<<"DIFFERENT!"<<endl;
-          crop_end_idx = i - 1;
-          strip = true;
-        }
-        else
-        {
-          //Otherwise, it is the start of the closing tag of the proprietary tag
-          proprietary_closing_tag = true;
-        }
-      }
-      else if (proprietary_tag == true)
-      {
-        //It is the start of a new tag, following a proprietary tag
-        crop_end_idx = i - 1;
-        strip = true;
-      }
+        find_tag_close (input_string, tag_name, find_pos);
+        size_t tag_size = find_pos - last_known_good_pos;
+        string prop_tag = input_string.substr(last_known_good_pos, tag_size);
+        message_out(INFO, "sanitize_proprietary_tags() removed: " + prop_tag);
+        input_string.erase(last_known_good_pos, tag_size);
+        find_pos = last_known_good_pos;
     }
-    else if (input_string.c_str()[i] == '>')
+    else
     {
-      tag_open = false;
-      closing_tag_open = false;
-      tagname[tagname_idx] = 0;
-      tagname_idx = 0;
-      if (proprietary_closing_tag == true)
-      {
-        crop_end_idx = i;
-        strip = true;
-      }
+        last_known_good_pos = find_pos;
     }
-    else if (tag_open == true && closing_tag_open == false)
-    {
-      if (input_string.c_str()[i] == '.')
-      {
-        if (proprietary_tag != true)
-        {
-          orig_tag_open_idx = tag_open_idx;
-          proprietary_tag = true;
-        }
-      }
-      tagname[tagname_idx] = input_string.c_str()[i];
-      tagname_idx++;
-    }
-    //cerr <<i<<endl;
-    if (strip == true && orig_tag_open_idx < input_string.size())
-    {
-      input_string.copy(buffer, (crop_end_idx - orig_tag_open_idx) + 1, orig_tag_open_idx);
-      message_out(INFO, "sanitize_proprietary_tags() (end tag or new tag) removed: " + string(buffer));
-      input_string.erase(orig_tag_open_idx, (crop_end_idx - orig_tag_open_idx) + 1);
-      i = orig_tag_open_idx - 1;
-      proprietary_tag = false;
-      proprietary_closing_tag = false;
-      closing_tag_open = false;
-      tag_open = false;
-      strip = false;
-
-      input_string_size = input_string.size();
-    }
-
-  }//end for
-  if (proprietary_tag == true && orig_tag_open_idx < input_string.size())
-  {
-    if (crop_end_idx == 0)   //no closing tag
-    {
-      crop_end_idx = input_string.size() - 1;
-    }
-    input_string.copy(buffer, (crop_end_idx - orig_tag_open_idx) + 1, orig_tag_open_idx);
-    message_out(INFO, "sanitize_proprietary_tags() (end of line) removed: " + string(buffer));
-    input_string.erase(orig_tag_open_idx, (crop_end_idx - orig_tag_open_idx) + 1);
-    input_string_size = input_string.size();
+    tag_name.clear();
+    if (last_known_good_pos != string::npos)
+        tag_name = find_tag_open(input_string, find_pos);
   }
   return input_string;
 }
