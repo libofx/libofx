@@ -474,7 +474,8 @@ string sanitize_proprietary_tags(string input_string)
   while (!tag_name.empty())
   {
     // Determine whether the current tag is proprietary.
-    if (tag_name.find('.') != string::npos)
+    if ((tag_name.find('.') != string::npos) ||   // tag has a . in the name
+       (tag_name == "CATEGORY"))                  // Chase bank started setting these in 2017
     {
         find_tag_close (input_string, tag_name, find_pos);
         size_t tag_size = find_pos - last_known_good_pos;
