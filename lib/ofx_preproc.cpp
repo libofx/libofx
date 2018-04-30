@@ -22,6 +22,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <stdio.h>
+#include <sstream>
 #include <string>
 #include "ParserEventGeneratorKit.h"
 #include "libofx.h"
@@ -87,8 +88,6 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
 
   ifstream input_file;
   ofstream tmp_file;
-  char buffer[READ_BUFFER_SIZE];
-  string s_buffer;
   char *filenames[3];
   char tmp_filename[256];
   int tmp_file_fd;
@@ -139,42 +138,35 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
       string ofx_charset;
       do
       {
-        s_buffer.clear();
-        bool end_of_line = false;
-        do
+        stringbuf buffer;
+        string s_buffer;
+        input_file.get(buffer, '\n');
+        //cout<< "got: \"" << buffer<<"\"\n";
+        s_buffer = buffer.str();
+
+        // Watch out: If input_file is in eof(), any subsequent read or
+        // peek() will fail and we must exit this loop.
+        if (!input_file.eof())
         {
-          input_file.get(buffer, sizeof(buffer), '\n');
-          //cout<< "got: \"" << buffer<<"\"\n";
-          s_buffer.append(buffer);
+            //cout<<"input_file.gcount(): "<<input_file.gcount()<< " s_buffer.size=" << s_buffer.size()<<" sizeof(buffer): "<<sizeof(buffer) << " peek=\"" << int(input_file.peek()) << "\"" <<endl;
+            if (input_file.fail()) // If no characters were extracted above, the failbit is set.
+            {
+                // No characters extracted means that we've reached the newline
+                // delimiter (because we already checked for EOF). We will check
+                // for and remove that newline in the next if-clause, but must
+                // remove the failbit so that peek() will work again.
+                input_file.clear();
+            }
 
-          // Watch out: If input_file is in eof(), any subsequent read or
-          // peek() will fail and we must exit this loop.
-          if (input_file.eof())
-            break;
-
-          //cout<<"input_file.gcount(): "<<input_file.gcount()<< " s_buffer.size=" << s_buffer.size()<<" sizeof(buffer): "<<sizeof(buffer) << " peek=\"" << int(input_file.peek()) << "\"" <<endl;
-          if (input_file.fail()) // If no characters were extracted above, the failbit is set.
-          {
-            // No characters extracted means that we've reached the newline
-            // delimiter (because we already checked for EOF). We will check
-            // for and remove that newline in the next if-clause, but must
-            // remove the failbit so that peek() will work again.
-            input_file.clear();
-          }
-
-          // Is the next character really the newline?
-          if (input_file.peek() == '\n')
-          {
-            // Yes. Then discard that newline character from the stream and
-            // append it manually to the output string.
-            input_file.get();
-            s_buffer.append("\n");
-            end_of_line = true; // We found the end-of-line.
-          }
+            // Is the next character really the newline?
+            if (input_file.peek() == '\n')
+            {
+                // Yes. Then discard that newline character from the stream and
+                // append it manually to the output string.
+                input_file.get();
+                s_buffer.append("\n");
+            }
         }
-        // Continue reading as long as we're not at EOF *and* we've not yet
-        // reached an end-of-line.
-        while (!input_file.eof() && !end_of_line);
 
         if (ofx_start == false && (s_buffer.find("<?xml") != string::npos))
         {
