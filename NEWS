@@ -1,3 +1,14 @@
+2017-09-17, LibOFX 0.9.13:
+
+        - Fix potential heap overflow
+	- Fix crash on some malformed ofx files
+	- Fix crash in ofxconnect on missing command line arguments
+	- Fix for daylight savings time handling
+	- Esier compile on macos:  obey LIBTOOLIZE env variable, and fallback to glibtoolize
+	- Fix compile on win32 (mingw-w64)
+	- Performance an reliability fixes in header parsing
+	- Strip CATEGORY tag added by Chase bank
+
 2017-09-17, LibOFX 0.9.12:
 
 	- Fix a buffer overflow on unexpected tag names.
