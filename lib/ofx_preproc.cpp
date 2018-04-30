@@ -22,6 +22,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <stdio.h>
+#include <sstream>
 #include <string>
 #include "ParserEventGeneratorKit.h"
 #include "libofx.h"
@@ -34,13 +35,13 @@
 #include <iconv.h>
 #endif
 
-#ifdef OS_WIN32
+#ifdef __WIN32__
 # define DIRSEP "\\"
 #else
 # define DIRSEP "/"
 #endif
 
-#ifdef OS_WIN32
+#ifdef __WIN32__
 # include "win32.hh"
 # include <windows.h> // for GetModuleFileName()
 # undef ERROR
@@ -72,7 +73,6 @@ const char *DTD_SEARCH_PATH[DTD_SEARCH_PATH_NUM] =
   "/usr/share/libofx/dtd",
   "~"
 };
-const unsigned int READ_BUFFER_SIZE = 1024;
 
 /** @brief File pre-processing of OFX AND for OFC files
 *
@@ -87,8 +87,6 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
 
   ifstream input_file;
   ofstream tmp_file;
-  char buffer[READ_BUFFER_SIZE];
-  string s_buffer;
   char *filenames[3];
   char tmp_filename[256];
   int tmp_file_fd;
@@ -110,7 +108,11 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
     mkTempFileName("libofxtmpXXXXXX", tmp_filename, sizeof(tmp_filename));
 
     message_out(DEBUG, "ofx_proc_file(): Creating temp file: " + string(tmp_filename));
+#ifdef __WIN32__
+    tmp_file_fd = mkstemp_win32(tmp_filename);
+#else
     tmp_file_fd = mkstemp(tmp_filename);
+#endif
     if (tmp_file_fd)
     {
       tmp_file.open(tmp_filename);
@@ -135,42 +137,33 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
       string ofx_charset;
       do
       {
-        s_buffer.clear();
-        bool end_of_line = false;
-        do
+        stringbuf buffer;
+        string s_buffer;
+        input_file.get(buffer, '\n');
+        //cout<< "got: \"" << buffer<<"\"\n";
+        s_buffer = buffer.str();
+
+        // Watch out: If input_file is in eof(), any subsequent read or
+        // peek() will fail and we must exit this loop.
+        if (!input_file.eof())
         {
-          input_file.get(buffer, sizeof(buffer), '\n');
-          //cout<< "got: \"" << buffer<<"\"\n";
-          s_buffer.append(buffer);
+            //cout<<"input_file.gcount(): "<<input_file.gcount()<< " s_buffer.size=" << s_buffer.size()<<" sizeof(buffer): "<<sizeof(buffer) << " peek=\"" << int(input_file.peek()) << "\"" <<endl;
+            if (input_file.fail()) // If no characters were extracted above, the failbit is set.
+            {
+                // No characters extracted means that we've reached the newline
+                // delimiter (because we already checked for EOF). We will check
+                // for and remove that newline in the next if-clause, but must
+                // remove the failbit so that peek() will work again.
+                input_file.clear();
+            }
 
-          // Watch out: If input_file is in eof(), any subsequent read or
-          // peek() will fail and we must exit this loop.
-          if (input_file.eof())
-            break;
-
-          //cout<<"input_file.gcount(): "<<input_file.gcount()<< " s_buffer.size=" << s_buffer.size()<<" sizeof(buffer): "<<sizeof(buffer) << " peek=\"" << int(input_file.peek()) << "\"" <<endl;
-          if (input_file.fail()) // If no characters were extracted above, the failbit is set.
-          {
-            // No characters extracted means that we've reached the newline
-            // delimiter (because we already checked for EOF). We will check
-            // for and remove that newline in the next if-clause, but must
-            // remove the failbit so that peek() will work again.
-            input_file.clear();
-          }
-
-          // Is the next character really the newline?
-          if (input_file.peek() == '\n')
-          {
-            // Yes. Then discard that newline character from the stream and
-            // append it manually to the output string.
-            input_file.get();
-            s_buffer.append("\n");
-            end_of_line = true; // We found the end-of-line.
-          }
+            // Is the next character really the newline?
+            if (input_file.peek() == '\n')
+            {
+                // Yes. Then discard that newline character from the stream
+                input_file.get();
+            }
         }
-        // Continue reading as long as we're not at EOF *and* we've not yet
-        // reached an end-of-line.
-        while (!input_file.eof() && !end_of_line);
 
         if (ofx_start == false && (s_buffer.find("<?xml") != string::npos))
         {
@@ -179,114 +172,116 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
         }
 
         int ofx_start_idx;
-        if (ofx_start == false &&
-            (
+        if (ofx_start == false)
+        {
+          if (
               (libofx_context->currentFileType() == OFX &&
-               ((ofx_start_idx = s_buffer.find("<OFX>")) !=
-                string::npos || (ofx_start_idx = s_buffer.find("<ofx>")) != string::npos))
-              || (libofx_context->currentFileType() == OFC &&
+               ((ofx_start_idx = s_buffer.find("<OFX>")) != string::npos ||
+                (ofx_start_idx = s_buffer.find("<ofx>")) != string::npos))
+              ||
+              (libofx_context->currentFileType() == OFC &&
                   ((ofx_start_idx = s_buffer.find("<OFC>")) != string::npos ||
                    (ofx_start_idx = s_buffer.find("<ofc>")) != string::npos))
-            )
-           )
-        {
-          ofx_start = true;
-          if (file_is_xml == false)
+             )
           {
-            s_buffer.erase(0, ofx_start_idx); //Fix for really broken files that don't have a newline after the header.
-          }
-          message_out(DEBUG, "ofx_proc_file():<OFX> or <OFC> has been found");
-
-          if (file_is_xml == true)
-          {
-            static char sp_charset_fixed[] = "SP_CHARSET_FIXED=1";
-            if (putenv(sp_charset_fixed) != 0)
+            ofx_start = true;
+            if (file_is_xml == false)
             {
-              message_out(ERROR, "ofx_proc_file(): putenv failed");
+                s_buffer.erase(0, ofx_start_idx); //Fix for really broken files that don't have a newline after the header.
             }
-            /* Normally the following would be "xml".
-             * Unfortunately, opensp's generic api will garble UTF-8 if this is
-             * set to xml.  So we set any single byte encoding to avoid messing
-             * up UTF-8.  Unfortunately this means that non-UTF-8 files will not
-             * get properly translated.  We'd need to manually detect the
-             * encoding in the XML header and convert the xml with iconv like we
-             * do for SGML to work around the problem.  Most unfortunate. */
-            static char sp_encoding[] = "SP_ENCODING=ms-dos";
-            if (putenv(sp_encoding) != 0)
+            message_out(DEBUG, "ofx_proc_file():<OFX> or <OFC> has been found");
+
+            if (file_is_xml == true)
             {
-              message_out(ERROR, "ofx_proc_file(): putenv failed");
+                static char sp_charset_fixed[] = "SP_CHARSET_FIXED=1";
+                if (putenv(sp_charset_fixed) != 0)
+                {
+                    message_out(ERROR, "ofx_proc_file(): putenv failed");
+                }
+                /* Normally the following would be "xml".
+                * Unfortunately, opensp's generic api will garble UTF-8 if this is
+                * set to xml.  So we set any single byte encoding to avoid messing
+                * up UTF-8.  Unfortunately this means that non-UTF-8 files will not
+                * get properly translated.  We'd need to manually detect the
+                * encoding in the XML header and convert the xml with iconv like we
+                * do for SGML to work around the problem.  Most unfortunate. */
+                static char sp_encoding[] = "SP_ENCODING=ms-dos";
+                if (putenv(sp_encoding) != 0)
+                {
+                    message_out(ERROR, "ofx_proc_file(): putenv failed");
+                }
+            }
+            else
+            {
+                static char sp_charset_fixed[] = "SP_CHARSET_FIXED=1";
+                if (putenv(sp_charset_fixed) != 0)
+                {
+                    message_out(ERROR, "ofx_proc_file(): putenv failed");
+                }
+                static char sp_encoding[] = "SP_ENCODING=ms-dos"; //Any single byte encoding will do, we don't want opensp messing up UTF-8;
+                if (putenv(sp_encoding) != 0)
+                {
+                    message_out(ERROR, "ofx_proc_file(): putenv failed");
+                }
+#ifdef HAVE_ICONV
+                string fromcode;
+                string tocode;
+                if (ofx_encoding.compare("USASCII") == 0)
+                {
+                    if (ofx_charset.compare("ISO-8859-1") == 0 || ofx_charset.compare("8859-1") == 0)
+                    {
+                        //Only "ISO-8859-1" is actually a legal value, but since the banks follows the spec SO well...
+                        fromcode = "ISO-8859-1";
+                    }
+                    else if (ofx_charset.compare("1252") == 0 || ofx_charset.compare("CP1252") == 0)
+                    {
+                        //Only "1252" is actually a legal value, but since the banks follows the spec SO well...
+                        fromcode = "CP1252";
+                    }
+                    else if (ofx_charset.compare("NONE") == 0)
+                    {
+                        fromcode = LIBOFX_DEFAULT_INPUT_ENCODING;
+                    }
+                    else
+                    {
+                        fromcode = LIBOFX_DEFAULT_INPUT_ENCODING;
+                    }
+                }
+                else if (ofx_encoding.compare("UTF-8") == 0 || ofx_encoding.compare("UNICODE") == 0)
+                {
+                    //While "UNICODE" isn't a legal value, some cyrilic files do specify it as such...
+                    fromcode = "UTF-8";
+                }
+                else
+                {
+                    fromcode = LIBOFX_DEFAULT_INPUT_ENCODING;
+                }
+                tocode = LIBOFX_DEFAULT_OUTPUT_ENCODING;
+                message_out(DEBUG, "ofx_proc_file(): Setting up iconv for fromcode: " + fromcode + ", tocode: " + tocode);
+                conversion_descriptor = iconv_open (tocode.c_str(), fromcode.c_str());
+#endif
             }
           }
           else
           {
-            static char sp_charset_fixed[] = "SP_CHARSET_FIXED=1";
-            if (putenv(sp_charset_fixed) != 0)
+            //We are still in the headers
+            if ((header_separator_idx = s_buffer.find(':')) != string::npos)
             {
-              message_out(ERROR, "ofx_proc_file(): putenv failed");
-            }
-            static char sp_encoding[] = "SP_ENCODING=ms-dos"; //Any single byte encoding will do, we don't want opensp messing up UTF-8;
-            if (putenv(sp_encoding) != 0)
-            {
-              message_out(ERROR, "ofx_proc_file(): putenv failed");
-            }
-#ifdef HAVE_ICONV
-            string fromcode;
-            string tocode;
-            if (ofx_encoding.compare("USASCII") == 0)
-            {
-              if (ofx_charset.compare("ISO-8859-1") == 0 || ofx_charset.compare("8859-1") == 0)
-              {
-                //Only "ISO-8859-1" is actually a legal value, but since the banks follows the spec SO well...
-                fromcode = "ISO-8859-1";
-              }
-              else if (ofx_charset.compare("1252") == 0 || ofx_charset.compare("CP1252") == 0)
-              {
-                //Only "1252" is actually a legal value, but since the banks follows the spec SO well...
-                fromcode = "CP1252";
-              }
-              else if (ofx_charset.compare("NONE") == 0)
-              {
-                fromcode = LIBOFX_DEFAULT_INPUT_ENCODING;
-              }
-              else
-              {
-                fromcode = LIBOFX_DEFAULT_INPUT_ENCODING;
-              }
-            }
-            else if (ofx_encoding.compare("UTF-8") == 0 || ofx_encoding.compare("UNICODE") == 0)
-            {
-              //While "UNICODE" isn't a legal value, some cyrilic files do specify it as such...
-              fromcode = "UTF-8";
-            }
-            else
-            {
-              fromcode = LIBOFX_DEFAULT_INPUT_ENCODING;
-            }
-            tocode = LIBOFX_DEFAULT_OUTPUT_ENCODING;
-            message_out(DEBUG, "ofx_proc_file(): Setting up iconv for fromcode: " + fromcode + ", tocode: " + tocode);
-            conversion_descriptor = iconv_open (tocode.c_str(), fromcode.c_str());
-#endif
-          }
-        }
-        else
-        {
-          //We are still in the headers
-          if ((header_separator_idx = s_buffer.find(':')) != string::npos)
-          {
-            //Header processing
-            header_name.assign(s_buffer.substr(0, header_separator_idx));
-            header_value.assign(s_buffer.substr(header_separator_idx + 1));
-            while ( header_value[header_value.length() -1 ] == '\n' ||
-                    header_value[header_value.length() -1 ] == '\r' )
-              header_value.erase(header_value.length() - 1);
-            message_out(DEBUG, "ofx_proc_file():Header: " + header_name + " with value: " + header_value + " has been found");
-            if (header_name.compare("ENCODING") == 0)
-            {
-              ofx_encoding.assign(header_value);
-            }
-            if (header_name.compare("CHARSET") == 0)
-            {
-              ofx_charset.assign(header_value);
+                //Header processing
+                header_name.assign(s_buffer.substr(0, header_separator_idx));
+                header_value.assign(s_buffer.substr(header_separator_idx + 1));
+                while ( header_value[header_value.length() -1 ] == '\n' ||
+                        header_value[header_value.length() -1 ] == '\r' )
+                header_value.erase(header_value.length() - 1);
+                message_out(DEBUG, "ofx_proc_file():Header: " + header_name + " with value: " + header_value + " has been found");
+                if (header_name.compare("ENCODING") == 0)
+                {
+                    ofx_encoding.assign(header_value);
+                }
+                if (header_name.compare("CHARSET") == 0)
+                {
+                    ofx_charset.assign(header_value);
+                }
             }
           }
         }
@@ -300,6 +295,8 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
              * this isn't a great loss for now.
              */
             s_buffer = sanitize_proprietary_tags(s_buffer);
+            if (s_buffer.empty())
+                continue;
           }
           //cout<< s_buffer<<"\n";
           if (file_is_xml == false)
@@ -309,7 +306,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
             size_t outbytesleft = inbytesleft * 2 - 1;
             char * iconv_buffer = (char*) malloc (inbytesleft * 2);
             memset(iconv_buffer, 0, inbytesleft * 2);
-#if defined(OS_WIN32) || defined(__sun) || defined(__NetBSD__)
+#if defined(__sun) || defined(__NetBSD__)
             const char * inchar = (const char *)s_buffer.c_str();
 #else
             char * inchar = (char *)s_buffer.c_str();
@@ -329,7 +326,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
 #endif
           }
           //cout << s_buffer << "\n";
-          tmp_file.write(s_buffer.c_str(), s_buffer.length());
+          tmp_file << s_buffer << endl;
         }
 
         if (ofx_start == true &&
@@ -410,133 +407,96 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
   return 0;
 }
 
+/* Searches input string for a tag starting from pos.
+ * If found will return the tag_name and pos will be set to the string position of the closing '>'
+ * If the tag doesn't have a closing '>', pos will be set to string::npos.
+ */
+static string find_tag_open (string& input_string, size_t& pos)
+{
+    size_t start_idx = input_string.find ('<', pos);
+
+    if (start_idx == string::npos)
+    {
+        pos = string::npos;
+        return string();
+    }
+
+    size_t end_idx = input_string.find ('>', start_idx + 1);
+    if (end_idx != string::npos)
+        pos = end_idx + 1;
+    end_idx = end_idx - (start_idx + 1);
+    return input_string.substr(start_idx + 1, end_idx);
+}
+
+/* Searches input string for a closing tag matching tag_name starting from pos.
+ * If found will pos will be set to the position right after of the closing '>'
+ * If no matching closing tag is found pos will be set to the start of the next tag
+ * found.
+ */
+static void find_tag_close (string& input_string, string& tag_name, size_t& pos)
+{
+    size_t start_idx = input_string.find ("</" + tag_name + ">", pos);
+
+    if (start_idx == string::npos)
+    {
+        string new_tag_name = find_tag_open (input_string, pos);
+        if (!new_tag_name.empty())
+        {
+            // find_tag_open returns the *end* of an opening tag, but in this
+            // case we want its start, so we need to rewind a bit..
+            pos = pos - new_tag_name.length() - 2;
+        }
+    }
+    else
+    {
+        pos = std::min(input_string.length(), start_idx + tag_name.length() + 3);
+    }
+    return;
+}
+
 
 /**
    This function will strip all the OFX proprietary tags and SGML comments from the SGML string passed to it
+   Note this function assumes in case a proprietary tag comes in an open and closing pair,
+   they both appear on the same line (and hence are part of the same input_string passed to this function).
+   So an ofx file with a single line like this <proprietary>abc</proprietary> will properly sanitized
+   But an ofx file where this is split on multiple lines will not:
+   <proprietary>
+     abc
+   </proprietary>
 */
 
 string sanitize_proprietary_tags(string input_string)
 {
-  unsigned int i;
-  bool strip = false;
-  bool tag_open = false;
-  int tag_open_idx = 0; //Are we within < > ?
-  bool closing_tag_open = false; //Are we within </ > ?
-  int orig_tag_open_idx = 0;
-  bool proprietary_tag = false; //Are we within a proprietary element?
-  bool proprietary_closing_tag = false;
-  int crop_end_idx = 0;
-  char buffer[READ_BUFFER_SIZE] = "";
-  char tagname[READ_BUFFER_SIZE] = "";
-  int tagname_idx = 0;
-  char close_tagname[READ_BUFFER_SIZE] = "";
-
-  for (i = 0; i < READ_BUFFER_SIZE; i++)
+  size_t last_known_good_pos = 0;
+  size_t find_pos = last_known_good_pos;
+  string tag_name = find_tag_open(input_string, find_pos);
+  while (!tag_name.empty())
   {
-    buffer[i] = 0;
-    tagname[i] = 0;
-    close_tagname[i] = 0;
-  }
-
-  size_t input_string_size = input_string.size();
-
-  // Minimum workaround to prevent buffer overflow: Stop iterating
-  // once the (fixed!) size of the output buffers is reached. In
-  // response to
-  // https://www.talosintelligence.com/vulnerability_reports/TALOS-2017-0317
-  //
-  // However, this code is a huge mess anyway and is in no way
-  // anything like up-to-date C++ code. Please, anyone, replace it
-  // with something more modern. Thanks. - cstim, 2017-09-17.
-  for (i = 0; i < std::min(input_string_size, size_t(READ_BUFFER_SIZE)); i++)
-  {
-    if (input_string.c_str()[i] == '<')
+    // Determine whether the current tag is proprietary.
+    if ((tag_name.find('.') != string::npos) ||   // tag has a . in the name
+       (tag_name == "CATEGORY"))                  // Chase bank started setting these in 2017
     {
-      tag_open = true;
-      tag_open_idx = i;
-      if (proprietary_tag == true && input_string.c_str()[i+1] == '/')
-      {
-        //We are now in a closing tag
-        closing_tag_open = true;
-        //cout<<"Comparaison: "<<tagname<<"|"<<&(input_string.c_str()[i+2])<<"|"<<strlen(tagname)<<endl;
-        if (strncmp(tagname, &(input_string.c_str()[i+2]), strlen(tagname)) != 0)
-        {
-          //If it is the begining of an other tag
-          //cout<<"DIFFERENT!"<<endl;
-          crop_end_idx = i - 1;
-          strip = true;
-        }
-        else
-        {
-          //Otherwise, it is the start of the closing tag of the proprietary tag
-          proprietary_closing_tag = true;
-        }
-      }
-      else if (proprietary_tag == true)
-      {
-        //It is the start of a new tag, following a proprietary tag
-        crop_end_idx = i - 1;
-        strip = true;
-      }
+        find_tag_close (input_string, tag_name, find_pos);
+        size_t tag_size = find_pos - last_known_good_pos;
+        string prop_tag = input_string.substr(last_known_good_pos, tag_size);
+        message_out(INFO, "sanitize_proprietary_tags() removed: " + prop_tag);
+        input_string.erase(last_known_good_pos, tag_size);
+        find_pos = last_known_good_pos;
     }
-    else if (input_string.c_str()[i] == '>')
+    else
     {
-      tag_open = false;
-      closing_tag_open = false;
-      tagname[tagname_idx] = 0;
-      tagname_idx = 0;
-      if (proprietary_closing_tag == true)
-      {
-        crop_end_idx = i;
-        strip = true;
-      }
+        last_known_good_pos = find_pos;
     }
-    else if (tag_open == true && closing_tag_open == false)
-    {
-      if (input_string.c_str()[i] == '.')
-      {
-        if (proprietary_tag != true)
-        {
-          orig_tag_open_idx = tag_open_idx;
-          proprietary_tag = true;
-        }
-      }
-      tagname[tagname_idx] = input_string.c_str()[i];
-      tagname_idx++;
-    }
-    //cerr <<i<<endl;
-    if (strip == true && orig_tag_open_idx < input_string.size())
-    {
-      input_string.copy(buffer, (crop_end_idx - orig_tag_open_idx) + 1, orig_tag_open_idx);
-      message_out(INFO, "sanitize_proprietary_tags() (end tag or new tag) removed: " + string(buffer));
-      input_string.erase(orig_tag_open_idx, (crop_end_idx - orig_tag_open_idx) + 1);
-      i = orig_tag_open_idx - 1;
-      proprietary_tag = false;
-      proprietary_closing_tag = false;
-      closing_tag_open = false;
-      tag_open = false;
-      strip = false;
-
-      input_string_size = input_string.size();
-    }
-
-  }//end for
-  if (proprietary_tag == true && orig_tag_open_idx < input_string.size())
-  {
-    if (crop_end_idx == 0)   //no closing tag
-    {
-      crop_end_idx = input_string.size() - 1;
-    }
-    input_string.copy(buffer, (crop_end_idx - orig_tag_open_idx) + 1, orig_tag_open_idx);
-    message_out(INFO, "sanitize_proprietary_tags() (end of line) removed: " + string(buffer));
-    input_string.erase(orig_tag_open_idx, (crop_end_idx - orig_tag_open_idx) + 1);
-    input_string_size = input_string.size();
+    tag_name.clear();
+    if (last_known_good_pos != string::npos)
+        tag_name = find_tag_open(input_string, find_pos);
   }
   return input_string;
 }
 
 
-#ifdef OS_WIN32
+#ifdef __WIN32__
 static std::string get_dtd_installation_directory()
 {
   // Partial implementation of
@@ -591,7 +551,7 @@ std::string find_dtd(LibofxContextPtr ctx, const std::string& dtd_filename)
     }
   }
 
-#ifdef OS_WIN32
+#ifdef __WIN32__
   dtd_path_filename = get_dtd_installation_directory();
   if (!dtd_path_filename.empty())
   {
