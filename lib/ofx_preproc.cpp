@@ -160,10 +160,8 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
             // Is the next character really the newline?
             if (input_file.peek() == '\n')
             {
-                // Yes. Then discard that newline character from the stream and
-                // append it manually to the output string.
+                // Yes. Then discard that newline character from the stream
                 input_file.get();
-                s_buffer.append("\n");
             }
         }
 
@@ -297,6 +295,8 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
              * this isn't a great loss for now.
              */
             s_buffer = sanitize_proprietary_tags(s_buffer);
+            if (s_buffer.empty())
+                continue;
           }
           //cout<< s_buffer<<"\n";
           if (file_is_xml == false)
@@ -326,7 +326,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
 #endif
           }
           //cout << s_buffer << "\n";
-          tmp_file.write(s_buffer.c_str(), s_buffer.length());
+          tmp_file << s_buffer << endl;
         }
 
         if (ofx_start == true &&
