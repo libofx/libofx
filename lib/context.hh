@@ -32,12 +32,14 @@ private:
   LibofxProcSecurityCallback _securityCallback;
   LibofxProcTransactionCallback _transactionCallback;
   LibofxProcStatementCallback _statementCallback;
+  LibofxProcPositionCallback _positionCallback;
 
   void * _statementData;
   void * _accountData;
   void * _transactionData;
   void * _securityData;
   void * _statusData;
+  void * _positionData;
 
   std::string _dtdDir;
 
@@ -62,12 +64,14 @@ public:
   int transactionCallback(const struct OfxTransactionData data);
   int securityCallback(const struct OfxSecurityData data);
   int statusCallback(const struct OfxStatusData data);
+  int positionCallback(const struct OfxPositionData data);
 
   void setStatusCallback(LibofxProcStatusCallback cb, void *user_data);
   void setAccountCallback(LibofxProcAccountCallback cb, void *user_data);
   void setSecurityCallback(LibofxProcSecurityCallback cb, void *user_data);
   void setTransactionCallback(LibofxProcTransactionCallback cb, void *user_data);
   void setStatementCallback(LibofxProcStatementCallback cb, void *user_data);
+  void setPositionCallback(LibofxProcPositionCallback cb, void *user_data);
 
 
 };//End class LibofxContext

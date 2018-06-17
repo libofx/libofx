@@ -13,6 +13,7 @@ libofx_la_SOURCES =  messages.cpp \
 		ofx_container_statement.cpp \
 		ofx_container_account.cpp \
 		ofx_container_transaction.cpp \
+		ofx_container_position.cpp \
 		ofx_containers_misc.cpp \
 		ofx_request.cpp \
 		ofx_request_accountinfo.cpp \

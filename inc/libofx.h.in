@@ -80,7 +80,7 @@ extern "C" {
 #define OFX_TRANSACTION_NAME_LENGTH    (96 + 1)
 #define OFX_UNIQUE_ID_LENGTH           (32 + 1)
 #define OFX_UNIQUE_ID_TYPE_LENGTH      (10 + 1)
-#define OFX_SECNAME_LENGTH             (32 + 1)
+#define OFX_SECNAME_LENGTH             (120 + 1)
 #define OFX_TICKER_LENGTH              (32 + 1)
 #define OFX_ORG_LENGTH                 (32 + 1)
 #define OFX_FID_LENGTH                 (32 + 1)
@@ -91,6 +91,9 @@ extern "C" {
 #define OFX_APPVER_LENGTH              (32)
 #define OFX_HEADERVERSION_LENGTH       (32)
 #define OFX_CLIENTUID_LENGTH           (36 + 1)
+#define OFX_SECURITY_RATING_LENGTH     (32 + 1)
+#define OFX_FIASSET_CLASS_LENGTH       (32 + 1)
+#define OFX_LOANID_LENGTH              (32 + 1)
 
   /*
   #define OFX_STATEMENT_CB               0;
@@ -107,7 +110,7 @@ extern "C" {
    *
    @return the new context, to be used by the other functions.
   */
-  LibofxContextPtr libofx_get_new_context(void);
+  LibofxContextPtr libofx_get_new_context();
 
   /**
    * \brief Free all ressources used by this context.
@@ -213,7 +216,7 @@ extern "C" {
      this <STATUS> is located is available.
     */
     char ofx_element_name[OFX_ELEMENT_NAME_LENGTH];/** Name of the OFX element
-						     this status is relevant to */
+                             this status is relevant to */
     int ofx_element_name_valid;
 
     /** @name OFX mandatory elements
@@ -224,7 +227,7 @@ extern "C" {
     const char* name;          /**< Code short name */
     const char* description;   /**< Code long description, from ofx_error_msg.h */
     int code_valid;      /**< If  code_valid is true, so is name and description
-			  (They are obtained from a lookup table) */
+              (They are obtained from a lookup table) */
     /** Severity of the error */
     enum Severity
     {
@@ -240,7 +243,7 @@ extern "C" {
      associated variable contains valid data. */
 
     char* server_message; /**< Explanation given by the server for the Status Code.
-			   Especially important for generic errors. */
+               Especially important for generic errors. */
     int server_message_valid;
     /*@}*/
   };
@@ -302,7 +305,8 @@ extern "C" {
       OFX_CREDITLINE,/**< A line of credit */
       OFX_CMA,       /**< Cash Management Account */
       OFX_CREDITCARD,/**< A credit card account */
-      OFX_INVESTMENT /**< An investment account */
+      OFX_INVESTMENT,/**< An investment account */
+      OFX_401K       /**< A 401(k) investment account */
     } account_type;
     int account_type_valid;
 
@@ -345,13 +349,25 @@ extern "C" {
   /**
    * \brief An abstraction of a security, such as a stock, mutual fund, etc.
    *
-   * The OfxSecurityData stucture is used to hols the securyty
+   * The OfxSecurityData stucture is used to hold the security
    * information inside a OfxTransactionData struct for investment
    * transactions.
   */
   struct OfxSecurityData
   {
-    /** @name OFX mandatory elements
+    /** The type of the security, OFX entry will be one of
+     * DEBTINFO, MFINFO, OPTINFO, OTHERINFO, STOCKINFO */
+    enum SecurityType
+    {
+      OFX_DEBT_SECURITY,   /**< A <DEBTINFO> */
+      OFX_FUND_SECURITY,   /**< A <MFINFO> */
+      OFX_OPTION_SECURITY, /**< A <OPTINFO> */
+      OFX_STOCK_SECURITY,  /**< A <STOCKINFO> */
+      OFX_OTHER_SECURITY,  /**< A <OTHERINFO> */
+    } security_type;
+    int security_type_valid;
+
+    /** @name OFX mandatory <SECINFO> elements
      *
      * The OFX spec defines the following elements as mandatory.  The
      * associated variables should all contain valid data but you
@@ -362,13 +378,13 @@ extern "C" {
     int unique_id_valid;
 
     char unique_id_type[OFX_UNIQUE_ID_TYPE_LENGTH];/**< Usially "CUSIP" for FIs in
-						    north america*/
+                            north america*/
     int unique_id_type_valid;
 
     char secname[OFX_SECNAME_LENGTH];/**< The full name of the security */
     int secname_valid;
 
-    /** @name OFX optional elements
+    /** @name OFX optional <SECINFO> elements
      *  The OFX spec defines the following elements as optional. If the
      associated *_valid is true, the corresponding element is present and
      the associated variable contains valid data. */
@@ -377,8 +393,11 @@ extern "C" {
     int ticker_valid;
 
     double unitprice;/**< The price of each unit of the security, as of
-		      date_unitprice */
+              date_unitprice */
     int unitprice_valid;
+
+    char rating[OFX_SECURITY_RATING_LENGTH]; /**< The rating for the security */
+    int rating_valid;
 
     time_t date_unitprice;/**< The date as of which the unit price was valid. */
     int date_unitprice_valid;
@@ -388,13 +407,198 @@ extern "C" {
     char currency[OFX_CURRENCY_LENGTH];
     int currency_valid;
 
+    /** ratio of <CURDEF> currency to <CURSYM> currency */
+    double currency_ratio;
+    int currency_ratio_valid;
+
+    /** Whether the amounts have already been converted to the default currency.
+     *  An <ORIGCURRENCY> sets the flag to true, i.e. the amounts are reported in
+     *  the foreign currency. A <CURRENCY> element sets the flag to false. */
+    bool amounts_are_foreign_currency;
+    int amounts_are_foreign_currency_valid;
+
     char memo[OFX_MEMO2_LENGTH];/**< Extra information not included in name */
     int memo_valid;
 
-    /** The currency is a string in ISO-4217 format.  It overrides the
-        one defined in the statement for the unit price */
+    /** Financial Institution ID number
+        for this security */
     char fiid[OFX_FIID_LENGTH];
     int fiid_valid;
+
+    /** @name OFX optional elements common to <DEBTINFO>, <OPTINFO>, <0THERINFO>
+     *  The OFX spec defines the following elements as optional. If the
+     *  associated *_valid is true, the corresponding element is present and
+     *  the associated variable contains valid data. */
+
+    /** Asset class */
+    enum AssetClass
+    {
+      OFX_ASSET_CLASS_DOMESTICBOND,
+      OFX_ASSET_CLASS_INTLBOND,
+      OFX_ASSET_CLASS_LARGESTOCK,
+      OFX_ASSET_CLASS_SMALLSTOCK,
+      OFX_ASSET_CLASS_INTLSTOCK,
+      OFX_ASSET_CLASS_MONEYMRKT,
+      OFX_ASSET_CLASS_OTHER
+    } asset_class;
+    int asset_class_valid;
+
+    /** Text string for FI defined assest class */
+    char fiasset_class[OFX_FIASSET_CLASS_LENGTH];
+    int fiasset_class_valid;
+
+    /** @name OFX non-repeating optional <MFINFO> and <STOCKINFO> elements
+     *  The OFX spec defines the following elements as optional. If the
+     *  associated *_valid is true, the corresponding element is present and
+     *  the associated variable contains valid data. */
+
+    /** Type of mutual fund */
+    enum MutalFundType
+    {
+      OFX_MFTYPE_OPENEND,
+      OFX_MFTYPE_CLOSEEND,
+      OFX_MFTYPE_OTHER
+    } mutual_fund_type;
+    int mutual_fund_type_valid;
+
+    /** Type of stock */
+    enum StockType
+    {
+      OFX_STOCKTYPE_COMMON,
+      OFX_STOCKTYPE_PREFERRED,
+      OFX_STOCKTYPE_CONVERTIBLE,
+      OFX_STOCKTYPE_OTHER
+    } stock_type;
+    int stock_type_valid;
+
+    /** For <MFINFO>, current yield reported as portion of the fund's assests.
+    *   For <STOCKINFO>, dividend expressed as a portion of the current stock price. */
+    double yield;
+    int yield_valid;
+
+    time_t yield_asof_date;     /**< The date as of which the yield was valid. */
+    int yield_asof_date_valid;
+
+    /** @name OFX mandatory <DEBTINFO> elements
+     *  The OFX spec defines the following elements as mandatory. If the
+     *  associated *_valid is true, the corresponding element is present and
+     *  the associated variable contains valid data. */
+
+    /** Par value of the debt instrument */
+    double par_value;
+    int par_value_valid;
+
+    /** Type of debt */
+    enum DebtType
+    {
+      OFX_DEBT_TYPE_COUPON,
+      OFX_DEBT_TYPE_ZERO
+    } debt_type;
+    int debt_type_valid;
+
+    /** @name OFX optional <DEBTINFO> elements
+     *  The OFX spec defines the following elements as optional. If the
+     *  associated *_valid is true, the corresponding element is present and
+     *  the associated variable contains valid data. */
+
+    /** Debt Class */
+    enum DebtClass
+    {
+      OFX_DEBTCLASS_TREASURY,
+      OFX_DEBTCLASS_MUNICIPAL,
+      OFX_DEBTCLASS_CORPORATE,
+      OFX_DEBTCLASS_OTHER
+    } debt_class;
+    int debt_class_valid;
+
+    /** Bond coupon rate for the next closest call date */
+    double coupon_rate;
+    int coupon_rate_valid;
+
+    /** Date of the next coupon */
+    time_t date_coupon;
+    int date_coupon_valid;
+
+    /** When the coupon matures */
+    enum CouponFreq
+    {
+      OFX_COUPON_FREQ_MONTHLY,
+      OFX_COUPON_FREQ_QUARTERLY,
+      OFX_COUPON_FREQ_SEMIANNUAL,
+      OFX_COUPON_FREQ_ANNUAL,
+      OFX_COUPON_FREQ_OTHER
+    } coupon_freq;
+    int coupon_freq_valid;
+
+    /** Unit price if called */
+    double call_price;
+    int call_price_valid;
+
+    /** Yield to next call */
+    double yield_to_call;
+    int yield_to_call_valid;
+
+    /** Next call date */
+    time_t call_date;
+    int call_date_valid;
+
+    /** Type of the next call */
+    enum CallType
+    {
+      OFX_CALL_TYPE_CALL,
+      OFX_CALL_TYPE_PUT,
+      OFX_CALL_TYPE_PREFUND,
+      OFX_CALL_TYPE_MATURITY
+    } call_type;
+    int call_type_valid;
+
+    /** Yield to maturity */
+    double yield_to_maturity;
+    int yield_to_maturity_valid;
+
+    /** Date of maturity */
+    time_t maturity_date;
+    int maturity_date_valid;
+
+    /** @name OFX mandatory <OPTINFO> elements
+     *  The OFX spec defines the following elements as mandatory. If the
+     *  associated *_valid is true, the corresponding element is present and
+     *  the associated variable contains valid data. */
+
+    /** Type of option */
+    enum OptionType
+    {
+      OFX_OPTION_TYPE_CALL,
+      OFX_OPTION_TYPE_PUT
+    } option_type;
+    int option_type_valid;
+
+    /** Option strike price */
+    double strike_price;
+    int strike_price_valid;
+
+    /** Option expiration date */
+    time_t date_expire;
+    int date_expire_valid;
+
+    /** Shares per contract */
+    double shares_per_cont;
+    int shares_per_cont_valid;
+
+    /** @name OFX optional <OPTINFO> elements
+     *  The OFX spec defines the following elements as optional. If the
+     *  associated *_valid is true, the corresponding element is present and
+     *  the associated variable contains valid data. */
+
+    /** The id of the underlying security.
+    *   has the same <UNIQUEID> tag, give the field a different name */
+    char unique_id2[OFX_UNIQUE_ID_LENGTH];
+    int unique_id2_valid;
+
+    /** The id type of the underlying security.
+    *   has the same <UNIQUEIDTYPE> tag, give the field a different name */
+    char unique_id2_type[OFX_UNIQUE_ID_TYPE_LENGTH];
+    int unique_id2_type_valid;
 
   };/* end struct OfxSecurityData */
 
@@ -455,15 +659,16 @@ extern "C" {
     OFX_SELLOTHER,      /**< Sell other type of security */
     OFX_SELLSTOCK,      /**< Sell stock */
     OFX_SPLIT,          /**< Stock or mutial fund split */
-    OFX_TRANSFER        /**< Transfer holdings in and out of the investment account */
+    OFX_TRANSFER,       /**< Transfer holdings in and out of the investment account */
+    OFX_INVBANKTRAN     /**< Transfer cash in and out of the investment account */
   } InvTransactionType;
 
   typedef enum
   {
     DELETE, /**< The transaction with a fi_id matching fi_id_corrected should
-	       be deleted */
+           be deleted */
     REPLACE /**< The transaction with a fi_id matching fi_id_corrected should
-	       be replaced with this one */
+           be replaced with this one */
   } FiIdCorrectionAction;
 
   /**
@@ -481,10 +686,10 @@ extern "C" {
      Check if the associated *_valid is true before using them. */
 
     char account_id[OFX_ACCOUNT_ID_LENGTH];/**< Use this for matching with
-					    the relevant account in your
-					    application */
+                        the relevant account in your
+                        application */
     struct OfxAccountData * account_ptr; /**< Pointer to the full account structure,
-					  see OfxAccountData */
+                      see OfxAccountData */
     int account_id_valid;
 
     TransactionType transactiontype;
@@ -507,18 +712,18 @@ extern "C" {
     int units_valid;
 
     double unitprice; /**< Value of each unit, 1.00 if the commodity is
-		       money */
+               money */
     int unitprice_valid;
 
     double amount;    /**< Total monetary amount of the transaction, signage
-		       will determine if money went in or out.
-		       amount is the total amount:
-		       -(units) * unitprice - various fees */
+               will determine if money went in or out.
+               amount is the total amount:
+               -(units) * unitprice - various fees */
     int amount_valid;
 
-    char fi_id[256];  /**< Generated by the financial institution (fi),
-			unique id of the transaction, to be used to detect
-			duplicate downloads */
+    char fi_id[OFX_FITID_LENGTH];  /**< Generated by the financial institution (fi),
+            unique id of the transaction, to be used to detect
+            duplicate downloads */
     int fi_id_valid;
 
     /** @name OFX optional elements
@@ -531,36 +736,36 @@ extern "C" {
     char unique_id[OFX_UNIQUE_ID_LENGTH];
     int unique_id_valid;
     char unique_id_type[OFX_UNIQUE_ID_TYPE_LENGTH];/**< Usially "CUSIP" for FIs in
-						    north america*/
+                            north america*/
     int unique_id_type_valid;
 
     struct OfxSecurityData *security_data_ptr;  /** A pointer to the security's data.*/
     int security_data_valid;
 
     time_t date_posted;/**< Date the transaction took effect (ex: date it
-			appeared on your credit card bill).  Setlement date;
-			for stock split, execution date.
-			*
-			Mandatory for bank and credit card transactions */
+            appeared on your credit card bill).  Setlement date;
+            for stock split, execution date.
+            *
+            Mandatory for bank and credit card transactions */
     int date_posted_valid;
 
     time_t date_initiated;/**< Date the transaction was initiated (ex:
-			   date you bought something in a store for credit card;
-			   trade date for stocks;
-			   day of record for stock split)
-			   *
-			   Mandatory for investment transactions */
+               date you bought something in a store for credit card;
+               trade date for stocks;
+               day of record for stock split)
+               *
+               Mandatory for investment transactions */
     int date_initiated_valid;
 
     time_t date_funds_available;/**< Date the funds are available (not always
-				 provided) (ex: the date you are allowed to
-				 withdraw a deposit */
+                 provided) (ex: the date you are allowed to
+                 withdraw a deposit */
     int date_funds_available_valid;
 
     /** IMPORTANT: if  fi_id_corrected is present, this transaction
         is meant to replace or delete the transaction with this fi_id. See
         OfxTransactionData::fi_id_correction_action to know what to do. */
-    char fi_id_corrected[256];
+    char fi_id_corrected[OFX_FITID_LENGTH];
     int fi_id_corrected_valid;
 
     /** The OfxTransactionData::FiIdCorrectionAction enum contains the action
@@ -585,14 +790,14 @@ extern "C" {
     int reference_number_valid;
 
     long int standard_industrial_code;/**< The standard industrial code can have
-				       at most 6 digits */
+                       at most 6 digits */
     int standard_industrial_code_valid;
 
     char payee_id[OFX_SVRTID2_LENGTH];/**< The identifier of the payee */
     int payee_id_valid;
 
     char name[OFX_TRANSACTION_NAME_LENGTH];/**< Can be the name of the payee or
-					    the description of the transaction */
+                        the description of the transaction */
     int name_valid;
 
     char memo[OFX_MEMO2_LENGTH];/**< Extra information not included in name */
@@ -604,12 +809,225 @@ extern "C" {
     double fees;/**< Fees applied to trade (investment transactions only) */
     int fees_valid;
 
-    double oldunits;     /*number of units held before stock split */
+    double oldunits;     /**< Number of units held before stock split */
     int oldunits_valid;
 
-    double newunits;     /*number of units held after stock split */
+    double newunits;     /**< Number of units held after stock split */
     int newunits_valid;
 
+    /** Market value, should be UNITS*UNITPRICE */
+    double market_value;
+    int market_value_valid;
+
+    /** <CURSYM> The currency is a string in ISO-4217 format */
+    char currency[OFX_CURRENCY_LENGTH];
+    int currency_valid;
+
+    /** ratio of <CURDEF> currency to <CURSYM> currency */
+    double currency_ratio;
+    int currency_ratio_valid;
+
+    /** Whether the amounts have already been converted to the default currency.
+     *  An <ORIGCURRENCY> sets the flag to true, i.e. the amounts are reported in
+     *  the foreign currency. A <CURRENCY> element sets the flag to false. */
+    bool amounts_are_foreign_currency;
+    int amounts_are_foreign_currency_valid;
+
+    /** @name Other OFX elements for investment transactions
+     *  OFX spec 2.1.1 section 13.9.2.4.2 elements
+     *  that are not already defined. */
+
+    double accrued_interest; /**< Accrued interest when trading debt */
+    int accrued_interest_valid;
+
+    double avg_cost_basis;  /**< Average cost basis */
+    int avg_cost_basis_valid;
+
+    /** The <BUYTYPE> element is mandatory for stock, fund, and option buys */
+    /** This enum combines stock, fund, and option buy types into one field */
+    enum BuyType
+    {
+      OFX_BUY_TYPE_BUY,
+      OFX_BUY_TYPE_BUYTOCOVER,
+      OFX_BUY_TYPE_BUYTOOPEN,
+      OFX_BUY_TYPE_BUYTOCLOSE
+    } buy_type;
+    int buy_type_valid;
+
+    double denominator;   /**< For stock splits, split ratio denominator */
+    int denominator_valid;
+
+    time_t date_payroll;  /**< For 401(k) accounts, date the funds were deducted from payroll */
+    int date_payroll_valid;
+
+    time_t date_purchase; /**< The security's original purchase date */
+    int date_purchase_valid;
+
+    double gain;          /**< For sales, the total gain */
+    int gain_valid;
+
+    double cash_for_fractional;   /**< Cash for fractional units (for stock splits) */
+    int cash_for_fractional_valid;
+
+    /** Type of income for <INCOME> element */
+    enum IncomeType
+    {
+      OFX_CGLONG,       /**< Long term capital gains */
+      OFX_CGSHORT,      /**< Short term capital gains */
+      OFX_DIVIDEND,     /**< Dividend income */
+      OFX_INTEREST,     /**< Interest income */
+      OFX_MISC          /**< miscellaneous income */
+    } income_type;
+    int income_type_valid;
+
+    /** <INV401KSOURCE> For 401(k) accounts, source of the money used for this security */
+    enum Inv401kSource
+    {
+      OFX_401K_SOURCE_PRETAX,
+      OFX_401K_SOURCE_AFTERTAX,
+      OFX_401K_SOURCE_MATCH,
+      OFX_401K_SOURCE_PROFITSHARING,
+      OFX_401K_SOURCE_ROLLOVER,
+      OFX_401K_SOURCE_OTHERVEST,
+      OFX_401K_SOURCE_OTHERNONVEST
+    } inv_401k_source;
+    int inv_401k_source_valid;
+
+    double load;    /**< load on the transaction (amount) */
+    int load_valid;
+
+    char loan_id[OFX_LOANID_LENGTH];   /**< 401(k): indicates the transaction is due to a loan or loan repayment */
+    int loan_id_valid;
+
+    double loan_interest;   /**< 401(k): how much of the load repayment was interest (amount) */
+    int loan_interest_valid;
+
+    double loan_principal;   /**< 401(k): how much of the load repayment was principal (amount) */
+    int loan_principal_valid;
+
+    double markdown;    /**< Portion of the unit price attributed to dealer markdown (unitprice) */
+    int markdown_valid;
+
+    double markup;    /**< Portion of the unit price attributed to dealer markup (unitprice) */
+    int markup_valid;
+
+    double numerator;   /**< For stock splits, split ratio numerator */
+    int numerator_valid;
+
+    /** For options, the action type */
+    enum OptAction
+    {
+      OFX_OPTACTION_EXERCISE,
+      OFX_OPTACTION_ASSIGN,
+      OFX_OPTACTION_EXPIRE
+    } opt_action;
+    int opt_action_valid;
+
+    double penalty;   /**< Amount withheld due to a penalty */
+    int penalty_valid;
+
+    /** Position type */
+    enum PosType
+    {
+      OFX_POSTYPE_LONG,
+      OFX_POSTYPE_SHORT
+    } pos_type;
+    int pos_type_valid;
+
+    /** 401(k): whether this buy was made with prior year contribution */
+    bool prior_year_contrib;
+    int prior_year_contrib_valid;
+
+    /** ID of related trade */
+    char related_fi_tid[OFX_FITID_LENGTH];
+    int related_fi_tid_valid;
+
+    /** Related option transaction type */
+    enum RelatedType
+    {
+      OFX_RELTYPE_SPREAD,
+      OFX_RELTYPE_STRADDLE,
+      OFX_RELTYPE_NONE,
+      OFX_RELTYPE_OTHER
+    } related_type;
+    int related_type_valid;
+
+    /** How an option is securred */
+    enum OptionSecured
+    {
+      OFX_SECURED_NAKED,
+      OFX_SECURED_COVERED
+    } option_secured;
+    int option_secured_valid;
+
+    /** Reason for the sell of a debt security */
+    enum SellReason
+    {
+      OFX_SELLREASON_CALL,    /**< the debt was called */
+      OFX_SELLREASON_SELL,    /**< the debt was sold */
+      OFX_SELLREASON_MATURITY /**< the debt reached maturity */
+    } sell_reason;
+    int sell_reason_valid;
+
+    /** The <SELLTYPE> element is mandatory for stock, fund, and option sells */
+    /** This enum combines stock, fund, and option sell types into one field */
+    enum SellType
+    {
+      OFX_SELL_TYPE_SELL,
+      OFX_SELL_TYPE_SELLSHORT,
+      OFX_SELL_TYPE_SELLTOOPEN,
+      OFX_SELL_TYPE_SELLTOCLOSE
+    } sell_type;
+    int sell_type_valid;
+
+    /** For options, shares per contract */
+    double shares_per_cont;
+    int shares_per_cont_valid;
+
+    /** Used for withholding state taxes on a withdrawal */
+    double state_withholding;
+    int state_withholding_valid;
+
+    /** Account types used for <SUBACCTFROM>, <SUBACCTFUND>, <SUBACCTSEC>, <SUBACCTTO> */
+    enum SubAcctType
+    {
+      OFX_SUBACCT_CASH,
+      OFX_SUBACCT_MARGIN,
+      OFX_SUBACCT_SHORT,
+      OFX_SUBACCT_OTHER
+    } subacct_from, subacct_funding, subacct_security, subacct_to;
+    int subacct_from_valid;     /**< acct the security or cash is being transferred from */
+    int subacct_funding_valid;  /**< acct the cash for the transaction came from */
+    int subacct_security_valid; /**< acct for the security */
+    int subacct_to_valid;       /**< acct the security or cash is being transferred to */
+
+    /** Taxes on the trade */
+    double taxes;
+    int taxes_valid;
+
+    /** Tax exempt transaction */
+    bool tax_exempt;
+    int tax_exempt_valid;
+
+    /** Action for transfers */
+    enum TransferAction
+    {
+      OFX_TFERACTION_IN,
+      OFX_TFERACTION_OUT
+    } transfer_action;
+    int transfer_action_valid;
+
+    /** Type of the units */
+    enum UnitType
+    {
+      OFX_UNITTYPE_SHARES,
+      OFX_UNITTYPE_CURRENCY
+    } unit_type;
+    int unit_type_valid;
+
+    /** Federal tax withholding */
+    double withholding;
+    int withholding_valid;
 
     /*********** NOT YET COMPLETE!!! *********************/
   };
@@ -644,13 +1062,15 @@ extern "C" {
      them.
     */
 
-    char currency[OFX_CURRENCY_LENGTH]; /**< The currency is a string in ISO-4217 format */
+    /** The default currency for the statement.
+     *  The currency is a string in ISO-4217 format */
+    char currency[OFX_CURRENCY_LENGTH];
     int currency_valid;
 
     char account_id[OFX_ACCOUNT_ID_LENGTH];/**< Use this for matching this statement with
-					    the relevant account in your application */
+                        the relevant account in your application */
     struct OfxAccountData * account_ptr; /**< Pointer to the full account structure, see
-				      OfxAccountData */
+                      OfxAccountData */
     int account_id_valid;
 
     /** The actual balance, according to the FI.  The user should be warned
@@ -661,18 +1081,34 @@ extern "C" {
     time_t ledger_balance_date;/**< Time of the ledger_balance snapshot */
     int ledger_balance_date_valid;
 
+    /** The as-of date of this statement. */
+    time_t date_asof;
+    int date_asof_valid;
+
     /** @name OFX optional elements
      *  The OFX spec defines the following elements as optional. If the
      associated *_valid is true, the corresponding element is present and the
      associated variable contains valid data. */
 
     double available_balance; /**< Amount of money available from the account.
-			       Could be the credit left for a credit card,
-			       or amount that can be withdrawn using INTERAC) */
+                   Could be the credit left for a credit card,
+                   or amount that can be withdrawn using INTERAC) */
     int available_balance_valid;
 
-    time_t available_balance_date;/** Time of the available_balance snapshot */
+    time_t available_balance_date;/**< Time of the available_balance snapshot */
     int available_balance_date_valid;
+
+    /** Investment acccount margin balance */
+    double margin_balance;
+    int margin_balance_valid;
+
+    /** Investment acccount short balance */
+    double short_balance;
+    int short_balance_valid;
+
+    /** Investment acccount buying power */
+    double buying_power;
+    int buying_power_valid;
 
     /** The start time of this statement.
      *
@@ -712,6 +1148,124 @@ extern "C" {
     double exchange_rate;  /**< Exchange rate from the normal currency of the account */
     int must_convert;   /**< true or false */
   };
+
+  /**
+   * \brief An abstraction of a security position held in an account.
+   *
+   * The OfxPositionData stucture is used to hold the position
+   * information inside a OfxPositionContainer class for investment
+   * positions.
+  */
+  struct OfxPositionData
+  {
+    /** Account for the position */
+    char account_id[OFX_ACCOUNT_ID_LENGTH];/**< Use this for matching with
+                        the relevant account in your
+                        application */
+    struct OfxAccountData * account_ptr; /**< Pointer to the full account structure,
+                      see OfxAccountData */
+    int account_id_valid;
+
+    /** @name OFX mandatory <INVPOS> elements
+     *
+     * The OFX spec defines the following elements as mandatory.  The
+     * associated variables should all contain valid data but you
+     * should not trust the servers.  Check if the associated *_valid
+     * is true before using them. */
+
+    /** The id of the security held. Mandatory for investment positions */
+    char unique_id[OFX_UNIQUE_ID_LENGTH];
+    int unique_id_valid;
+    char unique_id_type[OFX_UNIQUE_ID_TYPE_LENGTH];/**< Usially "CUSIP" for FIs in
+                            north america*/
+    int unique_id_type_valid;
+
+    /** The HELDINACCT subaccount type, OFX entry will be one of
+     *  CASH, MARGIN, SHORT, OTHER */
+    enum HeldInAccountType
+    {
+      OFX_HELDINACCT_CASH,     /**< A cash account */
+      OFX_HELDINACCT_MARGIN,   /**< A margin account */
+      OFX_HELDINACCT_SHORT,    /**< A short account */
+      OFX_HELDINACCT_OTHER     /**< An "other" account */
+    } heldinaccount_type;
+    int heldinaccount_type_valid;
+
+    /** The position type, either SHORT or LONG */
+    enum PositionType
+    {
+      OFX_POSITION_SHORT,
+      OFX_POSITION_LONG
+    } position_type;
+    int position_type_valid;
+
+    /** Bonds=face value; options=contracts, all others=shares */
+    double units;
+    int units_valid;
+
+    /** Bonds=%of par; options=premium per share of underlying stock; all others=price per share */
+    double unit_price;
+    int unit_price_valid;
+
+    /** Market value of this position */
+    double market_value;
+    int market_value_valid;
+
+    /** Date and time of unit price and market value */
+    time_t date_unit_price;
+    int date_unit_price_valid;
+
+    /** @name OFX optional <INVPOS> elements
+     *
+     * The OFX spec defines the following elements as optional.  The
+     * associated variables may contain valid data.
+     * Check if the associated *_valid is true before using them. */
+
+    /** Position memo */
+    char memo[OFX_MEMO_LENGTH];
+    int memo_valid;
+
+    /** <INV401KSOURCE> For 401(k) accounts, source of the money used for this security */
+    enum Inv401kSource
+    {
+      OFX_401K_SOURCE_PRETAX,
+      OFX_401K_SOURCE_AFTERTAX,
+      OFX_401K_SOURCE_MATCH,
+      OFX_401K_SOURCE_PROFITSHARING,
+      OFX_401K_SOURCE_ROLLOVER,
+      OFX_401K_SOURCE_OTHERVEST,
+      OFX_401K_SOURCE_OTHERNONVEST
+    } inv_401k_source;
+    int inv_401k_source_valid;
+
+    /** <CURSYM> The currency is a string in ISO-4217 format */
+    char currency[OFX_CURRENCY_LENGTH];
+    int currency_valid;
+
+    /** Ratio of <CURDEF> currency to <CURSYM> currency */
+    double currency_ratio;
+    int currency_ratio_valid;
+
+    /** Whether the amounts have already been converted to the default currency.
+     *  An <ORIGCURRENCY> sets the flag to true, i.e. the amounts are reported in
+     *  the foreign currency. A <CURRENCY> element sets the flag to false. */
+    bool amounts_are_foreign_currency;
+    int amounts_are_foreign_currency_valid;
+
+    /** Pointer to the security data, if found, for convenience of the libofx user */
+    struct OfxSecurityData *security_data_ptr;  /**< A pointer to the security's data.*/
+    int security_data_valid;
+
+  };
+
+  /**
+   * \brief The callback function for the OfxPositionData stucture.
+   *
+   * The ofx_proc_statement_cb event is sent after all ofx_proc_transaction
+   * events have been sent. An OfxStatementData is passed to this event, as well as
+   * a pointer to an arbitrary data structure.
+  */
+  typedef int (*LibofxProcPositionCallback)(const struct OfxPositionData data, void * position_data);
 
 
   /**
@@ -762,6 +1316,16 @@ extern "C" {
    */
   void ofx_set_statement_cb(LibofxContextPtr ctx,
                             LibofxProcStatementCallback cb,
+                            void *user_data);
+
+  /**
+   * Set the position callback in the given context.
+   * @param ctx context
+   * @param cb callback function
+   * @param user_data user data to be passed to the callback
+   */
+  void ofx_set_position_cb(LibofxContextPtr ctx,
+                            LibofxProcPositionCallback cb,
                             void *user_data);
 
 

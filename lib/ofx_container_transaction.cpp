@@ -119,7 +119,7 @@ void OfxTransactionContainer::add_attribute(const string identifier, const strin
   }
   else if (identifier == "CORRECTFITID")
   {
-    strncpy(data.fi_id_corrected, value.c_str(), sizeof(data.fi_id));
+    strncpy(data.fi_id_corrected, value.c_str(), sizeof(data.fi_id_corrected));
     data.fi_id_corrected_valid = true;
   }
   else if (identifier == "CORRECTACTION")
@@ -147,6 +147,16 @@ void OfxTransactionContainer::add_attribute(const string identifier, const strin
   {
     strncpy(data.memo, value.c_str(), sizeof(data.memo));
     data.memo_valid = true;
+  }
+  else if (identifier == "CURRENCY")
+  {
+    data.amounts_are_foreign_currency = false;
+    data.amounts_are_foreign_currency_valid = true;
+  }
+  else if (identifier == "ORIGCURRENCY")
+  {
+    data.amounts_are_foreign_currency = true;
+    data.amounts_are_foreign_currency_valid = true;
   }
   else
   {
@@ -386,6 +396,10 @@ OfxInvestmentTransactionContainer::OfxInvestmentTransactionContainer(LibofxConte
   {
     data.invtransactiontype = OFX_TRANSFER;
   }
+  else if (para_tag_identifier == "INVBANKTRAN")
+  {
+    data.invtransactiontype = OFX_INVBANKTRAN;
+  }
   else
   {
     message_out(ERROR, "This should not happen, " + para_tag_identifier + " is an unknown investment transaction type");
@@ -417,12 +431,23 @@ void OfxInvestmentTransactionContainer::add_attribute(const string identifier, c
   }
   else if (identifier == "MKTVAL")
   {
-    message_out(DEBUG, "MKTVAL of " + value + " ignored since MKTVAL should always be UNITS*UNITPRICE");
+    data.market_value = ofxamount_to_double(value);
+    data.market_value_valid = true;
   }
   else if (identifier == "TOTAL")
   {
     data.amount = ofxamount_to_double(value);
     data.amount_valid = true;
+  }
+  else if (identifier == "CURRATE")
+  {
+    data.currency_ratio = ofxamount_to_double(value);
+    data.currency_ratio_valid = true;
+  }
+  else if (identifier == "CURSYM")
+  {
+    strncpy(data.currency, value.c_str(), sizeof(data.currency));
+    data.currency_valid = true;
   }
   else if (identifier == "DTSETTLE")
   {
@@ -453,6 +478,558 @@ void OfxInvestmentTransactionContainer::add_attribute(const string identifier, c
   {
     data.newunits = ofxamount_to_double(value);
     data.newunits_valid = true;
+  }
+  else if (identifier == "ACCRDINT")
+  {
+    data.accrued_interest = ofxamount_to_double(value);
+    data.accrued_interest_valid = true;
+  }
+  else if (identifier == "AVGCOSTBASIS")
+  {
+    data.avg_cost_basis = ofxamount_to_double(value);
+    data.avg_cost_basis_valid = true;
+  }
+  else if (identifier == "BUYTYPE" || identifier == "OPTBUYTYPE")
+  {
+    if (value == "BUY")
+    {
+      data.buy_type = data.OFX_BUY_TYPE_BUY;
+      data.buy_type_valid = true;
+    }
+    else if (value == "BUYTOCOVER")
+    {
+      data.buy_type = data.OFX_BUY_TYPE_BUYTOCOVER;
+      data.buy_type_valid = true;
+    }
+    else if (value == "BUYTOOPEN")
+    {
+      data.buy_type = data.OFX_BUY_TYPE_BUYTOOPEN;
+      data.buy_type_valid = true;
+    }
+    else if (value == "BUYTOCLOSE")
+    {
+      data.buy_type = data.OFX_BUY_TYPE_BUYTOCLOSE;
+      data.buy_type_valid = true;
+    }
+  }
+  else if (identifier == "DENOMINATOR")
+  {
+    data.denominator = ofxamount_to_double(value);
+    data.denominator_valid = true;
+  }
+  else if (identifier == "DTPAYROLL")
+  {
+    data.date_payroll = ofxdate_to_time_t(value);
+    data.date_payroll_valid = true;
+  }
+  else if (identifier == "DTPURCHASE")
+  {
+    data.date_purchase = ofxdate_to_time_t(value);
+    data.date_purchase_valid = true;
+  }
+  else if (identifier == "GAIN")
+  {
+    data.gain = ofxamount_to_double(value);
+    data.gain_valid = true;
+  }
+  else if (identifier == "FRACCASH")
+  {
+    data.cash_for_fractional = ofxamount_to_double(value);
+    data.cash_for_fractional_valid = true;
+  }
+  else if (identifier == "INCOMETYPE")
+  {
+    if (value == "CGLONG")
+    {
+      data.income_type = data.OFX_CGLONG;
+      data.income_type_valid = true;
+    }
+    else if (value == "CGSHORT")
+    {
+      data.income_type = data.OFX_CGSHORT;
+      data.income_type_valid = true;
+    }
+    else if (value == "DIV")
+    {
+      data.income_type = data.OFX_DIVIDEND;
+      data.income_type_valid = true;
+    }
+    else if (value == "INTEREST")
+    {
+      data.income_type = data.OFX_INTEREST;
+      data.income_type_valid = true;
+    }
+    else if (value == "MISC")
+    {
+      data.income_type = data.OFX_MISC;
+      data.income_type_valid = true;
+    }
+  }
+  else if (identifier == "INV401KSOURCE")
+  {
+    if (value == "PRETAX")
+    {
+      data.inv_401k_source = data.OFX_401K_SOURCE_PRETAX;
+      data.inv_401k_source_valid = true;
+    }
+    else if (value == "AFTERTAX")
+    {
+      data.inv_401k_source = data.OFX_401K_SOURCE_AFTERTAX;
+      data.inv_401k_source_valid = true;
+    }
+    else if (value == "MATCH")
+    {
+      data.inv_401k_source = data.OFX_401K_SOURCE_MATCH;
+      data.inv_401k_source_valid = true;
+    }
+    else if (value == "PROFITSHARING")
+    {
+      data.inv_401k_source = data.OFX_401K_SOURCE_PROFITSHARING;
+      data.inv_401k_source_valid = true;
+    }
+    else if (value == "ROLLOVER")
+    {
+      data.inv_401k_source = data.OFX_401K_SOURCE_ROLLOVER;
+      data.inv_401k_source_valid = true;
+    }
+    else if (value == "OTHERVEST")
+    {
+      data.inv_401k_source = data.OFX_401K_SOURCE_OTHERVEST;
+      data.inv_401k_source_valid = true;
+    }
+    else if (value == "OTHERNONVEST")
+    {
+      data.inv_401k_source = data.OFX_401K_SOURCE_OTHERNONVEST;
+      data.inv_401k_source_valid = true;
+    }
+  }
+  else if (identifier == "LOAD")
+  {
+    data.load = ofxamount_to_double(value);
+    data.load_valid = true;
+  }
+  else if (identifier == "LOANID")
+  {
+    strncpy(data.loan_id, value.c_str(), sizeof(data.loan_id));
+    data.loan_id_valid = true;
+  }
+  else if (identifier == "LOANINTEREST")
+  {
+    data.loan_interest = ofxamount_to_double(value);
+    data.loan_interest_valid = true;
+  }
+  else if (identifier == "LOANPRINCIPAL")
+  {
+    data.loan_principal = ofxamount_to_double(value);
+    data.loan_principal_valid = true;
+  }
+  else if (identifier == "MARKDOWN")
+  {
+    data.markdown = ofxamount_to_double(value);
+    data.markdown_valid = true;
+  }
+  else if (identifier == "MARKUP")
+  {
+    data.markup = ofxamount_to_double(value);
+    data.markup_valid = true;
+  }
+  else if (identifier == "NUMERATOR")
+  {
+    data.numerator = ofxamount_to_double(value);
+    data.numerator_valid = true;
+  }
+  else if (identifier == "OPTACTION")
+  {
+    if (value == "EXERCISE")
+    {
+      data.opt_action = data.OFX_OPTACTION_EXERCISE;
+      data.opt_action_valid = true;
+    }
+    else if (value == "ASSIGN")
+    {
+      data.opt_action = data.OFX_OPTACTION_ASSIGN;
+      data.opt_action_valid = true;
+    }
+    else if (value == "EXPIRE")
+    {
+      data.opt_action = data.OFX_OPTACTION_EXPIRE;
+      data.opt_action_valid = true;
+    }
+  }
+  else if (identifier == "PENALTY")
+  {
+    data.penalty = ofxamount_to_double(value);
+    data.penalty_valid = true;
+  }
+  else if (identifier == "POSTYPE")
+  {
+    if (value == "LONG")
+    {
+      data.pos_type = data.OFX_POSTYPE_LONG;
+      data.pos_type_valid = true;
+    }
+    else if (value == "SHORT")
+    {
+      data.pos_type = data.OFX_POSTYPE_SHORT;
+      data.pos_type_valid = true;
+    }
+  }
+  else if (identifier == "PRIORYEARCONTRIB")
+  {
+    if (value == "Y")
+    {
+      data.prior_year_contrib = true;
+      data.prior_year_contrib_valid = true;
+    }
+    else if (value == "N")
+    {
+      data.prior_year_contrib = false;
+      data.prior_year_contrib_valid = true;
+    }
+  }
+  else if (identifier == "RELFITID")
+  {
+    strncpy(data.related_fi_tid, value.c_str(), sizeof(data.related_fi_tid));
+    data.related_fi_tid_valid = true;
+  }
+  else if (identifier == "RELTYPE")
+  {
+    if (value == "SPREAD")
+    {
+      data.related_type = data.OFX_RELTYPE_SPREAD;
+      data.related_type_valid = true;
+    }
+    else if (value == "STRADDLE")
+    {
+      data.related_type = data.OFX_RELTYPE_STRADDLE;
+      data.related_type_valid = true;
+    }
+    else if (value == "NONE")
+    {
+      data.related_type = data.OFX_RELTYPE_NONE;
+      data.related_type_valid = true;
+    }
+    else if (value == "OTHER")
+    {
+      data.related_type = data.OFX_RELTYPE_OTHER;
+      data.related_type_valid = true;
+    }
+  }
+  else if (identifier == "SECURED")
+  {
+    if (value == "NAKED")
+    {
+      data.option_secured = data.OFX_SECURED_NAKED;
+      data.option_secured_valid = true;
+    }
+    else if (value == "COVERED")
+    {
+      data.option_secured = data.OFX_SECURED_COVERED;
+      data.option_secured_valid = true;
+    }
+  }
+  else if (identifier == "SELLREASON")
+  {
+    if (value == "CALL")
+    {
+      data.sell_reason = data.OFX_SELLREASON_CALL;
+      data.sell_reason_valid = true;
+    }
+    else if (value == "SELL")
+    {
+      data.sell_reason = data.OFX_SELLREASON_SELL;
+      data.sell_reason_valid = true;
+    }
+    else if (value == "MATURITY")
+    {
+      data.sell_reason = data.OFX_SELLREASON_MATURITY;
+      data.sell_reason_valid = true;
+    }
+  }
+  else if (identifier == "SELLTYPE" || identifier == "OPTSELLTYPE")
+  {
+    if (value == "SELL")
+    {
+      data.sell_type = data.OFX_SELL_TYPE_SELL;
+      data.sell_type_valid = true;
+    }
+    else if (value == "SELLSHORT")
+    {
+      data.sell_type = data.OFX_SELL_TYPE_SELLSHORT;
+      data.sell_type_valid = true;
+    }
+    else if (value == "SELLTOOPEN")
+    {
+      data.sell_type = data.OFX_SELL_TYPE_SELLTOOPEN;
+      data.sell_type_valid = true;
+    }
+    else if (value == "SELLTOCLOSE")
+    {
+      data.sell_type = data.OFX_SELL_TYPE_SELLTOCLOSE;
+      data.sell_type_valid = true;
+    }
+  }
+  else if (identifier == "SHPERCTRCT")
+  {
+    data.shares_per_cont = ofxamount_to_double(value);
+    data.shares_per_cont_valid = true;
+  }
+  else if (identifier == "STATEWITHHOLDING")
+  {
+    data.state_withholding = ofxamount_to_double(value);
+    data.state_withholding_valid = true;
+  }
+  else if (identifier == "SUBACCTFROM")
+  {
+    if (value == "CASH")
+    {
+      data.subacct_from = data.OFX_SUBACCT_CASH;
+      data.subacct_from_valid = true;
+    }
+    else if (value == "MARGIN")
+    {
+      data.subacct_from = data.OFX_SUBACCT_MARGIN;
+      data.subacct_from_valid = true;
+    }
+    else if (value == "SHORT")
+    {
+      data.subacct_from = data.OFX_SUBACCT_SHORT;
+      data.subacct_from_valid = true;
+    }
+    else if (value == "OTHER")
+    {
+      data.subacct_from = data.OFX_SUBACCT_OTHER;
+      data.subacct_from_valid = true;
+    }
+  }
+  else if (identifier == "SUBACCTFUND")
+  {
+    if (value == "CASH")
+    {
+      data.subacct_funding = data.OFX_SUBACCT_CASH;
+      data.subacct_funding_valid = true;
+    }
+    else if (value == "MARGIN")
+    {
+      data.subacct_funding = data.OFX_SUBACCT_MARGIN;
+      data.subacct_funding_valid = true;
+    }
+    else if (value == "SHORT")
+    {
+      data.subacct_funding = data.OFX_SUBACCT_SHORT;
+      data.subacct_funding_valid = true;
+    }
+    else if (value == "OTHER")
+    {
+      data.subacct_funding = data.OFX_SUBACCT_OTHER;
+      data.subacct_funding_valid = true;
+    }
+  }
+  else if (identifier == "SUBACCTSEC")
+  {
+    if (value == "CASH")
+    {
+      data.subacct_security = data.OFX_SUBACCT_CASH;
+      data.subacct_security_valid = true;
+    }
+    else if (value == "MARGIN")
+    {
+      data.subacct_security = data.OFX_SUBACCT_MARGIN;
+      data.subacct_security_valid = true;
+    }
+    else if (value == "SHORT")
+    {
+      data.subacct_security = data.OFX_SUBACCT_SHORT;
+      data.subacct_security_valid = true;
+    }
+    else if (value == "OTHER")
+    {
+      data.subacct_security = data.OFX_SUBACCT_OTHER;
+      data.subacct_security_valid = true;
+    }
+  }
+  else if (identifier == "SUBACCTTO")
+  {
+    if (value == "CASH")
+    {
+      data.subacct_to = data.OFX_SUBACCT_CASH;
+      data.subacct_to_valid = true;
+    }
+    else if (value == "MARGIN")
+    {
+      data.subacct_to = data.OFX_SUBACCT_MARGIN;
+      data.subacct_to_valid = true;
+    }
+    else if (value == "SHORT")
+    {
+      data.subacct_to = data.OFX_SUBACCT_SHORT;
+      data.subacct_to_valid = true;
+    }
+    else if (value == "OTHER")
+    {
+      data.subacct_to = data.OFX_SUBACCT_OTHER;
+      data.subacct_to_valid = true;
+    }
+  }
+  else if (identifier == "TAXES")
+  {
+    data.taxes = ofxamount_to_double(value);
+    data.taxes_valid = true;
+  }
+  else if (identifier == "TAXEXEMPT")
+  {
+    if (value == "Y")
+    {
+      data.tax_exempt = true;
+      data.tax_exempt_valid = true;
+    }
+    else if (value == "N")
+    {
+      data.tax_exempt = false;
+      data.tax_exempt_valid = true;
+    }
+  }
+  else if (identifier == "TFERACTION")
+  {
+    if (value == "IN")
+    {
+      data.transfer_action = data.OFX_TFERACTION_IN;
+      data.transfer_action_valid = true;
+    }
+    else if (value == "OUT")
+    {
+      data.transfer_action = data.OFX_TFERACTION_OUT;
+      data.transfer_action_valid = true;
+    }
+  }
+  else if (identifier == "UNITTYPE")
+  {
+    if (value == "SHARES")
+    {
+      data.unit_type = data.OFX_UNITTYPE_SHARES;
+      data.unit_type_valid = true;
+    }
+    else if (value == "CURRENCY")
+    {
+      data.unit_type = data.OFX_UNITTYPE_CURRENCY;
+      data.unit_type_valid = true;
+    }
+  }
+  else if (identifier == "WITHHOLDING")
+  {
+    data.withholding = ofxamount_to_double(value);
+    data.withholding_valid = true;
+  }
+  /* the following fields are <STMTTRN> elements for <INVBANKTRAN> */
+  else if ( identifier == "TRNTYPE")
+  {
+    data.transactiontype_valid = true;
+    if (value == "CREDIT")
+    {
+      data.transactiontype = OFX_CREDIT;
+    }
+    else if (value == "DEBIT")
+    {
+      data.transactiontype = OFX_DEBIT;
+    }
+    else if (value == "INT")
+    {
+      data.transactiontype = OFX_INT;
+    }
+    else if (value == "DIV")
+    {
+      data.transactiontype = OFX_DIV;
+    }
+    else if (value == "FEE")
+    {
+      data.transactiontype = OFX_FEE;
+    }
+    else if (value == "SRVCHG")
+    {
+      data.transactiontype = OFX_SRVCHG;
+    }
+    else if (value == "DEP")
+    {
+      data.transactiontype = OFX_DEP;
+    }
+    else if (value == "ATM")
+    {
+      data.transactiontype = OFX_ATM;
+    }
+    else if (value == "POS")
+    {
+      data.transactiontype = OFX_POS;
+    }
+    else if (value == "XFER")
+    {
+      data.transactiontype = OFX_XFER;
+    }
+    else if (value == "CHECK")
+    {
+      data.transactiontype = OFX_CHECK;
+    }
+    else if (value == "PAYMENT")
+    {
+      data.transactiontype = OFX_PAYMENT;
+    }
+    else if (value == "CASH")
+    {
+      data.transactiontype = OFX_CASH;
+    }
+    else if (value == "DIRECTDEP")
+    {
+      data.transactiontype = OFX_DIRECTDEP;
+    }
+    else if (value == "DIRECTDEBIT")
+    {
+      data.transactiontype = OFX_DIRECTDEBIT;
+    }
+    else if (value == "REPEATPMT")
+    {
+      data.transactiontype = OFX_REPEATPMT;
+    }
+    else if (value == "OTHER")
+    {
+      data.transactiontype = OFX_OTHER;
+    }
+    else
+    {
+      data.transactiontype_valid = false;
+    }
+  }//end TRANSTYPE
+  else if (identifier == "TRNAMT")
+  {
+    data.amount = ofxamount_to_double(value);
+    data.amount_valid = true;
+    data.units = -data.amount;
+    data.units_valid = true;
+    data.unitprice = 1.00;
+    data.unitprice_valid = true;
+  }
+  else if (identifier == "CHECKNUM")
+  {
+    strncpy(data.check_number, value.c_str(), sizeof(data.check_number));
+    data.check_number_valid = true;
+  }
+  else if (identifier == "REFNUM")
+  {
+    strncpy(data.reference_number, value.c_str(), sizeof(data.reference_number));
+    data.reference_number_valid = true;
+  }
+  else if (identifier == "SIC")
+  {
+    data.standard_industrial_code = atoi(value.c_str());
+    data.standard_industrial_code_valid = true;
+  }
+  else if ((identifier == "PAYEEID") || (identifier == "PAYEEID2"))
+  {
+    strncpy(data.payee_id, value.c_str(), sizeof(data.payee_id));
+    data.payee_id_valid = true;
+  }
+  else if (identifier == "NAME")
+  {
+    strncpy(data.name, value.c_str(), sizeof(data.name));
+    data.name_valid = true;
   }
   else
   {

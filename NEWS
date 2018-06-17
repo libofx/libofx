@@ -1,7 +1,56 @@
-2019-09-30, LibOFX 0.9.13:
-- Fix segfault on uninitialized iconv
-- Make file format less stringent
-- Minor fixes in the build system
+2020-xx-xx, LibOFX 0.9.16:
+
+    - jeffjl74 Enhanced handling of investments in OFX files (support not added to OFC)
+        - increased OFX_SECNAME_LENGTH to match the OFX spec
+        - OfxSecurityData now includes:
+            - an enum for the type of the security (stock, bond, fund, option)
+            - the optional <SECINFO> fields
+            - the mandatory <DEBTINFO> and <OPTINFO> fields
+            - the optional <DEBTINFO> and <OPTINFO> fields
+        - added <INVBAL> parsing for cash balances in investment accounts
+            - usefulness depends upon how the broker uses these fields
+                - Vanguard fund account puts the market value in there instead of the cash balance
+                - other tested brokers use it appropriately, though the date of the balance is sometimes inconsistent
+                  usually due to unsettled trades, i.e. the "as of" date will say "today" but the cash
+                  balance will actually be from a couple of days ago with the difference being unsettled trades.
+        - <STMTTRN> fields under an <INVBANKTRAN> are now parsed into an OfxInvestmentTransactionContainer
+            - This changes previous behaviour. LibOFX formerly provided an OfxBankTransactionContainer.
+              Now it sets data.invtransactiontype_valid true with data.invtransactiontype = OFX_INVBANKTRAN.
+              The end result is that the transaction callback now looks like an investment transaction
+              (which it is) rather than a banking transaction (which it is not).
+        - added the fields from section 13.9.2.4.2 of OFX spec 2.1.1 to OfxTransactionData
+            - provides better support for bonds, options, and 401(k)
+        - added <INVPOS> support to provide balances for securities
+            - responds to sourceforge feature request #7
+            - adds new callback for investment positions
+                - adds new OfxPositionData struct
+                - adds new ofx_set_position_cb function
+        - added <CURRENCY>, <ORIGCURRENCY>, <CURRATE> and <CURSYM> parsing and fields to transactions, securities, and positions
+        - added a new account type OfxAccountData::OFX_401K
+            - if set, will add <INC401K>Y</INC401K> and <INC401KBAL>Y</INC401KBAL> in the investment statement request
+                - this is currently untested
+            - added parsing of transactions for 401k in the response (tested only via ofxdump on spec examples)
+        - added a fix for sourceforge bug #46 account callback on <TRANSFER>
+            - <TRANSFER> no longer results in redundant/irrelevant account and statement callbacks
+        - modified ofxdump to support the above changes
+        - added investment account examples from OFX 2.1.1 spec to "ofx_sample_files"
+            - fixed some time offsets in the OFX spec examples
+                - section 13.13: EST is GMT -5
+                - section 16.5.3.2: August is not PST or GMT -8. Changed to -7 PDT
+                - section 16.5.4.2: August is not PST or GMT -8. Changed to -7 PDT
+            - updated existing samples to fix the time formats (added seconds to the time format)
+        - could not get openSP to parse ofx201.dtd
+            - for elements that actually still provide their data,
+              ofxdump generates lots of parse errors on an OFX 2.x file.
+              Data handling for these elements in ofx_sgml.cpp is a little unorthodox.
+		- modified the command line flags in ofxdump
+        	- only output warnings and errors by default
+        	- made the handling of the flags and the help descriptions consistent
+
+2019-09-30, LibOFX 0.9.15:
+		- Fix segfault on uninitialized iconv
+		- Make file format less stringent
+		- Minor fixes in the build system
 
 2019-02-11, LibOFX 0.9.14:
         - Fix proprietary tags striping eating the content of the previous tag if

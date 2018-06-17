@@ -59,6 +59,11 @@ void OfxStatementContainer::add_attribute(const string identifier, const string 
     strncpy(data.marketing_info, value.c_str(), OFX_MARKETING_INFO_LENGTH);
     data.marketing_info_valid = true;
   }
+  else if (identifier == "DTASOF")
+  {
+    data.date_asof = ofxdate_to_time_t(value);
+    data.date_asof_valid = true;
+  }
   else if (identifier == "DTSTART")
   {
     data.date_start = ofxdate_to_time_t(value);
@@ -84,12 +89,26 @@ void OfxStatementContainer::add_balance(OfxBalanceContainer* ptr_balance_contain
     data.ledger_balance_date = ptr_balance_container->date;
     data.ledger_balance_date_valid = ptr_balance_container->date_valid;
   }
-  else if (ptr_balance_container->tag_identifier == "AVAILBAL")
+  else if (ptr_balance_container->tag_identifier == "AVAILBAL"
+          || ptr_balance_container->tag_identifier == "INV401KBAL")
   {
     data.available_balance = ptr_balance_container->amount;
     data.available_balance_valid = ptr_balance_container->amount_valid;
     data.available_balance_date = ptr_balance_container->date;
     data.available_balance_date_valid = ptr_balance_container->date_valid;
+  }
+  else if (ptr_balance_container->tag_identifier == "INVBAL")
+  {
+    data.available_balance = ptr_balance_container->amount;
+    data.available_balance_valid = ptr_balance_container->amount_valid;
+    data.available_balance_date = ptr_balance_container->date;
+    data.available_balance_date_valid = ptr_balance_container->date_valid;
+    data.margin_balance = ptr_balance_container->margin_balance;
+    data.margin_balance_valid = ptr_balance_container->margin_balance_valid;
+    data.short_balance = ptr_balance_container->short_balance;
+    data.short_balance_valid = ptr_balance_container->short_balance_valid;
+    data.buying_power = ptr_balance_container->buying_power;
+    data.buying_power_valid = ptr_balance_container->buying_power_valid;
   }
   else
   {

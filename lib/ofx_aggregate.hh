@@ -62,6 +62,17 @@ public:
   }
 
   /**
+    * Adds an xml element to this aggregate, e.g. <TAG>data</TAG>
+    *
+    * @param tag The tag of the element to be added
+    * @param data The data of the element to be added
+    */
+  void AddXml( const string& tag, const string& data )
+  {
+    m_contents += string("<") + tag + string(">") + data + string("</") + tag + string(">") + string("\r\n");
+  }
+
+  /**
     * Adds a subordinate aggregate to this aggregate
     *
     * @param sub The aggregate to be added

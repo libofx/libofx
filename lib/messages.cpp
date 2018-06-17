@@ -37,7 +37,7 @@ int ofx_DEBUG5_msg = false;/**< If set to true, debug level 5 messages will be p
 int ofx_STATUS_msg = false;/**< If set to true, status messages will be printed to the console */
 int ofx_INFO_msg = false;/**< If set to true, information messages will be printed to the console */
 int ofx_WARNING_msg = false;/**< If set to true, warning messages will be printed to the console */
-int ofx_ERROR_msg = false;/**< If set to true, error messages will be printed to the console */
+int ofx_ERROR_msg = true;/**< If set to true, error messages will be printed to the console */
 int ofx_show_position = true;/**< If set to true, the line number will be shown after any error */
 
 void show_line_number()

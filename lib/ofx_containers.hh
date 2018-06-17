@@ -69,7 +69,7 @@ public:
   OfxGenericContainer* getparent();
 };//End class OfxGenericObject
 
-/** \brief A container to holds OFX SGML elements that LibOFX knows nothing about
+/** \brief A container to hold OFX SGML elements that LibOFX knows nothing about
  *
  The OfxDummyContainer is used for elements (not data elements) that are not recognised.  Note that recognised objects may very well be a children of an OfxDummyContainer.
 */
@@ -77,6 +77,17 @@ class OfxDummyContainer: public OfxGenericContainer
 {
 public:
   OfxDummyContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  void add_attribute(const string identifier, const string value);
+};
+
+/** \brief A container to hold OFX SGML elements for <INV401K>
+ *
+ The OfxInv401kContainer is used for elements under <INV401K>
+*/
+class OfxInv401kContainer: public OfxGenericContainer
+{
+public:
+  OfxInv401kContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   void add_attribute(const string identifier, const string value);
 };
 
@@ -103,7 +114,7 @@ public:
   void add_attribute(const string identifier, const string value);
 };
 
-/** \brief Represents the <BALANCE> OFX SGML entity
+/** \brief Represents the <BALANCE>, <INVBAL> or <INV401KBAL> OFX SGML entity
  *
  OfxBalanceContainer is an auxiliary container (there is no matching data object in libofx.h)
 */
@@ -118,6 +129,18 @@ public:
   int amount_valid;
   time_t date; /**< Effective date of the given balance */
   int date_valid;
+
+  /**< <INVBAL><MARGINBALANCE> */
+  double margin_balance;
+  int margin_balance_valid;
+
+  /**< <INVBAL><SHORTBALANCE> */
+  double short_balance;
+  int short_balance_valid;
+
+  /**< <INVBAL><BUYPOWER> */
+  double buying_power;
+  int buying_power_valid;
 
   OfxBalanceContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   ~OfxBalanceContainer();
@@ -148,7 +171,7 @@ public:
 };
 
 /***************************************************************************
- *                           OfxAccountContaine r                          *
+ *                           OfxAccountContainer                           *
  ***************************************************************************/
 /** \brief  Represents a bank account or a credit card account.
  *
@@ -186,6 +209,27 @@ public:
   OfxSecurityContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   ~OfxSecurityContainer();
   void add_attribute(const string identifier, const string value);
+  virtual int gen_event();
+  virtual int add_to_main_tree();
+private:
+  OfxStatementContainer * parent_statement;
+};
+
+
+/***************************************************************************
+ *                           OfxPositionContainer                          *
+ ***************************************************************************/
+/** \brief  Represents an investment position, such as a stock or bond.
+ */
+class OfxPositionContainer: public OfxGenericContainer
+{
+public:
+  OfxPositionData data;
+
+  OfxPositionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  ~OfxPositionContainer();
+  void add_attribute(const string identifier, const string value);
+  void add_account(OfxAccountData * account_data);
   virtual int gen_event();
   virtual int add_to_main_tree();
 private:
@@ -254,6 +298,7 @@ public:
   int add_container(OfxAccountContainer * container);
   int add_container(OfxTransactionContainer * container);
   int add_container(OfxSecurityContainer * container);
+  int add_container(OfxPositionContainer * container);
   int gen_event();
   OfxSecurityData * find_security(string unique_id);
 private:

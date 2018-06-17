@@ -149,6 +149,9 @@ OfxBalanceContainer::OfxBalanceContainer(LibofxContext *p_libofx_context, OfxGen
 {
   amount_valid = false;
   date_valid = false;
+  margin_balance_valid = false;
+  short_balance_valid = false;
+  buying_power_valid = false;
   type = "BALANCE";
 }
 
@@ -165,10 +168,27 @@ OfxBalanceContainer::~OfxBalanceContainer()
 }
 void OfxBalanceContainer::add_attribute(const string identifier, const string value)
 {
-  if (identifier == "BALAMT")
+  if (identifier == "BALAMT" ||
+      identifier == "AVAILCASH" ||  // from <INVBAL>
+      identifier == "CASHBAL")      // from <INV401KBAL>
   {
     amount = ofxamount_to_double(value);
     amount_valid = true;
+  }
+  else if (identifier == "MARGINBALANCE")
+  {
+    margin_balance = ofxamount_to_double(value);
+    margin_balance_valid = true;
+  }
+  else if (identifier == "SHORTBALANCE")
+  {
+    short_balance = ofxamount_to_double(value);
+    short_balance_valid = true;
+  }
+  else if (identifier == "BUYPOWER")
+  {
+    buying_power = ofxamount_to_double(value);
+    buying_power_valid = true;
   }
   else if (identifier == "DTASOF")
   {
@@ -181,3 +201,30 @@ void OfxBalanceContainer::add_attribute(const string identifier, const string va
     OfxGenericContainer::add_attribute(identifier, value);
   }
 }
+
+/***************************************************************************
+ *                         OfxInv401kContainer                             *
+ * This container is only used to throw away the multiple possible         *
+ * <DTSTART>, <DTASOF> and <DTEND> elements that can occur under <INV401K> *
+ * so they don't corrupt the statement dates.                              *
+***************************************************************************/
+
+OfxInv401kContainer::OfxInv401kContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+  OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
+{
+  type = "INV401K";
+  message_out(INFO, "Created OfxInv401kContainer to hold unsupported aggregate " + para_tag_identifier);
+}
+void OfxInv401kContainer::add_attribute(const string identifier, const string value)
+{
+  if (identifier == "DTSTART" || identifier == "DTEND" || identifier == "DTASOF")
+  {
+    message_out(DEBUG, "OfxInv401kContainer for " + tag_identifier + " ignored a " + identifier + " (" + value + ")");
+  }
+  else
+  {
+    /* Redirect unknown identifiers to the base class */
+    OfxGenericContainer::add_attribute(identifier, value);
+  }
+}
+
