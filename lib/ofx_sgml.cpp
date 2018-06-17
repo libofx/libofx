@@ -122,7 +122,7 @@ public:
         message_out (PARSER, "Element " + identifier + " found");
         curr_container_element = new OfxStatementContainer (libofx_context, curr_container_element, identifier);
       }
-      else if (identifier == "BANKTRANLIST")
+      else if (identifier == "BANKTRANLIST" || identifier == "INVTRANLIST")
       {
         message_out (PARSER, "Element " + identifier + " found");
         //BANKTRANLIST ignored, we will process it's attributes directly inside the STATEMENT,
@@ -138,7 +138,15 @@ public:
       else if (identifier == "STMTTRN")
       {
         message_out (PARSER, "Element " + identifier + " found");
-        curr_container_element = new OfxBankTransactionContainer (libofx_context, curr_container_element, identifier);
+        if (curr_container_element->type == "INVESTMENT")
+        {
+          //push up to the INVBANKTRAN OfxInvestmentTransactionContainer
+          curr_container_element = new OfxPushUpContainer (libofx_context, curr_container_element, identifier);
+        }
+        else
+        {
+          curr_container_element = new OfxBankTransactionContainer (libofx_context, curr_container_element, identifier);
+        }
       }
       else if (identifier == "BUYDEBT" ||
                identifier == "BUYMF" ||
@@ -159,7 +167,8 @@ public:
                identifier == "SELLOTHER" ||
                identifier == "SELLSTOCK" ||
                identifier == "SPLIT" ||
-               identifier == "TRANSFER" )
+               identifier == "TRANSFER" ||
+               identifier == "INVBANKTRAN" )
       {
         message_out (PARSER, "Element " + identifier + " found");
         curr_container_element = new OfxInvestmentTransactionContainer (libofx_context, curr_container_element, identifier);
@@ -168,28 +177,54 @@ public:
       else if (identifier == "INVBUY" ||
                identifier == "INVSELL" ||
                identifier == "INVTRAN" ||
-               identifier == "SECID")
+               identifier == "SECINFO" ||
+               identifier == "SECID" ||
+               identifier == "CURRENCY" ||
+               identifier == "ORIGCURRENCY")
       {
         message_out (PARSER, "Element " + identifier + " found");
         curr_container_element = new OfxPushUpContainer (libofx_context, curr_container_element, identifier);
       }
 
+      /* provide a parent for the account list response so its ACCTFROM can be recognized */
+      else if (identifier == "BANKACCTINFO" || identifier == "CCACCTINFO" || identifier == "INVACCTINFO")
+      {
+        message_out (PARSER, "Element " + identifier + " found");
+        curr_container_element = new OfxPushUpContainer (libofx_context, curr_container_element, identifier);
+      }
+      
       /* The different types of accounts */
       else if (identifier == "BANKACCTFROM" || identifier == "CCACCTFROM" || identifier == "INVACCTFROM")
       {
         message_out (PARSER, "Element " + identifier + " found");
-        curr_container_element = new OfxAccountContainer (libofx_context, curr_container_element, identifier);
+        /* check the container to avoid creating multiple statements for TRANSFERs */
+        if (curr_container_element->type == "STATEMENT"
+          || curr_container_element->tag_identifier == "BANKACCTINFO"
+          || curr_container_element->tag_identifier == "CCACCTINFO"
+          || curr_container_element->tag_identifier == "INVACCTINFO")
+          curr_container_element = new OfxAccountContainer (libofx_context, curr_container_element, identifier);
+        else
+          // no new account or statement for a <TRANSFER>
+          curr_container_element = new OfxDummyContainer (libofx_context, curr_container_element, identifier);
       }
-      else if (identifier == "SECINFO")
+      else if (identifier == "STOCKINFO" || identifier == "OPTINFO" ||
+               identifier == "DEBTINFO" || identifier == "MFINFO" || identifier == "OTHERINFO")
       {
         message_out (PARSER, "Element " + identifier + " found");
         curr_container_element = new OfxSecurityContainer (libofx_context, curr_container_element, identifier);
       }
       /* The different types of balances */
-      else if (identifier == "LEDGERBAL" || identifier == "AVAILBAL")
+      else if (identifier == "LEDGERBAL" ||
+               identifier == "AVAILBAL" ||
+               identifier == "INVBAL")
       {
         message_out (PARSER, "Element " + identifier + " found");
         curr_container_element = new OfxBalanceContainer (libofx_context, curr_container_element, identifier);
+      }
+      else if (identifier == "INVPOS")
+      {
+        message_out (PARSER, "Element " + identifier + " found");
+        curr_container_element = new OfxPositionContainer (libofx_context, curr_container_element, identifier);
       }
       else
       {
@@ -199,13 +234,29 @@ public:
     }
     else
     {
-      /* The element was a data element.  OpenSP will call one or several data() callback with the data */
-      message_out (PARSER, "Data element " + identifier + " found");
-      /* There is a bug in OpenSP 1.3.4, which won't send endElement Event for some elements, and will instead send an error like "document type does not allow element "MESSAGE" here".  Incoming_data should be empty in such a case, but it will not be if the endElement event was skiped. So we empty it, so at least the last element has a chance of having valid data */
-      if (incoming_data != "")
+      /** Since openSP can't process the ofx201.dtd, using the ofx160.dtd sends some 401K elements to here,
+       * even though they are not data elements. Handle the ones we want. */
+      if (identifier == "INV401K")
       {
-        message_out (ERROR, "startElement: incoming_data should be empty! You are probably using OpenSP <= 1.3.4.  The following data was lost: " + incoming_data );
-        incoming_data.assign ("");
+        /* Minimal handler for this section to discard <DTASOF>, <DTSTART> and <DTEND> that need to be ignored */
+        message_out (PARSER, "Element " + identifier + " found");
+        curr_container_element = new OfxInv401kContainer (libofx_context, curr_container_element, identifier);
+      }
+      if (identifier == "INV401KBAL")
+      {
+        message_out (PARSER, "Element " + identifier + " found");
+        curr_container_element = new OfxBalanceContainer (libofx_context, curr_container_element, identifier);
+      }
+      else
+      {
+        /* The element was a data element.  OpenSP will call one or several data() callback with the data */
+        message_out (PARSER, "Data element " + identifier + " found");
+        /* There is a bug in OpenSP 1.3.4, which won't send endElement Event for some elements, and will instead send an error like "document type does not allow element "MESSAGE" here".  Incoming_data should be empty in such a case, but it will not be if the endElement event was skiped. So we empty it, so at least the last element has a chance of having valid data */
+        if (incoming_data != "")
+        {
+          message_out (ERROR, "startElement: incoming_data should be empty! You are probably using OpenSP <= 1.3.4.  The following data was lost: " + incoming_data );
+          incoming_data.assign ("");
+        }
       }
     }
   }
@@ -278,8 +329,19 @@ public:
             curr_container_element = curr_container_element->getparent ();
             if (MainContainer != NULL)
             {
-              tmp_container_element->add_to_main_tree();
-              message_out (PARSER, "Element " + identifier + " closed, object added to MainContainer");
+              /** Special handling for closing <CURRENCY> and <ORIGCURRENCY>
+               *  They are not data elements but we need to know which one occurred.
+               *  So, add_attribute. */
+              if (identifier == "CURRENCY" || identifier == "ORIGCURRENCY")
+              {
+                tmp_container_element->add_attribute (identifier, incoming_data);
+                message_out (DEBUG, "Element " + identifier + " closed, container " + tmp_container_element->type + " updated");
+              }
+              else
+              {
+                tmp_container_element->add_to_main_tree();
+                message_out (PARSER, "Element " + identifier + " closed, object added to MainContainer");
+              }
             }
             else
             {
@@ -309,7 +371,7 @@ public:
 
   /** \brief Callback: SGML parse error
    *
-   An OpenSP callback, get's called when a parser error has occurred.
+   An OpenSP callback, gets called when a parser error has occurred.
   */
   void error (const ErrorEvent & event)
   {

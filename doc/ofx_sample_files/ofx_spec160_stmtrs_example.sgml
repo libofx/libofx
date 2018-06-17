@@ -45,11 +45,11 @@
           </BANKTRANLIST>                <!-- End list of statement trans. -->
           <LEDGERBAL>                    <!-- Ledger balance aggregate -->
             <BALAMT>200.29               <!-- Bal amount: $200.29 -->
-            <DTASOF>199610291120         <!-- Bal date: 10/29/96, 11:20 am -->
+            <DTASOF>19961029112000       <!-- Bal date: 10/29/96, 11:20 am -->
           </LEDGERBAL>                   <!-- End ledger balance -->
           <AVAILBAL>                     <!-- Available balance aggregate -->
             <BALAMT>200.29               <!-- Bal amount: $200.29 -->
-            <DTASOF>199610291120         <!-- Bal date: 10/29/96, 11:20 am -->
+            <DTASOF>19961029112000       <!-- Bal date: 10/29/96, 11:20 am -->
           </AVAILBAL>                    <!-- End available balance -->
 	</STMTRS>                        <!-- End statement response -->
      </STMTTRNRS>                        <!-- End of transaction -->

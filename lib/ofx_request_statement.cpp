@@ -51,7 +51,7 @@ OfxStatementRequest::OfxStatementRequest( const OfxFiLogin& fi, const OfxAccount
 
   if ( account.account_type == account.OFX_CREDITCARD )
     Add(CreditCardStatementRequest());
-  else if ( account.account_type == account.OFX_INVESTMENT )
+  else if ( account.account_type == account.OFX_INVESTMENT || account.account_type == account.OFX_401K)
     Add(InvestmentStatementRequest());
   else
     Add(BankStatementRequest());
@@ -129,6 +129,11 @@ OfxAggregate OfxStatementRequest::InvestmentStatementRequest(void) const
   invstmtrqTag.Add( "INCOO", "Y" );
   invstmtrqTag.Add( incposTag );
   invstmtrqTag.Add( "INCBAL", "Y" );
+  if (m_account.account_type == OfxAccountData::OFX_401K)
+  {
+    invstmtrqTag.AddXml( "INC401K", "Y" );
+    invstmtrqTag.AddXml( "INC401KBAL", "Y" );
+  }
 
   return RequestMessage("INVSTMT", "INVSTMT", invstmtrqTag);
 }

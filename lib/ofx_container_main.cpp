@@ -151,6 +151,35 @@ int OfxMainContainer::add_container(OfxTransactionContainer * container)
   }
 }
 
+int OfxMainContainer::add_container(OfxPositionContainer * container)
+{
+  message_out(DEBUG, "OfxMainContainer::add_container, adding a position");
+
+  if ( account_tree.size() != 0)
+  {
+    tree<OfxGenericContainer *>::sibling_iterator tmp =  account_tree.begin();
+    //cerr<< "size="<<account_tree.size()<<"; num_sibblings="<<account_tree.number_of_siblings(tmp)<<endl;
+    tmp += (account_tree.number_of_siblings(tmp)); //Find last account
+    if (account_tree.is_valid(tmp))
+    {
+      message_out(DEBUG, "OfxMainContainer::add_container: tmp is valid, Accounts are present");
+      account_tree.append_child(tmp, container);
+      container->add_account(&(((OfxAccountContainer *)(*tmp))->data));
+      return true;
+    }
+    else
+    {
+      message_out(ERROR, "OfxMainContainer::add_container: tmp is invalid!");
+      return false;
+    }
+  }
+  else
+  {
+    message_out(ERROR, "OfxMainContainer::add_container: the tree is empty!");
+    return false;
+  }
+}
+
 int  OfxMainContainer::gen_event()
 {
   message_out(DEBUG, "Begin walking the trees of the main container to generate events");

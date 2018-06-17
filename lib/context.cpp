@@ -24,11 +24,13 @@ LibofxContext::LibofxContext()
   , _securityCallback(0)
   , _transactionCallback(0)
   , _statementCallback(0)
+  , _positionCallback(0)
   , _statementData(0)
   , _accountData(0)
   , _transactionData(0)
   , _securityData(0)
   , _statusData(0)
+  , _positionData(0)
 {
 
 }
@@ -98,6 +100,13 @@ int LibofxContext::statusCallback(const struct OfxStatusData data)
   return 0;
 }
 
+int LibofxContext::positionCallback(const struct OfxPositionData data)
+{
+  if (_positionCallback)
+    return _positionCallback(data, _positionData);
+  return 0;
+}
+
 
 void LibofxContext::setStatusCallback(LibofxProcStatusCallback cb,
                                       void *user_data)
@@ -140,6 +149,13 @@ void LibofxContext::setStatementCallback(LibofxProcStatementCallback cb,
 {
   _statementCallback = cb;
   _statementData = user_data;
+}
+
+void LibofxContext::setPositionCallback(LibofxProcPositionCallback cb,
+    void *user_data)
+{
+  _positionCallback = cb;
+  _positionData = user_data;
 }
 
 
@@ -215,6 +231,14 @@ extern "C" {
                             void *user_data)
   {
     ((LibofxContext*)ctx)->setStatementCallback(cb, user_data);
+  }
+
+
+  void ofx_set_position_cb(LibofxContextPtr ctx,
+                            LibofxProcPositionCallback cb,
+                            void *user_data)
+  {
+    ((LibofxContext*)ctx)->setPositionCallback(cb, user_data);
   }
 
 
