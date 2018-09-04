@@ -1226,15 +1226,15 @@ extern "C" {
     int memo_valid;
 
     /** <INV401KSOURCE> For 401(k) accounts, source of the money used for this security */
-    enum Inv401kSource
+    enum Inv401kPosnSource
     {
-      OFX_401K_SOURCE_PRETAX,
-      OFX_401K_SOURCE_AFTERTAX,
-      OFX_401K_SOURCE_MATCH,
-      OFX_401K_SOURCE_PROFITSHARING,
-      OFX_401K_SOURCE_ROLLOVER,
-      OFX_401K_SOURCE_OTHERVEST,
-      OFX_401K_SOURCE_OTHERNONVEST
+      OFX_401K_POSN_SOURCE_PRETAX,
+      OFX_401K_POSN_SOURCE_AFTERTAX,
+      OFX_401K_POSN_SOURCE_MATCH,
+      OFX_401K_POSN_SOURCE_PROFITSHARING,
+      OFX_401K_POSN_SOURCE_ROLLOVER,
+      OFX_401K_POSN_SOURCE_OTHERVEST,
+      OFX_401K_POSN_SOURCE_OTHERNONVEST
     } inv_401k_source;
     int inv_401k_source_valid;
 
