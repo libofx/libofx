@@ -956,19 +956,19 @@ int ofx_proc_position_cb(struct OfxPositionData data, void * position_data)
   }
   if (data.inv_401k_source_valid == true)
   {
-    if (data.inv_401k_source == OfxPositionData::OFX_401K_SOURCE_PRETAX)
+    if (data.inv_401k_source == OfxPositionData::OFX_401K_POSN_SOURCE_PRETAX)
       strncpy(dest_string, "PRETAX", sizeof(dest_string));
-    else if (data.inv_401k_source == OfxPositionData::OFX_401K_SOURCE_AFTERTAX)
+    else if (data.inv_401k_source == OfxPositionData::OFX_401K_POSN_SOURCE_AFTERTAX)
       strncpy(dest_string, "AFTERTAX", sizeof(dest_string));
-    else if (data.inv_401k_source == OfxPositionData::OFX_401K_SOURCE_MATCH)
+    else if (data.inv_401k_source == OfxPositionData::OFX_401K_POSN_SOURCE_MATCH)
       strncpy(dest_string, "MATCH", sizeof(dest_string));
-    else if (data.inv_401k_source == OfxPositionData::OFX_401K_SOURCE_PROFITSHARING)
+    else if (data.inv_401k_source == OfxPositionData::OFX_401K_POSN_SOURCE_PROFITSHARING)
       strncpy(dest_string, "PROFITSHARING", sizeof(dest_string));
-    else if (data.inv_401k_source == OfxPositionData::OFX_401K_SOURCE_ROLLOVER)
+    else if (data.inv_401k_source == OfxPositionData::OFX_401K_POSN_SOURCE_ROLLOVER)
       strncpy(dest_string, "ROLLOVER", sizeof(dest_string));
-    else if (data.inv_401k_source == OfxPositionData::OFX_401K_SOURCE_OTHERVEST)
+    else if (data.inv_401k_source == OfxPositionData::OFX_401K_POSN_SOURCE_OTHERVEST)
       strncpy(dest_string, "OTHERVEST", sizeof(dest_string));
-    else if (data.inv_401k_source == OfxPositionData::OFX_401K_SOURCE_OTHERNONVEST)
+    else if (data.inv_401k_source == OfxPositionData::OFX_401K_POSN_SOURCE_OTHERNONVEST)
       strncpy(dest_string, "OTHERNONVEST", sizeof(dest_string));
     else
       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));

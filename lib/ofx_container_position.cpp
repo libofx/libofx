@@ -139,37 +139,37 @@ void OfxPositionContainer::add_attribute(const string identifier, const string v
   {
     if (value == "PRETAX")
     {
-      data.inv_401k_source = data.OFX_401K_SOURCE_PRETAX;
+      data.inv_401k_source = data.OFX_401K_POSN_SOURCE_PRETAX;
       data.inv_401k_source_valid = true;
     }
     else if (value == "AFTERTAX")
     {
-      data.inv_401k_source = data.OFX_401K_SOURCE_AFTERTAX;
+      data.inv_401k_source = data.OFX_401K_POSN_SOURCE_AFTERTAX;
       data.inv_401k_source_valid = true;
     }
     else if (value == "MATCH")
     {
-      data.inv_401k_source = data.OFX_401K_SOURCE_MATCH;
+      data.inv_401k_source = data.OFX_401K_POSN_SOURCE_MATCH;
       data.inv_401k_source_valid = true;
     }
     else if (value == "PROFITSHARING")
     {
-      data.inv_401k_source = data.OFX_401K_SOURCE_PROFITSHARING;
+      data.inv_401k_source = data.OFX_401K_POSN_SOURCE_PROFITSHARING;
       data.inv_401k_source_valid = true;
     }
     else if (value == "ROLLOVER")
     {
-      data.inv_401k_source = data.OFX_401K_SOURCE_ROLLOVER;
+      data.inv_401k_source = data.OFX_401K_POSN_SOURCE_ROLLOVER;
       data.inv_401k_source_valid = true;
     }
     else if (value == "OTHERVEST")
     {
-      data.inv_401k_source = data.OFX_401K_SOURCE_OTHERVEST;
+      data.inv_401k_source = data.OFX_401K_POSN_SOURCE_OTHERVEST;
       data.inv_401k_source_valid = true;
     }
     else if (value == "OTHERNONVEST")
     {
-      data.inv_401k_source = data.OFX_401K_SOURCE_OTHERNONVEST;
+      data.inv_401k_source = data.OFX_401K_POSN_SOURCE_OTHERNONVEST;
       data.inv_401k_source_valid = true;
     }
   }
