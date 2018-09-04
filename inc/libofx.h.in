@@ -414,7 +414,7 @@ extern "C" {
     /** Whether the amounts have already been converted to the default currency.
      *  An <ORIGCURRENCY> sets the flag to true, i.e. the amounts are reported in
      *  the foreign currency. A <CURRENCY> element sets the flag to false. */
-    bool amounts_are_foreign_currency;
+    int amounts_are_foreign_currency;
     int amounts_are_foreign_currency_valid;
 
     char memo[OFX_MEMO2_LENGTH];/**< Extra information not included in name */
@@ -830,7 +830,7 @@ extern "C" {
     /** Whether the amounts have already been converted to the default currency.
      *  An <ORIGCURRENCY> sets the flag to true, i.e. the amounts are reported in
      *  the foreign currency. A <CURRENCY> element sets the flag to false. */
-    bool amounts_are_foreign_currency;
+    int amounts_are_foreign_currency;
     int amounts_are_foreign_currency_valid;
 
     /** @name Other OFX elements for investment transactions
@@ -935,7 +935,7 @@ extern "C" {
     int pos_type_valid;
 
     /** 401(k): whether this buy was made with prior year contribution */
-    bool prior_year_contrib;
+    int prior_year_contrib;
     int prior_year_contrib_valid;
 
     /** ID of related trade */
@@ -1006,7 +1006,7 @@ extern "C" {
     int taxes_valid;
 
     /** Tax exempt transaction */
-    bool tax_exempt;
+    int tax_exempt;
     int tax_exempt_valid;
 
     /** Action for transfers */
@@ -1249,7 +1249,7 @@ extern "C" {
     /** Whether the amounts have already been converted to the default currency.
      *  An <ORIGCURRENCY> sets the flag to true, i.e. the amounts are reported in
      *  the foreign currency. A <CURRENCY> element sets the flag to false. */
-    bool amounts_are_foreign_currency;
+    int amounts_are_foreign_currency;
     int amounts_are_foreign_currency_valid;
 
     /** Pointer to the security data, if found, for convenience of the libofx user */
