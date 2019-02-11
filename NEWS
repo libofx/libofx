@@ -1,21 +1,26 @@
+2019-02-11, LibOFX 0.9.14:
+        - Fix proprietary tags striping eating the content of the previous tag if
+          proprietary tag is in the middle of the line
+        - Don't output invalid line numbers on the console before SGML processing starts
+
 2017-09-17, LibOFX 0.9.13:
 
         - Fix potential heap overflow
-	- Fix crash on some malformed ofx files
-	- Fix crash in ofxconnect on missing command line arguments
-	- Fix for daylight savings time handling
-	- Esier compile on macos:  obey LIBTOOLIZE env variable, and fallback to glibtoolize
-	- Fix compile on win32 (mingw-w64)
-	- Performance an reliability fixes in header parsing
-	- Strip CATEGORY tag added by Chase bank
+	      - Fix crash on some malformed ofx files
+	      - Fix crash in ofxconnect on missing command line arguments
+	      - Fix for daylight savings time handling
+	      - Easier compile on macos:  obey LIBTOOLIZE env variable, and fallback to glibtoolize
+	      - Fix compile on win32 (mingw-w64)
+	      - Performance an reliability fixes in header parsing
+	      - Strip CATEGORY tag added by Chase bank
 
 2017-09-17, LibOFX 0.9.12:
 
-	- Fix a buffer overflow on unexpected tag names.
+	      - Fix a buffer overflow on unexpected tag names.
 
 2016-08-14, LibOFX 0.9.11:
 
-	- Add support for client uid, from KDE bug 366326
+	      - Add support for client uid, from KDE bug 366326
 
 2014-09-12, LibOFX 0.9.10:
 
@@ -68,7 +73,7 @@
 
 LibOFX 0.9.5:
 	Benoit Grégoire <benoitg@coeus.ca>
- 		- Workaround OFX files specifying invalid encoding values 
+ 		- Workaround OFX files specifying invalid encoding values
  		   (specifically:  UNICODE and CP1252).  This should fix most encoding
  		   problems reported.
 		- Look for DTD in source directory (simplifies developpement)
@@ -80,28 +85,28 @@ LibOFX 0.9.5:
     Ryan Donlan <bdonlan@gmail.com>
 		- Improve build system and autoconf 2.68 compatibility
 		- Improve generated man pages
-		- Use GCC's -fvisibility=hidden to hide internal symbols from external 
+		- Use GCC's -fvisibility=hidden to hide internal symbols from external
 		   users.
 
 LibOFX 0.9.4:
     - Patch to fix segfault on some malformed date formats.  Inspired by Zach's patch on launchpad.
     - Packages-oriented changes:
-        - LibOFX will now look for DTDs in env variable OFX_DTD_PATH (if present).  
+        - LibOFX will now look for DTDs in env variable OFX_DTD_PATH (if present).
         - Better handling of paths (tolerates trailing path separator, or lack thereof)
         - No longer ignore return value of mkstemp()
         - Integrate all changes in Ubuntu's package that weren't already upstream
         - Move to LibXML++ 2.6, as 1.0 is deprecated
 	- Add generated man pages with html2man
-    
+
 LibOFX 0.9.3:
 	- Fix segfault on some files containing missing closing tags (bug #2969817)
 
 LibOFX 0.9.2:
 	- Win32: Add gnucash patch that looks up the dtd installation directory from the current executable's location.
-	- Apply patch by Geert Janssens to fix a crash on invalid date format 
+	- Apply patch by Geert Janssens to fix a crash on invalid date format
 	- Apply patch by ajseward with some additional fixes to allow wraping the library in python.
 	- Apply patch by Thomas Baumgart which fixes bug #5 (Transaction posting date off by one)
-	- Apply patch by Bill Nottingham <notting@redhat.com>  with various C++ include fixes for building with recent compilers. 
+	- Apply patch by Bill Nottingham <notting@redhat.com>  with various C++ include fixes for building with recent compilers.
 
 LibOFX 0.9.1:
 	- Add more sanity checks on string length.
@@ -151,7 +156,7 @@ LibOFX 0.7.0:
 
 LibOFX 0.6.6:
 	-Important code cleanup in the parsing code. The parser should be much more independent of OpenSP default settings.  Should get rid of "end tag for "MEMO" omitted, but OMITTAG NO was specified" type messages and many other parser failures.
-	-The very old OpenSP 1.3.1 will probably no longuer work.  
+	-The very old OpenSP 1.3.1 will probably no longuer work.
 	-Fix an infinite loop in some circumstances while the library was searching for a parent statement for a transaction.  Would mostly manifest on complex investments transactions.  Thanks to stephen.a.prior A T ntlworld.ie for the catch.
 	-Implement displaying file line numbers in the error output.  Note that data won't be valid if the message occurs before the file is opened.
 
@@ -196,7 +201,7 @@ LibOFX 0.3:
 	-Major update to ofx2qif.  It will now generate the !Account QIF construct, which should improbe compatibility with other accounting software.
 	-gcc3.2 caused problems with ld, now use gcc to link.  Should solve the "undefined symbol:__dso_handle" runtime problem with Mandrake cooker.
 	-There is now a workaround in the code to make it work with the OpenSP version (1.3.4) distributed with OpenJADE.  However, this is not guaranteed to work, and it might cause errors in your financial data, and might not be present in future versions.  Use at your own risk, you've been warned.
-	-LibOFX can now be installed in "unorthodox" directories, such as ~/experimental, and still find it's dtd.  You must modify the prefix in common.m (recommended) or put it in the command line of BOTH make and make install. 
+	-LibOFX can now be installed in "unorthodox" directories, such as ~/experimental, and still find it's dtd.  You must modify the prefix in common.m (recommended) or put it in the command line of BOTH make and make install.
 	-LibOFX is now officially in beta.  Since one application now uses it (GnuCash), from now on, the library soname will be bumped if binary compatibility is broken.
 LibOFX 0.24:
 	-Fix include files for gcc2

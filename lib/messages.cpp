@@ -49,7 +49,8 @@ void show_line_number()
   if (ofx_show_position == true)
   {
     SGMLApplication::Location *location = new SGMLApplication::Location(entity_ptr, position);
-    cerr << "(Above message occurred on Line " << location->lineNumber << ", Column " << location->columnNumber << ")" << endl;
+    if (location->lineNumber < LONG_MAX)
+      cerr << "(Above message occurred on Line " << location->lineNumber << ", Column " << location->columnNumber << ")" << endl;
     delete location;
   }
 }
@@ -147,4 +148,3 @@ int message_out(OfxMsgType error_type, const string message)
 
   return 0;
 }
-
