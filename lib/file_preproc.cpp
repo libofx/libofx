@@ -135,7 +135,7 @@ enum LibofxFileFormat libofx_detect_file_type(const char * p_filename)
           input_file.clear();
         }
 
-        if (s_buffer.find("<OFX>") != string::npos || s_buffer.find("<ofx>") != string::npos)
+        if (s_buffer.find("<OFX") != string::npos || s_buffer.find("<ofx") != string::npos)
         {
           message_out(DEBUG, "libofx_detect_file_type():<OFX> tag has been found");
           retval = OFX;
@@ -161,8 +161,3 @@ enum LibofxFileFormat libofx_detect_file_type(const char * p_filename)
     message_out(ERROR, "libofx_detect_file_type(): Failed to identify input file format");
   return retval;
 }
-
-
-
-
-
