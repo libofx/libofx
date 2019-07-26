@@ -84,7 +84,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
   bool ofx_start = false;
   bool ofx_end = false;
   bool file_is_xml = false;
-
+  bool used_iconv = false;
   ifstream input_file;
   ofstream tmp_file;
   char *filenames[3];
@@ -259,6 +259,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
                 tocode = LIBOFX_DEFAULT_OUTPUT_ENCODING;
                 message_out(DEBUG, "ofx_proc_file(): Setting up iconv for fromcode: " + fromcode + ", tocode: " + tocode);
                 conversion_descriptor = iconv_open (tocode.c_str(), fromcode.c_str());
+                used_iconv = true;
 #endif
             }
           }
@@ -350,7 +351,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
     input_file.close();
     tmp_file.close();
 #ifdef HAVE_ICONV
-    if (file_is_xml == false)
+    if (used_iconv == true)
     {
       iconv_close(conversion_descriptor);
     }
