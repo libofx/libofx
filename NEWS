@@ -1,3 +1,8 @@
+2019-09-30, LibOFX 0.9.13:
+- Fix segfault on uninitialized iconv
+- Make file format less stringent
+- Minor fixes in the build system
+
 2019-02-11, LibOFX 0.9.14:
         - Fix proprietary tags striping eating the content of the previous tag if
           proprietary tag is in the middle of the line
