@@ -13,7 +13,7 @@ doc_DATA = \
   COPYING \
   INSTALL \
   NEWS \
-  README.md \
+  README \
   ChangeLog \
   totest.txt
 
