@@ -15,8 +15,6 @@ AC_CONFIG_MACRO_DIR(m4)
 AC_PROG_CC
 AC_PROG_CXX
 
-m4_include([libcurl.m4])
-
 LIBOFX_MAJOR_VERSION=0
 LIBOFX_MINOR_VERSION=9
 LIBOFX_MICRO_VERSION=14
@@ -313,10 +311,11 @@ AM_CONDITIONAL(HAVE_HELP2MAN, test "x$HELP2MAN" != "xno")
 # check for curl
 # ----------------------------------------------------------------------------
 
-LIBCURL_CHECK_CONFIG([yes],[7.9.7], [libcurl_available=yes],  [libcurl_available=no])
-if  test "$libcurl_available" = no; then
-	AC_MSG_WARN([libcurl is not available. ofxconnect (Direct connect samples) will NOT be built.])
-fi
+PKG_CHECK_MODULES(LIBCURL, libcurl >= 7.9.7,
+        [libcurl_available=yes],
+        [libcurl_available=no
+         AC_MSG_WARN([libcurl is not available. ofxconnect (Direct connect samples) will NOT be built.])
+        ])
 
 PKG_CHECK_MODULES(LIBXMLPP,libxml++-2.6 >= 2.6,
 	[
