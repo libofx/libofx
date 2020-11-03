@@ -1,11 +1,11 @@
 bin_PROGRAMS = ofxconnect
-ofxconnect_LDADD = $(top_builddir)/lib/libofx.la @LIBCURL@ @LIBXMLPP_LIBS@ 
+ofxconnect_LDADD = $(top_builddir)/lib/libofx.la @LIBCURL_LIBS@ @LIBXMLPP_LIBS@
 ofxconnect_SOURCES = cmdline.h cmdline.c nodeparser.cpp nodeparser.h ofxpartner.cpp ofxpartner.h ofxconnect.cpp 
 dist_man_MANS = ofxconnect.1
 
 AM_CPPFLAGS = \
 	-I${top_builddir}/inc \
-	@LIBCURL_CPPFLAGS@ \
+	@LIBCURL_CFLAGS@ \
 	@LIBXMLPP_CFLAGS@ \
 	'-DCMDLINE_PARSER_PACKAGE="ofxconnect"'
 

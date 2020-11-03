@@ -84,7 +84,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
   bool ofx_start = false;
   bool ofx_end = false;
   bool file_is_xml = false;
-
+  bool used_iconv = false;
   ifstream input_file;
   ofstream tmp_file;
   char *filenames[3];
@@ -259,6 +259,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
                 tocode = LIBOFX_DEFAULT_OUTPUT_ENCODING;
                 message_out(DEBUG, "ofx_proc_file(): Setting up iconv for fromcode: " + fromcode + ", tocode: " + tocode);
                 conversion_descriptor = iconv_open (tocode.c_str(), fromcode.c_str());
+                used_iconv = true;
 #endif
             }
           }
@@ -350,7 +351,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
     input_file.close();
     tmp_file.close();
 #ifdef HAVE_ICONV
-    if (file_is_xml == false)
+    if (used_iconv == true)
     {
       iconv_close(conversion_descriptor);
     }
@@ -407,31 +408,32 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
   return 0;
 }
 
-/* Searches input string for a tag starting from pos.
- * If found will return the tag_name and pos will be set to the string position of the closing '>'
- * If the tag doesn't have a closing '>', pos will be set to string::npos.
+/* Searches input string for an opening or closing tag starting from pos_start.
+ * If found will return the tag_name and pos_start will be set to the string
+ * of the starting <, pos_end to the position after the closing '>'
+ * If the tag doesn't have a closing '>', pos_end will be set to string::npos.
  */
-static string find_tag_open (string& input_string, size_t& pos)
+static string find_tag_open (string& input_string, size_t& pos_start, size_t& pos_end)
 {
-    size_t start_idx = input_string.find ('<', pos);
+    pos_start = input_string.find ('<', pos_start);
 
-    if (start_idx == string::npos)
+    if (pos_start == string::npos)
     {
-        pos = string::npos;
+        pos_end = string::npos;
         return string();
     }
 
-    size_t end_idx = input_string.find ('>', start_idx + 1);
-    if (end_idx != string::npos)
-        pos = end_idx + 1;
-    end_idx = end_idx - (start_idx + 1);
-    return input_string.substr(start_idx + 1, end_idx);
+    pos_end = input_string.find ('>', pos_start + 1);
+    if (pos_end != string::npos)
+        pos_end = pos_end + 1;
+    size_t tag_size = (pos_end - 1) - (pos_start + 1);
+    return input_string.substr(pos_start + 1 , tag_size);
 }
 
-/* Searches input string for a closing tag matching tag_name starting from pos.
- * If found will pos will be set to the position right after of the closing '>'
- * If no matching closing tag is found pos will be set to the start of the next tag
- * found.
+/* Searches input string for a closing tag matching tag_name starting at pos.
+ * If found pos will be set to the position right after of the closing '>'
+ * If no matching closing tag is found pos will be set to the start of the next
+ * opening or closing tag found.
  */
 static void find_tag_close (string& input_string, string& tag_name, size_t& pos)
 {
@@ -439,17 +441,25 @@ static void find_tag_close (string& input_string, string& tag_name, size_t& pos)
 
     if (start_idx == string::npos)
     {
-        string new_tag_name = find_tag_open (input_string, pos);
+        start_idx = pos;
+        size_t end_idx;
+        string new_tag_name = find_tag_open (input_string, start_idx, end_idx);
         if (!new_tag_name.empty())
         {
+            message_out(DEBUG, "find_tag_close() fell back to next open tag: " + new_tag_name);
             // find_tag_open returns the *end* of an opening tag, but in this
             // case we want its start, so we need to rewind a bit..
-            pos = pos - new_tag_name.length() - 2;
+            pos = start_idx;
+            //printf("find_tag_close() returning pos after fallback: %d\n",pos);
+        }
+        else
+        {
+            pos = input_string.length();
         }
     }
     else
     {
-        pos = std::min(input_string.length(), start_idx + tag_name.length() + 3);
+        pos = start_idx + tag_name.length() + 3;
     }
     return;
 }
@@ -469,28 +479,33 @@ static void find_tag_close (string& input_string, string& tag_name, size_t& pos)
 string sanitize_proprietary_tags(string input_string)
 {
   size_t last_known_good_pos = 0;
-  size_t find_pos = last_known_good_pos;
-  string tag_name = find_tag_open(input_string, find_pos);
+  size_t open_tag_start_pos = last_known_good_pos;
+  size_t open_tag_end_pos;
+  size_t close_tag_end_pos;
+
+  string tag_name = find_tag_open(input_string, open_tag_start_pos, open_tag_end_pos);
   while (!tag_name.empty())
   {
     // Determine whether the current tag is proprietary.
     if ((tag_name.find('.') != string::npos) ||   // tag has a . in the name
        (tag_name == "CATEGORY"))                  // Chase bank started setting these in 2017
     {
-        find_tag_close (input_string, tag_name, find_pos);
-        size_t tag_size = find_pos - last_known_good_pos;
-        string prop_tag = input_string.substr(last_known_good_pos, tag_size);
+        close_tag_end_pos = open_tag_end_pos;
+        find_tag_close (input_string, tag_name, close_tag_end_pos);
+        size_t tag_size = close_tag_end_pos - open_tag_start_pos;
+        string prop_tag = input_string.substr(open_tag_start_pos, tag_size);
         message_out(INFO, "sanitize_proprietary_tags() removed: " + prop_tag);
-        input_string.erase(last_known_good_pos, tag_size);
-        find_pos = last_known_good_pos;
+        input_string.erase(open_tag_start_pos, tag_size);
+        last_known_good_pos = open_tag_start_pos;
     }
     else
     {
-        last_known_good_pos = find_pos;
+        last_known_good_pos = open_tag_end_pos;
     }
     tag_name.clear();
+    open_tag_start_pos = last_known_good_pos;
     if (last_known_good_pos != string::npos)
-        tag_name = find_tag_open(input_string, find_pos);
+        tag_name = find_tag_open(input_string, open_tag_start_pos, open_tag_end_pos);
   }
   return input_string;
 }
@@ -623,5 +638,3 @@ std::string find_dtd(LibofxContextPtr ctx, const std::string& dtd_filename)
   message_out(ERROR, "find_dtd():Unable to find the DTD named " + dtd_filename);
   return "";
 }
-
-

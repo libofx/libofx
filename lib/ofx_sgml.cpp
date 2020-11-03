@@ -126,7 +126,7 @@ public:
       {
         message_out (PARSER, "Element " + identifier + " found");
         //BANKTRANLIST ignored, we will process it's attributes directly inside the STATEMENT,
-        if (curr_container_element->type != "STATEMENT")
+        if (curr_container_element && curr_container_element->type != "STATEMENT")
         {
           message_out(ERROR, "Element " + identifier + " found while not inside a STATEMENT container");
         }

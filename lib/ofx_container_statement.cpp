@@ -52,7 +52,7 @@ void OfxStatementContainer::add_attribute(const string identifier, const string 
   if (identifier == "CURDEF")
   {
     strncpy(data.currency, value.c_str(), OFX_CURRENCY_LENGTH);
-    data.currency_valid = true;
+    data.currency_valid = !value.empty();
   }
   else if (identifier == "MKTGINFO")
   {

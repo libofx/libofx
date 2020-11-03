@@ -15,8 +15,6 @@ AC_CONFIG_MACRO_DIR(m4)
 AC_PROG_CC
 AC_PROG_CXX
 
-m4_include([libcurl.m4])
-
 LIBOFX_MAJOR_VERSION=0
 LIBOFX_MINOR_VERSION=9
 LIBOFX_MICRO_VERSION=16
@@ -35,7 +33,7 @@ case "$LIBOFX_TAG_VERSION" in
      ;;
   *)
      LIBOFX_VERSION_RELEASE_STRING="$LIBOFX_MAJOR_VERSION.$LIBOFX_MINOR_VERSION.$LIBOFX_MICRO_VERSION"
-     
+
      # add TAG
      LIBOFX_VERSION_RELEASE_STRING="${LIBOFX_VERSION_RELEASE_STRING}${GWENHYWFAR_VERSION_TAG}"
      ;;
@@ -104,18 +102,18 @@ AC_C_BIGENDIAN
 AC_PROG_MAKE_SET
 AC_HEADER_STDC
 
-AC_ARG_WITH(opensp-includes, 
-[  --with-opensp-includes=PATH     specify where to look for OpenSP includes  
+AC_ARG_WITH(opensp-includes,
+[  --with-opensp-includes=PATH     specify where to look for OpenSP includes
                                   - default is /usr/include/OpenSP)],
 			OPENSPINCLUDES="$with_opensp_includes",
 			OPENSPINCLUDES="" )
 
-AC_ARG_WITH(opensp-libs, 
-[  --with-opensp-libs=PATH         specify where to look for libosp 
+AC_ARG_WITH(opensp-libs,
+[  --with-opensp-libs=PATH         specify where to look for libosp
                                   - default is /usr/lib],
 			OPENSPLIBPATH="$with_opensp_libs",
 			OPENSPLIBPATH="/usr/lib")
-			
+
 			echo $OPENSPLIBPATH
 for d in /usr/include/OpenSP /usr/local/include/OpenSP /usr/include/sp/generic /usr/local/include/sp/generic; do
     if test "x$OPENSPINCLUDES" = x; then
@@ -163,11 +161,11 @@ AC_MSG_RESULT(no)
  ])
 #endif
 
- AC_ARG_WITH(no-opensp-multibyte, 	
+ AC_ARG_WITH(no-opensp-multibyte,
 [  --with-no-opensp-multibyte     Force libofx to compile with the assumption that OpenSP was NOT compiled with SP_MULTI_BYTE defined],
 		,
 			AC_DEFINE(SP_MULTI_BYTE, 1, [SP_MULTI_BYTE value from when OpenSP was compiled])	 )
-			
+
 ##if test x"$SP_MULTI_BYTE" == x ;then
 ##CHECK_SP_MULTI_BYTE
 ##fi
@@ -176,12 +174,12 @@ ac_save_CPPFLAGS="$CPPFLAGS"
 if test "x$OPENSPINCLUDES" != x ; then
   CPPFLAGS="-I$OPENSPINCLUDES $CPPFLAGS"
 fi
-AC_LANG_CPLUSPLUS 
-AC_CHECK_HEADERS([ParserEventGeneratorKit.h SGMLApplication.h EventGenerator.h], 
-				[] , 
-				[ AC_MSG_ERROR([OpenSP includes not found]) ], 
+AC_LANG_CPLUSPLUS
+AC_CHECK_HEADERS([ParserEventGeneratorKit.h SGMLApplication.h EventGenerator.h],
+				[] ,
+				[ AC_MSG_ERROR([OpenSP includes not found]) ],
 				[] )
-				
+
 OPENSPLIBS="-L$OPENSPLIBPATH -losp"
 ac_save_LIBS="$LIBS"
 LIBS="$OPENSPLIBS $LIBS"
@@ -189,7 +187,7 @@ LIBS="$OPENSPLIBS $LIBS"
 AC_MSG_CHECKING([for libosp])
 ##dnl This is code from the opensp documentation, I modified it a little
 ##dnl It is really just a link test rather than a run test, it does nothing
-AC_LANG_CPLUSPLUS 
+AC_LANG_CPLUSPLUS
 	AC_TRY_RUN([
 		#include "ParserEventGeneratorKit.h"
 		using namespace std;
@@ -212,22 +210,22 @@ AC_LANG_CPLUSPLUS
 	[AC_MSG_RESULT([no])
 	AC_MSG_ERROR([unable to link a test program, is OpenSP installed?])],
 	[AC_MSG_RESULT([unknown, assumed OK])])
-				
-CPPFLAGS="$ac_save_CPPFLAGS"
-LIBS="$ac_save_LIBS"		
 
- 
+CPPFLAGS="$ac_save_CPPFLAGS"
+LIBS="$ac_save_LIBS"
+
+
 # check for doxygen, mostly stolen from http://log4cpp.sourceforge.net/
 # ----------------------------------------------------------------------------
 AC_DEFUN([BB_ENABLE_DOXYGEN],
 [
 AC_ARG_ENABLE(doxygen, [  --enable-doxygen        enable documentation generation with doxygen (auto)])
-AC_ARG_ENABLE(dot, [  --enable-dot            use 'dot' to generate graphs in doxygen (auto)])              
-AC_ARG_ENABLE(html-docs, [  --enable-html-docs      enable HTML generation with doxygen (yes)], [], [ enable_html_docs=yes])              
-AC_ARG_ENABLE(latex-docs, [  --enable-latex-docs     enable LaTeX documentation generation with doxygen (no)], [], [ enable_latex_docs=no])              
+AC_ARG_ENABLE(dot, [  --enable-dot            use 'dot' to generate graphs in doxygen (auto)])
+AC_ARG_ENABLE(html-docs, [  --enable-html-docs      enable HTML generation with doxygen (yes)], [], [ enable_html_docs=yes])
+AC_ARG_ENABLE(latex-docs, [  --enable-latex-docs     enable LaTeX documentation generation with doxygen (no)], [], [ enable_latex_docs=no])
 if test "x$enable_doxygen" = xno; then
         enable_doc=no
-else 
+else
         AC_PATH_PROG(DOXYGEN, doxygen, , $PATH)
         if test x$DOXYGEN = x; then
                 if test "x$enable_doxygen" = xyes; then
@@ -300,7 +298,7 @@ if test x$gengetopt = xyes ; then
      else
        AC_MSG_ERROR([*** Gengetopt is not found, and generated files (cmdline.c) are missing (probably because you checked out from git).  You need to install gengetopt ***])
      fi
-     
+
      gengetopt=no
    fi
 fi
@@ -313,10 +311,11 @@ AM_CONDITIONAL(HAVE_HELP2MAN, test "x$HELP2MAN" != "xno")
 # check for curl
 # ----------------------------------------------------------------------------
 
-LIBCURL_CHECK_CONFIG([yes],[7.9.7], [libcurl_available=yes],  [libcurl_available=no])
-if  test "$libcurl_available" = no; then
-	AC_MSG_WARN([libcurl is not available. ofxconnect (Direct connect samples) will NOT be built.])
-fi
+PKG_CHECK_MODULES(LIBCURL, libcurl >= 7.9.7,
+        [libcurl_available=yes],
+        [libcurl_available=no
+         AC_MSG_WARN([libcurl is not available. ofxconnect (Direct connect samples) will NOT be built.])
+        ])
 
 PKG_CHECK_MODULES(LIBXMLPP,libxml++-2.6 >= 2.6,
 	[
@@ -399,7 +398,7 @@ LIBOFX_DTD_DIR='${datadir}/libofx/dtd'
 AC_SUBST(LIBOFX_DTD_DIR)
 
 	AC_CONFIG_FILES([Makefile])
-AC_OUTPUT( 		
+AC_OUTPUT(
 	   		libofx.spec
 			libofx.pc
 			libofx.lsm
