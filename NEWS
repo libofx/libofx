@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 2020-xx-xx, LibOFX 0.9.16:
+=======
+2020-11-03, LibOFX 0.9.16:
+>>>>>>> db9ea6b... update micro version to 16
 
     - jeffjl74 Enhanced handling of investments in OFX files (support not added to OFC)
         - increased OFX_SECNAME_LENGTH to match the OFX spec
