@@ -1156,14 +1156,13 @@ int main (int argc, char *argv[])
 
   //  cout << "The flag is " << ( args_info.msg_parser_flag ? "on" : "off" ) <<
   //    "." << endl ;
-  
-  // arg present = toggle appropriate flag from default state
-  if (args_info.msg_parser_flag) ofx_PARSER_msg = !ofx_PARSER_msg;
-  if (args_info.msg_debug_flag) ofx_DEBUG_msg = !ofx_DEBUG_msg;
-  if (args_info.msg_warning_flag) ofx_WARNING_msg = !ofx_WARNING_msg;
-  if (args_info.msg_error_flag) ofx_ERROR_msg = !ofx_ERROR_msg;
-  if (args_info.msg_info_flag) ofx_INFO_msg = !ofx_INFO_msg;
-  if (args_info.msg_status_flag) ofx_STATUS_msg = !ofx_STATUS_msg;
+
+  args_info.msg_parser_flag ? ofx_PARSER_msg = true : ofx_PARSER_msg = false;
+  args_info.msg_debug_flag ? ofx_DEBUG_msg = true : ofx_DEBUG_msg = false;
+  args_info.msg_warning_flag ? ofx_WARNING_msg = true : ofx_WARNING_msg = false;
+  args_info.msg_error_flag ? ofx_ERROR_msg = true : ofx_ERROR_msg = false;
+  args_info.msg_info_flag ? ofx_INFO_msg = true : ofx_INFO_msg = false;
+  args_info.msg_status_flag ? ofx_STATUS_msg = true : ofx_STATUS_msg = false;
 
   bool skiphelp = false;
 

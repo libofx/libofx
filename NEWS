@@ -47,9 +47,6 @@
             - for elements that actually still provide their data,
               ofxdump generates lots of parse errors on an OFX 2.x file.
               Data handling for these elements in ofx_sgml.cpp is a little unorthodox.
-		- modified the command line flags in ofxdump
-        	- only output warnings and errors by default
-        	- made the handling of the flags and the help descriptions consistent
 
 2019-09-30, LibOFX 0.9.15:
 		- Fix segfault on uninitialized iconv

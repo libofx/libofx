@@ -17,7 +17,7 @@ option	"list-import-formats"	-	"List available import file formats 'import-forma
 #section "Debug output options"
 option	"msg_parser"	-	"Output file parsing messages"	flag	off
 option	"msg_debug"	-	"Output messages meant for debugging"	flag	off
-option	"msg_warning"	-	"Suppress warning messages about abnormal conditions and unknown constructs"	flag	on
-option	"msg_error"	-	"Suppress error messages"	flag	on
-option	"msg_info"	-	"Output informational messages about the progress of the library"	flag	off
-option	"msg_status"	-	"Output status messages"	flag	off
+option	"msg_warning"	-	"Output warning messages about abnormal conditions and unknown constructs"	flag	on
+option	"msg_error"	-	"Output error messages"	flag	on
+option	"msg_info"	-	"Output informational messages about the progress of the library"	flag	on
+option	"msg_status"	-	"Output status messages"	flag	on
