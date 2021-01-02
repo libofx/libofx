@@ -126,21 +126,21 @@ public:
   //char description[OFX_BALANCE_DESCRIPTION_LENGTH];
   //enum BalanceType{DOLLAR, PERCENT, NUMBER} balance_type;
   double amount; /**< Interpretation depends on balance_type */
-  int amount_valid;
+  bool amount_valid;
   time_t date; /**< Effective date of the given balance */
-  int date_valid;
+  bool date_valid;
 
   /**< <INVBAL><MARGINBALANCE> */
   double margin_balance;
-  int margin_balance_valid;
+  bool margin_balance_valid;
 
   /**< <INVBAL><SHORTBALANCE> */
   double short_balance;
-  int short_balance_valid;
+  bool short_balance_valid;
 
   /**< <INVBAL><BUYPOWER> */
   double buying_power;
-  int buying_power_valid;
+  bool buying_power_valid;
 
   OfxBalanceContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
   ~OfxBalanceContainer();
