@@ -1,7 +1,10 @@
-2020-xx-xx, LibOFX 0.9.16:
-
-    - jeffjl74 Enhanced handling of investments in OFX files (support not added to OFC)
-        - increased OFX_SECNAME_LENGTH to match the OFX spec
+2021-01-03, LibOFX 0.10.0:
+	- Large contribution adding investment / security handling in OFX files, by jeffjl74.
+	- ABI-breaking change, hence MINOR version incremented (due to MAJOR still at zero), 
+	  but libofx.h API should only have additions
+	- Details:
+        - jeffjl74 Enhanced handling of investments in OFX files (support not added to OFC)
+        - increased OFX_SECNAME_LENGTH to match the OFX spec (ABI-breaking change, hence MINOR version incremented)
         - OfxSecurityData now includes:
             - an enum for the type of the security (stock, bond, fund, option)
             - the optional <SECINFO> fields
