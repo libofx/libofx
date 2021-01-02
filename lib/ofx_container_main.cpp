@@ -100,7 +100,7 @@ int OfxMainContainer::add_container(OfxStatementContainer * container)
   if (account_tree.is_valid(tmp))
   {
     message_out(DEBUG, "1: tmp is valid, Accounts are present");
-    tree<OfxGenericContainer *>::iterator child = account_tree.begin(tmp);
+    tree<OfxGenericContainer *>::iterator child = account_tree.begin(tmp); // FIXME: Variable "child" is unused. Is there an error below?
     if (account_tree.number_of_children(tmp) != 0)
     {
       message_out(DEBUG, "There are already children for this account");
