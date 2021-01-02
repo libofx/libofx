@@ -46,7 +46,7 @@ const char * libofx_get_file_format_description(const struct LibofxFileFormatInf
     }
   }
   return retval;
-};
+}
 
 /*
 libofx_get_file_type returns a proper enum from a file type string.

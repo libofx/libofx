@@ -142,6 +142,6 @@ const ErrorMsg find_error_msg(int param_code)
     }
   }
   return return_val;
-};
+}
 
 #endif
