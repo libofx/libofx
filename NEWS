@@ -1,4 +1,9 @@
 2021-01-03, LibOFX 0.10.0:
+
+	- Issue #34 fixed: Remove unimplemented function from libofx.h header
+	- Issue #30 fixed: Return error value if file parsing is unsuccessful in libofx_proc_file
+	- Issue #29 fixed: Use given parameter for actual file type in libofx_proc_file
+
 	- Large contribution adding investment / security handling in OFX files, by jeffjl74.
 	- ABI-breaking change, hence MINOR version incremented (due to MAJOR still at zero), 
 	  but libofx.h API should only have additions
