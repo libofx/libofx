@@ -189,8 +189,10 @@ extern "C" {
   /**
    * \brief libofx_proc_file is the entry point of the library.
    *
-   *  libofx_proc_file must be called by the client, with a list of 1
-   *  or more OFX files to be parsed in command line format.
+   *  libofx_proc_file must be called by the client, with 1
+   *  OFX file to be parsed in command line format.
+   *
+   * \returns 0 on successful parsing, -1 on any error (see debug log)
   */
   int libofx_proc_file(LibofxContextPtr libofx_context,
                        const char * p_filename,

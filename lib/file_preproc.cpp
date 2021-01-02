@@ -88,15 +88,14 @@ int libofx_proc_file(LibofxContextPtr p_libofx_context, const char * p_filename,
   switch (libofx_context->currentFileType())
   {
   case OFX:
-    ofx_proc_file(libofx_context, p_filename);
-    break;
+    return ofx_proc_file(libofx_context, p_filename);
   case OFC:
-    ofx_proc_file(libofx_context, p_filename);
-    break;
+    return ofx_proc_file(libofx_context, p_filename);
   default:
-    message_out(ERROR, string("libofx_proc_file(): Detected file format not yet supported ou couldn't detect file format; aborting."));
+    message_out(ERROR, string("libofx_proc_file(): Could not detect file format, or unsupported file format; aborting."));
+    return -1;
   }
-  return 0;
+  return 0; // never reached
 }
 
 enum LibofxFileFormat libofx_detect_file_type(const char * p_filename)
