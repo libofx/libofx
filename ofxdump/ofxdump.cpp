@@ -1182,8 +1182,7 @@ int main (int argc, char *argv[])
   //unsigned inputs_num ; /* unamed options number */
   if (args_info.inputs_num  > 0)
   {
-    const char* filename = args_info.inputs[0];
-
+    //const char* filename = args_info.inputs[0];
 
     ofx_set_statement_cb(libofx_context, ofx_proc_statement_cb, 0);
     ofx_set_account_cb(libofx_context, ofx_proc_account_cb, 0);
