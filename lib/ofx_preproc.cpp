@@ -130,7 +130,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
 
     if (input_file && tmp_file)
     {
-      int header_separator_idx;
+      std::size_t header_separator_idx;
       string header_name;
       string header_value;
       string ofx_encoding;
@@ -171,7 +171,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
           file_is_xml = true;
         }
 
-        int ofx_start_idx;
+        std::size_t ofx_start_idx;
         if (ofx_start == false)
         {
           if (

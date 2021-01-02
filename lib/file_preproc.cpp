@@ -126,7 +126,7 @@ enum LibofxFileFormat libofx_detect_file_type(const char * p_filename)
         //cout<<buffer<<"\n";
         s_buffer.assign(buffer);
         //cout<<"input_file.gcount(): "<<input_file.gcount()<<" sizeof(buffer): "<<sizeof(buffer)<<endl;
-        if (input_file.gcount() < (sizeof(buffer) - 1))
+        if (input_file.gcount() < int(sizeof(buffer) - 1))
         {
           s_buffer.append("\n");//Just in case...
         }
