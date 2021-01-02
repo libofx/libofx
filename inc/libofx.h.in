@@ -1332,8 +1332,8 @@ extern "C" {
   /**
    * Parses the content of the given buffer.
    */
-  int libofx_proc_buffer(LibofxContextPtr ctx,
-                         const char *s, unsigned int size);
+  /*int libofx_proc_buffer(LibofxContextPtr ctx,
+                         const char *s, unsigned int size);*/
 
 
   /* **************************************** */
