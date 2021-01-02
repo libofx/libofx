@@ -152,7 +152,7 @@ void LibofxContext::setStatementCallback(LibofxProcStatementCallback cb,
 }
 
 void LibofxContext::setPositionCallback(LibofxProcPositionCallback cb,
-    void *user_data)
+                                        void *user_data)
 {
   _positionCallback = cb;
   _positionData = user_data;
@@ -235,8 +235,8 @@ extern "C" {
 
 
   void ofx_set_position_cb(LibofxContextPtr ctx,
-                            LibofxProcPositionCallback cb,
-                            void *user_data)
+                           LibofxProcPositionCallback cb,
+                           void *user_data)
   {
     ((LibofxContext*)ctx)->setPositionCallback(cb, user_data);
   }

@@ -90,7 +90,7 @@ void OfxStatementContainer::add_balance(OfxBalanceContainer* ptr_balance_contain
     data.ledger_balance_date_valid = ptr_balance_container->date_valid;
   }
   else if (ptr_balance_container->tag_identifier == "AVAILBAL"
-          || ptr_balance_container->tag_identifier == "INV401KBAL")
+           || ptr_balance_container->tag_identifier == "INV401KBAL")
   {
     data.available_balance = ptr_balance_container->amount;
     data.available_balance_valid = ptr_balance_container->amount_valid;

@@ -192,16 +192,16 @@ public:
         message_out (PARSER, "Element " + identifier + " found");
         curr_container_element = new OfxPushUpContainer (libofx_context, curr_container_element, identifier);
       }
-      
+
       /* The different types of accounts */
       else if (identifier == "BANKACCTFROM" || identifier == "CCACCTFROM" || identifier == "INVACCTFROM")
       {
         message_out (PARSER, "Element " + identifier + " found");
         /* check the container to avoid creating multiple statements for TRANSFERs */
         if (curr_container_element->type == "STATEMENT"
-          || curr_container_element->tag_identifier == "BANKACCTINFO"
-          || curr_container_element->tag_identifier == "CCACCTINFO"
-          || curr_container_element->tag_identifier == "INVACCTINFO")
+            || curr_container_element->tag_identifier == "BANKACCTINFO"
+            || curr_container_element->tag_identifier == "CCACCTINFO"
+            || curr_container_element->tag_identifier == "INVACCTINFO")
           curr_container_element = new OfxAccountContainer (libofx_context, curr_container_element, identifier);
         else
           // no new account or statement for a <TRANSFER>
