@@ -78,7 +78,7 @@ int libofx_proc_file(LibofxContextPtr p_libofx_context, const char * p_filename,
   }
   else
   {
-    libofx_context->setCurrentFileType(libofx_detect_file_type(p_filename));
+    libofx_context->setCurrentFileType(p_file_type);
     message_out(INFO,
                 string("libofx_proc_file(): File format forced to: ") +
                 libofx_get_file_format_description(LibofxImportFormatList,
