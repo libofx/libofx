@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 2020-xx-xx, LibOFX 0.9.16:
-=======
-2020-11-03, LibOFX 0.9.16:
->>>>>>> db9ea6b... update micro version to 16
 
     - jeffjl74 Enhanced handling of investments in OFX files (support not added to OFC)
         - increased OFX_SECNAME_LENGTH to match the OFX spec
@@ -188,11 +184,11 @@ LibOFX 0.8.3:
 	- Fix problem with string lengths.  Fixes Gnucash bug http://bugzilla.gnome.org/show_bug.cgi?id=353986
 
 LibOFX 0.8.2:
-        - bug fixes for GCC4.x and 64-bit compatibility
-        - fix to enable OFXDirectConnect in Aqbanking
-        - improvements to ofxpartner functionality
-        - minor build system modifications
-        - new fields for fees, commissions and stock split data
+        - bug fixes for GCC4.x and 64-bit compatibility
+        - fix to enable OFXDirectConnect in Aqbanking
+        - improvements to ofxpartner functionality
+        - minor build system modifications
+        - new fields for fees, commissions and stock split data
 	- fix a memory leak and a potential crashing bug
 
 LibOFX 0.8.0:
