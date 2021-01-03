@@ -189,7 +189,7 @@ time_t ofxdate_to_time_t(const string ofxdate)
       endidx = ofxdate.find(":", startidx) - 1;
       ofx_gmt_offset = atof(ofxdate.substr(startidx, (endidx - startidx) + 1).c_str());
       startidx = endidx + 2;
-      strncpy(timezone, ofxdate.substr(startidx, 3).c_str(), 4);
+      STRNCPY(timezone, ofxdate.substr(startidx, 3));
     }
     else
     {

@@ -46,12 +46,12 @@ void OfxPositionContainer::add_attribute(const string identifier, const string v
 {
   if (identifier == "UNIQUEID")
   {
-    strncpy(data.unique_id, value.c_str(), sizeof(data.unique_id));
+    STRNCPY(data.unique_id, value);
     data.unique_id_valid = true;
   }
   else if (identifier == "UNIQUEIDTYPE")
   {
-    strncpy(data.unique_id_type, value.c_str(), sizeof(data.unique_id_type));
+    STRNCPY(data.unique_id_type, value);
     data.unique_id_type_valid = true;
   }
   else if (identifier == "HELDINACCT")
@@ -117,7 +117,7 @@ void OfxPositionContainer::add_attribute(const string identifier, const string v
   }
   else if (identifier == "CURSYM")
   {
-    strncpy(data.currency, value.c_str(), sizeof(data.currency));
+    STRNCPY(data.currency, value);
     data.currency_valid = true;
   }
   else if (identifier == "CURRENCY")
@@ -132,7 +132,7 @@ void OfxPositionContainer::add_attribute(const string identifier, const string v
   }
   else if (identifier == "MEMO")
   {
-    strncpy(data.memo, value.c_str(), sizeof(data.memo));
+    STRNCPY(data.memo, value);
     data.memo_valid = true;
   }
   else if (identifier == "INV401KSOURCE")

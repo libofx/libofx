@@ -54,6 +54,7 @@ OfxSecurityContainer::OfxSecurityContainer(LibofxContext *p_libofx_context, OfxG
 OfxSecurityContainer::~OfxSecurityContainer()
 {
 }
+
 void OfxSecurityContainer::add_attribute(const string identifier, const string value)
 {
   if (identifier == "UNIQUEID")
@@ -64,13 +65,13 @@ void OfxSecurityContainer::add_attribute(const string identifier, const string v
     /* Assume the first one in the file is the mandatory one and put it in unique_id */
     if (data.unique_id_valid == false)
     {
-      strncpy(data.unique_id, value.c_str(), sizeof(data.unique_id));
+      STRNCPY(data.unique_id, value);
       data.unique_id_valid = true;
     }
     else
     {
       /* If unique_id is already set, use unique_id2 */
-      strncpy(data.unique_id2, value.c_str(), sizeof(data.unique_id2));
+      STRNCPY(data.unique_id2, value);
       data.unique_id2_valid = true;
     }
   }
@@ -82,29 +83,29 @@ void OfxSecurityContainer::add_attribute(const string identifier, const string v
     /* Assume the first one in the file is the mandatory one and put it in unique_id */
     if (data.unique_id_type_valid == false)
     {
-      strncpy(data.unique_id_type, value.c_str(), sizeof(data.unique_id_type));
+      STRNCPY(data.unique_id_type, value);
       data.unique_id_type_valid = true;
     }
     else
     {
       /* If unique_id_type is already set, use unique_id2_type */
-      strncpy(data.unique_id2_type, value.c_str(), sizeof(data.unique_id2_type));
+      STRNCPY(data.unique_id2_type, value);
       data.unique_id2_type_valid = true;
     }
   }
   else if (identifier == "SECNAME")
   {
-    strncpy(data.secname, value.c_str(), sizeof(data.secname));
+    STRNCPY(data.secname, value);
     data.secname_valid = true;
   }
   else if (identifier == "TICKER")
   {
-    strncpy(data.ticker, value.c_str(), sizeof(data.ticker));
+    STRNCPY(data.ticker, value);
     data.ticker_valid = true;
   }
   else if (identifier == "RATING")
   {
-    strncpy(data.rating, value.c_str(), OFX_SECURITY_RATING_LENGTH);
+    STRNCPY(data.rating, value);
     data.rating_valid = true;
   }
   else if (identifier == "UNITPRICE")
@@ -124,7 +125,7 @@ void OfxSecurityContainer::add_attribute(const string identifier, const string v
   }
   else if (identifier == "CURSYM")
   {
-    strncpy(data.currency, value.c_str(), OFX_CURRENCY_LENGTH);
+    STRNCPY(data.currency, value);
     data.currency_valid = true;
   }
   else if (identifier == "CURRENCY")
@@ -139,12 +140,12 @@ void OfxSecurityContainer::add_attribute(const string identifier, const string v
   }
   else if (identifier == "MEMO" || identifier == "MEMO2")
   {
-    strncpy(data.memo, value.c_str(), sizeof(data.memo));
+    STRNCPY(data.memo, value);
     data.memo_valid = true;
   }
   else if (identifier == "FIID")
   {
-    strncpy(data.fiid, value.c_str(), OFX_FIID_LENGTH);
+    STRNCPY(data.fiid, value);
     data.fiid_valid = true;
   }
   else if (identifier == "ASSETCLASS")

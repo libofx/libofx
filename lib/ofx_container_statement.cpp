@@ -51,12 +51,12 @@ void OfxStatementContainer::add_attribute(const string identifier, const string 
 {
   if (identifier == "CURDEF")
   {
-    strncpy(data.currency, value.c_str(), OFX_CURRENCY_LENGTH);
+    STRNCPY(data.currency, value);
     data.currency_valid = !value.empty();
   }
   else if (identifier == "MKTGINFO")
   {
-    strncpy(data.marketing_info, value.c_str(), OFX_MARKETING_INFO_LENGTH);
+    STRNCPY(data.marketing_info, value);
     data.marketing_info_valid = true;
   }
   else if (identifier == "DTASOF")

@@ -77,7 +77,7 @@ OfxStatusContainer::OfxStatusContainer(LibofxContext *p_libofx_context, OfxGener
   type = "STATUS";
   if (parentcontainer != NULL)
   {
-    strncpy(data.ofx_element_name, parentcontainer->tag_identifier.c_str(), OFX_ELEMENT_NAME_LENGTH);
+    STRNCPY(data.ofx_element_name, parentcontainer->tag_identifier);
     data.ofx_element_name_valid = true;
   }
 

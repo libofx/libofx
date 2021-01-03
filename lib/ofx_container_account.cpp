@@ -76,31 +76,31 @@ void OfxAccountContainer::add_attribute(const string identifier, const string va
 {
   if ( identifier == "BANKID")
   {
-    strncpy(bankid, value.c_str(), OFX_BANKID_LENGTH);
+    STRNCPY(bankid, value);
     data.bank_id_valid = true;
-    strncpy(data.bank_id, value.c_str(), OFX_BANKID_LENGTH);
+    STRNCPY(data.bank_id, value);
   }
   else if ( identifier == "BRANCHID")
   {
-    strncpy(branchid, value.c_str(), OFX_BRANCHID_LENGTH);
+    STRNCPY(branchid, value);
     data.branch_id_valid = true;
-    strncpy(data.branch_id, value.c_str(), OFX_BRANCHID_LENGTH);
+    STRNCPY(data.branch_id, value);
   }
   else if ( identifier == "ACCTID")
   {
-    strncpy(acctid, value.c_str(), OFX_ACCTID_LENGTH);
+    STRNCPY(acctid, value);
     data.account_number_valid = true;
-    strncpy(data.account_number, value.c_str(), OFX_ACCTID_LENGTH);
+    STRNCPY(data.account_number, value);
   }
   else if ( identifier == "ACCTKEY")
   {
-    strncpy(acctkey, value.c_str(), OFX_ACCTKEY_LENGTH);
+    STRNCPY(acctkey, value);
   }
   else if ( identifier == "BROKERID")     /* For investment accounts */
   {
-    strncpy(brokerid, value.c_str(), OFX_BROKERID_LENGTH);
+    STRNCPY(brokerid, value);
     data.broker_id_valid = true;
-    strncpy(data.broker_id, value.c_str(), OFX_BROKERID_LENGTH);
+    STRNCPY(data.broker_id, value);
   }
   else if ((identifier == "ACCTTYPE") || (identifier == "ACCTTYPE2"))
   {

@@ -114,12 +114,12 @@ void OfxTransactionContainer::add_attribute(const string identifier, const strin
   }
   else if (identifier == "FITID")
   {
-    strncpy(data.fi_id, value.c_str(), sizeof(data.fi_id));
+    STRNCPY(data.fi_id, value);
     data.fi_id_valid = true;
   }
   else if (identifier == "CORRECTFITID")
   {
-    strncpy(data.fi_id_corrected, value.c_str(), sizeof(data.fi_id_corrected));
+    STRNCPY(data.fi_id_corrected, value);
     data.fi_id_corrected_valid = true;
   }
   else if (identifier == "CORRECTACTION")
@@ -140,12 +140,12 @@ void OfxTransactionContainer::add_attribute(const string identifier, const strin
   }
   else if ((identifier == "SRVRTID") || (identifier == "SRVRTID2"))
   {
-    strncpy(data.server_transaction_id, value.c_str(), sizeof(data.server_transaction_id));
+    STRNCPY(data.server_transaction_id, value);
     data.server_transaction_id_valid = true;
   }
   else if (identifier == "MEMO" || identifier == "MEMO2")
   {
-    strncpy(data.memo, value.c_str(), sizeof(data.memo));
+    STRNCPY(data.memo, value);
     data.memo_valid = true;
   }
   else if (identifier == "CURRENCY")
@@ -273,12 +273,12 @@ void OfxBankTransactionContainer::add_attribute(const string identifier, const s
   }
   else if (identifier == "CHECKNUM")
   {
-    strncpy(data.check_number, value.c_str(), sizeof(data.check_number));
+    STRNCPY(data.check_number, value);
     data.check_number_valid = true;
   }
   else if (identifier == "REFNUM")
   {
-    strncpy(data.reference_number, value.c_str(), sizeof(data.reference_number));
+    STRNCPY(data.reference_number, value);
     data.reference_number_valid = true;
   }
   else if (identifier == "SIC")
@@ -288,12 +288,12 @@ void OfxBankTransactionContainer::add_attribute(const string identifier, const s
   }
   else if ((identifier == "PAYEEID") || (identifier == "PAYEEID2"))
   {
-    strncpy(data.payee_id, value.c_str(), sizeof(data.payee_id));
+    STRNCPY(data.payee_id, value);
     data.payee_id_valid = true;
   }
   else if (identifier == "NAME")
   {
-    strncpy(data.name, value.c_str(), sizeof(data.name));
+    STRNCPY(data.name, value);
     data.name_valid = true;
   }
   else
@@ -411,12 +411,12 @@ void OfxInvestmentTransactionContainer::add_attribute(const string identifier, c
 {
   if (identifier == "UNIQUEID")
   {
-    strncpy(data.unique_id, value.c_str(), sizeof(data.unique_id));
+    STRNCPY(data.unique_id, value);
     data.unique_id_valid = true;
   }
   else if (identifier == "UNIQUEIDTYPE")
   {
-    strncpy(data.unique_id_type, value.c_str(), sizeof(data.unique_id_type));
+    STRNCPY(data.unique_id_type, value);
     data.unique_id_type_valid = true;
   }
   else if (identifier == "UNITS")
@@ -446,7 +446,7 @@ void OfxInvestmentTransactionContainer::add_attribute(const string identifier, c
   }
   else if (identifier == "CURSYM")
   {
-    strncpy(data.currency, value.c_str(), sizeof(data.currency));
+    STRNCPY(data.currency, value);
     data.currency_valid = true;
   }
   else if (identifier == "DTSETTLE")
@@ -610,7 +610,7 @@ void OfxInvestmentTransactionContainer::add_attribute(const string identifier, c
   }
   else if (identifier == "LOANID")
   {
-    strncpy(data.loan_id, value.c_str(), sizeof(data.loan_id));
+    STRNCPY(data.loan_id, value);
     data.loan_id_valid = true;
   }
   else if (identifier == "LOANINTEREST")
@@ -689,7 +689,7 @@ void OfxInvestmentTransactionContainer::add_attribute(const string identifier, c
   }
   else if (identifier == "RELFITID")
   {
-    strncpy(data.related_fi_tid, value.c_str(), sizeof(data.related_fi_tid));
+    STRNCPY(data.related_fi_tid, value);
     data.related_fi_tid_valid = true;
   }
   else if (identifier == "RELTYPE")
@@ -1008,12 +1008,12 @@ void OfxInvestmentTransactionContainer::add_attribute(const string identifier, c
   }
   else if (identifier == "CHECKNUM")
   {
-    strncpy(data.check_number, value.c_str(), sizeof(data.check_number));
+    STRNCPY(data.check_number, value);
     data.check_number_valid = true;
   }
   else if (identifier == "REFNUM")
   {
-    strncpy(data.reference_number, value.c_str(), sizeof(data.reference_number));
+    STRNCPY(data.reference_number, value);
     data.reference_number_valid = true;
   }
   else if (identifier == "SIC")
@@ -1023,12 +1023,12 @@ void OfxInvestmentTransactionContainer::add_attribute(const string identifier, c
   }
   else if ((identifier == "PAYEEID") || (identifier == "PAYEEID2"))
   {
-    strncpy(data.payee_id, value.c_str(), sizeof(data.payee_id));
+    STRNCPY(data.payee_id, value);
     data.payee_id_valid = true;
   }
   else if (identifier == "NAME")
   {
-    strncpy(data.name, value.c_str(), sizeof(data.name));
+    STRNCPY(data.name, value);
     data.name_valid = true;
   }
   else

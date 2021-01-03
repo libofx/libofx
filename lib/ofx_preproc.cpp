@@ -359,14 +359,14 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
     char filename_openspdtd[255];
     char filename_dtd[255];
     char filename_ofx[255];
-    strncpy(filename_openspdtd, find_dtd(ctx, OPENSPDCL_FILENAME).c_str(), 255); //The opensp sgml dtd file
+    STRNCPY(filename_openspdtd, find_dtd(ctx, OPENSPDCL_FILENAME)); //The opensp sgml dtd file
     if (libofx_context->currentFileType() == OFX)
     {
-      strncpy(filename_dtd, find_dtd(ctx, OFX160DTD_FILENAME).c_str(), 255); //The ofx dtd file
+      STRNCPY(filename_dtd, find_dtd(ctx, OFX160DTD_FILENAME)); //The ofx dtd file
     }
     else if (libofx_context->currentFileType() == OFC)
     {
-      strncpy(filename_dtd, find_dtd(ctx, OFCDTD_FILENAME).c_str(), 255); //The ofc dtd file
+      STRNCPY(filename_dtd, find_dtd(ctx, OFCDTD_FILENAME)); //The ofc dtd file
     }
     else
     {

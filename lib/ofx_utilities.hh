@@ -19,11 +19,23 @@
 #define OFX_UTIL_H
 #include <string.h>
 #include <time.h>		// for time_t
+#include <cstring>
 #include "ParserEventGeneratorKit.h"
 using namespace std;
 /* This file contains various simple functions for type conversion & al */
 
 /*wostream &operator<<(wostream &os, SGMLApplication::CharString s); */
+
+/**
+ * Helper function when copying a std::string into a char[] array.
+ * The size of the char[] array is deducted by the compiler by the
+ * sizeof() operator.
+ */
+template <typename T>
+void STRNCPY(T& dest, const std::string& src)
+{
+  std::strncpy(dest, src.c_str(), sizeof(dest));
+}
 
 ///Convert OpenSP CharString to a C++ stream
 ostream &operator<<(ostream &os, SGMLApplication::CharString s);
