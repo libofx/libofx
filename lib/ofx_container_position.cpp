@@ -58,62 +58,51 @@ void OfxPositionContainer::add_attribute(const string identifier, const string v
   {
     if (value == "CASH")
     {
-      data.heldinaccount_type = data.OFX_HELDINACCT_CASH;
-      data.heldinaccount_type_valid = true;
+      ASSIGN(data.heldinaccount_type, data.OFX_HELDINACCT_CASH);
     }
     else if (value == "MARGIN")
     {
-      data.heldinaccount_type = data.OFX_HELDINACCT_MARGIN;
-      data.heldinaccount_type_valid = true;
+      ASSIGN(data.heldinaccount_type, data.OFX_HELDINACCT_MARGIN);
     }
     else if (value == "SHORT")
     {
-      data.heldinaccount_type = data.OFX_HELDINACCT_SHORT;
-      data.heldinaccount_type_valid = true;
+      ASSIGN(data.heldinaccount_type, data.OFX_HELDINACCT_SHORT);
     }
     else if (value == "OTHER")
     {
-      data.heldinaccount_type = data.OFX_HELDINACCT_OTHER;
-      data.heldinaccount_type_valid = true;
+      ASSIGN(data.heldinaccount_type, data.OFX_HELDINACCT_OTHER);
     }
   }
   else if (identifier == "POSTYPE")
   {
     if (value == "SHORT")
     {
-      data.position_type = data.OFX_POSITION_SHORT;
-      data.position_type_valid = true;
+      ASSIGN(data.position_type, data.OFX_POSITION_SHORT);
     }
     else if (value == "LONG")
     {
-      data.position_type = data.OFX_POSITION_LONG;
-      data.position_type_valid = true;
+      ASSIGN(data.position_type, data.OFX_POSITION_LONG);
     }
   }
   else if (identifier == "UNITS")
   {
-    data.units = ofxamount_to_double(value);
-    data.units_valid = true;
+    ASSIGN(data.units, ofxamount_to_double(value));
   }
   else if (identifier == "UNITPRICE")
   {
-    data.unit_price = ofxamount_to_double(value);
-    data.unit_price_valid = true;
+    ASSIGN(data.unit_price, ofxamount_to_double(value));
   }
   else if (identifier == "MKTVAL")
   {
-    data.market_value = ofxamount_to_double(value);
-    data.market_value_valid = true;
+    ASSIGN(data.market_value, ofxamount_to_double(value));
   }
   else if (identifier == "DTPRICEASOF")
   {
-    data.date_unit_price = ofxdate_to_time_t(value);
-    data.date_unit_price_valid = true;
+    ASSIGN(data.date_unit_price, ofxdate_to_time_t(value));
   }
   else if (identifier == "CURRATE")
   {
-    data.currency_ratio = ofxamount_to_double(value);
-    data.currency_ratio_valid = true;
+    ASSIGN(data.currency_ratio, ofxamount_to_double(value));
   }
   else if (identifier == "CURSYM")
   {
@@ -122,13 +111,11 @@ void OfxPositionContainer::add_attribute(const string identifier, const string v
   }
   else if (identifier == "CURRENCY")
   {
-    data.amounts_are_foreign_currency = false;
-    data.amounts_are_foreign_currency_valid = true;
+    ASSIGN(data.amounts_are_foreign_currency, false);
   }
   else if (identifier == "ORIGCURRENCY")
   {
-    data.amounts_are_foreign_currency = true;
-    data.amounts_are_foreign_currency_valid = true;
+    ASSIGN(data.amounts_are_foreign_currency, true);
   }
   else if (identifier == "MEMO")
   {
@@ -139,38 +126,31 @@ void OfxPositionContainer::add_attribute(const string identifier, const string v
   {
     if (value == "PRETAX")
     {
-      data.inv_401k_source = data.OFX_401K_POSN_SOURCE_PRETAX;
-      data.inv_401k_source_valid = true;
+      ASSIGN(data.inv_401k_source, data.OFX_401K_POSN_SOURCE_PRETAX);
     }
     else if (value == "AFTERTAX")
     {
-      data.inv_401k_source = data.OFX_401K_POSN_SOURCE_AFTERTAX;
-      data.inv_401k_source_valid = true;
+      ASSIGN(data.inv_401k_source, data.OFX_401K_POSN_SOURCE_AFTERTAX);
     }
     else if (value == "MATCH")
     {
-      data.inv_401k_source = data.OFX_401K_POSN_SOURCE_MATCH;
-      data.inv_401k_source_valid = true;
+      ASSIGN(data.inv_401k_source, data.OFX_401K_POSN_SOURCE_MATCH);
     }
     else if (value == "PROFITSHARING")
     {
-      data.inv_401k_source = data.OFX_401K_POSN_SOURCE_PROFITSHARING;
-      data.inv_401k_source_valid = true;
+      ASSIGN(data.inv_401k_source, data.OFX_401K_POSN_SOURCE_PROFITSHARING);
     }
     else if (value == "ROLLOVER")
     {
-      data.inv_401k_source = data.OFX_401K_POSN_SOURCE_ROLLOVER;
-      data.inv_401k_source_valid = true;
+      ASSIGN(data.inv_401k_source, data.OFX_401K_POSN_SOURCE_ROLLOVER);
     }
     else if (value == "OTHERVEST")
     {
-      data.inv_401k_source = data.OFX_401K_POSN_SOURCE_OTHERVEST;
-      data.inv_401k_source_valid = true;
+      ASSIGN(data.inv_401k_source, data.OFX_401K_POSN_SOURCE_OTHERVEST);
     }
     else if (value == "OTHERNONVEST")
     {
-      data.inv_401k_source = data.OFX_401K_POSN_SOURCE_OTHERNONVEST;
-      data.inv_401k_source_valid = true;
+      ASSIGN(data.inv_401k_source, data.OFX_401K_POSN_SOURCE_OTHERNONVEST);
     }
   }
   else

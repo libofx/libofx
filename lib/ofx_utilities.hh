@@ -37,6 +37,13 @@ void STRNCPY(T& dest, const std::string& src)
   std::strncpy(dest, src.c_str(), sizeof(dest));
 }
 
+/**
+ * Helper macro when assigning a value into the destination struct
+ * member which also has an accompanying "_valid" member which is
+ * also set to true.
+ */
+#define ASSIGN(DEST, VALUE) DEST = (VALUE); DEST ## _valid = true
+
 ///Convert OpenSP CharString to a C++ stream
 ostream &operator<<(ostream &os, SGMLApplication::CharString s);
 

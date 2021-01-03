@@ -61,18 +61,15 @@ void OfxStatementContainer::add_attribute(const string identifier, const string 
   }
   else if (identifier == "DTASOF")
   {
-    data.date_asof = ofxdate_to_time_t(value);
-    data.date_asof_valid = true;
+    ASSIGN(data.date_asof, ofxdate_to_time_t(value));
   }
   else if (identifier == "DTSTART")
   {
-    data.date_start = ofxdate_to_time_t(value);
-    data.date_start_valid = true;
+    ASSIGN(data.date_start, ofxdate_to_time_t(value));
   }
   else if (identifier == "DTEND")
   {
-    data.date_end = ofxdate_to_time_t(value);
-    data.date_end_valid = true;
+    ASSIGN(data.date_end, ofxdate_to_time_t(value));
   }
   else
   {

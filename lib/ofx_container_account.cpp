@@ -42,15 +42,13 @@ OfxAccountContainer::OfxAccountContainer(LibofxContext *p_libofx_context, OfxGen
   {
     /*Set the type for a creditcard account.  Bank account specific
     	OFX elements will set this attribute elsewhere */
-    data.account_type = data.OFX_CREDITCARD;
-    data.account_type_valid = true;
+    ASSIGN(data.account_type, data.OFX_CREDITCARD);
   }
   if (para_tag_identifier == "INVACCTFROM")
   {
     /*Set the type for an investment account.  Bank account specific
     	OFX elements will set this attribute elsewhere */
-    data.account_type = data.OFX_INVESTMENT;
-    data.account_type_valid = true;
+    ASSIGN(data.account_type, data.OFX_INVESTMENT);
   }
   if (parentcontainer != NULL && ((OfxStatementContainer*)parentcontainer)->data.currency_valid == true)
   {

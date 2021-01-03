@@ -172,28 +172,23 @@ void OfxBalanceContainer::add_attribute(const string identifier, const string va
       identifier == "AVAILCASH" ||  // from <INVBAL>
       identifier == "CASHBAL")      // from <INV401KBAL>
   {
-    amount = ofxamount_to_double(value);
-    amount_valid = true;
+    ASSIGN(amount, ofxamount_to_double(value));
   }
   else if (identifier == "MARGINBALANCE")
   {
-    margin_balance = ofxamount_to_double(value);
-    margin_balance_valid = true;
+    ASSIGN(margin_balance, ofxamount_to_double(value));
   }
   else if (identifier == "SHORTBALANCE")
   {
-    short_balance = ofxamount_to_double(value);
-    short_balance_valid = true;
+    ASSIGN(short_balance, ofxamount_to_double(value));
   }
   else if (identifier == "BUYPOWER")
   {
-    buying_power = ofxamount_to_double(value);
-    buying_power_valid = true;
+    ASSIGN(buying_power, ofxamount_to_double(value));
   }
   else if (identifier == "DTASOF")
   {
-    date = ofxdate_to_time_t(value);
-    date_valid = true;
+    ASSIGN(date, ofxdate_to_time_t(value));
   }
   else
   {
