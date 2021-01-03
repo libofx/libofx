@@ -122,8 +122,8 @@ class OfxBalanceContainer: public OfxGenericContainer
 {
 public:
   /* Not yet complete see spec 1.6 p.63 */
-  //char name[OFX_BALANCE_NAME_LENGTH];
-  //char description[OFX_BALANCE_DESCRIPTION_LENGTH];
+  //std::string name;
+  //std::string description;
   //enum BalanceType{DOLLAR, PERCENT, NUMBER} balance_type;
   double amount; /**< Interpretation depends on balance_type */
   bool amount_valid;
@@ -189,11 +189,11 @@ public:
   virtual int gen_event();
 private:
   void gen_account_id(void);
-  char bankid[OFX_BANKID_LENGTH];
-  char branchid[OFX_BRANCHID_LENGTH];
-  char acctid[OFX_ACCTID_LENGTH];/**< This field is used by both <BANKACCTFROM> and <CCACCTFROM> */
-  char acctkey[OFX_ACCTKEY_LENGTH];
-  char brokerid[OFX_BROKERID_LENGTH];
+  std::string m_bankid;
+  std::string m_branchid;
+  std::string m_acctid;/**< This field is used by both <BANKACCTFROM> and <CCACCTFROM> */
+  std::string m_acctkey;
+  std::string m_brokerid;
 };
 
 /***************************************************************************

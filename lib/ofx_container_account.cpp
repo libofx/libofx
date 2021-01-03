@@ -38,11 +38,6 @@ OfxAccountContainer::OfxAccountContainer(LibofxContext *p_libofx_context, OfxGen
 {
   memset(&data, 0, sizeof(data));
   type = "ACCOUNT";
-  strcpy(bankid, "");
-  strcpy(branchid, "");
-  strcpy(acctid, "");
-  strcpy(acctkey, "");
-  strcpy(brokerid, "");
   if (para_tag_identifier == "CCACCTFROM")
   {
     /*Set the type for a creditcard account.  Bank account specific
@@ -76,31 +71,31 @@ void OfxAccountContainer::add_attribute(const string identifier, const string va
 {
   if ( identifier == "BANKID")
   {
-    STRNCPY(bankid, value);
-    data.bank_id_valid = true;
+    m_bankid = value;
     STRNCPY(data.bank_id, value);
+    data.bank_id_valid = true;
   }
   else if ( identifier == "BRANCHID")
   {
-    STRNCPY(branchid, value);
-    data.branch_id_valid = true;
+    m_branchid = value;
     STRNCPY(data.branch_id, value);
+    data.branch_id_valid = true;
   }
   else if ( identifier == "ACCTID")
   {
-    STRNCPY(acctid, value);
-    data.account_number_valid = true;
+    m_acctid = value;
     STRNCPY(data.account_number, value);
+    data.account_number_valid = true;
   }
   else if ( identifier == "ACCTKEY")
   {
-    STRNCPY(acctkey, value);
+    m_acctkey = value;
   }
   else if ( identifier == "BROKERID")     /* For investment accounts */
   {
-    STRNCPY(brokerid, value);
-    data.broker_id_valid = true;
+    m_brokerid = value;
     STRNCPY(data.broker_id, value);
+    data.broker_id_valid = true;
   }
   else if ((identifier == "ACCTTYPE") || (identifier == "ACCTTYPE2"))
   {
@@ -162,37 +157,19 @@ void OfxAccountContainer::gen_account_id(void)
 {
   if (data.account_type == OfxAccountData::OFX_CREDITCARD)
   {
-    strncat(data.account_id, acctid, OFX_ACCOUNT_ID_LENGTH - strlen(data.account_id));
-    strncat(data.account_id, " ", OFX_ACCOUNT_ID_LENGTH - strlen(data.account_id));
-    strncat(data.account_id, acctkey, OFX_ACCOUNT_ID_LENGTH - strlen(data.account_id));
-
-    strncat(data.account_name, "Credit card ", OFX_ACCOUNT_NAME_LENGTH - strlen(data.account_name));
-    strncat(data.account_name, acctid, OFX_ACCOUNT_NAME_LENGTH - strlen(data.account_name));
+    STRNCPY(data.account_id, string(data.account_id) + m_acctid + " " + m_acctkey);
+    STRNCPY(data.account_name, string(data.account_name) + "Credit card " + m_acctid);
   }
   else if (data.account_type == OfxAccountData::OFX_INVESTMENT)
   {
-    strncat(data.account_id, brokerid, OFX_ACCOUNT_ID_LENGTH - strlen(data.account_id));
-    strncat(data.account_id, " ", OFX_ACCOUNT_ID_LENGTH - strlen(data.account_id));
-    strncat(data.account_id, acctid, OFX_ACCOUNT_ID_LENGTH - strlen(data.account_id));
-
-    strncat(data.account_name, "Investment account ", OFX_ACCOUNT_NAME_LENGTH - strlen(data.account_name));
-    strncat(data.account_name, acctid, OFX_ACCOUNT_NAME_LENGTH - strlen(data.account_name));
-    strncat(data.account_name, " at broker ", OFX_ACCOUNT_NAME_LENGTH - strlen(data.account_name));
-    strncat(data.account_name, brokerid, OFX_ACCOUNT_NAME_LENGTH - strlen(data.account_name));
+    STRNCPY(data.account_id, string(data.account_id) + m_brokerid + " " + m_acctid);
+    STRNCPY(data.account_name, string(data.account_name) + "Investment account " +
+            m_acctid + " at broker " + m_brokerid);
   }
   else
   {
-    strncat(data.account_id, bankid, OFX_ACCOUNT_ID_LENGTH - strlen(data.account_id));
-    strncat(data.account_id, " ", OFX_ACCOUNT_ID_LENGTH - strlen(data.account_id));
-    strncat(data.account_id, branchid, OFX_ACCOUNT_ID_LENGTH - strlen(data.account_id));
-    strncat(data.account_id, " ", OFX_ACCOUNT_ID_LENGTH - strlen(data.account_id));
-    strncat(data.account_id, acctid, OFX_ACCOUNT_ID_LENGTH - strlen(data.account_id));
-
-    strncat(data.account_name, "Bank account ", OFX_ACCOUNT_NAME_LENGTH - strlen(data.account_name));
-    strncat(data.account_name, acctid, OFX_ACCOUNT_NAME_LENGTH - strlen(data.account_name));
+    STRNCPY(data.account_id, string(data.account_id) + m_bankid + " " + m_branchid + " " + m_acctid);
+    STRNCPY(data.account_name, string(data.account_name) + "Bank account " + m_acctid);
   }
-  //if (strlen(data.account_id) >= 0) // The strlen() is always non-negative
-  {
-    data.account_id_valid = true;
-  }
+  data.account_id_valid = true;
 }//end OfxAccountContainer::gen_account_id()
