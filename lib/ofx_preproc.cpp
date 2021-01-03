@@ -379,31 +379,36 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
       filenames[0] = filename_openspdtd;
       filenames[1] = filename_dtd;
       filenames[2] = filename_ofx;
+      int rv;
       if (libofx_context->currentFileType() == OFX)
       {
-        ofx_proc_sgml(libofx_context, 3, filenames);
+        rv = ofx_proc_sgml(libofx_context, 3, filenames);
       }
       else if (libofx_context->currentFileType() == OFC)
       {
-        ofc_proc_sgml(libofx_context, 3, filenames);
+        rv = ofc_proc_sgml(libofx_context, 3, filenames);
       }
       else
       {
         message_out(ERROR, string("ofx_proc_file(): Error unknown file format for the OFX parser"));
+        rv = -1;
       }
       if (remove(tmp_filename) != 0)
       {
         message_out(ERROR, "ofx_proc_file(): Error deleting temporary file " + string(tmp_filename));
       }
+      return rv;
     }
     else
     {
       message_out(ERROR, "ofx_proc_file(): FATAL: Missing DTD, aborting");
+      return -1;
     }
   }
   else
   {
     message_out(ERROR, "ofx_proc_file():No input file specified");
+    return -1;
   }
   return 0;
 }
