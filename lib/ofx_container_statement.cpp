@@ -56,8 +56,7 @@ void OfxStatementContainer::add_attribute(const string identifier, const string 
   }
   else if (identifier == "MKTGINFO")
   {
-    STRNCPY(data.marketing_info, value);
-    data.marketing_info_valid = true;
+    ASSIGN_STRNCPY(data.marketing_info, value);
   }
   else if (identifier == "DTASOF")
   {
@@ -138,8 +137,7 @@ void OfxStatementContainer::add_account(OfxAccountData * account_data)
   if (account_data->account_id_valid == true)
   {
     data.account_ptr = account_data;
-    strncpy(data.account_id, account_data->account_id, OFX_ACCOUNT_ID_LENGTH);
-    data.account_id_valid = true;
+    ASSIGN_STRNCPY(data.account_id, std::string(account_data->account_id));
   }
 }
 /*void OfxStatementContainer::add_transaction(const OfxTransactionData transaction_data)

@@ -52,8 +52,7 @@ OfxAccountContainer::OfxAccountContainer(LibofxContext *p_libofx_context, OfxGen
   }
   if (parentcontainer != NULL && ((OfxStatementContainer*)parentcontainer)->data.currency_valid == true)
   {
-    strncpy(data.currency, ((OfxStatementContainer*)parentcontainer)->data.currency, OFX_CURRENCY_LENGTH); /* In ISO-4217 format */
-    data.currency_valid = true;
+    ASSIGN_STRNCPY(data.currency, std::string(((OfxStatementContainer*)parentcontainer)->data.currency));
   }
 }
 OfxAccountContainer::~OfxAccountContainer()
@@ -70,20 +69,17 @@ void OfxAccountContainer::add_attribute(const string identifier, const string va
   if ( identifier == "BANKID")
   {
     m_bankid = value;
-    STRNCPY(data.bank_id, value);
-    data.bank_id_valid = true;
+    ASSIGN_STRNCPY(data.bank_id, value);
   }
   else if ( identifier == "BRANCHID")
   {
     m_branchid = value;
-    STRNCPY(data.branch_id, value);
-    data.branch_id_valid = true;
+    ASSIGN_STRNCPY(data.branch_id, value);
   }
   else if ( identifier == "ACCTID")
   {
     m_acctid = value;
-    STRNCPY(data.account_number, value);
-    data.account_number_valid = true;
+    ASSIGN_STRNCPY(data.account_number, value);
   }
   else if ( identifier == "ACCTKEY")
   {
@@ -92,8 +88,7 @@ void OfxAccountContainer::add_attribute(const string identifier, const string va
   else if ( identifier == "BROKERID")     /* For investment accounts */
   {
     m_brokerid = value;
-    STRNCPY(data.broker_id, value);
-    data.broker_id_valid = true;
+    ASSIGN_STRNCPY(data.broker_id, value);
   }
   else if ((identifier == "ACCTTYPE") || (identifier == "ACCTTYPE2"))
   {

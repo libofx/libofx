@@ -46,13 +46,11 @@ void OfxPositionContainer::add_attribute(const string identifier, const string v
 {
   if (identifier == "UNIQUEID")
   {
-    STRNCPY(data.unique_id, value);
-    data.unique_id_valid = true;
+    ASSIGN_STRNCPY(data.unique_id, value);
   }
   else if (identifier == "UNIQUEIDTYPE")
   {
-    STRNCPY(data.unique_id_type, value);
-    data.unique_id_type_valid = true;
+    ASSIGN_STRNCPY(data.unique_id_type, value);
   }
   else if (identifier == "HELDINACCT")
   {
@@ -106,8 +104,7 @@ void OfxPositionContainer::add_attribute(const string identifier, const string v
   }
   else if (identifier == "CURSYM")
   {
-    STRNCPY(data.currency, value);
-    data.currency_valid = true;
+    ASSIGN_STRNCPY(data.currency, value);
   }
   else if (identifier == "CURRENCY")
   {
@@ -119,8 +116,7 @@ void OfxPositionContainer::add_attribute(const string identifier, const string v
   }
   else if (identifier == "MEMO")
   {
-    STRNCPY(data.memo, value);
-    data.memo_valid = true;
+    ASSIGN_STRNCPY(data.memo, value);
   }
   else if (identifier == "INV401KSOURCE")
   {
@@ -178,8 +174,7 @@ void OfxPositionContainer::add_account(OfxAccountData * account_data)
   if (account_data->account_id_valid == true)
   {
     data.account_ptr = account_data;
-    strncpy(data.account_id, account_data->account_id, OFX_ACCOUNT_ID_LENGTH);
-    data.account_id_valid = true;
+    ASSIGN_STRNCPY(data.account_id, std::string(account_data->account_id));
   }
 }
 

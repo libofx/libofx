@@ -77,8 +77,7 @@ OfxStatusContainer::OfxStatusContainer(LibofxContext *p_libofx_context, OfxGener
   type = "STATUS";
   if (parentcontainer != NULL)
   {
-    STRNCPY(data.ofx_element_name, parentcontainer->tag_identifier);
-    data.ofx_element_name_valid = true;
+    ASSIGN_STRNCPY(data.ofx_element_name, parentcontainer->tag_identifier);
   }
 
 }
@@ -98,11 +97,10 @@ void OfxStatusContainer::add_attribute(const string identifier, const string val
 
   if ( identifier == "CODE")
   {
-    data.code = atoi(value.c_str());
+    ASSIGN(data.code, atoi(value.c_str()));
     error_msg = find_error_msg(data.code);
     data.name = error_msg.name;//memory is already allocated
     data.description = error_msg.description;//memory is already allocated
-    data.code_valid = true;
   }
   else if (identifier == "SEVERITY")
   {

@@ -64,14 +64,12 @@ void OfxSecurityContainer::add_attribute(const string identifier, const string v
     /* Assume the first one in the file is the mandatory one and put it in unique_id */
     if (data.unique_id_valid == false)
     {
-      STRNCPY(data.unique_id, value);
-      data.unique_id_valid = true;
+      ASSIGN_STRNCPY(data.unique_id, value);
     }
     else
     {
       /* If unique_id is already set, use unique_id2 */
-      STRNCPY(data.unique_id2, value);
-      data.unique_id2_valid = true;
+      ASSIGN_STRNCPY(data.unique_id2, value);
     }
   }
   else if (identifier == "UNIQUEIDTYPE")
@@ -82,30 +80,25 @@ void OfxSecurityContainer::add_attribute(const string identifier, const string v
     /* Assume the first one in the file is the mandatory one and put it in unique_id */
     if (data.unique_id_type_valid == false)
     {
-      STRNCPY(data.unique_id_type, value);
-      data.unique_id_type_valid = true;
+      ASSIGN_STRNCPY(data.unique_id_type, value);
     }
     else
     {
       /* If unique_id_type is already set, use unique_id2_type */
-      STRNCPY(data.unique_id2_type, value);
-      data.unique_id2_type_valid = true;
+      ASSIGN_STRNCPY(data.unique_id2_type, value);
     }
   }
   else if (identifier == "SECNAME")
   {
-    STRNCPY(data.secname, value);
-    data.secname_valid = true;
+    ASSIGN_STRNCPY(data.secname, value);
   }
   else if (identifier == "TICKER")
   {
-    STRNCPY(data.ticker, value);
-    data.ticker_valid = true;
+    ASSIGN_STRNCPY(data.ticker, value);
   }
   else if (identifier == "RATING")
   {
-    STRNCPY(data.rating, value);
-    data.rating_valid = true;
+    ASSIGN_STRNCPY(data.rating, value);
   }
   else if (identifier == "UNITPRICE")
   {
@@ -121,8 +114,7 @@ void OfxSecurityContainer::add_attribute(const string identifier, const string v
   }
   else if (identifier == "CURSYM")
   {
-    STRNCPY(data.currency, value);
-    data.currency_valid = true;
+    ASSIGN_STRNCPY(data.currency, value);
   }
   else if (identifier == "CURRENCY")
   {
@@ -134,13 +126,11 @@ void OfxSecurityContainer::add_attribute(const string identifier, const string v
   }
   else if (identifier == "MEMO" || identifier == "MEMO2")
   {
-    STRNCPY(data.memo, value);
-    data.memo_valid = true;
+    ASSIGN_STRNCPY(data.memo, value);
   }
   else if (identifier == "FIID")
   {
-    STRNCPY(data.fiid, value);
-    data.fiid_valid = true;
+    ASSIGN_STRNCPY(data.fiid, value);
   }
   else if (identifier == "ASSETCLASS")
   {
