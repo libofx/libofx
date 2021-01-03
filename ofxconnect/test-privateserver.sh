@@ -36,7 +36,7 @@ export serverlogin="`gpg -d login-privateserver.asc` --org=ReferenceFI --fid=000
 # Test checking accounts
 #
 
-./ofxconnect -s $serverlogin --acct=10001010 --type=1 --past=90 tmpfilex && ../ofxdump/ofxdump tmpfilex
+./ofxconnect -s $serverlogin --acct=10001010 --type=1 --past=90 tmpfilex && ../ofxdump/ofxdump tmpfilex || exit 77
 exit
 ./ofxconnect -s $serverlogin --acct=10001001 --type=1 --past=90 tmpfilex && ../ofxdump/ofxdump tmpfilex
 ./ofxconnect -s $serverlogin --acct=10001002 --type=1 --past=90 tmpfilex && ../ofxdump/ofxdump tmpfilex
