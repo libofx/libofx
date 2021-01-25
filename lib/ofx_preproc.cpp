@@ -307,14 +307,10 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
             size_t outbytesleft = inbytesleft * 2 - 1;
             char * iconv_buffer = (char*) malloc (inbytesleft * 2);
             memset(iconv_buffer, 0, inbytesleft * 2);
-#if defined(__WIN32__) || defined(__sun) || defined(__NetBSD__)
-            const char * inchar = (const char *)s_buffer.c_str();
-#else
-            char * inchar = (char *)s_buffer.c_str();
-#endif
+            const char* inchar = s_buffer.c_str();
             char * outchar = iconv_buffer;
             int iconv_retval = iconv (conversion_descriptor,
-                                      &inchar, &inbytesleft,
+                                      const_cast<char**>(&inchar), &inbytesleft,
                                       &outchar, &outbytesleft);
             if (iconv_retval == -1)
             {
