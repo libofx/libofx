@@ -1,7 +1,5 @@
 SUBDIRS =
 
-docdir = ${prefix}/share/doc/libofx
-
 EXTRA_DIST = \
 	doxygen.cfg \
 	ofx_sample_files \
