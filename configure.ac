@@ -112,7 +112,7 @@ AC_ARG_WITH(opensp-libs,
 [  --with-opensp-libs=PATH         specify where to look for libosp
                                   - default is /usr/lib],
 			OPENSPLIBPATH="$with_opensp_libs",
-			OPENSPLIBPATH="/usr/lib")
+			OPENSPLIBPATH="${libdir}")
 
 			echo $OPENSPLIBPATH
 for d in /usr/include/OpenSP /usr/local/include/OpenSP /usr/include/sp/generic /usr/local/include/sp/generic; do
