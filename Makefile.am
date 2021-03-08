@@ -6,8 +6,6 @@ endif
 DIST_SUBDIRS = m4 inc dtd lib doc . ofx2qif ofxdump ofxconnect
 SUBDIRS = m4 inc dtd lib doc . ofx2qif ofxdump $(MAYBE_OFXCONNECT)
 
-docdir = $(datadir)/doc/libofx
-
 doc_DATA = \
   AUTHORS \
   COPYING \
