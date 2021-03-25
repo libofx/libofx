@@ -128,6 +128,10 @@ checked_mktime(struct tm* timeptr)
  * -When a timezone is specified, it is always used to properly convert in local time, following the spec.
  *
  */
+/* In light of user feedback we decided that for 10.2 we'd modify the above behavior:
+ * -Many banks always set the time to midnight so we've decided they really man no particular time and so apply the date-only rule in that case too.
+ * -11:59 local is reasonably date-stable in Europe but doesn't work so well for users closer to the Pacific Ocean so the date-only time is now 10:59 UTC. That is equally date-stable for all timezones except the thinly-populated -12 and +13 ones.
+ */
 time_t ofxdate_to_time_t(const string ofxdate)
 {
   struct tm time;
@@ -158,10 +162,10 @@ time_t ofxdate_to_time_t(const string ofxdate)
         if (ofxdate_whole.size() == 14)
         {
           /* if exact time is specified */
-          exact_time_specified = true;
           time.tm_hour = atoi(ofxdate_whole.substr(8, 2).c_str());
           time.tm_min = atoi(ofxdate_whole.substr(10, 2).c_str());
           time.tm_sec = atoi(ofxdate_whole.substr(12, 2).c_str());
+          exact_time_specified = static_cast<char>(time.tm_hour + time.tm_min + time.tm_sec ==0);
         }
         else
         {
@@ -199,21 +203,21 @@ time_t ofxdate_to_time_t(const string ofxdate)
       strcpy(timezone, "GMT");
     }
 
-    if (time_zone_specified == true)
+    if (time_zone_specified == true && exact_time_specified == true)
     {
       /* If the timezone is specified always correct the timezone */
       /* If the timezone is not specified, but the exact time is, correct the timezone, assuming GMT following the spec */
       /* Correct the time for the timezone */
       time.tm_sec = time.tm_sec + (int)(local_offset - (ofx_gmt_offset * 60 * 60)); //Convert from fractionnal hours to seconds
     }
-    else if (exact_time_specified == false)
+    else
     {
-      /*Time zone data missing and exact time not specified, diverge from the OFX spec ans assume 11h59 local time */
-      time.tm_hour = 11;
+      /*Time zone data missing or exact time not specified, diverge from the OFX spec ans force 10h59 UTC */
+      time.tm_hour = 10;
       time.tm_min = 59;
       time.tm_sec = 0;
+      return timegm(&time);
     }
-    return checked_mktime(&time);
   }
   else
   {
