@@ -90,141 +90,72 @@ string AppendCharStringtostring(const SGMLApplication::CharString source, string
   return dest;
 }
 
-/* Since we don't know for an arbitrary date-time whether or not it represents daylight time and we have to tell mktime something, we tell it yes if the current environment's TZ uses daylight time. If mktime finds that the supplied date-time isn't in daylight time for that time zone, it will adjust the struct tm to reflect the same time-point in not-daylight time and correct the value of tm_isdst. We check for that change and if it happens restore timeptr's date and time values and call mktime again with the correct value of tm_isdst. */
-static time_t
-checked_mktime(struct tm* timeptr)
-{
-  int is_dst = timeptr->tm_isdst;
-  int min = timeptr->tm_min;
-  int hour = timeptr->tm_hour;
-  int mday = timeptr->tm_mday;
-  int mon = timeptr->tm_mon;
-  int year = timeptr->tm_year;
-  time_t result = mktime(timeptr);
-  if (is_dst == timeptr->tm_isdst) // mktime didn't change it, OK to use the result.
-    return result;
-
-  //Restore the date & time to what it was, but use the new isdst value:
-  timeptr->tm_min = min;
-  timeptr->tm_hour = hour;
-  timeptr->tm_mday = mday;
-  timeptr->tm_mon = mon;
-  timeptr->tm_year = year;
-  return mktime(timeptr);
-}
-
 /**
  * Converts a date from the YYYYMMDDHHMMSS.XXX[gmt offset:tz name] OFX format (see OFX 2.01 spec p.66) to a C time_t.
  * @param ofxdate date from the YYYYMMDDHHMMSS.XXX[gmt offset:tz name] OFX format
  * @return C time_t in the local time zone
  * @note
- * @li The library always returns the time in the systems local time
- * @li OFX defines the date up to the millisecond.  The library ignores those milliseconds, since ANSI C does not handle such precision cleanly.  The date provided by LibOFX is precise to the second, assuming that information this precise was provided in the ofx file.  So you wont know the millisecond you were ruined...
-
- * @note DEVIATION FROM THE SPECS : The OFX specifications (both version 1.6 and 2.02) state that a client should assume that if the server returns a date without � specific time, we assume it means 0h00 GMT.  As such, when we apply the local timezone and for example you are in the EST timezone, we will remove 5h, and the transaction will have occurred on the prior day!  This is probably not what the bank intended (and will lead to systematic errors), but the spec is quite explicit in this respect (Ref:  OFX 2.01 spec pp. 66-68)<BR><BR>
- * To solve this problem (since usually a time error is relatively unimportant, but date error is), and to avoid problems in Australia caused by the behaviour in libofx up to 0.6.4, it was decided starting with 0.6.5 to use the following behavior:<BR><BR>
- * -No specific time is given in the file (date only):  Considering that most banks seem to be sending dates in this format represented as local time (not compliant with the specs), the transaction is assumed to have occurred 11h59 (just before noon) LOCAL TIME.  This way, we should never change the date, since you'd have to travel in a timezone at least 11 hours backwards or 13 hours forward from your own to introduce mistakes.  However, if you are in timezone +13 or +14, and your bank meant the data to be interpreted by the spec, you will get the wrong date.  We hope that banks in those timezone will either represent in local time like most, or specify the timezone properly.<BR><BR>
- * -No timezone is specified, but exact time is, the same behavior is mostly used, as many banks just append zeros instead of using the short notation.  However, the time specified is used, even if 0 (midnight).<BR><BR>
- * -When a timezone is specified, it is always used to properly convert in local time, following the spec.
- *
+ * @li The library always returns the time in the system's local time
+ * @note: DEVIATION FROM THE OFX SPECIFICATION:
+ * @li: Specification permits timestamps with millisecond precision, but the normal C Library time functions support only second precision.
+ * @li: Many banks don't even specify a time, either by providing only an 8-character string (YYYYMMDD) or by presenting 0 for all the time values (i.e. midnight). In those cases we take that to mean that the time isn't significant and set it to a time that is nearly always the same day regardless of timezone: 10:59 UTC. This works in all timezones except -12 and +13.
  */
-/* In light of user feedback we decided that for 10.2 we'd modify the above behavior:
- * -Many banks always set the time to midnight so we've decided they really man no particular time and so apply the date-only rule in that case too.
- * -11:59 local is reasonably date-stable in Europe but doesn't work so well for users closer to the Pacific Ocean so the date-only time is now 10:59 UTC. That is equally date-stable for all timezones except the thinly-populated -12 and +13 ones.
- */
-time_t ofxdate_to_time_t(const string ofxdate)
+ time_t ofxdate_to_time_t(const string& ofxdate)
 {
-  struct tm time;
-  double local_offset; /* in seconds */
-  float ofx_gmt_offset; /* in fractional hours */
-  char timezone[4]; /* Original timezone: the library does not expose this value*/
-  char exact_time_specified = false;
-  char time_zone_specified = false;
-  string ofxdate_whole;
-  time_t temptime;
-
-  std::time(&temptime);
-  local_offset = difftime(mktime(localtime(&temptime)), mktime(gmtime(&temptime)));
-  /* daylight is set to 1 if the timezone indicated by the environment (either TZ or /etc/localtime) uses daylight savings time (aka summer time). We use it here to provisionally set tm_isdst. */
-  time.tm_isdst = daylight;
-
-  if (ofxdate.size() != 0)
+  if (ofxdate.empty())
   {
-    ofxdate_whole = ofxdate.substr(0, ofxdate.find_first_not_of("0123456789"));
-    if (ofxdate_whole.size() >= 8)
-    {
-      time.tm_year = atoi(ofxdate_whole.substr(0, 4).c_str()) - 1900;
-      time.tm_mon = atoi(ofxdate_whole.substr(4, 2).c_str()) - 1;
-      time.tm_mday = atoi(ofxdate_whole.substr(6, 2).c_str());
+    message_out(ERROR, "ofxdate_to_time_t():  Unable to convert time, string is 0 length!");
+    return 0;
+  }
+  string ofxdate_whole =
+    ofxdate.substr(0, ofxdate.find_first_not_of("0123456789"));
 
-      if (ofxdate_whole.size() > 8)
-      {
-        if (ofxdate_whole.size() == 14)
-        {
-          /* if exact time is specified */
-          time.tm_hour = atoi(ofxdate_whole.substr(8, 2).c_str());
-          time.tm_min = atoi(ofxdate_whole.substr(10, 2).c_str());
-          time.tm_sec = atoi(ofxdate_whole.substr(12, 2).c_str());
-          exact_time_specified = static_cast<char>(time.tm_hour + time.tm_min + time.tm_sec ==0);
-        }
-        else
-        {
-          message_out(WARNING, "ofxdate_to_time_t():  Successfully parsed date part, but unable to parse time part of string " + ofxdate_whole + ". It is not in proper YYYYMMDDHHMMSS.XXX[gmt offset:tz name] format!");
-        }
-      }
+  if (ofxdate_whole.size() < 8)
+  {
+    message_out(ERROR, "ofxdate_to_time_t():  Unable to convert time, string " + ofxdate + " is not in proper YYYYMMDDHHMMSS.XXX[gmt offset:tz name] format!");
+    return std::time(NULL);
+  }
 
-    }
-    else
-    {
-      /* Catch invalid string format */
-      message_out(ERROR, "ofxdate_to_time_t():  Unable to convert time, string " + ofxdate + " is not in proper YYYYMMDDHHMMSS.XXX[gmt offset:tz name] format!");
-      return checked_mktime(&time);
-    }
+  struct tm time;
+  memset(&time, 0, sizeof(tm));
+  time.tm_year = atoi(ofxdate_whole.substr(0, 4).c_str()) - 1900;
+  time.tm_mon = atoi(ofxdate_whole.substr(4, 2).c_str()) - 1;
+  time.tm_mday = atoi(ofxdate_whole.substr(6, 2).c_str());
 
-
-    /* Check if the timezone has been specified */
-    string::size_type startidx = ofxdate.find("[");
-    string::size_type endidx;
-    if (startidx != string::npos)
-    {
-      /* Time zone was specified */
-      time_zone_specified = true;
-      startidx++;
-      endidx = ofxdate.find(":", startidx) - 1;
-      ofx_gmt_offset = atof(ofxdate.substr(startidx, (endidx - startidx) + 1).c_str());
-      startidx = endidx + 2;
-      STRNCPY(timezone, ofxdate.substr(startidx, 3));
-    }
-    else
-    {
-      /* Time zone was not specified, assume GMT (provisionnaly) in case exact time is specified */
-      ofx_gmt_offset = 0;
-      time.tm_isdst = 0; //GMT doesn't use daylight time.
-      strcpy(timezone, "GMT");
-    }
-
-    if (time_zone_specified == true && exact_time_specified == true)
-    {
-      /* If the timezone is specified always correct the timezone */
-      /* If the timezone is not specified, but the exact time is, correct the timezone, assuming GMT following the spec */
-      /* Correct the time for the timezone */
-      time.tm_sec = time.tm_sec + (int)(local_offset - (ofx_gmt_offset * 60 * 60)); //Convert from fractionnal hours to seconds
-    }
-    else
-    {
-      /*Time zone data missing or exact time not specified, diverge from the OFX spec ans force 10h59 UTC */
-      time.tm_hour = 10;
-      time.tm_min = 59;
-      time.tm_sec = 0;
-      return timegm(&time);
-    }
+  if (ofxdate_whole.size() < 14)
+  {
+    message_out(WARNING, "ofxdate_to_time_t():  Successfully parsed date part, but unable to parse time part of string " + ofxdate_whole + ". It is not in proper YYYYMMDDHHMMSS.XXX[gmt offset:tz name] format!");
   }
   else
   {
-    message_out(ERROR, "ofxdate_to_time_t():  Unable to convert time, string is 0 length!");
-    return 0; // MUST RETURN ZERO here because otherwise the uninitialized &time will be returned!
+    time.tm_hour = atoi(ofxdate_whole.substr(8, 2).c_str());
+    time.tm_min = atoi(ofxdate_whole.substr(10, 2).c_str());
+    time.tm_sec = atoi(ofxdate_whole.substr(12, 2).c_str());
   }
-  return checked_mktime(&time);
+
+  if (time.tm_hour + time.tm_min + time.tm_sec == 0)
+  {
+    time.tm_hour = 10;
+    time.tm_min = 59;
+    time.tm_sec = 0;
+    return timegm(&time);
+  }
+
+  string::size_type startidx = ofxdate.find("[");
+  if (startidx != string::npos)
+  {
+    startidx++;
+    string::size_type endidx = ofxdate.find(":", startidx) - 1;
+    string offset_str = ofxdate.substr(startidx, (endidx - startidx) + 1);
+    float ofx_gmt_offset = atof(offset_str.c_str());
+    std::time_t temptime = std::time(nullptr);
+    static const double secs_per_hour = 3600.0;
+    time.tm_sec += static_cast<int>(ofx_gmt_offset * secs_per_hour);
+    return timegm(&time);
+  }
+
+  /* No timezone, assume GMT */
+  return timegm(&time);
 }
 
 /**

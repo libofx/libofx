@@ -64,7 +64,7 @@ string CharStringtostring(const SGMLApplication::CharString source, string &dest
 string AppendCharStringtostring(const SGMLApplication::CharString source, string &dest);
 
 ///Convert a C++ string containing a time in OFX format to a C time_t
-time_t ofxdate_to_time_t(const string ofxdate);
+time_t ofxdate_to_time_t(const string& ofxdate);
 
 ///Convert OFX amount of money to double float
 double ofxamount_to_double(const string ofxamount);
