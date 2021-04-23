@@ -1,3 +1,9 @@
+2021-04-23, LibOFX 0.10.2:
+
+        - #41: Improved imported date stability, see gnucash bug
+        797848 and gnucash bug 636340.
+        - #40: Respect --libdir for opensp. Don't override docdir.
+
 2021-01-25, LibOFX 0.10.1:
 
         - Issue #37 fixed: Correct casting of iconv input argument
