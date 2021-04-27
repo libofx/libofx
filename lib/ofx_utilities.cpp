@@ -30,6 +30,8 @@
 
 #ifdef __WIN32__
 # define DIRSEP "\\"
+/* MSWin calls it _mkgmtime instead of timegm */
+# define timegm(tm) _mkgmtime(tm)
 #else
 # define DIRSEP "/"
 #endif
