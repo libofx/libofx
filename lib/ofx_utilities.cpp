@@ -152,7 +152,7 @@ string AppendCharStringtostring(const SGMLApplication::CharString source, string
     float ofx_gmt_offset = atof(offset_str.c_str());
     std::time_t temptime = std::time(nullptr);
     static const double secs_per_hour = 3600.0;
-    time.tm_sec += static_cast<int>(ofx_gmt_offset * secs_per_hour);
+    time.tm_sec -= static_cast<int>(ofx_gmt_offset * secs_per_hour);
     return timegm(&time);
   }
 
