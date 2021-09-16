@@ -5,7 +5,7 @@
     email                : benoitg@coeus.ca
 ***************************************************************************/
 /**@file
-   \brief OFX/SGML parsing functionnality.
+   \brief OFX/SGML parsing functionality.
    *
    Almost all of the SGML parser specific code is contained in this file (some is in messages.cpp and ofx_utilities.cpp).  To understand this file you must read the documentation of OpenSP's generic interface: see http://openjade.sourceforge.net/
 */
@@ -195,7 +195,7 @@ public:
     {
       /* The element was a data element.  OpenSP will call one or several data() callback with the data */
       message_out (PARSER, "Data element " + identifier + " found");
-      /* There is a bug in OpenSP 1.3.4, which won't send endElement Event for some elements, and will instead send an error like "document type does not allow element "MESSAGE" here".  Incoming_data should be empty in such a case, but it will not be if the endElement event was skiped. So we empty it, so at least the last element has a chance of having valid data */
+      /* There is a bug in OpenSP 1.3.4, which won't send endElement Event for some elements, and will instead send an error like "document type does not allow element "MESSAGE" here".  Incoming_data should be empty in such a case, but it will not be if the endElement event was skipped. So we empty it, so at least the last element has a chance of having valid data */
       if (incoming_data != "")
       {
         message_out (ERROR, "startElement: incoming_data should be empty! You are probably using OpenSP <= 1.3.4.  The following data was lost: " + incoming_data );

@@ -6,7 +6,7 @@
     email                : benoitg@coeus.ca
  ***************************************************************************/
 /**@file
- *  \brief OFX error code management functionnality.
+ *  \brief OFX error code management functionality.
  */
 /***************************************************************************
  *                                                                         *
@@ -123,9 +123,9 @@ const ErrorMsg error_msgs_list[] =
   { -1, "Unknown code", "The description of this code is unknown to libOfx"}
 };
 
-///Retreive error code descriptions
+///Retrieve error code descriptions
 /**
-   The find_error_msg function will take an ofx error number, and return an ErrorMsg structure with detailled information about the error, including the error name and long description
+   The find_error_msg function will take an ofx error number, and return an ErrorMsg structure with detailed information about the error, including the error name and long description
  */
 const ErrorMsg find_error_msg(int param_code)
 {

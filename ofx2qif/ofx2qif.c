@@ -9,13 +9,13 @@
  *
  * ofx2qif is a OFX "file" to QIF (Quicken Interchange Format)
  converter.  It was written as a second code example, and as a way for LibOFX
- to immediately provide something usefull, and to give people a reason to try
+ to immediately provide something useful, and to give people a reason to try
  the library.  It is not recommended that financial software use the
  output of this utility for OFX support.  The QIF file format is very
- primitive, and much information is lost.  The utility curently supports
- every tansaction tags of the QIF format except the address lines, and supports
+ primitive, and much information is lost.  The utility currently supports
+ every transaction tags of the QIF format except the address lines, and supports
  many of the !Account tags.  It should generate QIF files that will import 
- sucesfully in just about every software with QIF support.
+ successfully in just about every software with QIF support.
  *
  * I do not plan on improving working this utility much further, however be I 
  would be more than happy to accept contributions.  If you are interested in 

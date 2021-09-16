@@ -24,7 +24,7 @@
  * \brief  libofx_detect_file_type tries to analyze a file to determine it's format.
  *
 @param p_filename File name of the file to process
- @return Detected file format, UNKNOWN if unsuccessfull.
+ @return Detected file format, UNKNOWN if unsuccessful.
 */
 enum LibofxFileFormat libofx_detect_file_type(const char * p_filename);
 

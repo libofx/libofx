@@ -6,7 +6,7 @@
     email                : benoitg@coeus.ca
  ***************************************************************************/
 /** @file
- * \brief OFX/SGML parsing functionnality.
+ * \brief OFX/SGML parsing functionality.
 */
 /***************************************************************************
  *                                                                         *

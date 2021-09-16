@@ -185,7 +185,7 @@ double ofxamount_to_double(const string ofxamount)
 }
 
 /**
-Many weird caracters can be present inside a SGML element, as a result on the transfer protocol, or for any reason.  This function greatly enhances the reliability of the library by zapping those gremlins (backspace,formfeed,newline,carriage return, horizontal and vertical tabs) as well as removing whitespace at the begining and end of the string.  Otherwise, many problems will occur during stringmatching.
+Many weird characters can be present inside a SGML element, as a result on the transfer protocol, or for any reason.  This function greatly enhances the reliability of the library by zapping those gremlins (backspace,formfeed,newline,carriage return, horizontal and vertical tabs) as well as removing whitespace at the beginning and end of the string.  Otherwise, many problems will occur during stringmatching.
 */
 string strip_whitespace(const string para_string)
 {
@@ -196,7 +196,7 @@ string strip_whitespace(const string para_string)
     return temp_string; // so that size()-1 is allowed below
 
   const char *whitespace = " \b\f\n\r\t\v";
-  const char *abnormal_whitespace = "\b\f\n\r\t\v";//backspace,formfeed,newline,cariage return, horizontal and vertical tabs
+  const char *abnormal_whitespace = "\b\f\n\r\t\v";//backspace,formfeed,newline,carriage return, horizontal and vertical tabs
   message_out(DEBUG4, "strip_whitespace() Before: |" + temp_string + "|");
 
   for (i = 0;
