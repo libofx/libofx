@@ -250,7 +250,7 @@ int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
     else if (data.stock_type == OfxSecurityData::OFX_STOCKTYPE_PREFERRED)
       strncpy(dest_string, "PREFERRED: Preferred stock", sizeof(dest_string));
     else if (data.stock_type == OfxSecurityData::OFX_STOCKTYPE_CONVERTIBLE)
-      strncpy(dest_string, "CONVERTIBLE: Convertable stock", sizeof(dest_string));
+      strncpy(dest_string, "CONVERTIBLE: Convertible stock", sizeof(dest_string));
     else if (data.stock_type == OfxSecurityData::OFX_STOCKTYPE_OTHER)
       strncpy(dest_string, "OTHER: Other type", sizeof(dest_string));
     else
