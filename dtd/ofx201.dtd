@@ -581,7 +581,7 @@ Revisions 031000 Tom Lebhar
 
 <!ENTITY % COUPONFREQENUM "(#PCDATA)">
 
-<!--#ENTITY % COUPONFREQENUM		#Enum("MONTHLY","QUARTERLY","SEMIANNUALLY","ANUALLY","OTHER")-->
+<!--#ENTITY % COUPONFREQENUM		#Enum("MONTHLY","QUARTERLY","SEMIANNUALLY","ANNUALLY","OTHER")-->
 
 <!ENTITY % CHARTYPEENUM "(#PCDATA)">
 
@@ -605,7 +605,7 @@ Revisions 031000 Tom Lebhar
 
 <!--#ENTITY % FREQENUM			#Enum("WEEKLY","BIWEEKLY","TWICEMONTHLY","MONTHLY","FOURWEEKS","BIMONTHLY",
 
-							"QUARTERLY","SEMIANNUALLY","TRIANNUALLY","ANUALLY")-->
+							"QUARTERLY","SEMIANNUALLY","TRIANNUALLY","ANNUALLY")-->
 
 <!ENTITY % DAYSENUM "(#PCDATA)">
 
@@ -1771,7 +1771,7 @@ Revisions 031000 Tom Lebhar
 <!-- The default njumber of days to pay for transfers -->
 <!ELEMENT XFERDFLTDAYSTOPAY          %DAYSPANTYPE;>
 
-<!--  The number of days after a transaction is processed that it is acessible for status inquiries -->
+<!--  The number of days after a transaction is processed that it is accessible for status inquiries -->
 <!ELEMENT POSTPROCWND                %DAYSPANTYPE;>       
 
 <!--  server supports communication of server-initiated payment status changes via the PMTMODRS -->
@@ -2810,7 +2810,7 @@ Revisions 031000 Tom Lebhar
 
 <!ELEMENT DENOMINATOR   %AMTTYPE; >
 
-<!-- Amount of cash recieved from fractional shares -->
+<!-- Amount of cash received from fractional shares -->
 
 <!ELEMENT FRACCASH   %AMTTYPE; >
 
@@ -4545,7 +4545,7 @@ Revisions 031000 Tom Lebhar
 
 <!ELEMENT INTINCOME	      %AMTTYPE;>
 
-<!-- Early withdrawl penalty, amount                                          -->	
+<!-- Early withdrawal penalty, amount                                          -->	
 
 <!ELEMENT ERLWITHPEN          %AMTTYPE;>
 

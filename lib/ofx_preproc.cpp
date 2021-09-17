@@ -581,7 +581,7 @@ std::string find_dtd(LibofxContextPtr ctx, const std::string& dtd_filename)
     }
   }
 #endif
-  /* Search in environement variable OFX_DTD_PATH */
+  /* Search in environment variable OFX_DTD_PATH */
   env_dtd_path = getenv("OFX_DTD_PATH");
   if (env_dtd_path)
   {

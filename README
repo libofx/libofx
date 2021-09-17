@@ -11,7 +11,7 @@ ofxdump prints to stdout, in human-readable form, everything the library underst
 usage: `ofxdump` _path_to_ofx_file_`/`_ofx_filename_
 
 **ofx2qif**:\
-ofx2qif is a OFX "file" to QIF (Quicken Interchange Format) converter.  It was written as a C code example, and as a way for LibOFX to immediately provide something usefull, as an incentive for people to try out the library.  It is not recommended that financial software use the output of this utility for OFX support.  The QIF file format is very primitive, and much information is lost.  The utility curently supports every transaction tags of the qif format except the address lines, and supports many of the tags of `!Account`. It should generate QIF files that will import sucessfully in just about every software with QIF support.
+ofx2qif is a OFX "file" to QIF (Quicken Interchange Format) converter.  It was written as a C code example, and as a way for LibOFX to immediately provide something useful, as an incentive for people to try out the library.  It is not recommended that financial software use the output of this utility for OFX support.  The QIF file format is very primitive, and much information is lost.  The utility currently supports every transaction tags of the qif format except the address lines, and supports many of the tags of `!Account`. It should generate QIF files that will import successfully in just about every software with QIF support.
 I do not plan on working on this utility much further, but I would be more than happy to accept contributions.\
 usage: `ofx2qif` _path_to_ofx_file_`/`_ofx_filename_ `>` _output_filename_`.qif`
 

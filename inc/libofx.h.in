@@ -18,7 +18,7 @@
  *
  Important note:  The variables associated with every data element have a
  *_valid companion.  Always check that data_valid == true before using.
- Not only will you ensure that the data is meaningfull, but also that
+ Not only will you ensure that the data is meaningful, but also that
  pointers are valid and strings point to a null terminated string.
  Elements listed as mandatory are for information purpose only, do not
  trust the bank not to send you non-conforming data...
@@ -113,9 +113,9 @@ extern "C" {
   LibofxContextPtr libofx_get_new_context();
 
   /**
-   * \brief Free all ressources used by this context.
+   * \brief Free all resources used by this context.
    *
-   @return 0 if successfull.
+   @return 0 if successful.
   */
   int libofx_free_context( LibofxContextPtr );
 
@@ -203,7 +203,7 @@ extern "C" {
    * \brief An abstraction of an OFX STATUS element.
    *
    * The OfxStatusData structure represents a STATUS OFX element sent by the
-   OFX server.  Be carefull, you do not have much context except the entity
+   OFX server.  Be careful, you do not have much context except the entity
    name so your application should probably ignore this status if code==0.
    However, you should display a message if the status in non-zero,
    since an error probably occurred on the server side.
@@ -252,7 +252,7 @@ extern "C" {
 
 
   /**
-   * \brief The callback function for the OfxStatusData stucture.
+   * \brief The callback function for the OfxStatusData structure.
    *
    * An ofx_proc_status_cb event is sent everytime the server has
    * generated a OFX STATUS element.  As such, it could be received at
@@ -285,7 +285,7 @@ extern "C" {
         <BANKID><BRANCHID><ACCTID> for a bank account, and
         <ACCTID><ACCTKEY> for a credit card account.  account_id is
         meant to be computer-readable.  It is a worldwide OFX unique
-        identifier wich can be used for account matching, even in
+        identifier which can be used for account matching, even in
         system with multiple users.*/
     char account_id[OFX_ACCOUNT_ID_LENGTH];
 
@@ -293,7 +293,7 @@ extern "C" {
         identify the account.  Currently it is <ACCTID> for a bank
         account and a credit card account an <BROKERID>:<ACCTID> for
         investment accounts.  account_id_name is not meant to be
-        computer-readable and is not garanteed to be unique.*/
+        computer-readable and is not guaranteed to be unique.*/
     char account_name[OFX_ACCOUNT_NAME_LENGTH];
     int account_id_valid;/* Use for both account_id and account_name */
 
@@ -333,7 +333,7 @@ extern "C" {
   };
 
   /**
-   * \brief The callback function for the OfxAccountData stucture.
+   * \brief The callback function for the OfxAccountData structure.
    *
    * The ofx_proc_account_cb event is always generated first, to allow
    * the application to create accounts or ask the user to match an
@@ -351,7 +351,7 @@ extern "C" {
   /**
    * \brief An abstraction of a security, such as a stock, mutual fund, etc.
    *
-   * The OfxSecurityData stucture is used to hold the security
+   * The OfxSecurityData structure is used to hold the security
    * information inside a OfxTransactionData struct for investment
    * transactions.
   */
@@ -605,7 +605,7 @@ extern "C" {
   };/* end struct OfxSecurityData */
 
   /**
-   * \brief The callback function for the OfxSecurityData stucture.
+   * \brief The callback function for the OfxSecurityData structure.
    *
    * An ofx_proc_security_cb event is generated for any securities
    * listed in the ofx file.  It is generated after ofx_proc_statement
@@ -676,7 +676,7 @@ extern "C" {
   /**
    * \brief An abstraction of a transaction in an account.
    *
-   * The OfxTransactionData stucture contains all available
+   * The OfxTransactionData structure contains all available
    * information about an actual transaction in an account.
   */
   struct OfxTransactionData
@@ -782,7 +782,7 @@ extern "C" {
 
     /** The check number is most likely an integer and can probably be
         converted properly with atoi().  However the spec allows for up to
-        12 digits, so it is not garanteed to work */
+        12 digits, so it is not guaranteed to work */
     char check_number[OFX_CHECK_NUMBER_LENGTH];
     int check_number_valid;
 
@@ -1035,7 +1035,7 @@ extern "C" {
   };
 
   /**
-   * \brief The callback function for the OfxTransactionData stucture.
+   * \brief The callback function for the OfxTransactionData structure.
    *
    * An ofx_proc_transaction_cb event is generated for every
    * transaction in the ofx response, after ofx_proc_statement (and
@@ -1076,7 +1076,7 @@ extern "C" {
     int account_id_valid;
 
     /** The actual balance, according to the FI.  The user should be warned
-        of any discrepency between this and the balance in the application */
+        of any discrepancy between this and the balance in the application */
     double ledger_balance;
     int ledger_balance_valid;
 
@@ -1100,15 +1100,15 @@ extern "C" {
     time_t available_balance_date;/**< Time of the available_balance snapshot */
     int available_balance_date_valid;
 
-    /** Investment acccount margin balance */
+    /** Investment account margin balance */
     double margin_balance;
     int margin_balance_valid;
 
-    /** Investment acccount short balance */
+    /** Investment account short balance */
     double short_balance;
     int short_balance_valid;
 
-    /** Investment acccount buying power */
+    /** Investment account buying power */
     double buying_power;
     int buying_power_valid;
 
@@ -1133,7 +1133,7 @@ extern "C" {
   };
 
   /**
-   * \brief The callback function for the OfxStatementData stucture.
+   * \brief The callback function for the OfxStatementData structure.
    *
    * The ofx_proc_statement_cb event is sent after all ofx_proc_transaction
    events have been sent. An OfxStatementData is passed to this event, as well as
@@ -1154,7 +1154,7 @@ extern "C" {
   /**
    * \brief An abstraction of a security position held in an account.
    *
-   * The OfxPositionData stucture is used to hold the position
+   * The OfxPositionData structure is used to hold the position
    * information inside a OfxPositionContainer class for investment
    * positions.
   */
@@ -1261,7 +1261,7 @@ extern "C" {
   };
 
   /**
-   * \brief The callback function for the OfxPositionData stucture.
+   * \brief The callback function for the OfxPositionData structure.
    *
    * The ofx_proc_statement_cb event is sent after all ofx_proc_transaction
    * events have been sent. An OfxStatementData is passed to this event, as well as

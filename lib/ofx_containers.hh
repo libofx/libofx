@@ -34,7 +34,7 @@ class OfxGenericContainer
 {
 public:
   string type;/**< The type of the object, often == tag_identifier */
-  string tag_identifier; /**< The identifer of the creating tag */
+  string tag_identifier; /**< The identifier of the creating tag */
   OfxGenericContainer *parentcontainer;
   LibofxContext *libofx_context;
 
@@ -61,7 +61,7 @@ public:
   /** \brief Add this container to the main tree.
    *
    add_to_main_treegen_event will add the container to the main trees stored int the OfxMainContainer.
-   \return true if successfull, false otherwise.
+   \return true if successful, false otherwise.
   */
   virtual int add_to_main_tree();
 
@@ -271,7 +271,7 @@ public:
 
 /** \brief  Represents a bank or credid card transaction.
  *
- Built from the diferent investment transaction OFX entity
+ Built from the different investment transaction OFX entity
  */
 class OfxInvestmentTransactionContainer: public OfxTransactionContainer
 {
@@ -286,7 +286,7 @@ public:
  ***************************************************************************/
 /** \brief The root container.  Created by the <OFX> OFX element or by the export functions.
  *
- The OfxMainContainer maintains trees of processed ofx data structures which can be used to generate events in the right order, and eventually export in OFX and QIF formats and even generate matching OFX querys.
+ The OfxMainContainer maintains trees of processed ofx data structures which can be used to generate events in the right order, and eventually export in OFX and QIF formats and even generate matching OFX queries.
 */
 class OfxMainContainer: public OfxGenericContainer
 {

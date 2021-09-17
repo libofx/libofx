@@ -1,6 +1,6 @@
 There is an OFX test server which is used by the developers to ensure
 that the OFX connection works correctly.  The providers of this server
-have asked us not to post the connection information publically.
+have asked us not to post the connection information publicly.
 
 Therefore, the test script file which connects to this server is 
 encrypted using a GnuPG key: OFX Test Server <libofx-devel@lists.sf.net>.

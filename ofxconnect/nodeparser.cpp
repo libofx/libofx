@@ -5,8 +5,8 @@
     email                : acejones@users.sourceforge.net
 ***************************************************************************/
 /**@file
- * \brief Implementation of nodeparser object, which facilitiates searching
- * for nodes in an XML file using a notation similiar to XPath.
+ * \brief Implementation of nodeparser object, which facilitates searching
+ * for nodes in an XML file using a notation similar to XPath.
 */
 /***************************************************************************
  *                                                                         *

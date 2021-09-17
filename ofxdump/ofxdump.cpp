@@ -250,7 +250,7 @@ int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
     else if (data.stock_type == OfxSecurityData::OFX_STOCKTYPE_PREFERRED)
       strncpy(dest_string, "PREFERRED: Preferred stock", sizeof(dest_string));
     else if (data.stock_type == OfxSecurityData::OFX_STOCKTYPE_CONVERTIBLE)
-      strncpy(dest_string, "CONVERTIBLE: Convertable stock", sizeof(dest_string));
+      strncpy(dest_string, "CONVERTIBLE: Convertible stock", sizeof(dest_string));
     else if (data.stock_type == OfxSecurityData::OFX_STOCKTYPE_OTHER)
       strncpy(dest_string, "OTHER: Other type", sizeof(dest_string));
     else
@@ -1178,8 +1178,8 @@ int main (int argc, char *argv[])
 
   LibofxContextPtr libofx_context = libofx_get_new_context();
 
-  //char **inputs ; /* unamed options */
-  //unsigned inputs_num ; /* unamed options number */
+  //char **inputs ; /* unnamed options */
+  //unsigned inputs_num ; /* unnamed options number */
   if (args_info.inputs_num  > 0)
   {
     //const char* filename = args_info.inputs[0];

@@ -54,7 +54,7 @@ exit
 ./ofxconnect -s $serverlogin --acct=20001001 --type=2 --past=90 tmpfilex && ../ofxdump/ofxdump tmpfilex
 
 #
-# These don't work yet because I mistakenly put "CHECKING" in for all "BANK" statments as the account type :-(
+# These don't work yet because I mistakenly put "CHECKING" in for all "BANK" statements as the account type :-(
 #
 
 # --acct=10001003 --type=1 --past=90
