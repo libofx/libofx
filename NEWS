@@ -1,3 +1,9 @@
+2021-09-29, LibOFX 0.10.3:
+
+        - #45: fix gmt offset seconds
+        - #44: fix various typos in source code
+        - fix win32 build failure
+
 2021-04-23, LibOFX 0.10.2:
 
         - #41: Improved imported date stability, see gnucash bug
