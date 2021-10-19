@@ -21,7 +21,7 @@
 #endif
 
 
-#ifdef __WIN32__
+#ifdef _WIN32
 
 int mkstemp_win32(char *tmpl);
 
