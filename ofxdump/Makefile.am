@@ -1,6 +1,6 @@
 bin_PROGRAMS = ofxdump
 ofxdump_LDADD = $(top_builddir)/lib/libofx.la
-ofxdump_SOURCES = cmdline.h cmdline.c ofxdump.cpp
+ofxdump_SOURCES = cmdline.h cmdline.c ofxdump.cpp $(top_builddir)/lib/getopt.c $(top_builddir)/lib/getopt1.c
 dist_man_MANS = ofxdump.1
 
 AM_CPPFLAGS = \
