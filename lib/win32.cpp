@@ -18,14 +18,24 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <assert.h>
 
 
 
-#ifdef __WIN32__
+#ifdef _WIN32
+
+#ifdef _MSC_VER
+#include <Windows.h>
+#include <io.h>
+#define strcasecmp strcmpi
+#define snprintf _snprintf
+#define open _open
+#endif
 
 int mkstemp_win32(char *tmpl)
 {
