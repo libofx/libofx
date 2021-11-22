@@ -1145,6 +1145,7 @@ int ofx_proc_status_cb(struct OfxStatusData data, void * status_data)
 
 int main (int argc, char *argv[])
 {
+  int rc = 0;
   gengetopt_args_info args_info;
 
   /* let's call our cmdline parser */
@@ -1201,12 +1202,15 @@ int main (int argc, char *argv[])
         cout << "file: " << args_info.inputs[i] << endl ;
       }
     }
-    return libofx_proc_file(libofx_context, args_info.inputs[0], file_format);
+    int rc = libofx_proc_file(libofx_context, args_info.inputs[0], file_format);
   }
   else
   {
     if ( !skiphelp )
       cmdline_parser_print_help();
   }
-  return 0;
+
+  libofx_free_context(libofx_context);
+  cmdline_parser_free(&args_info);
+  return rc;
 }
