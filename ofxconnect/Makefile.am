@@ -14,7 +14,7 @@ if USE_GENGETOPT
 CLEANFILES = cmdline.c cmdline.h
 
 cmdline.c cmdline.h: cmdline.ggo Makefile
-	gengetopt --unnamed-opts < $<
+	gengetopt --unamed-opts < $<
 
 endif
 MAINTAINERCLEANFILES  = cmdline.c cmdline.h
