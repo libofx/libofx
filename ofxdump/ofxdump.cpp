@@ -1202,7 +1202,7 @@ int main (int argc, char *argv[])
         cout << "file: " << args_info.inputs[i] << endl ;
       }
     }
-    int rc = libofx_proc_file(libofx_context, args_info.inputs[0], file_format);
+    rc = libofx_proc_file(libofx_context, args_info.inputs[0], file_format);
   }
   else
   {
