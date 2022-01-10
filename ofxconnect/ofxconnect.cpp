@@ -86,16 +86,16 @@ bool post(const char* request, const char* url, const char* filename)
 #else
 bool post(const char*, const char*, const char*)
 {
-  cerr << "ERROR: libox must be configured with libcurl to post this request directly" << endl;
+  std::cerr << "ERROR: libox must be configured with libcurl to post this request directly" << std::endl;
   return false;
 }
 #endif
 
-ostream& operator<<(ostream& os, const std::vector<std::string>& strvect)
+std::ostream& operator<<(std::ostream& os, const std::vector<std::string>& strvect)
 {
   for ( std::vector<std::string>::const_iterator it = strvect.begin(); it != strvect.end(); ++it)
   {
-    os << (*it) << endl;
+    os << (*it) << std::endl;
   }
   return os;
 }
@@ -117,11 +117,11 @@ int main (int argc, char *argv[])
   {
     if ( (args_info.inputs_num > 0) )
     {
-      cout << "file " << args_info.inputs[0] << endl;
+      std::cout << "file " << args_info.inputs[0] << std::endl;
     }
     else
     {
-      cerr << "ERROR: You must specify an output file" << endl;
+      std::cerr << "ERROR: You must specify an output file" << std::endl;
       exit(1);
     }
   }
@@ -129,11 +129,11 @@ int main (int argc, char *argv[])
   {
     if ( (args_info.inputs_num > 0) )
     {
-      cout << "bank " << args_info.inputs[0] << endl;
+      std::cout << "bank " << args_info.inputs[0] << std::endl;
     }
     else
     {
-      cerr << "ERROR: You must specify an bank" << endl;
+      std::cerr << "ERROR: You must specify an bank" << std::endl;
       exit(1);
     }
   }
@@ -150,57 +150,57 @@ int main (int argc, char *argv[])
 
     if ( args_info.fipid_given )
     {
-      cerr << "fipid " <<  args_info.fipid_arg << endl;
-      cerr << "contacting partner server..." << endl;
+      std::cerr << "fipid " <<  args_info.fipid_arg << std::endl;
+      std::cerr << "contacting partner server..." << std::endl;
       OfxFiServiceInfo svcinfo = OfxPartner::ServiceInfo(args_info.fipid_arg);
-      cout << "fid " << svcinfo.fid << endl;
+      std::cout << "fid " << svcinfo.fid << std::endl;
       strncpy(fi.fid, svcinfo.fid, OFX_FID_LENGTH - 1);
-      cout << "org " << svcinfo.org << endl;
+      std::cout << "org " << svcinfo.org << std::endl;
       strncpy(fi.org, svcinfo.org, OFX_ORG_LENGTH - 1);
-      cout << "url " << svcinfo.url << endl;
+      std::cout << "url " << svcinfo.url << std::endl;
       url = svcinfo.url;
     }
     if ( args_info.fid_given )
     {
-      cerr << "fid " <<  args_info.fid_arg << endl;
+      std::cerr << "fid " <<  args_info.fid_arg << std::endl;
       strncpy(fi.fid, args_info.fid_arg, OFX_FID_LENGTH - 1);
     }
     else if ( ! args_info.fipid_given )
     {
-      cerr << "ERROR: --fid is required" << endl;
+      std::cerr << "ERROR: --fid is required" << std::endl;
       ok = false;
     }
 
     if ( args_info.org_given )
     {
-      cerr << "org " << args_info.org_arg << endl;
+      std::cerr << "org " << args_info.org_arg << std::endl;
       strncpy(fi.org, args_info.org_arg, OFX_ORG_LENGTH - 1);
     }
     else if ( ! args_info.fipid_given )
     {
-      cerr << "ERROR: --org is required" << endl;
+      std::cerr << "ERROR: --org is required" << std::endl;
       ok = false;
     }
 
     if ( args_info.user_given )
     {
-      cerr << "user " << args_info.user_arg << endl;
+      std::cerr << "user " << args_info.user_arg << std::endl;
       strncpy(fi.userid, args_info.user_arg, OFX_USERID_LENGTH - 1);
     }
     else
     {
-      cerr << "ERROR: --user is required" << endl;
+      std::cerr << "ERROR: --user is required" << std::endl;
       ok = false;
     }
 
     if ( args_info.pass_given )
     {
-      cerr << "pass " << args_info.pass_arg << endl;
+      std::cerr << "pass " << args_info.pass_arg << std::endl;
       strncpy(fi.userpass, args_info.pass_arg, OFX_USERPASS_LENGTH - 1);
     }
     else
     {
-      cerr << "ERROR: --pass is required" << endl;
+      std::cerr << "ERROR: --pass is required" << std::endl;
       ok = false;
     }
 
@@ -210,53 +210,53 @@ int main (int argc, char *argv[])
 
   if ( args_info.statement_req_given )
   {
-    cerr << "Statement request" << endl;
+    std::cerr << "Statement request" << std::endl;
 
     OfxAccountData account;
     memset(&account, 0, sizeof(OfxAccountData));
 
     if ( args_info.bank_given )
     {
-      cerr << "bank " << args_info.bank_arg << endl;
+      std::cerr << "bank " << args_info.bank_arg << std::endl;
       strncpy(account.bank_id, args_info.bank_arg, OFX_BANKID_LENGTH - 1);
     }
     else
     {
       if ( args_info.type_given && args_info.type_arg == 1 )
       {
-        cerr << "ERROR: --bank is required for a bank request" << endl;
+        std::cerr << "ERROR: --bank is required for a bank request" << std::endl;
         ok = false;
       }
     }
 
     if ( args_info.broker_given )
     {
-      cerr << "broker " << args_info.broker_arg << endl;
+      std::cerr << "broker " << args_info.broker_arg << std::endl;
       strncpy(account.broker_id, args_info.broker_arg, OFX_BROKERID_LENGTH - 1);
     }
     else
     {
       if ( args_info.type_given && args_info.type_arg == 2 )
       {
-        cerr << "ERROR: --broker is required for an investment statement request" << endl;
+        std::cerr << "ERROR: --broker is required for an investment statement request" << std::endl;
         ok = false;
       }
     }
 
     if ( args_info.acct_given )
     {
-      cerr << "acct " << args_info.acct_arg << endl;
+      std::cerr << "acct " << args_info.acct_arg << std::endl;
       strncpy(account.account_number, args_info.acct_arg, OFX_ACCTID_LENGTH - 1);
     }
     else
     {
-      cerr << "ERROR: --acct is required for a statement request" << endl;
+      std::cerr << "ERROR: --acct is required for a statement request" << std::endl;
       ok = false;
     }
 
     if ( args_info.type_given )
     {
-      cerr << "type " << args_info.type_arg << endl;
+      std::cerr << "type " << args_info.type_arg << std::endl;
       switch (args_info.type_arg)
       {
       case 1:
@@ -269,23 +269,23 @@ int main (int argc, char *argv[])
         account.account_type = account.OFX_CREDITCARD ;
         break;
       default:
-        cerr << "ERROR: --type is not valid.  Must be between 1 and 3" << endl;
+        std::cerr << "ERROR: --type is not valid.  Must be between 1 and 3" << std::endl;
         ok = false;
       }
     }
     else
     {
-      cerr << "ERROR: --type is required for a statement request" << endl;
+      std::cerr << "ERROR: --type is required for a statement request" << std::endl;
       ok = false;
     }
 
     if ( args_info.past_given )
     {
-      cerr << "past " << args_info.past_arg << endl;
+      std::cerr << "past " << args_info.past_arg << std::endl;
     }
     else
     {
-      cerr << "ERROR: --past is required for a statement request" << endl;
+      std::cerr << "ERROR: --past is required for a statement request" << std::endl;
       ok = false;
     }
 
@@ -296,7 +296,7 @@ int main (int argc, char *argv[])
       if ( url.length() && args_info.inputs_num > 0 )
         post(request, url.c_str(), args_info.inputs[0]);
       else
-        cout << request;
+        std::cout << request;
 
       free(request);
     }
@@ -311,12 +311,12 @@ int main (int argc, char *argv[])
 
     if ( args_info.trid_given )
     {
-      cerr << "trid " << args_info.trid_arg << endl;
+      std::cerr << "trid " << args_info.trid_arg << std::endl;
       snprintf(tridstr, 32, "%i", args_info.trid_arg);
     }
     else
     {
-      cerr << "ERROR: --trid is required for a payment inquiry request" << endl;
+      std::cerr << "ERROR: --trid is required for a payment inquiry request" << std::endl;
       ok = false;
     }
 
@@ -324,16 +324,16 @@ int main (int argc, char *argv[])
     {
       char* request = libofx_request_payment_status( &fi, tridstr );
 
-      filebuf fb;
-      fb.open ("query", ios::out);
-      ostream os(&fb);
+      std::filebuf fb;
+      fb.open ("query", std::ios::out);
+      std::ostream os(&fb);
       os << request;
       fb.close();
 
       if ( url.length() && args_info.inputs_num > 0 )
         post(request, url.c_str(), args_info.inputs[0]);
       else
-        cout << request;
+        std::cout << request;
 
       free(request);
     }
@@ -364,46 +364,46 @@ int main (int argc, char *argv[])
 
     if ( args_info.bank_given )
     {
-      cerr << "bank " << args_info.bank_arg << endl;
+      std::cerr << "bank " << args_info.bank_arg << std::endl;
       strncpy(account.bank_id, args_info.bank_arg, OFX_BANKID_LENGTH - 1);
     }
     else
     {
       if ( args_info.type_given && args_info.type_arg == 1 )
       {
-        cerr << "ERROR: --bank is required for a bank request" << endl;
+        std::cerr << "ERROR: --bank is required for a bank request" << std::endl;
         ok = false;
       }
     }
 
     if ( args_info.broker_given )
     {
-      cerr << "broker " << args_info.broker_arg << endl;
+      std::cerr << "broker " << args_info.broker_arg << std::endl;
       strncpy(account.broker_id, args_info.broker_arg, OFX_BROKERID_LENGTH - 1);
     }
     else
     {
       if ( args_info.type_given && args_info.type_arg == 2 )
       {
-        cerr << "ERROR: --broker is required for an investment statement request" << endl;
+        std::cerr << "ERROR: --broker is required for an investment statement request" << std::endl;
         ok = false;
       }
     }
 
     if ( args_info.acct_given )
     {
-      cerr << "acct " << args_info.acct_arg << endl;
+      std::cerr << "acct " << args_info.acct_arg << std::endl;
       strncpy(account.account_number, args_info.acct_arg, OFX_ACCTID_LENGTH - 1);
     }
     else
     {
-      cerr << "ERROR: --acct is required for a statement request" << endl;
+      std::cerr << "ERROR: --acct is required for a statement request" << std::endl;
       ok = false;
     }
 
     if ( args_info.type_given )
     {
-      cerr << "type " << args_info.type_arg << endl;
+      std::cerr << "type " << args_info.type_arg << std::endl;
       switch (args_info.type_arg)
       {
       case 1:
@@ -416,13 +416,13 @@ int main (int argc, char *argv[])
         account.account_type = account.OFX_CREDITCARD ;
         break;
       default:
-        cerr << "ERROR: --type is not valid.  Must be between 1 and 3" << endl;
+        std::cerr << "ERROR: --type is not valid.  Must be between 1 and 3" << std::endl;
         ok = false;
       }
     }
     else
     {
-      cerr << "ERROR: --type is required for a statement request" << endl;
+      std::cerr << "ERROR: --type is required for a statement request" << std::endl;
       ok = false;
     }
 
@@ -430,16 +430,16 @@ int main (int argc, char *argv[])
     {
       char* request = libofx_request_payment( &fi, &account, &payee, &payment );
 
-      filebuf fb;
-      fb.open ("query", ios::out);
-      ostream os(&fb);
+      std::filebuf fb;
+      fb.open ("query", std::ios::out);
+      std::ostream os(&fb);
       os << request;
       fb.close();
 
       if ( url.length() && args_info.inputs_num > 0 )
         post(request, url.c_str(), args_info.inputs[0]);
       else
-        cout << request;
+        std::cout << request;
 
       free(request);
     }
@@ -455,7 +455,7 @@ int main (int argc, char *argv[])
       if ( url.length() && args_info.inputs_num > 0 )
         post(request, url.c_str(), args_info.inputs[0]);
       else
-        cout << request;
+        std::cout << request;
 
       free(request);
     }
@@ -463,21 +463,21 @@ int main (int argc, char *argv[])
 
   if ( args_info.bank_list_given )
   {
-    cout << OfxPartner::BankNames();
+    std::cout << OfxPartner::BankNames();
   }
 
   if ( args_info.bank_fipid_given && args_info.inputs_num > 0 )
   {
-    cout << OfxPartner::FipidForBank(args_info.inputs[0]);
+    std::cout << OfxPartner::FipidForBank(args_info.inputs[0]);
   }
 
   if ( args_info.bank_services_given && args_info.inputs_num > 0 )
   {
     OfxFiServiceInfo svcinfo = OfxPartner::ServiceInfo(args_info.inputs[0]);
-    cout << "Account List? " << (svcinfo.accountlist ? "Yes" : "No") << endl;
-    cout << "Statements? " << (svcinfo.statements ? "Yes" : "No") << endl;
-    cout << "Billpay? " << (svcinfo.billpay ? "Yes" : "No") << endl;
-    cout << "Investments? " << (svcinfo.investments ? "Yes" : "No") << endl;
+    std::cout << "Account List? " << (svcinfo.accountlist ? "Yes" : "No") << std::endl;
+    std::cout << "Statements? " << (svcinfo.statements ? "Yes" : "No") << std::endl;
+    std::cout << "Billpay? " << (svcinfo.billpay ? "Yes" : "No") << std::endl;
+    std::cout << "Investments? " << (svcinfo.investments ? "Yes" : "No") << std::endl;
   }
 
   if ( args_info.allsupport_given )
@@ -491,7 +491,7 @@ int main (int argc, char *argv[])
       while ( it_fipid != fipids.end() )
       {
         if ( OfxPartner::ServiceInfo(*it_fipid).accountlist )
-          cout << *it_bank << endl;
+          std::cout << *it_bank << std::endl;
         ++it_fipid;
       }
       ++it_bank;

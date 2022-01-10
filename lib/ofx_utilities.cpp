@@ -113,7 +113,7 @@ std::string AppendCharStringtostring(const SGMLApplication::CharString source, s
 
   if (ofxdate_whole.size() < 8)
   {
-    message_out(ERROR, "ofxdate_to_time_t():  Unable to convert time, std::string " + ofxdate + " is not in proper YYYYMMDDHHMMSS.XXX[gmt offset:tz name] format!");
+    message_out(ERROR, "ofxdate_to_time_t():  Unable to convert time, string " + ofxdate + " is not in proper YYYYMMDDHHMMSS.XXX[gmt offset:tz name] format!");
     return std::time(NULL);
   }
 
