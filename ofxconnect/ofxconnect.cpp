@@ -48,8 +48,6 @@
 #include "nodeparser.h"
 #include "ofxpartner.h"
 
-using namespace std;
-
 #ifdef HAVE_LIBCURL
 bool post(const char* request, const char* url, const char* filename)
 {
@@ -93,9 +91,9 @@ bool post(const char*, const char*, const char*)
 }
 #endif
 
-ostream& operator<<(ostream& os, const vector<string>& strvect)
+ostream& operator<<(ostream& os, const std::vector<std::string>& strvect)
 {
-  for ( vector<string>::const_iterator it = strvect.begin(); it != strvect.end(); ++it)
+  for ( std::vector<std::string>::const_iterator it = strvect.begin(); it != strvect.end(); ++it)
   {
     os << (*it) << endl;
   }
@@ -143,7 +141,7 @@ int main (int argc, char *argv[])
   OfxFiLogin fi;
   memset(&fi, 0, sizeof(OfxFiLogin));
   bool ok = true;
-  string url;
+  std::string url;
 
   if ( args_info.statement_req_given || args_info.accountinfo_req_given || args_info.payment_req_given || args_info.paymentinquiry_req_given )
   {
@@ -484,12 +482,12 @@ int main (int argc, char *argv[])
 
   if ( args_info.allsupport_given )
   {
-    vector<string> banks = OfxPartner::BankNames();
-    vector<string>::const_iterator it_bank = banks.begin();
+    std::vector<std::string> banks = OfxPartner::BankNames();
+    std::vector<std::string>::const_iterator it_bank = banks.begin();
     while ( it_bank != banks.end() )
     {
-      vector<string> fipids = OfxPartner::FipidForBank(*it_bank);
-      vector<string>::const_iterator it_fipid = fipids.begin();
+      std::vector<std::string> fipids = OfxPartner::FipidForBank(*it_bank);
+      std::vector<std::string>::const_iterator it_fipid = fipids.begin();
       while ( it_fipid != fipids.end() )
       {
         if ( OfxPartner::ServiceInfo(*it_fipid).accountlist )

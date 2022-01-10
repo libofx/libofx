@@ -26,12 +26,10 @@
 #include "libofx.h"
 #include "ofx_request_accountinfo.hh"
 
-using namespace std;
-
 char* libofx_request_accountinfo( const OfxFiLogin* login )
 {
   OfxAccountInfoRequest strq( *login );
-  string request = OfxHeader(login->header_version) + strq.Output();
+  std::string request = OfxHeader(login->header_version) + strq.Output();
 
   unsigned size = request.size();
   char* result = (char*)malloc(size + 1);

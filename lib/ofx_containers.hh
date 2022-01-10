@@ -24,8 +24,6 @@
 #include "tree.hh"
 #include "context.hh"
 
-using namespace std;
-
 /** \brief A generic container for an OFX SGML element.  Every container inherits from OfxGenericContainer.
  *
  A hierarchy of containers is built as the file is parsed.  The supported OFX elements all have a matching container.  The others are assigned a OfxDummyContainer, so every OFX element creates a container as the file is par Note however that containers are destroyed as soon as the corresponding SGML element is closed.
@@ -33,14 +31,14 @@ using namespace std;
 class OfxGenericContainer
 {
 public:
-  string type;/**< The type of the object, often == tag_identifier */
-  string tag_identifier; /**< The identifier of the creating tag */
+  std::string type;/**< The type of the object, often == tag_identifier */
+  std::string tag_identifier; /**< The identifier of the creating tag */
   OfxGenericContainer *parentcontainer;
   LibofxContext *libofx_context;
 
   OfxGenericContainer(LibofxContext *p_libofx_context);
   OfxGenericContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer);
-  OfxGenericContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  OfxGenericContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
 
   virtual ~OfxGenericContainer() {};
 
@@ -50,7 +48,7 @@ public:
    \param identifier The name of the data element
    \param value The concatenated string of the data
   */
-  virtual void add_attribute(const string identifier, const string value);
+  virtual void add_attribute(const std::string identifier, const std::string value);
   /** \brief Generate libofx.h events.
    *
    gen_event will call the appropriate ofx_proc_XXX_cb defined in libofx.h if one is available.
@@ -76,8 +74,8 @@ public:
 class OfxDummyContainer: public OfxGenericContainer
 {
 public:
-  OfxDummyContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
-  void add_attribute(const string identifier, const string value);
+  OfxDummyContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
+  void add_attribute(const std::string identifier, const std::string value);
 };
 
 /** \brief A container to hold OFX SGML elements for <INV401K>
@@ -87,8 +85,8 @@ public:
 class OfxInv401kContainer: public OfxGenericContainer
 {
 public:
-  OfxInv401kContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
-  void add_attribute(const string identifier, const string value);
+  OfxInv401kContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
+  void add_attribute(const std::string identifier, const std::string value);
 };
 
 /** \brief A container to hold a OFX SGML element for which you want the parent to process it's data elements
@@ -99,8 +97,8 @@ class OfxPushUpContainer: public OfxGenericContainer
 {
 public:
 
-  OfxPushUpContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
-  void add_attribute(const string identifier, const string value);
+  OfxPushUpContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
+  void add_attribute(const std::string identifier, const std::string value);
 };
 
 /** \brief Represents the <STATUS> OFX SGML entity */
@@ -109,9 +107,9 @@ class OfxStatusContainer: public OfxGenericContainer
 public:
   OfxStatusData data;
 
-  OfxStatusContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  OfxStatusContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
   ~OfxStatusContainer();
-  void add_attribute(const string identifier, const string value);
+  void add_attribute(const std::string identifier, const std::string value);
 };
 
 /** \brief Represents the <BALANCE>, <INVBAL> or <INV401KBAL> OFX SGML entity
@@ -142,9 +140,9 @@ public:
   double buying_power;
   bool buying_power_valid;
 
-  OfxBalanceContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  OfxBalanceContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
   ~OfxBalanceContainer();
-  void add_attribute(const string identifier, const string value);
+  void add_attribute(const std::string identifier, const std::string value);
 };
 
 /***************************************************************************
@@ -159,9 +157,9 @@ class OfxStatementContainer: public OfxGenericContainer
 public:
   OfxStatementData data;
 
-  OfxStatementContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  OfxStatementContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
   ~OfxStatementContainer();
-  void add_attribute(const string identifier, const string value);
+  void add_attribute(const std::string identifier, const std::string value);
   virtual int add_to_main_tree();
   virtual int gen_event();
   void add_account(OfxAccountData * account_data);
@@ -182,9 +180,9 @@ class OfxAccountContainer: public OfxGenericContainer
 public:
   OfxAccountData data;
 
-  OfxAccountContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  OfxAccountContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
   ~OfxAccountContainer();
-  void add_attribute(const string identifier, const string value);
+  void add_attribute(const std::string identifier, const std::string value);
   int add_to_main_tree();
   virtual int gen_event();
 private:
@@ -206,9 +204,9 @@ class OfxSecurityContainer: public OfxGenericContainer
 public:
   OfxSecurityData data;
 
-  OfxSecurityContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  OfxSecurityContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
   ~OfxSecurityContainer();
-  void add_attribute(const string identifier, const string value);
+  void add_attribute(const std::string identifier, const std::string value);
   virtual int gen_event();
   virtual int add_to_main_tree();
 private:
@@ -226,9 +224,9 @@ class OfxPositionContainer: public OfxGenericContainer
 public:
   OfxPositionData data;
 
-  OfxPositionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  OfxPositionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
   ~OfxPositionContainer();
-  void add_attribute(const string identifier, const string value);
+  void add_attribute(const std::string identifier, const std::string value);
   void add_account(OfxAccountData * account_data);
   virtual int gen_event();
   virtual int add_to_main_tree();
@@ -247,9 +245,9 @@ class OfxTransactionContainer: public OfxGenericContainer
 public:
   OfxTransactionData data;
 
-  OfxTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  OfxTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
   ~OfxTransactionContainer();
-  virtual void add_attribute(const string identifier, const string value);
+  virtual void add_attribute(const std::string identifier, const std::string value);
   void add_account(OfxAccountData * account_data);
 
   virtual int gen_event();
@@ -265,8 +263,8 @@ private:
 class OfxBankTransactionContainer: public OfxTransactionContainer
 {
 public:
-  OfxBankTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
-  void add_attribute(const string identifier, const string value);
+  OfxBankTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
+  void add_attribute(const std::string identifier, const std::string value);
 };
 
 /** \brief  Represents a bank or credid card transaction.
@@ -276,9 +274,9 @@ public:
 class OfxInvestmentTransactionContainer: public OfxTransactionContainer
 {
 public:
-  OfxInvestmentTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  OfxInvestmentTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
 
-  void add_attribute(const string identifier, const string value);
+  void add_attribute(const std::string identifier, const std::string value);
 };
 
 /***************************************************************************
@@ -291,7 +289,7 @@ public:
 class OfxMainContainer: public OfxGenericContainer
 {
 public:
-  OfxMainContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+  OfxMainContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
   ~OfxMainContainer();
   int add_container(OfxGenericContainer * container);
   int add_container(OfxStatementContainer * container);
@@ -300,7 +298,7 @@ public:
   int add_container(OfxSecurityContainer * container);
   int add_container(OfxPositionContainer * container);
   int gen_event();
-  OfxSecurityData * find_security(string unique_id);
+  OfxSecurityData * find_security(std::string unique_id);
 private:
   tree<OfxGenericContainer *> security_tree;
   tree<OfxGenericContainer *> account_tree;

@@ -38,13 +38,13 @@ extern OfxMainContainer * MainContainer;
  *                         OfxDummyContainer                               *
  ***************************************************************************/
 
-OfxDummyContainer::OfxDummyContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+OfxDummyContainer::OfxDummyContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
   OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
 {
   type = "DUMMY";
   message_out(INFO, "Created OfxDummyContainer to hold unsupported aggregate " + para_tag_identifier);
 }
-void OfxDummyContainer::add_attribute(const string identifier, const string value)
+void OfxDummyContainer::add_attribute(const std::string identifier, const std::string value)
 {
   message_out(DEBUG, "OfxDummyContainer for " + tag_identifier + " ignored a " + identifier + " (" + value + ")");
 }
@@ -53,13 +53,13 @@ void OfxDummyContainer::add_attribute(const string identifier, const string valu
  *                         OfxPushUpContainer                              *
  ***************************************************************************/
 
-OfxPushUpContainer::OfxPushUpContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+OfxPushUpContainer::OfxPushUpContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
   OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
 {
   type = "PUSHUP";
   message_out(DEBUG, "Created OfxPushUpContainer to hold aggregate " + tag_identifier);
 }
-void OfxPushUpContainer::add_attribute(const string identifier, const string value)
+void OfxPushUpContainer::add_attribute(const std::string identifier, const std::string value)
 {
   //message_out(DEBUG, "OfxPushUpContainer for "+tag_identifier+" will push up a "+identifier+" ("+value+") to a "+ parentcontainer->type + " container");
   if (parentcontainer)
@@ -70,7 +70,7 @@ void OfxPushUpContainer::add_attribute(const string identifier, const string val
  *                         OfxStatusContainer                              *
  ***************************************************************************/
 
-OfxStatusContainer::OfxStatusContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+OfxStatusContainer::OfxStatusContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
   OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
 {
   memset(&data, 0, sizeof(data));
@@ -91,7 +91,7 @@ OfxStatusContainer::~OfxStatusContainer()
     delete [] data.server_message;
 }
 
-void OfxStatusContainer::add_attribute(const string identifier, const string value)
+void OfxStatusContainer::add_attribute(const std::string identifier, const std::string value)
 {
   ErrorMsg error_msg;
 
@@ -142,7 +142,7 @@ void OfxStatusContainer::add_attribute(const string identifier, const string val
  * OfxBalanceContainer  (does not directly abstract a object in libofx.h)  *
  ***************************************************************************/
 
-OfxBalanceContainer::OfxBalanceContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+OfxBalanceContainer::OfxBalanceContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
   OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
 {
   amount_valid = false;
@@ -164,7 +164,7 @@ OfxBalanceContainer::~OfxBalanceContainer()
     message_out (ERROR, "I completed a " + type + " element, but I haven't found a suitable parent to save it");
   }
 }
-void OfxBalanceContainer::add_attribute(const string identifier, const string value)
+void OfxBalanceContainer::add_attribute(const std::string identifier, const std::string value)
 {
   if (identifier == "BALAMT" ||
       identifier == "AVAILCASH" ||  // from <INVBAL>
@@ -202,13 +202,13 @@ void OfxBalanceContainer::add_attribute(const string identifier, const string va
  * so they don't corrupt the statement dates.                              *
 ***************************************************************************/
 
-OfxInv401kContainer::OfxInv401kContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+OfxInv401kContainer::OfxInv401kContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
   OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
 {
   type = "INV401K";
   message_out(INFO, "Created OfxInv401kContainer to hold unsupported aggregate " + para_tag_identifier);
 }
-void OfxInv401kContainer::add_attribute(const string identifier, const string value)
+void OfxInv401kContainer::add_attribute(const std::string identifier, const std::string value)
 {
   if (identifier == "DTSTART" || identifier == "DTEND" || identifier == "DTASOF")
   {

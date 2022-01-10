@@ -34,8 +34,7 @@ enum OfxMsgType
   ERROR,       /**< Error message */
   PARSER       /**< Parser events */
 };
-using namespace std;
 /// Message output function
-int message_out(OfxMsgType type, const string message);
+int message_out(OfxMsgType type, const std::string message);
 
 #endif

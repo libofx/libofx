@@ -33,7 +33,7 @@ extern OfxMainContainer * MainContainer;
  *                    OfxStatementContainer                                *
  ***************************************************************************/
 
-OfxStatementContainer::OfxStatementContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+OfxStatementContainer::OfxStatementContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
   OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
 {
   memset(&data, 0, sizeof(data));
@@ -47,7 +47,7 @@ OfxStatementContainer::~OfxStatementContainer()
         transaction_queue.pop();
       }*/
 }
-void OfxStatementContainer::add_attribute(const string identifier, const string value)
+void OfxStatementContainer::add_attribute(const std::string identifier, const std::string value)
 {
   if (identifier == "CURDEF")
   {

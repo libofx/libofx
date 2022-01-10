@@ -37,7 +37,6 @@
 #endif
 
 
-using namespace std;
 /**
    Convert an OpenSP CharString directly to a C++ stream, to enable the use of cout directly for debugging.
 */
@@ -69,7 +68,7 @@ using namespace std;
   return dest;
   }*/
 
-string CharStringtostring(const SGMLApplication::CharString source, string &dest)
+std::string CharStringtostring(const SGMLApplication::CharString source, std::string &dest)
 {
   size_t i;
   dest.assign("");//Empty the provided string
@@ -82,7 +81,7 @@ string CharStringtostring(const SGMLApplication::CharString source, string &dest
   return dest;
 }
 
-string AppendCharStringtostring(const SGMLApplication::CharString source, string &dest)
+std::string AppendCharStringtostring(const SGMLApplication::CharString source, std::string &dest)
 {
   size_t i;
   for (i = 0; i < source.len; i++)
@@ -102,19 +101,19 @@ string AppendCharStringtostring(const SGMLApplication::CharString source, string
  * @li: Specification permits timestamps with millisecond precision, but the normal C Library time functions support only second precision.
  * @li: Many banks don't even specify a time, either by providing only an 8-character string (YYYYMMDD) or by presenting 0 for all the time values (i.e. midnight). In those cases we take that to mean that the time isn't significant and set it to a time that is nearly always the same day regardless of timezone: 10:59 UTC. This works in all timezones except -12 and +13.
  */
- time_t ofxdate_to_time_t(const string& ofxdate)
+ time_t ofxdate_to_time_t(const std::string& ofxdate)
 {
   if (ofxdate.empty())
   {
     message_out(ERROR, "ofxdate_to_time_t():  Unable to convert time, string is 0 length!");
     return 0;
   }
-  string ofxdate_whole =
+  std::string ofxdate_whole =
     ofxdate.substr(0, ofxdate.find_first_not_of("0123456789"));
 
   if (ofxdate_whole.size() < 8)
   {
-    message_out(ERROR, "ofxdate_to_time_t():  Unable to convert time, string " + ofxdate + " is not in proper YYYYMMDDHHMMSS.XXX[gmt offset:tz name] format!");
+    message_out(ERROR, "ofxdate_to_time_t():  Unable to convert time, std::string " + ofxdate + " is not in proper YYYYMMDDHHMMSS.XXX[gmt offset:tz name] format!");
     return std::time(NULL);
   }
 
@@ -143,12 +142,12 @@ string AppendCharStringtostring(const SGMLApplication::CharString source, string
     return timegm(&time);
   }
 
-  string::size_type startidx = ofxdate.find("[");
-  if (startidx != string::npos)
+  std::string::size_type startidx = ofxdate.find("[");
+  if (startidx != std::string::npos)
   {
     startidx++;
-    string::size_type endidx = ofxdate.find(":", startidx) - 1;
-    string offset_str = ofxdate.substr(startidx, (endidx - startidx) + 1);
+    std::string::size_type endidx = ofxdate.find(":", startidx) - 1;
+    std::string offset_str = ofxdate.substr(startidx, (endidx - startidx) + 1);
     float ofx_gmt_offset = atof(offset_str.c_str());
     std::time_t temptime = std::time(nullptr);
     static const double secs_per_hour = 3600.0;
@@ -164,19 +163,19 @@ string AppendCharStringtostring(const SGMLApplication::CharString source, string
  * Convert a C++ string containing an amount of money as specified by the OFX standard and convert it to a double float.
  *\note The ofx number format is the following:  "." or "," as decimal separator, NO thousands separator.
  */
-double ofxamount_to_double(const string ofxamount)
+double ofxamount_to_double(const std::string ofxamount)
 {
   //Replace commas and decimal points for atof()
-  string::size_type idx;
-  string tmp = ofxamount;
+  std::string::size_type idx;
+  std::string tmp = ofxamount;
 
   idx = tmp.find(',');
-  if (idx == string::npos)
+  if (idx == std::string::npos)
   {
     idx = tmp.find('.');
   }
 
-  if (idx != string::npos)
+  if (idx != std::string::npos)
   {
     tmp.replace(idx, 1, 1, ((localeconv())->decimal_point)[0]);
   }
@@ -187,11 +186,11 @@ double ofxamount_to_double(const string ofxamount)
 /**
 Many weird characters can be present inside a SGML element, as a result on the transfer protocol, or for any reason.  This function greatly enhances the reliability of the library by zapping those gremlins (backspace,formfeed,newline,carriage return, horizontal and vertical tabs) as well as removing whitespace at the beginning and end of the string.  Otherwise, many problems will occur during stringmatching.
 */
-string strip_whitespace(const string para_string)
+std::string strip_whitespace(const std::string para_string)
 {
   size_t index;
   size_t i;
-  string temp_string = para_string;
+  std::string temp_string = para_string;
   if (temp_string.empty())
     return temp_string; // so that size()-1 is allowed below
 
@@ -202,18 +201,18 @@ string strip_whitespace(const string para_string)
   for (i = 0;
        i <= temp_string.size()
        && temp_string.find_first_of(whitespace, i) == i
-       && temp_string.find_first_of(whitespace, i) != string::npos;
+       && temp_string.find_first_of(whitespace, i) != std::string::npos;
        i++);
   temp_string.erase(0, i); //Strip leading whitespace
 
   for (i = temp_string.size() - 1;
        (i > 0)
        && (temp_string.find_last_of(whitespace, i) == i)
-       && (temp_string.find_last_of(whitespace, i) != string::npos);
+       && (temp_string.find_last_of(whitespace, i) != std::string::npos);
        i--);
   temp_string.erase(i + 1, temp_string.size() - (i + 1)); //Strip trailing whitespace
 
-  while ((index = temp_string.find_first_of(abnormal_whitespace)) != string::npos)
+  while ((index = temp_string.find_first_of(abnormal_whitespace)) != std::string::npos)
   {
     temp_string.erase(index, 1); //Strip leading whitespace
   };

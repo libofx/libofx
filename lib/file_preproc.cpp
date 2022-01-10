@@ -28,7 +28,6 @@
 #include "context.hh"
 #include "file_preproc.hh"
 
-using namespace std;
 const unsigned int READ_BUFFER_SIZE = 1024;
 
 /* get_file_type_description returns a string description of a LibofxFileType
@@ -70,9 +69,9 @@ int libofx_proc_file(LibofxContextPtr p_libofx_context, const char * p_filename,
 
   if (p_file_type == AUTODETECT)
   {
-    message_out(INFO, string("libofx_proc_file(): File format not specified, autodetecting..."));
+    message_out(INFO, std::string("libofx_proc_file(): File format not specified, autodetecting..."));
     libofx_context->setCurrentFileType(libofx_detect_file_type(p_filename));
-    message_out(INFO, string("libofx_proc_file(): Detected file format: ") +
+    message_out(INFO, std::string("libofx_proc_file(): Detected file format: ") +
                 libofx_get_file_format_description(LibofxImportFormatList,
                     libofx_context->currentFileType() ));
   }
@@ -80,7 +79,7 @@ int libofx_proc_file(LibofxContextPtr p_libofx_context, const char * p_filename,
   {
     libofx_context->setCurrentFileType(p_file_type);
     message_out(INFO,
-                string("libofx_proc_file(): File format forced to: ") +
+                std::string("libofx_proc_file(): File format forced to: ") +
                 libofx_get_file_format_description(LibofxImportFormatList,
                     libofx_context->currentFileType() ));
   }
@@ -92,7 +91,7 @@ int libofx_proc_file(LibofxContextPtr p_libofx_context, const char * p_filename,
   case OFC:
     return ofx_proc_file(libofx_context, p_filename);
   default:
-    message_out(ERROR, string("libofx_proc_file(): Could not detect file format, or unsupported file format; aborting."));
+    message_out(ERROR, std::string("libofx_proc_file(): Could not detect file format, or unsupported file format; aborting."));
     return -1;
   }
   return 0; // never reached
@@ -101,20 +100,20 @@ int libofx_proc_file(LibofxContextPtr p_libofx_context, const char * p_filename,
 enum LibofxFileFormat libofx_detect_file_type(const char * p_filename)
 {
   enum LibofxFileFormat retval = UNKNOWN;
-  ifstream input_file;
+  std::ifstream input_file;
   char buffer[READ_BUFFER_SIZE];
-  string s_buffer;
+  std::string s_buffer;
   bool type_found = false;
 
   if (p_filename != NULL && strcmp(p_filename, "") != 0)
   {
-    message_out(DEBUG, string("libofx_detect_file_type():Opening file: ") + p_filename);
+    message_out(DEBUG, std::string("libofx_detect_file_type():Opening file: ") + p_filename);
 
     input_file.open(p_filename);
 
     if (!input_file)
     {
-      message_out(ERROR, "libofx_detect_file_type():Unable to open the input file " + string(p_filename));
+      message_out(ERROR, "libofx_detect_file_type():Unable to open the input file " + std::string(p_filename));
       return retval;
     }
     else
@@ -134,13 +133,13 @@ enum LibofxFileFormat libofx_detect_file_type(const char * p_filename)
           input_file.clear();
         }
 
-        if (s_buffer.find("<OFX") != string::npos || s_buffer.find("<ofx") != string::npos)
+        if (s_buffer.find("<OFX") != std::string::npos || s_buffer.find("<ofx") != std::string::npos)
         {
           message_out(DEBUG, "libofx_detect_file_type():<OFX> tag has been found");
           retval = OFX;
           type_found = true;
         }
-        else if (s_buffer.find("<OFC>") != string::npos || s_buffer.find("<ofc>") != string::npos)
+        else if (s_buffer.find("<OFC>") != std::string::npos || s_buffer.find("<ofc>") != std::string::npos)
         {
           message_out(DEBUG, "libofx_detect_file_type():<OFC> tag has been found");
           retval = OFC;

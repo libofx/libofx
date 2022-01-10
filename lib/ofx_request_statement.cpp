@@ -27,12 +27,11 @@
 #include "ofx_utilities.hh"
 #include "ofx_request_statement.hh"
 
-using namespace std;
 
 char* libofx_request_statement( const OfxFiLogin* login, const OfxAccountData* account, time_t date_from )
 {
   OfxStatementRequest strq( *login, *account, date_from );
-  string request = OfxHeader(login->header_version) + strq.Output();
+  std::string request = OfxHeader(login->header_version) + strq.Output();
 
   unsigned size = request.size();
   char* result = (char*)malloc(size + 1);
@@ -141,7 +140,7 @@ OfxAggregate OfxStatementRequest::InvestmentStatementRequest(void) const
 char* libofx_request_payment( const OfxFiLogin* login, const OfxAccountData* account, const OfxPayee* payee, const OfxPayment* payment )
 {
   OfxPaymentRequest strq( *login, *account, *payee, *payment );
-  string request = OfxHeader(login->header_version) + strq.Output();
+  std::string request = OfxHeader(login->header_version) + strq.Output();
 
   unsigned size = request.size();
   char* result = (char*)malloc(size + 1);
@@ -205,7 +204,7 @@ char* libofx_request_payment_status( const struct OfxFiLogin* login, const char*
   ofx.Add( ofx.SignOnRequest() );
   ofx.Add( ofx.RequestMessage("BILLPAY", "PMTINQ", pmtinqrqTag) );
 
-  string request = OfxHeader() + ofx.Output();
+  std::string request = OfxHeader() + ofx.Output();
 
   unsigned size = request.size();
   char* result = (char*)malloc(size + 1);
@@ -225,7 +224,7 @@ char* libofx_request_payment_status( const struct OfxFiLogin* login, const char*
   ofx.Add( ofx.SignOnRequest() );
   ofx.Add( message );
 
-  string request = OfxHeader(login->header_version) + ofx.Output();
+  std::string request = OfxHeader(login->header_version) + ofx.Output();
 
   unsigned size = request.size();
   char* result = (char*)malloc(size + 1);

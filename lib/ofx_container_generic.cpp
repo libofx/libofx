@@ -44,7 +44,7 @@ OfxGenericContainer::OfxGenericContainer(LibofxContext *p_libofx_context, OfxGen
     message_out(DEBUG, "OfxGenericContainer(): The parent is a DummyContainer!");
   }
 }
-OfxGenericContainer::OfxGenericContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier)
+OfxGenericContainer::OfxGenericContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier)
 {
   libofx_context = p_libofx_context;
   parentcontainer = para_parentcontainer;
@@ -54,7 +54,7 @@ OfxGenericContainer::OfxGenericContainer(LibofxContext *p_libofx_context, OfxGen
     message_out(DEBUG, "OfxGenericContainer(): The parent for this " + tag_identifier + " is a DummyContainer!");
   }
 }
-void OfxGenericContainer::add_attribute(const string identifier, const string value)
+void OfxGenericContainer::add_attribute(const std::string identifier, const std::string value)
 {
   /*If an attribute has made it all the way up to the Generic Container's add_attribute,
     we don't know what to do with it! */

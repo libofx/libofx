@@ -22,8 +22,6 @@
 
 #include <string>
 
-using namespace std;
-
 /**
  * \brief A single aggregate as described in the OFX 1.02 specification
  *
@@ -47,7 +45,7 @@ public:
     *
     * @param tag The tag of this aggregate
     */
-  OfxAggregate( const string& tag ): m_tag( tag )
+  OfxAggregate( const std::string& tag ): m_tag( tag )
   {}
 
   /**
@@ -56,9 +54,9 @@ public:
     * @param tag The tag of the element to be added
     * @param data The data of the element to be added
     */
-  void Add( const string& tag, const string& data )
+  void Add( const std::string& tag, const std::string& data )
   {
-    m_contents += string("<") + tag + string(">") + data + string("\r\n");
+    m_contents += std::string("<") + tag + std::string(">") + data + std::string("\r\n");
   }
 
   /**
@@ -67,9 +65,9 @@ public:
     * @param tag The tag of the element to be added
     * @param data The data of the element to be added
     */
-  void AddXml( const string& tag, const string& data )
+  void AddXml( const std::string& tag, const std::string& data )
   {
-    m_contents += string("<") + tag + string(">") + data + string("</") + tag + string(">") + string("\r\n");
+    m_contents += std::string("<") + tag + std::string(">") + data + std::string("</") + tag + std::string(">") + std::string("\r\n");
   }
 
   /**
@@ -87,14 +85,14 @@ public:
     *
     * @return string form of this aggregate
     */
-  string Output( void ) const
+  std::string Output( void ) const
   {
-    return string("<") + m_tag + string(">\r\n") + m_contents + string("</") + m_tag + string(">\r\n");
+    return std::string("<") + m_tag + std::string(">\r\n") + m_contents + std::string("</") + m_tag + std::string(">\r\n");
   }
 
 private:
-  string m_tag;
-  string m_contents;
+  std::string m_tag;
+  std::string m_contents;
 };
 
 #endif // OFX_AGGREGATE_H

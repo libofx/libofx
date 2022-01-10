@@ -13,10 +13,6 @@
 #include <config.h>
 #include "context.hh"
 
-using namespace std;
-
-
-
 LibofxContext::LibofxContext()
   : _current_file_type(OFX)
   , _statusCallback(0)

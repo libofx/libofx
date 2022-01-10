@@ -33,7 +33,7 @@ extern OfxMainContainer * MainContainer;
  *                      OfxAccountContainer                                *
  ***************************************************************************/
 
-OfxAccountContainer::OfxAccountContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+OfxAccountContainer::OfxAccountContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
   OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
 {
   memset(&data, 0, sizeof(data));
@@ -64,7 +64,7 @@ OfxAccountContainer::~OfxAccountContainer()
       ofx_proc_account_cb (data);*/
 }
 
-void OfxAccountContainer::add_attribute(const string identifier, const string value)
+void OfxAccountContainer::add_attribute(const std::string identifier, const std::string value)
 {
   if ( identifier == "BANKID")
   {
@@ -150,19 +150,19 @@ void OfxAccountContainer::gen_account_id(void)
 {
   if (data.account_type == OfxAccountData::OFX_CREDITCARD)
   {
-    STRNCPY(data.account_id, string(data.account_id) + m_acctid + " " + m_acctkey);
-    STRNCPY(data.account_name, string(data.account_name) + "Credit card " + m_acctid);
+    STRNCPY(data.account_id, std::string(data.account_id) + m_acctid + " " + m_acctkey);
+    STRNCPY(data.account_name, std::string(data.account_name) + "Credit card " + m_acctid);
   }
   else if (data.account_type == OfxAccountData::OFX_INVESTMENT)
   {
-    STRNCPY(data.account_id, string(data.account_id) + m_brokerid + " " + m_acctid);
-    STRNCPY(data.account_name, string(data.account_name) + "Investment account " +
+    STRNCPY(data.account_id, std::string(data.account_id) + m_brokerid + " " + m_acctid);
+    STRNCPY(data.account_name, std::string(data.account_name) + "Investment account " +
             m_acctid + " at broker " + m_brokerid);
   }
   else
   {
-    STRNCPY(data.account_id, string(data.account_id) + m_bankid + " " + m_branchid + " " + m_acctid);
-    STRNCPY(data.account_name, string(data.account_name) + "Bank account " + m_acctid);
+    STRNCPY(data.account_id, std::string(data.account_id) + m_bankid + " " + m_branchid + " " + m_acctid);
+    STRNCPY(data.account_name, std::string(data.account_name) + "Bank account " + m_acctid);
   }
   data.account_id_valid = true;
 }//end OfxAccountContainer::gen_account_id()

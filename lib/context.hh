@@ -20,8 +20,6 @@
 
 #include <string>
 
-
-using namespace std;
 class LibofxContext
 {
 private:

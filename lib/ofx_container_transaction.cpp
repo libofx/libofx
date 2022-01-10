@@ -34,7 +34,7 @@ extern OfxMainContainer * MainContainer;
  *                      OfxTransactionContainer                            *
  ***************************************************************************/
 
-OfxTransactionContainer::OfxTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+OfxTransactionContainer::OfxTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
   OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
 {
   OfxGenericContainer * tmp_parentcontainer = parentcontainer;
@@ -93,7 +93,7 @@ int  OfxTransactionContainer::add_to_main_tree()
 }
 
 
-void OfxTransactionContainer::add_attribute(const string identifier, const string value)
+void OfxTransactionContainer::add_attribute(const std::string identifier, const std::string value)
 {
 
   if (identifier == "DTPOSTED")
@@ -168,12 +168,12 @@ void OfxTransactionContainer::add_account(OfxAccountData * account_data)
  *                      OfxBankTransactionContainer                        *
  ***************************************************************************/
 
-OfxBankTransactionContainer::OfxBankTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+OfxBankTransactionContainer::OfxBankTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
   OfxTransactionContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
 {
   ;
 }
-void OfxBankTransactionContainer::add_attribute(const string identifier, const string value)
+void OfxBankTransactionContainer::add_attribute(const std::string identifier, const std::string value)
 {
   if ( identifier == "TRNTYPE")
   {
@@ -289,7 +289,7 @@ void OfxBankTransactionContainer::add_attribute(const string identifier, const s
  *                    OfxInvestmentTransactionContainer                    *
  ***************************************************************************/
 
-OfxInvestmentTransactionContainer::OfxInvestmentTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+OfxInvestmentTransactionContainer::OfxInvestmentTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
   OfxTransactionContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
 {
   type = "INVESTMENT";
@@ -387,7 +387,7 @@ OfxInvestmentTransactionContainer::OfxInvestmentTransactionContainer(LibofxConte
   }
 }
 
-void OfxInvestmentTransactionContainer::add_attribute(const string identifier, const string value)
+void OfxInvestmentTransactionContainer::add_attribute(const std::string identifier, const std::string value)
 {
   if (identifier == "UNIQUEID")
   {

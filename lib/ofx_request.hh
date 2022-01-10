@@ -24,8 +24,6 @@
 #include "libofx.h"
 #include "ofx_aggregate.hh"
 
-using namespace std;
-
 /**
  * \brief A generic request
  *
@@ -65,7 +63,7 @@ public:
    *   aggregate of the xxxTRNRQ aggregate.
    * @return The message aggregate created
    */
-  OfxAggregate RequestMessage(const string& msgtype, const string& trntype, const OfxAggregate& aggregate ) const;
+  OfxAggregate RequestMessage(const std::string& msgtype, const std::string& trntype, const OfxAggregate& aggregate ) const;
 
 protected:
   OfxFiLogin m_login;
@@ -76,9 +74,9 @@ protected:
  */
 //@{
 
-string time_t_to_ofxdatetime( time_t time );
-string time_t_to_ofxdate( time_t time );
-string OfxHeader(const char *hver);
+std::string time_t_to_ofxdatetime( time_t time );
+std::string time_t_to_ofxdate( time_t time );
+std::string OfxHeader(const char *hver);
 
 //@}
 
