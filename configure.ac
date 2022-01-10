@@ -190,7 +190,6 @@ AC_MSG_CHECKING([for libosp])
 AC_LANG_CPLUSPLUS
 	AC_TRY_RUN([
 		#include "ParserEventGeneratorKit.h"
-		using namespace std;
 		class OutlineApplication : public SGMLApplication {
 		public:
 		  OutlineApplication() { }

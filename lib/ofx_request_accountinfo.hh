@@ -20,11 +20,8 @@
 #ifndef OFX_REQ_ACCOUNTINFO_H
 #define OFX_REQ_ACCOUNTINFO_H
 
-#include <string>
 #include "libofx.h"
 #include "ofx_request.hh"
-
-using namespace std;
 
 /**
  * \brief An account information request

@@ -33,8 +33,6 @@
 #include "ofx_containers.hh"
 #include "ofc_sgml.hh"
 
-using namespace std;
-
 
 extern SGMLApplication::OpenEntityPtr entity_ptr;
 extern SGMLApplication::Position position;
@@ -48,7 +46,7 @@ private:
   OfxGenericContainer *curr_container_element; /**< The currently open object from ofx_proc_rs.cpp */
   OfxGenericContainer *tmp_container_element;
   bool is_data_element; /**< If the SGML element contains data, this flag is raised */
-  string incoming_data; /**< The raw data from the SGML data element */
+  std::string incoming_data; /**< The raw data from the SGML data element */
   LibofxContext * libofx_context;
 public:
   OFCApplication (LibofxContext * p_libofx_context)
@@ -65,7 +63,7 @@ public:
   */
   void startElement (const StartElementEvent & event)
   {
-    string identifier;
+    std::string identifier;
     CharStringtostring (event.gi, identifier);
     message_out(PARSER, "startElement event received from OpenSP for element " + identifier);
 
@@ -210,7 +208,7 @@ public:
   */
   void endElement (const EndElementEvent & event)
   {
-    string identifier;
+    std::string identifier;
     bool end_element_for_data_element;
 
     CharStringtostring (event.gi, identifier);
@@ -282,7 +280,7 @@ public:
   */
   void data (const DataEvent & event)
   {
-    string tmp;
+    std::string tmp;
     position = event.pos;
     AppendCharStringtostring (event.data, incoming_data);
     message_out(PARSER, "data event received from OpenSP, incoming_data is now: " + incoming_data);
@@ -294,8 +292,8 @@ public:
   */
   void error (const ErrorEvent & event)
   {
-    string message;
-    string string_buf;
+    std::string message;
+    std::string string_buf;
     OfxMsgType error_type = ERROR;
 
     position = event.pos;

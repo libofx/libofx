@@ -33,7 +33,7 @@ extern OfxMainContainer * MainContainer;
  *                     OfxPositionContainer                                *
  ***************************************************************************/
 
-OfxPositionContainer::OfxPositionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+OfxPositionContainer::OfxPositionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
   OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
 {
   memset(&data, 0, sizeof(data));
@@ -42,7 +42,7 @@ OfxPositionContainer::OfxPositionContainer(LibofxContext *p_libofx_context, OfxG
 OfxPositionContainer::~OfxPositionContainer()
 {
 }
-void OfxPositionContainer::add_attribute(const string identifier, const string value)
+void OfxPositionContainer::add_attribute(const std::string identifier, const std::string value)
 {
   if (identifier == "UNIQUEID")
   {

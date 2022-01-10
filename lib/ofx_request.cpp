@@ -27,36 +27,34 @@
 #include "libofx.h"
 #include "ofx_request.hh"
 
-using namespace std;
-
-string time_t_to_ofxdatetime( time_t time )
+std::string time_t_to_ofxdatetime( time_t time )
 {
   static char buffer[51];
 
   strftime( buffer, 50, "%Y%m%d%H%M%S.000", localtime(&time) );
   buffer[50] = 0;
 
-  return string(buffer);
+  return std::string(buffer);
 }
 
-string time_t_to_ofxdate( time_t time )
+std::string time_t_to_ofxdate( time_t time )
 {
   static char buffer[51];
 
   strftime( buffer, 50, "%Y%m%d", localtime(&time) );
   buffer[50] = 0;
 
-  return string(buffer);
+  return std::string(buffer);
 }
 
-string OfxHeader(const char *hver)
+std::string OfxHeader(const char *hver)
 {
   if (hver == NULL || hver[0] == 0)
     hver = "102";
 
   if (strcmp(hver, "103") == 0)
     /* TODO: check for differences in version 102 and 103 */
-    return string("OFXHEADER:100\r\n"
+    return std::string("OFXHEADER:100\r\n"
                   "DATA:OFXSGML\r\n"
                   "VERSION:103\r\n"
                   "SECURITY:NONE\r\n"
@@ -66,9 +64,9 @@ string OfxHeader(const char *hver)
                   "OLDFILEUID:NONE\r\n"
                   "NEWFILEUID:")
            + time_t_to_ofxdatetime( time(NULL) )
-           + string("\r\n\r\n");
+           + std::string("\r\n\r\n");
   else
-    return string("OFXHEADER:100\r\n"
+    return std::string("OFXHEADER:100\r\n"
                   "DATA:OFXSGML\r\n"
                   "VERSION:102\r\n"
                   "SECURITY:NONE\r\n"
@@ -78,7 +76,7 @@ string OfxHeader(const char *hver)
                   "OLDFILEUID:NONE\r\n"
                   "NEWFILEUID:")
            + time_t_to_ofxdatetime( time(NULL) )
-           + string("\r\n\r\n");
+           + std::string("\r\n\r\n");
 }
 
 OfxAggregate OfxRequest::SignOnRequest(void) const
@@ -112,7 +110,7 @@ OfxAggregate OfxRequest::SignOnRequest(void) const
   return signonmsgTag;
 }
 
-OfxAggregate OfxRequest::RequestMessage(const string& _msgType, const string& _trnType, const OfxAggregate& _request) const
+OfxAggregate OfxRequest::RequestMessage(const std::string& _msgType, const std::string& _trnType, const OfxAggregate& _request) const
 {
   OfxAggregate trnrqTag( _trnType + "TRNRQ" );
   trnrqTag.Add( "TRNUID", time_t_to_ofxdatetime( time(NULL) ) );

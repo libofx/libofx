@@ -27,7 +27,7 @@
 #include "libofx.h"
 #include "ofx_containers.hh"
 
-OfxMainContainer::OfxMainContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
+OfxMainContainer::OfxMainContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
   OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
 {
 
@@ -209,7 +209,7 @@ int  OfxMainContainer::gen_event()
   return true;
 }
 
-OfxSecurityData *  OfxMainContainer::find_security(string unique_id)
+OfxSecurityData *  OfxMainContainer::find_security(std::string unique_id)
 {
   message_out(DEBUG, "OfxMainContainer::find_security() Begin.");
 
@@ -219,7 +219,7 @@ OfxSecurityData *  OfxMainContainer::find_security(string unique_id)
   {
     if (((OfxSecurityContainer*)(*tmp))->data.unique_id == unique_id)
     {
-      message_out(DEBUG, (string)"Security " + ((OfxSecurityContainer*)(*tmp))->data.unique_id + " found.");
+      message_out(DEBUG, (std::string)"Security " + ((OfxSecurityContainer*)(*tmp))->data.unique_id + " found.");
       retval = &((OfxSecurityContainer*)(*tmp))->data;
     }
     ++tmp;

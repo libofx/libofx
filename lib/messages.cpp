@@ -50,7 +50,7 @@ void show_line_number()
   {
     SGMLApplication::Location *location = new SGMLApplication::Location(entity_ptr, position);
     if (location->lineNumber < LONG_MAX)
-      cerr << "(Above message occurred on Line " << location->lineNumber << ", Column " << location->columnNumber << ")" << endl;
+      std::cerr << "(Above message occurred on Line " << location->lineNumber << ", Column " << location->columnNumber << ")" << std::endl;
     delete location;
   }
 }
@@ -58,7 +58,7 @@ void show_line_number()
 /**
    Prints a message to stdout, if the corresponding message OfxMsgType given in the parameters is enabled
 */
-int message_out(OfxMsgType error_type, const string message)
+int message_out(OfxMsgType error_type, const std::string message)
 {
 
 
@@ -67,82 +67,82 @@ int message_out(OfxMsgType error_type, const string message)
   case DEBUG :
     if (ofx_DEBUG_msg == true)
     {
-      cerr << "LibOFX DEBUG: " << message << "\n";
+      std::cerr << "LibOFX DEBUG: " << message << "\n";
       show_line_number();
     }
     break;
   case DEBUG1 :
     if (ofx_DEBUG1_msg == true)
     {
-      cerr << "LibOFX DEBUG1: " << message << "\n";
+      std::cerr << "LibOFX DEBUG1: " << message << "\n";
       show_line_number();
     }
     break;
   case DEBUG2 :
     if (ofx_DEBUG2_msg == true)
     {
-      cerr << "LibOFX DEBUG2: " << message << "\n";
+      std::cerr << "LibOFX DEBUG2: " << message << "\n";
       show_line_number();
     }
     break;
   case DEBUG3 :
     if (ofx_DEBUG3_msg == true)
     {
-      cerr << "LibOFX DEBUG3: " << message << "\n";
+      std::cerr << "LibOFX DEBUG3: " << message << "\n";
       show_line_number();
     }
     break;
   case DEBUG4 :
     if (ofx_DEBUG4_msg == true)
     {
-      cerr << "LibOFX DEBUG4: " << message << "\n";
+      std::cerr << "LibOFX DEBUG4: " << message << "\n";
       show_line_number();
     }
     break;
   case DEBUG5 :
     if (ofx_DEBUG5_msg == true)
     {
-      cerr << "LibOFX DEBUG5: " << message << "\n";
+      std::cerr << "LibOFX DEBUG5: " << message << "\n";
       show_line_number();
     }
     break;
   case STATUS :
     if (ofx_STATUS_msg == true)
     {
-      cerr << "LibOFX STATUS: " << message << "\n";
+      std::cerr << "LibOFX STATUS: " << message << "\n";
       show_line_number();
     }
     break;
   case INFO :
     if (ofx_INFO_msg == true)
     {
-      cerr << "LibOFX INFO: " << message << "\n";
+      std::cerr << "LibOFX INFO: " << message << "\n";
       show_line_number();
     }
     break;
   case WARNING :
     if (ofx_WARNING_msg == true)
     {
-      cerr << "LibOFX WARNING: " << message << "\n";
+      std::cerr << "LibOFX WARNING: " << message << "\n";
       show_line_number();
     }
     break;
   case ERROR :
     if (ofx_ERROR_msg == true)
     {
-      cerr << "LibOFX ERROR: " << message << "\n";
+      std::cerr << "LibOFX ERROR: " << message << "\n";
       show_line_number();
     }
     break;
   case PARSER :
     if (ofx_PARSER_msg == true)
     {
-      cerr << "LibOFX PARSER: " << message << "\n";
+      std::cerr << "LibOFX PARSER: " << message << "\n";
       show_line_number();
     }
     break;
   default:
-    cerr << "LibOFX UNKNOWN ERROR CLASS, This is a bug in LibOFX\n";
+    std::cerr << "LibOFX UNKNOWN ERROR CLASS, This is a bug in LibOFX\n";
     show_line_number();
   }
 

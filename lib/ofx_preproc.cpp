@@ -51,7 +51,6 @@
 #define LIBOFX_DEFAULT_INPUT_ENCODING "CP1252"
 #define LIBOFX_DEFAULT_OUTPUT_ENCODING "UTF-8"
 
-using namespace std;
 /**
    \brief The number of different paths to search for DTDs.
 */
@@ -85,8 +84,8 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
   bool ofx_end = false;
   bool file_is_xml = false;
   bool used_iconv = false;
-  ifstream input_file;
-  ofstream tmp_file;
+  std::ifstream input_file;
+  std::ofstream tmp_file;
   char *filenames[3];
   char tmp_filename[256];
   int tmp_file_fd;
@@ -97,17 +96,17 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
 
   if (p_filename != NULL && strcmp(p_filename, "") != 0)
   {
-    message_out(DEBUG, string("ofx_proc_file():Opening file: ") + p_filename);
+    message_out(DEBUG, std::string("ofx_proc_file():Opening file: ") + p_filename);
 
     input_file.open(p_filename);
     if (!input_file)
     {
-      message_out(ERROR, "ofx_proc_file():Unable to open the input file " + string(p_filename));
+      message_out(ERROR, "ofx_proc_file():Unable to open the input file " + std::string(p_filename));
     }
 
     mkTempFileName("libofxtmpXXXXXX", tmp_filename, sizeof(tmp_filename));
 
-    message_out(DEBUG, "ofx_proc_file(): Creating temp file: " + string(tmp_filename));
+    message_out(DEBUG, "ofx_proc_file(): Creating temp file: " + std::string(tmp_filename));
 #ifdef __WIN32__
     tmp_file_fd = mkstemp_win32(tmp_filename);
 #else
@@ -118,27 +117,27 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
       tmp_file.open(tmp_filename);
       if (!tmp_file)
       {
-        message_out(ERROR, "ofx_proc_file():Unable to open the created temp file " + string(tmp_filename));
+        message_out(ERROR, "ofx_proc_file():Unable to open the created temp file " + std::string(tmp_filename));
         return -1;
       }
     }
     else
     {
-      message_out(ERROR, "ofx_proc_file():Unable to create a temp file at " + string(tmp_filename));
+      message_out(ERROR, "ofx_proc_file():Unable to create a temp file at " + std::string(tmp_filename));
       return -1;
     }
 
     if (input_file && tmp_file)
     {
       std::size_t header_separator_idx;
-      string header_name;
-      string header_value;
-      string ofx_encoding;
-      string ofx_charset;
+      std::string header_name;
+      std::string header_value;
+      std::string ofx_encoding;
+      std::string ofx_charset;
       do
       {
-        stringbuf buffer;
-        string s_buffer;
+        std::stringbuf buffer;
+        std::string s_buffer;
         input_file.get(buffer, '\n');
         //cout<< "got: \"" << buffer<<"\"\n";
         s_buffer = buffer.str();
@@ -165,7 +164,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
           }
         }
 
-        if (ofx_start == false && (s_buffer.find("<?xml") != string::npos))
+        if (ofx_start == false && (s_buffer.find("<?xml") != std::string::npos))
         {
           message_out(DEBUG, "ofx_proc_file(): File is an actual XML file, iconv conversion will be skipped.");
           file_is_xml = true;
@@ -176,12 +175,12 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
         {
           if (
             (libofx_context->currentFileType() == OFX &&
-             ((ofx_start_idx = s_buffer.find("<OFX>")) != string::npos ||
-              (ofx_start_idx = s_buffer.find("<ofx>")) != string::npos))
+             ((ofx_start_idx = s_buffer.find("<OFX>")) != std::string::npos ||
+              (ofx_start_idx = s_buffer.find("<ofx>")) != std::string::npos))
             ||
             (libofx_context->currentFileType() == OFC &&
-             ((ofx_start_idx = s_buffer.find("<OFC>")) != string::npos ||
-              (ofx_start_idx = s_buffer.find("<ofc>")) != string::npos))
+             ((ofx_start_idx = s_buffer.find("<OFC>")) != std::string::npos ||
+              (ofx_start_idx = s_buffer.find("<ofc>")) != std::string::npos))
           )
           {
             ofx_start = true;
@@ -224,8 +223,8 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
                 message_out(ERROR, "ofx_proc_file(): putenv failed");
               }
 #ifdef HAVE_ICONV
-              string fromcode;
-              string tocode;
+              std::string fromcode;
+              std::string tocode;
               if (ofx_encoding.compare("USASCII") == 0)
               {
                 if (ofx_charset.compare("ISO-8859-1") == 0 || ofx_charset.compare("8859-1") == 0)
@@ -266,7 +265,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
           else
           {
             //We are still in the headers
-            if ((header_separator_idx = s_buffer.find(':')) != string::npos)
+            if ((header_separator_idx = s_buffer.find(':')) != std::string::npos)
             {
               //Header processing
               header_name.assign(s_buffer.substr(0, header_separator_idx));
@@ -323,17 +322,17 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
 #endif
           }
           //cout << s_buffer << "\n";
-          tmp_file << s_buffer << endl;
+          tmp_file << s_buffer << std::endl;
         }
 
         if (ofx_start == true &&
             (
               (libofx_context->currentFileType() == OFX &&
-               ((ofx_start_idx = s_buffer.find("</OFX>")) != string::npos ||
-                (ofx_start_idx = s_buffer.find("</ofx>")) != string::npos))
+               ((ofx_start_idx = s_buffer.find("</OFX>")) != std::string::npos ||
+                (ofx_start_idx = s_buffer.find("</ofx>")) != std::string::npos))
               || (libofx_context->currentFileType() == OFC &&
-                  ((ofx_start_idx = s_buffer.find("</OFC>")) != string::npos ||
-                   (ofx_start_idx = s_buffer.find("</ofc>")) != string::npos))
+                  ((ofx_start_idx = s_buffer.find("</OFC>")) != std::string::npos ||
+                   (ofx_start_idx = s_buffer.find("</ofc>")) != std::string::npos))
             )
            )
         {
@@ -366,10 +365,10 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
     }
     else
     {
-      message_out(ERROR, string("ofx_proc_file(): Error unknown file format for the OFX parser"));
+      message_out(ERROR, std::string("ofx_proc_file(): Error unknown file format for the OFX parser"));
     }
 
-    if ((string)filename_dtd != "" && (string)filename_openspdtd != "")
+    if ((std::string)filename_dtd != "" && (std::string)filename_openspdtd != "")
     {
       strncpy(filename_ofx, tmp_filename, 255); //The processed ofx file
       filenames[0] = filename_openspdtd;
@@ -386,12 +385,12 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
       }
       else
       {
-        message_out(ERROR, string("ofx_proc_file(): Error unknown file format for the OFX parser"));
+        message_out(ERROR, std::string("ofx_proc_file(): Error unknown file format for the OFX parser"));
         rv = -1;
       }
       if (remove(tmp_filename) != 0)
       {
-        message_out(ERROR, "ofx_proc_file(): Error deleting temporary file " + string(tmp_filename));
+        message_out(ERROR, "ofx_proc_file(): Error deleting temporary file " + std::string(tmp_filename));
       }
       return rv;
     }
@@ -414,18 +413,18 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
  * of the starting <, pos_end to the position after the closing '>'
  * If the tag doesn't have a closing '>', pos_end will be set to string::npos.
  */
-static string find_tag_open (string& input_string, size_t& pos_start, size_t& pos_end)
+static std::string find_tag_open (std::string& input_string, size_t& pos_start, size_t& pos_end)
 {
   pos_start = input_string.find ('<', pos_start);
 
-  if (pos_start == string::npos)
+  if (pos_start == std::string::npos)
   {
-    pos_end = string::npos;
-    return string();
+    pos_end = std::string::npos;
+    return std::string();
   }
 
   pos_end = input_string.find ('>', pos_start + 1);
-  if (pos_end != string::npos)
+  if (pos_end != std::string::npos)
     pos_end = pos_end + 1;
   size_t tag_size = (pos_end - 1) - (pos_start + 1);
   return input_string.substr(pos_start + 1, tag_size);
@@ -436,15 +435,15 @@ static string find_tag_open (string& input_string, size_t& pos_start, size_t& po
  * If no matching closing tag is found pos will be set to the start of the next
  * opening or closing tag found.
  */
-static void find_tag_close (string& input_string, string& tag_name, size_t& pos)
+static void find_tag_close (std::string& input_string, std::string& tag_name, size_t& pos)
 {
   size_t start_idx = input_string.find ("</" + tag_name + ">", pos);
 
-  if (start_idx == string::npos)
+  if (start_idx == std::string::npos)
   {
     start_idx = pos;
     size_t end_idx;
-    string new_tag_name = find_tag_open (input_string, start_idx, end_idx);
+    std::string new_tag_name = find_tag_open (input_string, start_idx, end_idx);
     if (!new_tag_name.empty())
     {
       message_out(DEBUG, "find_tag_close() fell back to next open tag: " + new_tag_name);
@@ -477,24 +476,24 @@ static void find_tag_close (string& input_string, string& tag_name, size_t& pos)
    </proprietary>
 */
 
-string sanitize_proprietary_tags(string input_string)
+std::string sanitize_proprietary_tags(std::string input_string)
 {
   size_t last_known_good_pos = 0;
   size_t open_tag_start_pos = last_known_good_pos;
   size_t open_tag_end_pos;
   size_t close_tag_end_pos;
 
-  string tag_name = find_tag_open(input_string, open_tag_start_pos, open_tag_end_pos);
+  std::string tag_name = find_tag_open(input_string, open_tag_start_pos, open_tag_end_pos);
   while (!tag_name.empty())
   {
     // Determine whether the current tag is proprietary.
-    if ((tag_name.find('.') != string::npos) ||   // tag has a . in the name
+    if ((tag_name.find('.') != std::string::npos) ||   // tag has a . in the name
         (tag_name == "CATEGORY"))                  // Chase bank started setting these in 2017
     {
       close_tag_end_pos = open_tag_end_pos;
       find_tag_close (input_string, tag_name, close_tag_end_pos);
       size_t tag_size = close_tag_end_pos - open_tag_start_pos;
-      string prop_tag = input_string.substr(open_tag_start_pos, tag_size);
+      std::string prop_tag = input_string.substr(open_tag_start_pos, tag_size);
       message_out(INFO, "sanitize_proprietary_tags() removed: " + prop_tag);
       input_string.erase(open_tag_start_pos, tag_size);
       last_known_good_pos = open_tag_start_pos;
@@ -505,7 +504,7 @@ string sanitize_proprietary_tags(string input_string)
     }
     tag_name.clear();
     open_tag_start_pos = last_known_good_pos;
-    if (last_known_good_pos != string::npos)
+    if (last_known_good_pos != std::string::npos)
       tag_name = find_tag_open(input_string, open_tag_start_pos, open_tag_end_pos);
   }
   return input_string;
@@ -552,14 +551,14 @@ static std::string get_dtd_installation_directory()
 */
 std::string find_dtd(LibofxContextPtr ctx, const std::string& dtd_filename)
 {
-  string dtd_path_filename;
+  std::string dtd_path_filename;
   char *env_dtd_path;
 
   dtd_path_filename = reinterpret_cast<const LibofxContext*>(ctx)->dtdDir();
   if (!dtd_path_filename.empty())
   {
     dtd_path_filename.append(dtd_filename);
-    ifstream dtd_file(dtd_path_filename.c_str());
+    std::ifstream dtd_file(dtd_path_filename.c_str());
     if (dtd_file)
     {
       message_out(STATUS, "find_dtd():DTD found: " + dtd_path_filename);
@@ -573,7 +572,7 @@ std::string find_dtd(LibofxContextPtr ctx, const std::string& dtd_filename)
   {
     dtd_path_filename.append(DIRSEP);
     dtd_path_filename.append(dtd_filename);
-    ifstream dtd_file(dtd_path_filename.c_str());
+    std::ifstream dtd_file(dtd_path_filename.c_str());
     if (dtd_file)
     {
       message_out(STATUS, "find_dtd():DTD found: " + dtd_path_filename);
@@ -588,7 +587,7 @@ std::string find_dtd(LibofxContextPtr ctx, const std::string& dtd_filename)
     dtd_path_filename.append(env_dtd_path);
     dtd_path_filename.append(DIRSEP);
     dtd_path_filename.append(dtd_filename);
-    ifstream dtd_file(dtd_path_filename.c_str());
+    std::ifstream dtd_file(dtd_path_filename.c_str());
     if (!dtd_file)
     {
       message_out(STATUS, "find_dtd():OFX_DTD_PATH env variable was was present, but unable to open the file " + dtd_path_filename);
@@ -605,7 +604,7 @@ std::string find_dtd(LibofxContextPtr ctx, const std::string& dtd_filename)
     dtd_path_filename = DTD_SEARCH_PATH[i];
     dtd_path_filename.append(DIRSEP);
     dtd_path_filename.append(dtd_filename);
-    ifstream dtd_file(dtd_path_filename.c_str());
+    std::ifstream dtd_file(dtd_path_filename.c_str());
     if (!dtd_file)
     {
       message_out(DEBUG, "find_dtd():Unable to open the file " + dtd_path_filename);
@@ -624,7 +623,7 @@ std::string find_dtd(LibofxContextPtr ctx, const std::string& dtd_filename)
   dtd_path_filename.append("dtd");
   dtd_path_filename.append(DIRSEP);
   dtd_path_filename.append(dtd_filename);
-  ifstream dtd_file(dtd_path_filename.c_str());
+  std::ifstream dtd_file(dtd_path_filename.c_str());
   if (!dtd_file)
   {
     message_out(DEBUG, "find_dtd(): Unable to open the file " + dtd_path_filename + ", most likely we are not in the source tree.");

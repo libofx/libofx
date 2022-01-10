@@ -27,7 +27,7 @@
 #define OFCDTD_FILENAME "ofc.dtd"
 
 ///Removes proprietary tags and comments.
-string sanitize_proprietary_tags(string input_string);
+std::string sanitize_proprietary_tags(std::string input_string);
 ///Find the appropriate DTD for the file version.
 std::string find_dtd(LibofxContextPtr ctx, const std::string& dtd_filename);
 /**
