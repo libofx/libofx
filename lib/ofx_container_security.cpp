@@ -47,8 +47,9 @@ OfxSecurityContainer::OfxSecurityContainer(LibofxContext *p_libofx_context, OfxG
     data.security_type = data.OFX_OPTION_SECURITY;
   else if (para_tag_identifier == "DEBTINFO")
     data.security_type = data.OFX_DEBT_SECURITY;
-  else
+  else {
     ASSIGN(data.security_type, data.OFX_OTHER_SECURITY);
+  }
 }
 OfxSecurityContainer::~OfxSecurityContainer()
 {
