@@ -442,8 +442,8 @@ int ofx_proc_sgml(LibofxContext * libofx_context, int argc, char * const* argv)
   parserKit.setOption (ParserEventGeneratorKit::showOpenEntities);
   EventGenerator *egp =	parserKit.makeEventGenerator (argc, argv);
   egp->inhibitMessages (true);	/* Error output is handled by libofx not OpenSP */
-  OFXApplication *app = new OFXApplication(libofx_context);
-  unsigned nErrors = egp->run (*app); /* Begin parsing */
+  OFXApplication app(libofx_context);
+  unsigned nErrors = egp->run (app); /* Begin parsing */
   delete egp;  //Note that this is where bug is triggered
   return nErrors > 0;
 }
