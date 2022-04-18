@@ -17,7 +17,7 @@ AC_PROG_CXX
 
 LIBOFX_MAJOR_VERSION=0
 LIBOFX_MINOR_VERSION=10
-LIBOFX_MICRO_VERSION=4
+LIBOFX_MICRO_VERSION=5
 # this number is just incremented for every major change in CVS, also across
 # releases to emulate the Revision variable of SVN (which isn't available
 # with CVS)
