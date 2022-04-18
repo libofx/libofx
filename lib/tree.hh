@@ -59,6 +59,7 @@
 #define tree_hh_
 
 #include <cassert>
+#include <cstddef> // for ptrdiff_t
 #include <memory>
 #include <stdexcept>
 #include <iterator>
