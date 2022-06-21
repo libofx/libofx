@@ -190,20 +190,23 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
             }
             message_out(DEBUG, "ofx_proc_file():<OFX> or <OFC> has been found");
 
+            static char sp_charset_fixed[] = "SP_CHARSET_FIXED=1";
+            if (putenv(sp_charset_fixed) != 0)
+            {
+              message_out(ERROR, "ofx_proc_file(): putenv failed");
+            }
+#define OPENSP_UTF8_WARNING_TEXT "ofx_proc_file(): OpenSP cannot process an UTF-8 XML file without garbling it.  Furthermore, on windows the support for UTF-8 encode SGML files is broken. This is worked around by forcing a single byte encoding.  If the file is indeed UTF-8, it should pass through unmolested, but you will likely get 'non SGML character number' errors, even though the output is correct."
             if (file_is_xml == true)
             {
-              static char sp_charset_fixed[] = "SP_CHARSET_FIXED=1";
-              if (putenv(sp_charset_fixed) != 0)
-              {
-                message_out(ERROR, "ofx_proc_file(): putenv failed");
-              }
-              /* Normally the following would be "xml".
-              * Unfortunately, opensp's generic api will garble UTF-8 if this is
-              * set to xml.  So we set any single byte encoding to avoid messing
-              * up UTF-8.  Unfortunately this means that non-UTF-8 files will not
-              * get properly translated.  We'd need to manually detect the
-              * encoding in the XML header and convert the xml with iconv like we
-              * do for SGML to work around the problem.  Most unfortunate. */
+              /* Normally the following would be "SP_ENCODING=xml".
+               * Unfortunately, opensp's generic api will garble UTF-8 if this 
+               * is set to xml.  So we set a single byte encoding that uses most
+               * values to avoid messing up the UTF-8.
+               * Unfortunately this means that non-UTF-8 files will not
+               * get properly translated.  We'd need to manually detect the
+               * encoding in the XML header and convert the xml with iconv like
+               * we do for SGML to work around the problem.  Most unfortunate. */
+              message_out(WARNING, OPENSP_UTF8_WARNING_TEXT);
               static char sp_encoding[] = "SP_ENCODING=ms-dos";
               if (putenv(sp_encoding) != 0)
               {
@@ -212,12 +215,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
             }
             else
             {
-              static char sp_charset_fixed[] = "SP_CHARSET_FIXED=1";
-              if (putenv(sp_charset_fixed) != 0)
-              {
-                message_out(ERROR, "ofx_proc_file(): putenv failed");
-              }
-              static char sp_encoding[] = "SP_ENCODING=ms-dos"; //Any single byte encoding will do, we don't want opensp messing up UTF-8;
+              static char sp_encoding[] = "SP_ENCODING=ms-dos"; // Like the above, force a single byte encoding in every case, we don't want opensp messing up UTF-8
               if (putenv(sp_encoding) != 0)
               {
                 message_out(ERROR, "ofx_proc_file(): putenv failed");
@@ -250,6 +248,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
               {
                 //While "UNICODE" isn't a legal value, some cyrilic files do specify it as such...
                 fromcode = "UTF-8";
+                message_out(WARNING, OPENSP_UTF8_WARNING_TEXT);
               }
               else
               {
