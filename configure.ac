@@ -330,13 +330,35 @@ PKG_CHECK_MODULES(LIBXMLPP,libxml++-2.6 >= 2.6,
 #	[AC_DEFINE(HAVE_QT, 1, [Defined if Qt Gui is available])],
 #        [AC_MSG_WARN([Qt is not available. Some experimental direct connect samples will not be fully functional.])])
 
+# check if building tools
+# ----------------------------------------------------------------------------
+
+AC_ARG_ENABLE(tools,
+        AS_HELP_STRING(--disable-tools,[Disable building of CLI tools: ofx2qif, ofxdump, ofxconnect] (no)),
+[case "${enableval}" in
+  yes) tools=yes ;;
+  no)  tools=no ;;
+  *) AC_MSG_ERROR([bad value ${enableval} for --disable-tools]) ;;
+esac],[tools=yes])
+
+build_ofx2qif=no
+build_ofxdump=no
 build_ofxconnect=no
-if test "$libcurl_available" = yes; then
-	if test "$have_libxmlpp" = yes; then
-		build_ofxconnect=yes
+
+if test x$tools = xyes ; then
+	build_ofx2qif=yes
+	build_ofxdump=yes
+
+	if test "$libcurl_available" = yes; then
+		if test "$have_libxmlpp" = yes; then
+			build_ofxconnect=yes
+		fi
 	fi
 fi
-AM_CONDITIONAL([BUILD_OFXCONNECT], [test "$build_ofxconnect" = yes])
+
+AM_CONDITIONAL([BUILD_OFX2QIF], [test "x$build_ofx2qif" = xyes])
+AM_CONDITIONAL([BUILD_OFXDUMP], [test x"$build_ofxdump" = xyes])
+AM_CONDITIONAL([BUILD_OFXCONNECT], [test "x$build_ofxconnect" = xyes])
 
 # check for iconv
 # ----------------------------------------------------------------------------
