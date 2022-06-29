@@ -1,10 +1,19 @@
 ACLOCAL_AMFLAGS = -I m4
 
+if BUILD_OFX2QIF
+  MAYBE_OFX2QIF = ofx2qif
+endif
+
+if BUILD_OFXDUMP
+  MAYBE_OFXDUMP = ofxdump
+endif
+
 if BUILD_OFXCONNECT
   MAYBE_OFXCONNECT = ofxconnect
 endif
+
 DIST_SUBDIRS = m4 inc dtd lib doc . ofx2qif ofxdump ofxconnect
-SUBDIRS = m4 inc dtd lib doc . ofx2qif ofxdump $(MAYBE_OFXCONNECT)
+SUBDIRS = m4 inc dtd lib doc . $(MAYBE_OFX2QIF) $(MAYBE_OFXDUMP) $(MAYBE_OFXCONNECT)
 
 doc_DATA = \
   AUTHORS \
