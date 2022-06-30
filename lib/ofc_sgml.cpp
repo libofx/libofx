@@ -196,7 +196,8 @@ public:
       /* There is a bug in OpenSP 1.3.4, which won't send endElement Event for some elements, and will instead send an error like "document type does not allow element "MESSAGE" here".  Incoming_data should be empty in such a case, but it will not be if the endElement event was skipped. So we empty it, so at least the last element has a chance of having valid data */
       if (incoming_data != "")
       {
-        message_out (ERROR, "startElement: incoming_data should be empty! You are probably using OpenSP <= 1.3.4.  The following data was lost: " + incoming_data );
+    message_out(PARSER, "data event received from OpenSP, incoming_data is now: " + strip_whitespace(incoming_data));
+        message_out (ERROR, "startElement: incoming_data should be empty! You are probably using OpenSP <= 1.3.4.  The following data was lost: " + strip_whitespace(incoming_data) );
         incoming_data.assign ("");
       }
     }
@@ -283,7 +284,7 @@ public:
     std::string tmp;
     position = event.pos;
     AppendCharStringtostring (event.data, incoming_data);
-    message_out(PARSER, "data event received from OpenSP, incoming_data is now: " + incoming_data);
+    message_out(PARSER, "data event received from OpenSP, incoming_data is now: " + strip_whitespace(incoming_data));
   }
 
   /** \brief Callback: SGML parse error
