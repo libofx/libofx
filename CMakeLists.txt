@@ -44,7 +44,12 @@ if(MSVC)
 endif(MSVC)
 target_link_libraries(ofx ${OpenSP_LIBRARIES} ${ICONV_LIBRARIES})
 
-add_subdirectory( ofxdump )
+option(ENABLE_OFXDUMP "Enable ofxdump tool" ON)
+add_feature_info("ofxdump" ENABLE_OFXDUMP "Enables ofxconnect utility which prints, in human readable form, everything the library understands about a file")
+
+if (ENABLE_OFXDUMP)
+    add_subdirectory( ofxdump )
+endif()
 
 # create the libofx.pc pkg-config file out of the libofx.pc.in
 configure_file("libofx.pc.in" "${CMAKE_CURRENT_BINARY_DIR}/libofx.pc")
