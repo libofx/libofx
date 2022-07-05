@@ -6,6 +6,4 @@
 Makefile
 Makefile.in
 ofxconnect
-cmdline.c
-cmdline.h
 *.1
