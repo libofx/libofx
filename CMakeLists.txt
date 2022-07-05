@@ -44,6 +44,7 @@ if(MSVC)
 endif(MSVC)
 target_link_libraries(ofx ${OpenSP_LIBRARIES} ${ICONV_LIBRARIES})
 
+# ofxconnect
 find_package(CURL)
 
 if (CURL_FOUND)
@@ -63,12 +64,22 @@ if (ENABLE_OFXCONNECT)
     add_subdirectory( ofxconnect )
 endif()
 
+# ofxdump
 option(ENABLE_OFXDUMP "Enable ofxdump tool" ON)
 add_feature_info("ofxdump" ENABLE_OFXDUMP "Enables ofxconnect utility which prints, in human readable form, everything the library understands about a file")
 
 if (ENABLE_OFXDUMP)
     add_subdirectory( ofxdump )
 endif()
+
+# ofx2qif
+option(ENABLE_OFX2QIF "Enable ofx2qif tool" ON)
+add_feature_info("ofx2qif" ENABLE_OFX2QIF "Enables OFX file to QIF (Quicken Interchange Format) file converter")
+
+if (ENABLE_OFX2QIF)
+    add_subdirectory( ofx2qif )
+endif()
+
 
 # create the libofx.pc pkg-config file out of the libofx.pc.in
 configure_file("libofx.pc.in" "${CMAKE_CURRENT_BINARY_DIR}/libofx.pc")
