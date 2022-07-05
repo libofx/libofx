@@ -22,6 +22,7 @@ include_directories(
     inc
     ${OpenSP_INCLUDE_DIRS}/OpenSP
     ${CMAKE_INSTALL_PREFIX}/include
+    ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 add_definitions(
@@ -58,7 +59,11 @@ add_definitions(-DCMDLINE_PARSER_PACKAGE=\"ofxdump\" -DCMDLINE_PARSER_PACKAGE_NA
 add_executable(ofxdump ${ofxdump_SRCS})
 target_link_libraries(ofxdump ofx)
 
+# create the libofx.pc pkg-config file out of the libofx.pc.in
 configure_file("libofx.pc.in" "${CMAKE_CURRENT_BINARY_DIR}/libofx.pc")
+
+# create the config.h file out of the config.h.cmake
+configure_file("config.h.cmake" "${CMAKE_CURRENT_BINARY_DIR}/config.h")
 
 install(TARGETS ofx ofxdump RUNTIME DESTINATION bin ARCHIVE DESTINATION lib LIBRARY DESTINATION lib)
 install(FILES inc/libofx.h DESTINATION include/libofx)
