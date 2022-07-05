@@ -44,19 +44,7 @@ if(MSVC)
 endif(MSVC)
 target_link_libraries(ofx ${OpenSP_LIBRARIES} ${ICONV_LIBRARIES})
 
-######### add a utility function so that we can test ofx files ##########
-set(ofxdump_SRCS
-    ofxdump/cmdline.c
-    ofxdump/ofxdump.cpp 
-)
-
-if(MSVC)
-    set(ofxdump_SRCS ${ofxdump_SRCS} lib/messages.cpp lib/getopt.c lib/getopt1.c)
-endif(MSVC)
-
-add_definitions(-DCMDLINE_PARSER_PACKAGE=\"ofxdump\" -DCMDLINE_PARSER_PACKAGE_NAME=\"ofxdump\" -DCMDLINE_PARSER_VERSION=\"${VERSION}\")
-add_executable(ofxdump ${ofxdump_SRCS})
-target_link_libraries(ofxdump ofx)
+add_subdirectory( ofxdump )
 
 # create the libofx.pc pkg-config file out of the libofx.pc.in
 configure_file("libofx.pc.in" "${CMAKE_CURRENT_BINARY_DIR}/libofx.pc")
