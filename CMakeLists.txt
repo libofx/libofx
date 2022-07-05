@@ -1,4 +1,5 @@
 # SPDX-FileCopyrightText: 2009 Cristian Oneț <onet.cristian@gmail.com>
+# SPDX-FileCopyrightText: 2022 Dawid Wróbel <me@dawidwrobel.com>
 
 project(ofx)
 
@@ -7,9 +8,10 @@ set (VERSION_MINOR 10)
 set (VERSION_PATCH 5)
 set (VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
 
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.0)
 
-list(APPEND CMAKE_MODULE_PATH  ${CMAKE_SOURCE_DIR})
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
+
 find_package(OpenSP REQUIRED)
 
 if(MSVC)
@@ -18,7 +20,7 @@ endif(MSVC)
 
 include_directories(
     inc
-    ${OPENSP_INCLUDES}
+    ${OpenSP_INCLUDE_DIRS}
     ${CMAKE_INSTALL_PREFIX}/include
 )
 
@@ -40,7 +42,7 @@ FIND_LIBRARY( ICONV_LIBRARIES iconv )
 if(MSVC)
     set_target_properties(ofx PROPERTIES OUTPUT_NAME "libofx")
 endif(MSVC)
-target_link_libraries(ofx ${OPENSP_LIBRARIES} ${ICONV_LIBRARIES})
+target_link_libraries(ofx ${OpenSP_LIBRARIES} ${ICONV_LIBRARIES})
 
 ######### add a utility function so that we can test ofx files ##########
 set(ofxdump_SRCS
