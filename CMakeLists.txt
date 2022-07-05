@@ -8,7 +8,8 @@ set (LIBOFX_MINOR_VERSION 10)
 set (LIBOFX_MICRO_VERSION 5)
 set (LIBOFX_VERSION_RELEASE_STRING ${LIBOFX_MAJOR_VERSION}.${LIBOFX_MINOR_VERSION}.${LIBOFX_MICRO_VERSION})
 
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.12)
+include(CMakeDependentOption)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 
@@ -24,9 +25,8 @@ endif()
 
 include_directories(
     inc
-    ${OpenSP_INCLUDE_DIRS}/OpenSP
-    ${CMAKE_INSTALL_PREFIX}/include
     ${CMAKE_CURRENT_BINARY_DIR}
+    ${OpenSP_INCLUDE_DIRS}/OpenSP
 )
 
 add_definitions(
@@ -43,6 +43,25 @@ if(MSVC)
     set_target_properties(ofx PROPERTIES OUTPUT_NAME "libofx")
 endif(MSVC)
 target_link_libraries(ofx ${OpenSP_LIBRARIES} ${ICONV_LIBRARIES})
+
+find_package(CURL)
+
+if (CURL_FOUND)
+    set(HAVE_LIBCURL 1)
+    find_package(PkgConfig)
+
+    if(PkgConfig_FOUND)
+        pkg_check_modules(LIBXMLPP IMPORTED_TARGET libxml++-2.6>=2.6)
+    endif()
+endif()
+
+cmake_dependent_option(ENABLE_OFXCONNECT "Enable ofxconnect tool" ON
+                       "CURL_FOUND;PkgConfig_FOUND;LIBXMLPP_FOUND" OFF)
+add_feature_info("ofxconnect" ENABLE_OFXCONNECT "Enables ofxconnect utility which allows to test OFX Direct Connect")
+
+if (ENABLE_OFXCONNECT)
+    add_subdirectory( ofxconnect )
+endif()
 
 option(ENABLE_OFXDUMP "Enable ofxdump tool" ON)
 add_feature_info("ofxdump" ENABLE_OFXDUMP "Enables ofxconnect utility which prints, in human readable form, everything the library understands about a file")

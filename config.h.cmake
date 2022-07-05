@@ -7,3 +7,5 @@
 #define VERSION "@LIBOFX_VERSION_RELEASE_STRING@"
 
 #cmakedefine _WIN32 1
+
+#cmakedefine HAVE_LIBCURL 1
