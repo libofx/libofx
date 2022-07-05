@@ -59,3 +59,15 @@ install(FILES dtd/ofx160.dtd DESTINATION "${CMAKE_PREFIX_PATH}/share/libofx/dtd"
 install(FILES dtd/ofx201.dtd DESTINATION "${CMAKE_PREFIX_PATH}/share/libofx/dtd")
 install(FILES dtd/ofc.dtd DESTINATION "${CMAKE_PREFIX_PATH}/share/libofx/dtd")
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libofx.pc" DESTINATION "${CMAKE_PREFIX_PATH}/lib/pkgconfig")
+
+feature_summary(WHAT REQUIRED_PACKAGES_NOT_FOUND
+                DESCRIPTION "The following REQUIRED packages have not been found:")
+
+feature_summary(WHAT OPTIONAL_PACKAGES_NOT_FOUND
+                DESCRIPTION "The following OPTIONAL packages have not been found:")
+
+feature_summary(WHAT ENABLED_FEATURES
+                DESCRIPTION "The following features have been enabled:")
+
+feature_summary(WHAT DISABLED_FEATURES
+                DESCRIPTION "The following features have been disabled:")
