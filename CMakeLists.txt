@@ -20,7 +20,7 @@ endif(MSVC)
 
 include_directories(
     inc
-    ${OpenSP_INCLUDE_DIRS}
+    ${OpenSP_INCLUDE_DIRS}/OpenSP
     ${CMAKE_INSTALL_PREFIX}/include
 )
 
