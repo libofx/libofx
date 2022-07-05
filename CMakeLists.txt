@@ -18,6 +18,10 @@ if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif(MSVC)
 
+if(WIN32)
+    set(_WIN32 1)
+endif()
+
 include_directories(
     inc
     ${OpenSP_INCLUDE_DIRS}/OpenSP
@@ -26,17 +30,12 @@ include_directories(
 )
 
 add_definitions(
-    -D__WIN32__
     -DMAKEFILE_DTD_PATH="${CMAKE_PREFIX_PATH}/share/libofx/dtd/"
 )
 
 file(GLOB COEFF_HDRS inc/libofx.h lib/*.hh )
 file(GLOB SRC_SOURCES lib/*.cpp ${COEFF_HDRS})
 
-
-# We would like it to be shared, but libofx does not export symbols manually
-# thus it causes troubles on MSVC
-#add_library(ofx SHARED ${SRC_SOURCES})
 add_library(ofx ${SRC_SOURCES})
 
 FIND_LIBRARY( ICONV_LIBRARIES iconv )
