@@ -43,46 +43,48 @@ The following cache variables may also be set:
 
 #]=======================================================================]
 
-find_path(OpenSP_INCLUDE_DIR NAMES opensp/ParserEventGeneratorKit.h
-          DOC "The OpenSP include directory"
-)
+find_path(OpenSP_INCLUDE_DIR
+        NAMES opensp/ParserEventGeneratorKit.h OpenSP/ParserEventGeneratorKit.h
+        DOC "The OpenSP include directory"
+        )
 
-find_library(OpenSP_LIBRARY NAMES osp sp133
-          DOC "The OpenSP (osp) library"
-)
+find_library(OpenSP_LIBRARY
+        NAMES osp sp133
+        DOC "The OpenSP (osp) library"
+        )
 
 if (OpenSP_INCLUDE_DIR AND EXISTS "${OpenSP_INCLUDE_DIR}/opensp/config.h")
     file(STRINGS "${OpenSP_INCLUDE_DIR}/opensp/config.h" opensp_version_str REGEX "^#define[\t ]+SP_VERSION[\t ]+\".*\"")
 
     string(REGEX REPLACE "^.*SP_VERSION[\t ]+\"([^\"]*)\".*$" "\\1" OpenSP_VERSION_STRING "${opensp_version_str}")
     unset(opensp_version_str)
-endif()
+endif ()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(OpenSP
-    FOUND_VAR
+        FOUND_VAR
         OpenSP_FOUND
-    REQUIRED_VARS
+        REQUIRED_VARS
         OpenSP_LIBRARY
         OpenSP_INCLUDE_DIR
-    VERSION_VAR
+        VERSION_VAR
         OpenSP_VERSION_STRING
-)
+        )
 
-if(OpenSP_FOUND)
-  set( OpenSP_LIBRARIES ${OpenSP_LIBRARY} )
-  set( OpenSP_INCLUDE_DIRS ${OpenSP_INCLUDE_DIR} )
-  if(NOT TARGET OpenSP::OpenSP)
-    add_library(OpenSP::OpenSP UNKNOWN IMPORTED)
-    set_target_properties(OpenSP::OpenSP PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${OpenSP_INCLUDE_DIRS}")
-    set_property(TARGET OpenSP::OpenSP APPEND PROPERTY IMPORTED_LOCATION "${OpenSP_LIBRARY}")
-  endif()
-endif()
+if (OpenSP_FOUND)
+    set(OpenSP_LIBRARIES ${OpenSP_LIBRARY})
+    set(OpenSP_INCLUDE_DIRS ${OpenSP_INCLUDE_DIR})
+    if (NOT TARGET OpenSP::OpenSP)
+        add_library(OpenSP::OpenSP UNKNOWN IMPORTED)
+        set_target_properties(OpenSP::OpenSP PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${OpenSP_INCLUDE_DIRS}")
+        set_property(TARGET OpenSP::OpenSP APPEND PROPERTY IMPORTED_LOCATION "${OpenSP_LIBRARY}")
+    endif ()
+endif ()
 
 mark_as_advanced(OpenSP_INCLUDE_DIR OpenSP_LIBRARY)
 
 include(FeatureSummary)
 set_package_properties(OpenSP PROPERTIES
-    URL "http://openjade.sourceforge.net/doc/index.htm"
-    DESCRIPTION "An SGML System Conforming to International Standard ISO 8879"
-)
+        URL "http://openjade.sourceforge.net/doc/index.htm"
+        DESCRIPTION "An SGML System Conforming to International Standard ISO 8879"
+        )
