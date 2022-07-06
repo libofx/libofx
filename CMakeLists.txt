@@ -29,6 +29,10 @@ if(WIN32)
     set(_WIN32 1)
 endif()
 
+# TODO: HAVE_GCC_VISIBILITY_EXTS vs CMAKE_CXX_VISIBILITY_PRESET
+# create the libofx.h file out of the libofx.h.in
+configure_file("inc/libofx.h.in" "${CMAKE_CURRENT_BINARY_DIR}/inc/libofx.h")
+
 include_directories(
     inc
     ${CMAKE_CURRENT_BINARY_DIR}
