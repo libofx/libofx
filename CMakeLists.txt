@@ -9,6 +9,12 @@ set (LIBOFX_MICRO_VERSION 5)
 set (LIBOFX_VERSION_RELEASE_STRING ${LIBOFX_MAJOR_VERSION}.${LIBOFX_MINOR_VERSION}.${LIBOFX_MICRO_VERSION})
 
 cmake_minimum_required(VERSION 3.12)
+
+# If no build type is set, use "Release with Debug Info"
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE RelWithDebInfo)
+endif(NOT CMAKE_BUILD_TYPE)
+
 include(CMakeDependentOption)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
