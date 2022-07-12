@@ -35,6 +35,9 @@ add_definitions(
     -DMAKEFILE_DTD_PATH="${CMAKE_PREFIX_PATH}/share/libofx/dtd/"
 )
 
+# Handle the getopt in a cross-platform way
+add_subdirectory( getopt)
+
 # libofx itself
 add_subdirectory( lib )
 

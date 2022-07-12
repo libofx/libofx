@@ -15,11 +15,12 @@ if (ENABLE_OFXDUMP)
             ${CMAKE_BINARY_DIR}
     )
 
-    if(MSVC)
-        set(ofxdump_SRCS ${ofxdump_SRCS} ../lib/messages.cpp ../lib/getopt.c ../lib/getopt1.c)
-    endif(MSVC)
-
     add_definitions(-DCMDLINE_PARSER_PACKAGE=\"ofxdump\" -DCMDLINE_PARSER_PACKAGE_NAME=\"ofxdump\" -DCMDLINE_PARSER_VERSION=\"${VERSION}\")
     add_executable(ofxdump ${ofxdump_SRCS})
     target_link_libraries(ofxdump ofx)
+
+    if (NOT HAVE_GETOPT_LONG)
+        include_directories(${GETOPT_INCLUDE_DIR})
+        target_link_libraries(ofxdump Getopt::Getopt)
+    endif()
 endif()
