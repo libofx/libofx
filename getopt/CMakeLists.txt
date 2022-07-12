@@ -22,7 +22,7 @@ if (NOT HAVE_GETOPT_LONG)
 endif()
 
 # If the library wasn't found, and we're under MSVC, let's fallback to our copy of the
-# https://github.com/libimobiledevice-win32/getopt
+# https://github.com/takamin/win-c
 if (NOT GETOPT_LIBRARY AND MSVC)
     if (NOT TARGET getopt)
         add_library(getopt STATIC getopt.c getopt.h)
