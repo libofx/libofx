@@ -41,16 +41,6 @@ if (Iconv_FOUND)
     set(HAVE_ICONV 1)
 endif()
 
-
-# TODO: cleanup
-if(MSVC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-endif(MSVC)
-
-if(WIN32)
-    set(_WIN32 1)
-endif()
-
 # TODO: HAVE_GCC_VISIBILITY_EXTS vs CMAKE_CXX_VISIBILITY_PRESET
 # create the libofx.h file out of the libofx.h.in
 configure_file("inc/libofx.h.in" "${CMAKE_BINARY_DIR}/inc/libofx.h")
