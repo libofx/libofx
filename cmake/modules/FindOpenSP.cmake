@@ -1,4 +1,7 @@
+# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
+# file Copyright.txt or https://cmake.org/licensing for details.
 # SPDX-FileCopyrightText: 2022 Dawid Wróbel <me@dawidwrobel.com>
+# SPDX-License-Identifier: BSD-3-Clause
 
 #[=======================================================================[.rst:
 FindOpenSP
@@ -61,13 +64,9 @@ endif ()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(OpenSP
-        FOUND_VAR
-        OpenSP_FOUND
-        REQUIRED_VARS
-        OpenSP_LIBRARY
-        OpenSP_INCLUDE_DIR
-        VERSION_VAR
-        OpenSP_VERSION_STRING
+        FOUND_VAR OpenSP_FOUND
+        REQUIRED_VARS OpenSP_LIBRARY OpenSP_INCLUDE_DIR
+        VERSION_VAR OpenSP_VERSION_STRING
         )
 
 if (OpenSP_FOUND)
