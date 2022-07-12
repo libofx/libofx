@@ -53,7 +53,12 @@ endif()
 
 # TODO: HAVE_GCC_VISIBILITY_EXTS vs CMAKE_CXX_VISIBILITY_PRESET
 # create the libofx.h file out of the libofx.h.in
-configure_file("inc/libofx.h.in" "${CMAKE_CURRENT_BINARY_DIR}/inc/libofx.h")
+configure_file("inc/libofx.h.in" "${CMAKE_BINARY_DIR}/inc/libofx.h")
+
+# create the config.h file out of the config.h.cmake
+configure_file("config.h.cmake" "${CMAKE_BINARY_DIR}/config.h")
+
+set(COMMON_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/inc ${CMAKE_BINARY_DIR})
 
 add_definitions(
     -DMAKEFILE_DTD_PATH="${CMAKE_PREFIX_PATH}/share/libofx/dtd/"
@@ -76,9 +81,6 @@ add_subdirectory( ofx2qif )
 
 # create the libofx.pc pkg-config file out of the libofx.pc.in
 configure_file("libofx.pc.in" "${CMAKE_CURRENT_BINARY_DIR}/libofx.pc")
-
-# create the config.h file out of the config.h.cmake
-configure_file("config.h.cmake" "${CMAKE_CURRENT_BINARY_DIR}/config.h")
 
 install(DIRECTORY dtd DESTINATION share/libofx FILES_MATCHING PATTERN "*.dtd" PATTERN "*.dcl")
 install(FILES inc/libofx.h DESTINATION include/libofx)

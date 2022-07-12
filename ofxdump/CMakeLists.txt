@@ -9,14 +9,10 @@ if (ENABLE_OFXDUMP)
         ofxdump.cpp
     )
 
-     include_directories(
-            ../inc
-            ${CMAKE_BINARY_DIR}
-    )
-
     add_definitions(-DCMDLINE_PARSER_PACKAGE=\"ofxdump\" -DCMDLINE_PARSER_PACKAGE_NAME=\"ofxdump\" -DCMDLINE_PARSER_VERSION=\"${VERSION}\")
     add_executable(ofxdump ${ofxdump_SRCS})
     target_link_libraries(ofxdump ofx)
+    target_include_directories(ofxdump PRIVATE ${COMMON_INCLUDE_DIRS})
 
     if (NOT HAVE_GETOPT_LONG)
         target_link_libraries(ofxdump getopt)

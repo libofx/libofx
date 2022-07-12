@@ -12,19 +12,13 @@ if (ENABLE_OFXCONNECT)
         nodeparser.cpp
     )
 
-    include_directories(
-        ../inc
-        ${CMAKE_BINARY_DIR}
-        ${LIBXMLPP_INCLUDE_DIRS}
-        ${LIBCURL_INCLUDE_DIRS}
-    )
-
     # required by libxml++
     set (CMAKE_CXX_STANDARD 11)
 
     add_definitions(-DCMDLINE_PARSER_PACKAGE=\"ofxconnect\" -DCMDLINE_PARSER_PACKAGE_NAME=\"ofxconnect\" -DCMDLINE_PARSER_VERSION=\"${VERSION}\")
     add_executable(ofxconnect ${ofxconnect_SRCS})
     target_link_libraries(ofxconnect ofx CURL::libcurl PkgConfig::LIBXMLPP)
+    target_include_directories(ofxconnect PRIVATE ${COMMON_INCLUDE_DIRS})
 
     if (NOT HAVE_GETOPT_LONG)
         target_link_libraries(ofxdump getopt)
