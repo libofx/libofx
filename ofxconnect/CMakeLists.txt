@@ -6,23 +6,27 @@ add_feature_info("ofxconnect" ENABLE_OFXCONNECT "Enables ofxconnect utility whic
 
 if (ENABLE_OFXCONNECT)
     set(ofxconnect_SRCS
-        cmdline.c
-        ofxconnect.cpp
-        ofxpartner.cpp
-        nodeparser.cpp
-    )
+            cmdline.c
+            ofxconnect.cpp
+            ofxpartner.cpp
+            nodeparser.cpp
+            )
 
     # required by libxml++
-    set (CMAKE_CXX_STANDARD 11)
+    set(CMAKE_CXX_STANDARD 11)
 
-    add_definitions(-DCMDLINE_PARSER_PACKAGE=\"ofxconnect\" -DCMDLINE_PARSER_PACKAGE_NAME=\"ofxconnect\" -DCMDLINE_PARSER_VERSION=\"${VERSION}\")
     add_executable(ofxconnect ${ofxconnect_SRCS})
     target_link_libraries(ofxconnect ofx CURL::libcurl PkgConfig::LIBXMLPP)
     target_include_directories(ofxconnect PRIVATE ${COMMON_INCLUDE_DIRS})
+    target_compile_definitions(ofxconnect PRIVATE
+            CMDLINE_PARSER_PACKAGE="ofxconnect"
+            CMDLINE_PARSER_PACKAGE_NAME="ofxconnect"
+            CMDLINE_PARSER_VERSION="${LIBOFX_VERSION_RELEASE_STRING}"
+            )
 
     if (NOT HAVE_GETOPT_LONG)
         target_link_libraries(ofxdump getopt)
-    endif()
+    endif ()
 
     install(TARGETS ofxconnect RUNTIME DESTINATION bin)
-endif()
+endif ()

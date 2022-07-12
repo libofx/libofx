@@ -5,18 +5,21 @@ add_feature_info("ofxdump" ENABLE_OFXDUMP "Enables ofxconnect utility which prin
 
 if (ENABLE_OFXDUMP)
     set(ofxdump_SRCS
-        cmdline.c
-        ofxdump.cpp
-    )
+            cmdline.c
+            ofxdump.cpp
+            )
 
-    add_definitions(-DCMDLINE_PARSER_PACKAGE=\"ofxdump\" -DCMDLINE_PARSER_PACKAGE_NAME=\"ofxdump\" -DCMDLINE_PARSER_VERSION=\"${VERSION}\")
     add_executable(ofxdump ${ofxdump_SRCS})
     target_link_libraries(ofxdump ofx)
     target_include_directories(ofxdump PRIVATE ${COMMON_INCLUDE_DIRS})
+    target_compile_definitions(ofxdump PRIVATE CMDLINE_PARSER_PACKAGE="ofxdump"
+            CMDLINE_PARSER_PACKAGE_NAME="ofxdump"
+            CMDLINE_PARSER_VERSION="${LIBOFX_VERSION_RELEASE_STRING}"
+            )
 
     if (NOT HAVE_GETOPT_LONG)
         target_link_libraries(ofxdump getopt)
-    endif()
+    endif ()
 
     install(TARGETS ofxdump RUNTIME DESTINATION bin)
-endif()
+endif ()
