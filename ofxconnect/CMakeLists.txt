@@ -1,16 +1,5 @@
 # SPDX-FileCopyrightText: 2022 Dawid Wróbel <me@dawidwrobel.com>
 
-find_package(CURL)
-
-if (CURL_FOUND)
-    set(HAVE_LIBCURL 1 PARENT_SCOPE)
-    find_package(PkgConfig)
-
-    if(PkgConfig_FOUND)
-        pkg_check_modules(LIBXMLPP IMPORTED_TARGET libxml++-2.6>=2.6)
-    endif()
-endif()
-
 cmake_dependent_option(ENABLE_OFXCONNECT "Enable ofxconnect tool" ON
         "CURL_FOUND;PkgConfig_FOUND;LIBXMLPP_FOUND" OFF)
 add_feature_info("ofxconnect" ENABLE_OFXCONNECT "Enables ofxconnect utility which allows to test OFX Direct Connect")

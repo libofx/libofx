@@ -21,6 +21,28 @@ include(CMakeDependentOption)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 
+# locate dependencies
+find_package(CURL)
+
+if (CURL_FOUND)
+    set(HAVE_LIBCURL 1)
+    find_package(PkgConfig)
+
+    if(PkgConfig_FOUND)
+        pkg_check_modules(LIBXMLPP IMPORTED_TARGET libxml++-2.6>=2.6)
+    endif()
+endif()
+
+find_package(OpenSP REQUIRED)
+
+find_package(Iconv)
+
+if (Iconv_FOUND)
+    set(HAVE_ICONV 1)
+endif()
+
+
+# TODO: cleanup
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif(MSVC)

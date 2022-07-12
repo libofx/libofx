@@ -1,5 +1,3 @@
-find_package(OpenSP REQUIRED)
-
 # ${OpenSP_INCLUDE_DIRS}/OpenSP required here despite OpenSP::OpenSP target coming pre-populated with
 # OpenSP_INCLUDE_DIRS because the source files refer to its header files directly, not via "OpenSP/headers.h" subfolder
 include_directories(
@@ -18,10 +16,6 @@ endif(MSVC)
 add_library(ofx ${SRC_SOURCES})
 target_link_libraries(ofx OpenSP::OpenSP)
 
-
-find_package(Iconv)
-
 if (Iconv_FOUND)
-    set(HAVE_ICONV 1 PARENT_SCOPE)
     target_link_libraries(ofx Iconv::Iconv)
 endif()
