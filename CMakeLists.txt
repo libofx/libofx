@@ -53,7 +53,7 @@ configure_file("libofx.pc.in" "${CMAKE_CURRENT_BINARY_DIR}/libofx.pc")
 # create the config.h file out of the config.h.cmake
 configure_file("config.h.cmake" "${CMAKE_CURRENT_BINARY_DIR}/config.h")
 
-install(TARGETS ofx ofxdump RUNTIME DESTINATION bin ARCHIVE DESTINATION lib LIBRARY DESTINATION lib)
+install(TARGETS ofx ofxdump ofxconnect ofx2qif RUNTIME DESTINATION bin ARCHIVE DESTINATION lib LIBRARY DESTINATION lib)
 install(DIRECTORY dtd DESTINATION share/libofx FILES_MATCHING PATTERN "*.dtd" PATTERN "*.dcl")
 install(FILES inc/libofx.h DESTINATION include/libofx)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libofx.pc" DESTINATION lib/pkgconfig)
