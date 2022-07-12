@@ -19,8 +19,6 @@ include(CMakeDependentOption)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 
-find_package(OpenSP REQUIRED)
-
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif(MSVC)
@@ -33,26 +31,12 @@ endif()
 # create the libofx.h file out of the libofx.h.in
 configure_file("inc/libofx.h.in" "${CMAKE_CURRENT_BINARY_DIR}/inc/libofx.h")
 
-include_directories(
-    inc
-    ${CMAKE_CURRENT_BINARY_DIR}
-    ${OpenSP_INCLUDE_DIRS}/OpenSP
-)
-
 add_definitions(
     -DMAKEFILE_DTD_PATH="${CMAKE_PREFIX_PATH}/share/libofx/dtd/"
 )
 
-file(GLOB COEFF_HDRS inc/libofx.h lib/*.hh )
-file(GLOB SRC_SOURCES lib/*.cpp ${COEFF_HDRS})
-
-add_library(ofx ${SRC_SOURCES})
-
-FIND_LIBRARY( ICONV_LIBRARIES iconv )
-if(MSVC)
-    set_target_properties(ofx PROPERTIES OUTPUT_NAME "libofx")
-endif(MSVC)
-target_link_libraries(ofx ${OpenSP_LIBRARIES} ${ICONV_LIBRARIES})
+# libofx itself
+add_subdirectory( lib )
 
 # ofxconnect
 add_subdirectory( ofxconnect )

@@ -10,6 +10,11 @@ if (ENABLE_OFXDUMP)
         ofxdump.cpp
     )
 
+     include_directories(
+            ../inc
+            ${CMAKE_BINARY_DIR}
+    )
+
     if(MSVC)
         set(ofxdump_SRCS ${ofxdump_SRCS} ../lib/messages.cpp ../lib/getopt.c ../lib/getopt1.c)
     endif(MSVC)

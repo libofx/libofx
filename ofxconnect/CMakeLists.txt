@@ -24,6 +24,8 @@ if (ENABLE_OFXCONNECT)
     )
 
     include_directories(
+        ../inc
+        ${CMAKE_BINARY_DIR}
         ${LIBXMLPP_INCLUDE_DIRS}
         ${LIBCURL_INCLUDE_DIRS}
     )
