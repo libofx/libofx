@@ -1,4 +1,3 @@
-# SPDX-FileCopyrightText: 2009 Cristian Oneț <onet.cristian@gmail.com>
 # SPDX-FileCopyrightText: 2022 Dawid Wróbel <me@dawidwrobel.com>
 
 option(ENABLE_OFXDUMP "Enable ofxdump tool" ON)

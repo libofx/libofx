@@ -1,4 +1,6 @@
-# SPDX-FileCopyrightText: 2009 Cristian Oneț <onet.cristian@gmail.com>
+# SPDX-FileCopyrightText: 2006 Alexander Neundorf <neundorf@kde.org>
+# SPDX-FileCopyrightText: 2009-2011 Cristian Oneț <onet.cristian@gmail.com>
+# SPDX-FileCopyrightText: 2019-2020 Thomas Baumgart <tbaumgart@kde.org>
 # SPDX-FileCopyrightText: 2022 Dawid Wróbel <me@dawidwrobel.com>
 
 project(ofx)
