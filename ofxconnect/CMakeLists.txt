@@ -3,7 +3,7 @@
 find_package(CURL)
 
 if (CURL_FOUND)
-    set(HAVE_LIBCURL 1)
+    set(HAVE_LIBCURL 1 PARENT_SCOPE)
     find_package(PkgConfig)
 
     if(PkgConfig_FOUND)

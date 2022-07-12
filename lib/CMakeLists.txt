@@ -1,5 +1,9 @@
 find_package(OpenSP REQUIRED)
-FIND_LIBRARY( ICONV_LIBRARIES iconv )
+find_package(Iconv)
+
+if (Iconv_FOUND)
+    set(HAVE_ICONV 1 PARENT_SCOPE)
+endif()
 
 include_directories(
         ../inc
@@ -16,4 +20,4 @@ if(MSVC)
     set_target_properties(ofx PROPERTIES OUTPUT_NAME "libofx")
 endif(MSVC)
 
-target_link_libraries(ofx ${OpenSP_LIBRARIES} ${ICONV_LIBRARIES})
+target_link_libraries(ofx ${OpenSP_LIBRARIES} Iconv::Iconv)
