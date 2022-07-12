@@ -26,3 +26,7 @@ stamp-h
 stamp-h.in
 stamp-h1
 .vscode
+build*/
+out/
+**/CMakeFiles/
+cmake_install.cmake
