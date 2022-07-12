@@ -1,8 +1,13 @@
 # SPDX-FileCopyrightText: 2022 Dawid Wróbel <me@dawidwrobel.com>
 
-set(ofx2qif_SRCS
-    ofx2qif.c
-)
+option(ENABLE_OFX2QIF "Enable ofx2qif tool" ON)
+add_feature_info("ofx2qif" ENABLE_OFX2QIF "Enables OFX file to QIF (Quicken Interchange Format) file converter")
 
-add_executable(ofx2qif ${ofx2qif_SRCS})
-target_link_libraries(ofx2qif ofx)
+if (ENABLE_OFX2QIF)
+    set(ofx2qif_SRCS
+        ofx2qif.c
+    )
+
+    add_executable(ofx2qif ${ofx2qif_SRCS})
+    target_link_libraries(ofx2qif ofx)
+endif()
