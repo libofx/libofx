@@ -15,4 +15,5 @@ if (ENABLE_OFX2QIF)
 
     add_executable(ofx2qif ${ofx2qif_SRCS})
     target_link_libraries(ofx2qif ofx)
+    install(TARGETS ofx2qif RUNTIME DESTINATION bin)
 endif()

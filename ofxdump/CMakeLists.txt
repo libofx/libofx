@@ -19,7 +19,8 @@ if (ENABLE_OFXDUMP)
     target_link_libraries(ofxdump ofx)
 
     if (NOT HAVE_GETOPT_LONG)
-        include_directories(${GETOPT_INCLUDE_DIR})
-        target_link_libraries(ofxdump Getopt::Getopt)
+        target_link_libraries(ofxdump getopt)
     endif()
+
+    install(TARGETS ofxdump RUNTIME DESTINATION bin)
 endif()
