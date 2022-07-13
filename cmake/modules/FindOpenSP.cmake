@@ -44,7 +44,8 @@ The following cache variables may also be set:
 #]=======================================================================]
 
 find_path(OpenSP_INCLUDE_DIR
-        NAMES opensp/ParserEventGeneratorKit.h OpenSP/ParserEventGeneratorKit.h
+        NAMES ParserEventGeneratorKit.h
+        PATH_SUFFIXES OpenSP opensp
         DOC "The OpenSP include directory"
         )
 

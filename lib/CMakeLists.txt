@@ -41,9 +41,7 @@ set(ofx_HEADERS
 
 add_library(ofx ${ofx_SRCS} ${ofx_HEADERS})
 target_link_libraries(ofx OpenSP::OpenSP)
-# ${OpenSP_INCLUDE_DIRS}/OpenSP explicitly required below despite OpenSP::OpenSP target coming pre-populated with
-# OpenSP_INCLUDE_DIRS because the source files refer to its header files directly, not via "OpenSP/headers.h" subfolder
-target_include_directories(ofx PRIVATE ${OpenSP_INCLUDE_DIRS}/OpenSP ${ofx_HEADERS} ${COMMON_INCLUDE_DIRS})
+target_include_directories(ofx PRIVATE ${ofx_HEADERS} ${COMMON_INCLUDE_DIRS})
 
 if(MSVC)
     set_target_properties(ofx PROPERTIES OUTPUT_NAME "libofx")
