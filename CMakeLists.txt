@@ -35,6 +35,15 @@ endif()
 
 find_package(OpenSP REQUIRED)
 
+#TODO: once Autotools build stuff is gone, remove these and set them directly in libofx.pc.in itself
+set(OPENSPLIBS ${OpenSP_LIBRARIES})
+set(OPENSPINCLUDES ${OpenSP_INCLUDE_DIRS})
+set(VERSION ${LIBOFX_VERSION_RELEASE_STRING})
+set(prefix "${CMAKE_INSTALL_PREFIX}")
+set(exec_prefix "\${prefix}")
+set(libdir "\${prefix}/lib")
+set(includedir "\${prefix}/include")
+
 find_package(Iconv)
 
 if (Iconv_FOUND)
