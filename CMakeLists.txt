@@ -79,7 +79,7 @@ add_subdirectory( ofxdump )
 add_subdirectory( ofx2qif )
 
 # create the libofx.pc pkg-config file out of the libofx.pc.in
-configure_file("libofx.pc.in" "${CMAKE_CURRENT_BINARY_DIR}/libofx.pc")
+configure_file("libofx.pc.in" "${CMAKE_BINARY_DIR}/libofx.pc")
 
 install(DIRECTORY dtd DESTINATION share/libofx FILES_MATCHING PATTERN "*.dtd" PATTERN "*.dcl")
 install(FILES inc/libofx.h DESTINATION include/libofx)
