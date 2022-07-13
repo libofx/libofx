@@ -1,7 +1,5 @@
-# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
-# file Copyright.txt or https://cmake.org/licensing for details.
 # SPDX-FileCopyrightText: 2022 Dawid Wróbel <me@dawidwrobel.com>
-# SPDX-License-Identifier: BSD-3-Clause
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 #[=======================================================================[.rst:
 FindOpenSP
