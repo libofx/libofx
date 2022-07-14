@@ -42,6 +42,7 @@ set(ofx_HEADERS
 add_library(ofx ${ofx_SRCS} ${ofx_HEADERS})
 target_link_libraries(ofx OpenSP::OpenSP)
 target_include_directories(ofx PRIVATE ${ofx_HEADERS} ${COMMON_INCLUDE_DIRS})
+target_compile_definitions(ofx PRIVATE MAKEFILE_DTD_PATH="${CMAKE_INSTALL_PREFIX}/share/libofx/dtd/")
 
 if(MSVC)
     set_target_properties(ofx PROPERTIES OUTPUT_NAME "libofx")

@@ -59,10 +59,6 @@ configure_file("config.h.cmake" "${CMAKE_CURRENT_BINARY_DIR}/config.h")
 
 set(COMMON_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/inc ${CMAKE_CURRENT_BINARY_DIR})
 
-add_definitions(
-    -DMAKEFILE_DTD_PATH="${CMAKE_PREFIX_PATH}/share/libofx/dtd/"
-)
-
 # Handle the getopt in a cross-platform way
 add_subdirectory( getopt)
 
