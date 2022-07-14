@@ -52,12 +52,12 @@ endif()
 
 # TODO: HAVE_GCC_VISIBILITY_EXTS vs CMAKE_CXX_VISIBILITY_PRESET
 # create the libofx.h file out of the libofx.h.in
-configure_file("inc/libofx.h.in" "${CMAKE_BINARY_DIR}/inc/libofx.h")
+configure_file("inc/libofx.h.in" "${CMAKE_CURRENT_BINARY_DIR}/inc/libofx.h")
 
 # create the config.h file out of the config.h.cmake
-configure_file("config.h.cmake" "${CMAKE_BINARY_DIR}/config.h")
+configure_file("config.h.cmake" "${CMAKE_CURRENT_BINARY_DIR}/config.h")
 
-set(COMMON_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/inc ${CMAKE_BINARY_DIR})
+set(COMMON_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/inc ${CMAKE_CURRENT_BINARY_DIR})
 
 add_definitions(
     -DMAKEFILE_DTD_PATH="${CMAKE_PREFIX_PATH}/share/libofx/dtd/"
@@ -82,7 +82,7 @@ add_subdirectory( ofx2qif )
 configure_file("libofx.pc.in" "${CMAKE_BINARY_DIR}/libofx.pc")
 
 install(DIRECTORY dtd DESTINATION share/libofx FILES_MATCHING PATTERN "*.dtd" PATTERN "*.dcl")
-install(FILES inc/libofx.h DESTINATION include/libofx)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/inc/libofx.h" DESTINATION include/libofx)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libofx.pc" DESTINATION lib/pkgconfig)
 
 feature_summary(WHAT REQUIRED_PACKAGES_NOT_FOUND
