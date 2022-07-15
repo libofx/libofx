@@ -11,3 +11,5 @@
 #cmakedefine HAVE_LIBCURL 1
 
 #cmakedefine HAVE_ICONV 1
+
+#cmakedefine01 SP_MULTI_BYTE

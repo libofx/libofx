@@ -17,6 +17,12 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE RelWithDebInfo)
 endif(NOT CMAKE_BUILD_TYPE)
 
+# set up SP_MULTI_BYTE
+option(DISABLE_OPENSP_MULTIBYTE "Force libofx to compile with the assumption that OpenSP was NOT compiled with SP_MULTI_BYTE defined" OFF)
+if (NOT DISABLE_OPENSP_MULTIBYTE)
+    set(SP_MULTI_BYTE 1)
+endif()
+
 include(CMakeDependentOption)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
