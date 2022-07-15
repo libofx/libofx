@@ -1,4 +1,5 @@
 # SPDX-FileCopyrightText: 2022 Dawid Wróbel <me@dawidwrobel.com>
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 include(CheckIncludeFile)
 include(CheckSymbolExists)

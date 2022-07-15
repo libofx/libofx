@@ -1,4 +1,5 @@
 # SPDX-FileCopyrightText: 2022 Dawid Wróbel <me@dawidwrobel.com>
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 cmake_dependent_option(ENABLE_OFXCONNECT "Enable ofxconnect tool" ON
         "CURL_FOUND;PkgConfig_FOUND;LIBXMLPP_FOUND" OFF)

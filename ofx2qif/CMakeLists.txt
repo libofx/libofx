@@ -1,4 +1,5 @@
 # SPDX-FileCopyrightText: 2022 Dawid Wróbel <me@dawidwrobel.com>
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 option(ENABLE_OFX2QIF "Enable ofx2qif tool" ON)
 add_feature_info("ofx2qif" ENABLE_OFX2QIF "Enables OFX file to QIF (Quicken Interchange Format) file converter")

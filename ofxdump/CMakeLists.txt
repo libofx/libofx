@@ -1,4 +1,5 @@
 # SPDX-FileCopyrightText: 2022 Dawid Wróbel <me@dawidwrobel.com>
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 option(ENABLE_OFXDUMP "Enable ofxdump tool" ON)
 add_feature_info("ofxdump" ENABLE_OFXDUMP "Enables ofxconnect utility which prints, in human readable form, everything the library understands about a file")
