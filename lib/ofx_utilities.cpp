@@ -68,17 +68,16 @@
   return dest;
   }*/
 
-std::string CharStringtostring(const SGMLApplication::CharString source, std::string &dest)
+std::string CharStringtostring(const SGMLApplication::CharString source)
 {
-  size_t i;
-  dest.assign("");//Empty the provided string
-  //  cout<<"Length: "<<source.len<<"sizeof(Char)"<<sizeof(SGMLApplication::Char)<<endl;
-  for (i = 0; i < source.len; i++)
+  // The CharString type might have multi-byte characters if SP_MULTI_BYTE was defined
+  std::string result;
+  result.resize(source.len);
+  for (size_t i = 0; i < source.len; i++)
   {
-    dest += (char)(((source.ptr)[i]));
-    //    cout<<i<<" "<<(char)(((source.ptr)[i]))<<endl;
+    result[i] = static_cast<char>(source.ptr[i]);
   }
-  return dest;
+  return result;
 }
 
 std::string AppendCharStringtostring(const SGMLApplication::CharString source, std::string &dest)

@@ -58,7 +58,7 @@ std::ostream &operator<<(std::ostream &os, SGMLApplication::CharString s);
 wchar_t* CharStringtowchar_t(SGMLApplication::CharString source, wchar_t *dest);
 
 ///Convert OpenSP CharString to a C++ STL string
-std::string CharStringtostring(const SGMLApplication::CharString source, std::string &dest);
+std::string CharStringtostring(const SGMLApplication::CharString source);
 
 ///Append an OpenSP CharString to an existing C++ STL string
 std::string AppendCharStringtostring(const SGMLApplication::CharString source, std::string &dest);
