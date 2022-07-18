@@ -61,7 +61,7 @@ wchar_t* CharStringtowchar_t(SGMLApplication::CharString source, wchar_t *dest);
 std::string CharStringtostring(const SGMLApplication::CharString source);
 
 ///Append an OpenSP CharString to an existing C++ STL string
-std::string AppendCharStringtostring(const SGMLApplication::CharString source, std::string &dest);
+void AppendCharStringtostring(const SGMLApplication::CharString source, std::string &dest);
 
 ///Convert a C++ string containing a time in OFX format to a C time_t
 time_t ofxdate_to_time_t(const std::string& ofxdate);

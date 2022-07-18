@@ -80,14 +80,10 @@ std::string CharStringtostring(const SGMLApplication::CharString source)
   return result;
 }
 
-std::string AppendCharStringtostring(const SGMLApplication::CharString source, std::string &dest)
+void AppendCharStringtostring(const SGMLApplication::CharString source, std::string &dest)
 {
-  size_t i;
-  for (i = 0; i < source.len; i++)
-  {
-    dest += (char)(((source.ptr)[i]));
-  }
-  return dest;
+  const std::string toBeAppended = CharStringtostring(source);
+  dest.append(toBeAppended);
 }
 
 /**
