@@ -51,12 +51,6 @@ void STRNCPY(T& dest, const std::string& src)
  */
 #define ASSIGN_STRNCPY(DEST, VALUE) STRNCPY(DEST, VALUE); DEST ## _valid = true
 
-///Convert OpenSP CharString to a C++ stream
-std::ostream &operator<<(std::ostream &os, SGMLApplication::CharString s);
-
-///Convert OpenSP CharString and put it in the C wchar_t string provided
-wchar_t* CharStringtowchar_t(SGMLApplication::CharString source, wchar_t *dest);
-
 ///Convert OpenSP CharString to a C++ STL string
 std::string CharStringtostring(const SGMLApplication::CharString source);
 
