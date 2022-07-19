@@ -547,10 +547,11 @@ static std::string get_dtd_installation_directory()
 
    It will look, in (order)
 
-   1- The environment variable OFX_DTD_PATH (if present)
+   1- A folder set by libofx_set_dtd_dir(), if any
    2- On windows only, a relative path specified by get_dtd_installation_directory()
-   3- The path specified by the makefile in MAKEFILE_DTD_PATH, thru LIBOFX_DTD_DIR in configure (if present)
-   4- Any hardcoded paths in DTD_SEARCH_PATH
+   3- The environment variable OFX_DTD_PATH (if present)
+   4- The path specified by the makefile in MAKEFILE_DTD_PATH, thru LIBOFX_DTD_DIR in configure (if present)
+   5- Any hardcoded paths in DTD_SEARCH_PATH
 */
 std::string find_dtd(LibofxContextPtr ctx, const std::string& dtd_filename)
 {
@@ -587,7 +588,7 @@ std::string find_dtd(LibofxContextPtr ctx, const std::string& dtd_filename)
   env_dtd_path = getenv("OFX_DTD_PATH");
   if (env_dtd_path)
   {
-    dtd_path_filename.append(env_dtd_path);
+    dtd_path_filename = env_dtd_path;
     dtd_path_filename.append(DIRSEP);
     dtd_path_filename.append(dtd_filename);
     std::ifstream dtd_file(dtd_path_filename.c_str());
