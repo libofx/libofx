@@ -37,7 +37,7 @@
 OfxMainContainer * MainContainer = NULL;
 extern SGMLApplication::OpenEntityPtr entity_ptr;
 extern SGMLApplication::Position position;
-const std::string MESSAGE_NON_SGML_CHAR = "non SGML character";
+static const std::string MESSAGE_NON_SGML_CHAR = "non SGML character";
 
 
 /** \brief This object is driven by OpenSP as it parses the SGML from the ofx file(s)
@@ -406,7 +406,7 @@ public:
       // final number of errors.
       if (eventMessage.find(MESSAGE_NON_SGML_CHAR) != std::string::npos) {
         ++errorCountToIgnore;
-        message = message + "ignored parser error:";
+        message = message + "ignored character error:";
         error_type = INFO;
       } else {
         message = message + "otherError (misc parse error):";
