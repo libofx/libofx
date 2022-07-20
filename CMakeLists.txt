@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2022 Dawid Wróbel <me@dawidwrobel.com>
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-project(ofx)
+project(libofx)
 
 set (LIBOFX_MAJOR_VERSION 0)
 set (LIBOFX_MINOR_VERSION 10)
@@ -9,21 +9,24 @@ set (LIBOFX_MICRO_VERSION 5)
 set (LIBOFX_VERSION_RELEASE_STRING ${LIBOFX_MAJOR_VERSION}.${LIBOFX_MINOR_VERSION}.${LIBOFX_MICRO_VERSION})
 
 cmake_minimum_required(VERSION 3.12)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
+include(CMakeDependentOption)
+include(FeatureSummary)
 
 # If no build type is set, use "Release with Debug Info"
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE RelWithDebInfo)
 endif(NOT CMAKE_BUILD_TYPE)
 
+# Build a shared lib by default, set this to OFF to build statically
+option(BUILD_SHARED_LIBS "Decides whether to build ${CMAKE_PROJECT_NAME} as a shared or static library" ON)
+add_feature_info("shared" BUILD_SHARED_LIBS "Enables compiling ${CMAKE_PROJECT_NAME} as a shared library (as opposed to statically)")
+
 # set up SP_MULTI_BYTE
-option(DISABLE_OPENSP_MULTIBYTE "Force libofx to compile with the assumption that OpenSP was NOT compiled with SP_MULTI_BYTE defined" OFF)
+option(DISABLE_OPENSP_MULTIBYTE "Force ${CMAKE_PROJECT_NAME} to compile with the assumption that OpenSP was NOT compiled with SP_MULTI_BYTE defined" OFF)
 if (NOT DISABLE_OPENSP_MULTIBYTE)
     set(SP_MULTI_BYTE 1)
 endif()
-
-include(CMakeDependentOption)
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 
 # locate dependencies
 find_package(CURL)
