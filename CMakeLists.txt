@@ -55,6 +55,23 @@ find_package(Iconv)
 
 if (Iconv_FOUND)
     set(HAVE_ICONV 1)
+    include(CheckCXXSourceCompiles)
+    set(CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES} ${Iconv_INCLUDE_DIRS})
+    set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ${Iconv_LIBRARIES})
+    check_cxx_source_compiles(
+        "
+        #include <iconv.h>
+        int main(){
+          const char* inbuf = 0;
+          size_t inbytesleft = 0;
+          char* outbuf = 0;
+          size_t outbytesleft = 0;
+          iconv(0, &inbuf, &inbytesleft, &outbuf, &outbytesleft);
+          return 0;
+        }
+        "
+        HAVE_ICONV_CONST
+    )
 endif()
 
 # TODO: HAVE_GCC_VISIBILITY_EXTS vs CMAKE_CXX_VISIBILITY_PRESET
