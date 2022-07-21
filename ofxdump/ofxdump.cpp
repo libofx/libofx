@@ -38,6 +38,12 @@
 
 #include "cmdline.h" /* Gengetopt generated parser */
 
+int ofx_PARSER_msg = false;
+int ofx_DEBUG_msg = false;
+int ofx_WARNING_msg = false;
+int ofx_ERROR_msg = false;
+int ofx_INFO_msg = false;
+int ofx_STATUS_msg = false;
 
 int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
 {

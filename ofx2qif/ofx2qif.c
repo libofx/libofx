@@ -45,6 +45,13 @@
 
 #define QIF_FILE_MAX_SIZE 256000
 
+int ofx_PARSER_msg = false;
+int ofx_DEBUG_msg = false;
+int ofx_WARNING_msg = false;
+int ofx_ERROR_msg = false;
+int ofx_INFO_msg = false;
+int ofx_STATUS_msg = false;
+
 int ofx_proc_transaction_cb(const struct OfxTransactionData data, void * transaction_data)
 {
   char dest_string[255];
@@ -201,13 +208,6 @@ int ofx_proc_account_cb(const struct OfxAccountData data, void * account_data)
 
 int main (int argc, char *argv[])
 {
- ofx_PARSER_msg = false;
- ofx_DEBUG_msg = false;
- ofx_WARNING_msg = false;
- ofx_ERROR_msg = false;
- ofx_INFO_msg = false;
- ofx_STATUS_msg = false;
-
  LibofxContextPtr libofx_context = libofx_get_new_context();
  ofx_set_statement_cb(libofx_context, ofx_proc_statement_cb, 0);
  ofx_set_account_cb(libofx_context, ofx_proc_account_cb, 0);
