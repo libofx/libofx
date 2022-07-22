@@ -10,6 +10,7 @@ set (LIBOFX_VERSION_RELEASE_STRING ${LIBOFX_MAJOR_VERSION}.${LIBOFX_MINOR_VERSIO
 
 cmake_minimum_required(VERSION 3.12)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
+
 include(CMakeDependentOption)
 include(FeatureSummary)
 
@@ -21,12 +22,6 @@ endif(NOT CMAKE_BUILD_TYPE)
 # Build a shared lib by default, set this to OFF to build statically
 option(BUILD_SHARED_LIBS "Decides whether to build ${CMAKE_PROJECT_NAME} as a shared or static library" ON)
 add_feature_info("shared" BUILD_SHARED_LIBS "Enables compiling ${CMAKE_PROJECT_NAME} as a shared library (as opposed to statically)")
-
-# set up SP_MULTI_BYTE
-option(DISABLE_OPENSP_MULTIBYTE "Force ${CMAKE_PROJECT_NAME} to compile with the assumption that OpenSP was NOT compiled with SP_MULTI_BYTE defined" OFF)
-if (NOT DISABLE_OPENSP_MULTIBYTE)
-    set(SP_MULTI_BYTE 1)
-endif()
 
 # locate dependencies
 find_package(CURL)
@@ -41,6 +36,34 @@ if (CURL_FOUND)
 endif()
 
 find_package(OpenSP REQUIRED)
+
+# set up SP_MULTI_BYTE
+option(DISABLE_OPENSP_MULTIBYTE "Force ${CMAKE_PROJECT_NAME} to compile with the assumption that OpenSP was NOT compiled with SP_MULTI_BYTE defined" OFF)
+
+if (OpenSP_INCLUDE_DIR AND EXISTS "${OpenSP_INCLUDE_DIR}/config.h")
+    file(STRINGS "${OpenSP_INCLUDE_DIR}/config.h" opensp_multibyte_str REGEX "^#define[\t ]+SP_MULTI_BYTE[ \t]+[01].*$")
+    if (opensp_multibyte_str)
+        string(REGEX REPLACE "^#define[\t ]+SP_MULTI_BYTE[ \t]+([01]).*$" "\\1" SP_MULTI_BYTE "${opensp_multibyte_str}")
+        if(SP_MULTI_BYTE STREQUAL "")
+            message(STATUS "SP_MULTI_BYTE detected but not set to any value, ignoring")
+        else()
+            message(STATUS "SP_MULTI_BYTE detected to be ${SP_MULTI_BYTE}")
+        endif()
+    endif()
+    unset(opensp_multibyte_str)
+endif()
+
+if (NOT DISABLE_OPENSP_MULTIBYTE AND NOT SP_MULTI_BYTE)
+    set(SP_MULTI_BYTE 1)
+    message(STATUS "Could not detect SP_MULTI_BYTE, assuming to be 1")
+elseif(DISABLE_OPENSP_MULTIBYTE)
+    if (SP_MULTI_BYTE)
+        message(WARNING "SP_MULTI_BYTE detected to be 1, but forced to be 0. If this is not indeded, it may lead to inability to process files correctly!")
+    else()
+        message(STATUS "SP_MULTI_BYTE forced to 0")
+    endif()
+    set(SP_MULTI_BYTE 0)
+endif()
 
 #TODO: once Autotools build stuff is gone, remove these and set them directly in libofx.pc.in itself
 set(OPENSPLIBS ${OpenSP_LIBRARIES})
