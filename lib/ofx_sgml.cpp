@@ -37,6 +37,7 @@
 OfxMainContainer * MainContainer = NULL;
 extern SGMLApplication::OpenEntityPtr entity_ptr;
 extern SGMLApplication::Position position;
+static const std::string MESSAGE_NON_SGML_CHAR = "non SGML character";
 
 
 /** \brief This object is driven by OpenSP as it parses the SGML from the ofx file(s)
@@ -49,6 +50,7 @@ private:
   bool is_data_element; /**< If the SGML element contains data, this flag is raised */
   std::string incoming_data; /**< The raw data from the SGML data element */
   LibofxContext * libofx_context;
+  unsigned errorCountToIgnore = 0;
 
 public:
 
@@ -63,6 +65,8 @@ public:
   {
     message_out(DEBUG, "Entering the OFXApplication's destructor");
   }
+
+  unsigned getErrorCountToIgnore() const { return errorCountToIgnore; }
 
   /** \brief Callback: Start of an OFX element
    *
@@ -377,6 +381,7 @@ public:
     std::string message;
     std::string string_buf;
     OfxMsgType error_type = ERROR;
+    const std::string eventMessage = CharStringtostring (event.message, string_buf);
 
     position = event.pos;
     message = message + "OpenSP parser: ";
@@ -395,8 +400,18 @@ public:
       error_type = ERROR;
       break;
     case SGMLApplication::ErrorEvent::otherError:
-      message = message + "otherError (misc parse error):";
-      error_type = ERROR;
+      // #60: If the SGML parser encounters a non-ascii char, it sends an error
+      // message, even though those characters are being forwarded just fine.
+      // Hence we count the occurrence of those errors and subtract it from the
+      // final number of errors.
+      if (eventMessage.find(MESSAGE_NON_SGML_CHAR) != std::string::npos) {
+        ++errorCountToIgnore;
+        message = message + "ignored character error:";
+        error_type = INFO;
+      } else {
+        message = message + "otherError (misc parse error):";
+        error_type = ERROR;
+      }
       break;
     case SGMLApplication::ErrorEvent::warning:
       message = message + "warning (Not actually an error.):";
@@ -409,7 +424,7 @@ public:
     default:
       message = message + "OpenSP sent an unknown error to LibOFX (You probably have a newer version of OpenSP):";
     }
-    message =	message + "\n" + CharStringtostring (event.message, string_buf);
+    message =	message + "\n" + eventMessage;
     message_out (error_type, message);
   }
 
@@ -443,7 +458,8 @@ int ofx_proc_sgml(LibofxContext * libofx_context, int argc, char * const* argv)
   EventGenerator *egp =	parserKit.makeEventGenerator (argc, argv);
   egp->inhibitMessages (true);	/* Error output is handled by libofx not OpenSP */
   OFXApplication app(libofx_context);
-  unsigned nErrors = egp->run (app); /* Begin parsing */
+  unsigned originalErrorCount = egp->run (app); /* Begin parsing */
+  unsigned nErrors = originalErrorCount - app.getErrorCountToIgnore(); // but ignore certain known errors that we want to ignore
   delete egp;  //Note that this is where bug is triggered
   return nErrors > 0;
 }
