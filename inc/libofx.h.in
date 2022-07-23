@@ -44,7 +44,7 @@
 
 #ifdef IN_LIBOFX
 #  include "config.h"
-#  ifdef HAVE_GCC_VISIBILITY_EXTS
+#  ifdef __GNUC__
 #    pragma GCC visibility push(default)
 #  endif
 #endif
@@ -1453,7 +1453,7 @@ extern int ofx_show_position;/**< If set to true, the line number will be shown 
 } // end of extern "C"
 #endif
 
-#if defined(HAVE_GCC_VISIBILITY_EXTS) && defined(IN_LIBOFX)
+#if __GNUC__ && defined(IN_LIBOFX)
 #  pragma GCC visibility pop
 #endif
 
