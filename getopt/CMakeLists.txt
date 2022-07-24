@@ -31,17 +31,12 @@ if (NOT HAVE_GETOPT_LONG)
         endif()
     endif()
 
-    # If the library wasn't found, and we're under MSVC, let's fallback to our copy of the
-    # https://github.com/takamin/win-c
+    # If the library wasn't found, and we're under MSVC, let's fallback to our copy of the glibc code
     if (NOT GETOPT_LIBRARY)
-        if (MSVC)
-            message(STATUS "A 3rd-party getopt library was not found, but we're compiling with MSVC, so using own copy.")
             if (NOT TARGET getopt)
-                add_library(getopt STATIC getopt.c getopt.h)
+                message(STATUS "A 3rd-party getopt library was not found, so using own copy.")
+                add_library(getopt STATIC getopt.c getopt1.c getopt.h)
                 set_target_properties(getopt PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}")
             endif()
-        else()
-            message(SEND_ERROR "Unable to locate a suitable getopt implementation. Consider disabling tools compilation.")
-        endif()
     endif()
 endif()
