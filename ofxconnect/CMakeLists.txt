@@ -21,7 +21,7 @@ target_compile_definitions(ofxconnect PRIVATE
         )
 
 if (TARGET getopt)
-target_link_libraries(ofxconnect getopt)
+    target_link_libraries(ofxconnect getopt)
 endif ()
 
 install(TARGETS ofxconnect RUNTIME DESTINATION bin)

@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 set(ofx2qif_SRCS
-    ofx2qif.c
-)
+        ofx2qif.c
+        )
 
 add_executable(ofx2qif ${ofx2qif_SRCS})
 target_link_libraries(ofx2qif ofx)
