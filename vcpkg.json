@@ -4,14 +4,42 @@
   "description": "OFX banking protocol abstraction library",
   "homepage": "http://libofx.sourceforge.net",
   "dependencies": [
-    {
-      "name": "getopt",
-      "platform": "windows"
-    },
-    {
-      "name": "libiconv",
-      "platform": "windows"
-    },
     "libopensp"
-  ]
+  ],
+  "features": {
+    "iconv": {
+      "description": "Builds with ICONV support",
+      "dependencies": [
+        "libiconv"
+      ]
+    },
+    "ofx2qif": {
+      "description": "Builds OFX file to QIF (Quicken Interchange Format) file converter"
+    },
+    "ofxconnect": {
+      "description": "Builds a testing utility, which prints, in human readable form, everything the library understands about a file",
+      "dependencies": [
+        {
+          "name": "curl",
+          "features": [
+            "ssl"
+          ]
+        },
+        {
+          "name": "getopt",
+          "platform": "windows & !mingw"
+        },
+        "libxmlpp"
+      ]
+    },
+    "ofxdump": {
+      "description": "Builds OFX file to QIF (Quicken Interchange Format) file converter",
+      "dependencies": [
+        {
+          "name": "getopt",
+          "platform": "windows & !mingw"
+        }
+      ]
+    }
+  }
 }
