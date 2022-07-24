@@ -6,8 +6,6 @@
 /* Version number of package */
 #define VERSION "@LIBOFX_VERSION_RELEASE_STRING@"
 
-#cmakedefine _WIN32 1
-
 #cmakedefine HAVE_LIBCURL 1
 
 #cmakedefine HAVE_ICONV 1
