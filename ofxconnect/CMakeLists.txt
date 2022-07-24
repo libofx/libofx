@@ -26,7 +26,7 @@ if (ENABLE_OFXCONNECT)
             )
 
     if (NOT HAVE_GETOPT_LONG)
-        target_link_libraries(ofxdump getopt)
+        target_link_libraries(ofxconnect getopt)
     endif ()
 
     install(TARGETS ofxconnect RUNTIME DESTINATION bin)
