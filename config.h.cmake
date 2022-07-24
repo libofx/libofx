@@ -12,4 +12,4 @@
 
 #cmakedefine HAVE_ICONV_CONST 1
 
-#cmakedefine01 SP_MULTI_BYTE
+#cmakedefine SP_MULTI_BYTE 1

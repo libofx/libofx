@@ -7,6 +7,6 @@ set(ofx2qif_SRCS
 
 add_executable(ofx2qif ${ofx2qif_SRCS})
 target_link_libraries(ofx2qif ofx)
-target_include_directories(ofx2qif PRIVATE ${COMMON_INCLUDE_DIRS})
+target_include_directories(ofx2qif BEFORE PRIVATE ${COMMON_INCLUDE_DIRS})
 
 install(TARGETS ofx2qif RUNTIME DESTINATION bin)

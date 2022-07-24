@@ -8,7 +8,7 @@ set(ofxdump_SRCS
 
 add_executable(ofxdump ${ofxdump_SRCS})
 target_link_libraries(ofxdump ofx)
-target_include_directories(ofxdump PRIVATE ${COMMON_INCLUDE_DIRS})
+target_include_directories(ofxdump BEFORE PRIVATE ${COMMON_INCLUDE_DIRS})
 target_compile_definitions(ofxdump PRIVATE CMDLINE_PARSER_PACKAGE="ofxdump"
         CMDLINE_PARSER_PACKAGE_NAME="ofxdump"
         CMDLINE_PARSER_VERSION="${LIBOFX_VERSION_RELEASE_STRING}"

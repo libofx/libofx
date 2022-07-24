@@ -13,7 +13,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 add_executable(ofxconnect ${ofxconnect_SRCS})
 target_link_libraries(ofxconnect ofx CURL::libcurl PkgConfig::LIBXMLPP)
-target_include_directories(ofxconnect PRIVATE ${COMMON_INCLUDE_DIRS})
+target_include_directories(ofxconnect BEFORE PRIVATE ${COMMON_INCLUDE_DIRS})
 target_compile_definitions(ofxconnect PRIVATE
         CMDLINE_PARSER_PACKAGE="ofxconnect"
         CMDLINE_PARSER_PACKAGE_NAME="ofxconnect"
