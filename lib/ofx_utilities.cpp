@@ -37,58 +37,22 @@
 #endif
 
 
-/**
-   Convert an OpenSP CharString directly to a C++ stream, to enable the use of cout directly for debugging.
-*/
-/*ostream &operator<<(ostream &os, SGMLApplication::CharString s)
-  {
-  for (size_t i = 0; i < s.len; i++)
-  {
-  os << ((char *)(s.ptr))[i*sizeof(SGMLApplication::Char)];
-  }
-  return os;
-  }*/
-
-/*wostream &operator<<(wostream &os, SGMLApplication::CharString s)
-  {
-  for (size_t i = 0; i < s.len; i++)
-  {//cout<<i;
-  os << wchar_t(s.ptr[i*MULTIPLY4]);
-  }
-  return os;
-  }            */
-
-/*wchar_t* CharStringtowchar_t(SGMLApplication::CharString source, wchar_t *dest)
-  {
-  size_t i;
-  for (i = 0; i < source.len; i++)
-  {
-  dest[i]+=wchar_t(source.ptr[i*sizeof(SGMLApplication::Char)*(sizeof(char)/sizeof(wchar_t))]);
-  }
-  return dest;
-  }*/
-
-std::string CharStringtostring(const SGMLApplication::CharString source, std::string &dest)
+std::string CharStringtostring(const SGMLApplication::CharString source)
 {
-  size_t i;
-  dest.assign("");//Empty the provided string
-  //  cout<<"Length: "<<source.len<<"sizeof(Char)"<<sizeof(SGMLApplication::Char)<<endl;
-  for (i = 0; i < source.len; i++)
+  // The CharString type might have multi-byte characters if SP_MULTI_BYTE was defined
+  std::string result;
+  result.resize(source.len);
+  for (size_t i = 0; i < source.len; i++)
   {
-    dest += (char)(((source.ptr)[i]));
-    //    cout<<i<<" "<<(char)(((source.ptr)[i]))<<endl;
+    result[i] = static_cast<char>(source.ptr[i]);
   }
-  return dest;
+  return result;
 }
 
-std::string AppendCharStringtostring(const SGMLApplication::CharString source, std::string &dest)
+void AppendCharStringtostring(const SGMLApplication::CharString source, std::string &dest)
 {
-  size_t i;
-  for (i = 0; i < source.len; i++)
-  {
-    dest += (char)(((source.ptr)[i]));
-  }
-  return dest;
+  const std::string toBeAppended = CharStringtostring(source);
+  dest.append(toBeAppended);
 }
 
 /**

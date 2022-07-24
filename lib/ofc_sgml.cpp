@@ -63,8 +63,7 @@ public:
   */
   void startElement (const StartElementEvent & event)
   {
-    std::string identifier;
-    CharStringtostring (event.gi, identifier);
+    std::string identifier = CharStringtostring (event.gi);
     message_out(PARSER, "startElement event received from OpenSP for element " + identifier);
 
     position = event.pos;
@@ -208,11 +207,8 @@ public:
   */
   void endElement (const EndElementEvent & event)
   {
-    std::string identifier;
-    bool end_element_for_data_element;
-
-    CharStringtostring (event.gi, identifier);
-    end_element_for_data_element = is_data_element;
+    std::string identifier = CharStringtostring (event.gi);
+    bool end_element_for_data_element = is_data_element;
     message_out(PARSER, "endElement event received from OpenSP for element " + identifier);
 
     position = event.pos;
@@ -293,7 +289,6 @@ public:
   void error (const ErrorEvent & event)
   {
     std::string message;
-    std::string string_buf;
     OfxMsgType error_type = ERROR;
 
     position = event.pos;
@@ -327,7 +322,7 @@ public:
     default:
       message = message + "OpenSP sent an unknown error to LibOFX (You probably have a newer version of OpenSP):";
     }
-    message =	message + "\n" + CharStringtostring (event.message, string_buf);
+    message =	message + "\n" + CharStringtostring (event.message);
     message_out (error_type, message);
   }
 
