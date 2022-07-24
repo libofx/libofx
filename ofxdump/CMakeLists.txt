@@ -18,7 +18,7 @@ if (ENABLE_OFXDUMP)
             CMDLINE_PARSER_VERSION="${LIBOFX_VERSION_RELEASE_STRING}"
             )
 
-    if (NOT HAVE_GETOPT_LONG)
+    if (TARGET getopt)
         target_link_libraries(ofxdump getopt)
     endif ()
 
