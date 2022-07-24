@@ -8,7 +8,7 @@ include(FeatureSummary)
 
 # set-up tool features; this needs to be done early to let the vcpkg auto-download all the optional dependencies
 option(ENABLE_ICONV "Build with ICONV" ON)
-add_feature_info("iconv" ENABLE_ICONV "Enables ICONV support")
+add_feature_info("iconv" ENABLE_ICONV "Enables ICONV support for encoding conversion")
 if (ENABLE_ICONV)
     list(APPEND VCPKG_MANIFEST_FEATURES "iconv")
 endif ()

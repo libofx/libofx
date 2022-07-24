@@ -8,7 +8,7 @@
   ],
   "features": {
     "iconv": {
-      "description": "Builds with ICONV support",
+      "description": "Builds with ICONV support for encoding conversion",
       "dependencies": [
         "libiconv"
       ]
