@@ -49,6 +49,17 @@
 #  endif
 #endif
 
+#ifdef LIBOFX_DLL
+#  ifdef IN_LIBOFX
+#     define LIBOFX_API __declspec(dllexport)
+#  else 
+#     define LIBOFX_API __declspec(dllimport)
+#  endif
+#else
+#define LIBOFX_API
+#endif
+
+
 #ifdef __cplusplus
 extern "C" {
 #else
@@ -1436,18 +1447,18 @@ extern "C" {
 
 //@}
 
-extern int ofx_PARSER_msg; /**< If set to true, parser events will be printed to the console */
-extern int ofx_DEBUG_msg;/**< If set to true, general debug messages will be printed to the console */
-extern int ofx_DEBUG1_msg;/**< If set to true, debug level 1 messages will be printed to the console */
-extern int ofx_DEBUG2_msg;/**< If set to true, debug level 2 messages will be printed to the console */
-extern int ofx_DEBUG3_msg;/**< If set to true, debug level 3 messages will be printed to the console */
-extern int ofx_DEBUG4_msg;/**< If set to true, debug level 4 messages will be printed to the console */
-extern int ofx_DEBUG5_msg;/**< If set to true, debug level 5 messages will be printed to the console */
-extern int ofx_STATUS_msg;/**< If set to true, status messages will be printed to the console */
-extern int ofx_INFO_msg;/**< If set to true, information messages will be printed to the console */
-extern int ofx_WARNING_msg;/**< If set to true, warning messages will be printed to the console */
-extern int ofx_ERROR_msg;/**< If set to true, error messages will be printed to the console */
-extern int ofx_show_position;/**< If set to true, the line number will be shown after any error */
+extern LIBOFX_API int ofx_PARSER_msg; /**< If set to true, parser events will be printed to the console */
+extern LIBOFX_API int ofx_DEBUG_msg;/**< If set to true, general debug messages will be printed to the console */
+extern LIBOFX_API int ofx_DEBUG1_msg;/**< If set to true, debug level 1 messages will be printed to the console */
+extern LIBOFX_API int ofx_DEBUG2_msg;/**< If set to true, debug level 2 messages will be printed to the console */
+extern LIBOFX_API int ofx_DEBUG3_msg;/**< If set to true, debug level 3 messages will be printed to the console */
+extern LIBOFX_API int ofx_DEBUG4_msg;/**< If set to true, debug level 4 messages will be printed to the console */
+extern LIBOFX_API int ofx_DEBUG5_msg;/**< If set to true, debug level 5 messages will be printed to the console */
+extern LIBOFX_API int ofx_STATUS_msg;/**< If set to true, status messages will be printed to the console */
+extern LIBOFX_API int ofx_INFO_msg;/**< If set to true, information messages will be printed to the console */
+extern LIBOFX_API int ofx_WARNING_msg;/**< If set to true, warning messages will be printed to the console */
+extern LIBOFX_API int ofx_ERROR_msg;/**< If set to true, error messages will be printed to the console */
+extern LIBOFX_API int ofx_show_position;/**< If set to true, the line number will be shown after any error */
 
 #ifdef __cplusplus
 } // end of extern "C"
