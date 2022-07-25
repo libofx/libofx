@@ -16,7 +16,7 @@ LibOFX was implemented directly from the full OFX 1.6 spec, and currently suppor
 * Investment transactions.
 * OFX 2.0
 
-Future projects for libofx include:
+Future projects for LibOFX include:
 * Header parsing
 * DTD autodetection
 * Currency conversion
@@ -25,7 +25,7 @@ Future projects for libofx include:
 * OFX export
 
 ## Additional tools
-In addition to the library, three utilities are included with libofx:
+In addition to the library, three utilities are included with LibOFX:
 
 ### ofxdump
 ofxdump prints to stdout, in human-readable form, everything the library understands about a particular OFX response file, and sends errors to stderr.  It is a C++ code example and demo of the library (it uses every functions and every structures of LibOFX).
@@ -75,7 +75,7 @@ Step-by-step guide to using the ofxconnect utility:
     ```
 
 3. Retrieve the service capabilities of each fipid to find the one which has the services you want.\
-Note that all the 6-digit fipids don't seem to work well with libofx right now.
+Note that all the 6-digit fipids don't seem to work well with LibOFX right now.
 
     ```shell
     $ ofxconnect -v 5571
@@ -152,7 +152,7 @@ LibOFX <==> OpenSP compatibility matrix:
 #### On the SP_MULTI_BYTE 
 
 LibOFX must know if OpenSP library was compiled with the `SP_MULTI_BYTE` defined. Our CMake build system makes best effort to detect the `SP_MULTI_BYTE`, as defined by OpenSP's `config.h`.  If you see things such as `SAEET` or `SAEET▄ù≡ù` instead of `STATEMENT` in ofxdump's output, it means that the library was misconfigured.
-In such case you can force libofx to override such detected value by enabling the `DISABLE_OPENSP_MULTIBYTE` [CMake switch](#cmake-switches).
+In such case you can force LibOFX to override such detected value by enabling the `DISABLE_OPENSP_MULTIBYTE` [CMake switch](#cmake-switches).
 
 ### Iconv
 Used to convert the encoding, not required but very recommended.
@@ -167,13 +167,13 @@ Required by the ofxconnect tool
 
 ### Using CMake build system
 
-You can use CMake to build libofx. See the `CMakeLists.txt` in root folder for the currently required version.
+You can use CMake to build LibOFX. See the `CMakeLists.txt` in root folder for the currently required version.
 CMake is designed so that the build process can be done in a separate directory. This is highly recommended for users and required for packagers.
 To build LibOFX in the subdirectory `build/` type:
 
 ```shell
-cmake -B build -S .   # add "-G Ninja" if ninja is installed (optional, see "CMake switches" section below)`
-ccmake -B build -S .  # to change the configuration of the build process (optional, see "CMake switches" section below).
+$ cmake -B build -S .   # add "-G Ninja" if ninja is installed (optional, see "CMake switches" section below)
+$ ccmake -B build -S .  # to change the configuration of the build process (optional, see "CMake switches" section below).
 ```
 
 #### CMake switches
@@ -182,7 +182,7 @@ There are several CMake options available that can be enabled/disabled to change
 
 | Switch                        |   Value    |     Default      | Purpose                                                                                                                                                                             | 
 |-------------------------------|:----------:|:----------------:|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `-D BUILD_SHARED_LIBS`        | `ON`/`OFF` |       `ON`       | Whether to build the library dynamically (shared) or statically                                                                                                                     | Decides whether to build libofx as a shared or a static lib                                                                                                                        |  
+| `-D BUILD_SHARED_LIBS`        | `ON`/`OFF` |       `ON`       | Whether to build LibOFX dynamically (shared) or statically                                                                                                                          |
 | `-D ENABLE_ICONV`             | `ON`/`OFF` |       `ON`       | Enables ICONV support for encoding conversion                                                                                                                                       |
 | `-D ENABLE_OFX2QIF`           | `ON`/`OFF` |       `ON`       | Enables OFX file to QIF (Quicken Interchange Format) file converter                                                                                                                 |
 | `-D ENABLE_OFXDUMP`           | `ON`/`OFF` |       `ON`       | Enables ofxdump utility which prints, in human readable form, everything the library understands about a file                                                                       |
@@ -209,7 +209,7 @@ Make sure you have the OpenSP library installed (libosp.so) before compiling.  Y
 If you have a version of OpenJade or OpenSP already installed before compiling OpenSP, make sure that you use ./configure --prefix=/usr to build OpenSP.  Otherwise, LibOFX will probably link with the older, incompatible version of OpenSP.
 
 Then type:\
-1. `./autogen.sh` (for libofx cloned from repository)\
+1. `./autogen.sh` (for LibOFX cloned from repository)\
 or `./configure` (for a distributed tarball)\
 2. `make`\
 And as root type:
@@ -226,7 +226,7 @@ Even if you add `/usr/local/lib/` to `/etc/ld.so.conf`, LibOFX will probably sti
 
 I STRONGLY URGE YOU to avoid these problems and compile OpenSP using
 `./configure --prefix=/usr`
-If you really want to install OpenSP in `/usr/local/lib`, you must add `--with-opensp-libs=/usr/local/lib` to libofx's `./configure` or `./autogen.sh`
+If you really want to install OpenSP in `/usr/local/lib`, you must add `--with-opensp-libs=/usr/local/lib` to LibOFX's `./configure` or `./autogen.sh`
 
 #### Problems compiling OpenSP 1.4
 
@@ -244,7 +244,7 @@ Full documentation of the API and library internals generated using doxygen is a
 
 ## Get involved!
 * Please note that despite a very detailed spec, OFX is by nature very hard to test.  I only have access to the specifications examples, and
-my own bank (Desjardins).  But I need people to run as many OFX files from different banks as they can thru libofx, and report the result.
+my own bank (Desjardins).  But I need people to run as many OFX files from different banks as they can thru LibOFX, and report the result.
 * This is my first attempt at writing an API.  I need comments from financial software writers about `inc/libofx.h`  What do YOU need?
 
 Benoit Grégoire\
