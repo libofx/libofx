@@ -28,16 +28,111 @@ Future projects for libofx include:
 In addition to the library, three utilities are included with libofx:
 
 ### ofxdump
-ofxdump prints to stdout, in human-readable form, everything the library understands about a particular OFX response file, and sends errors to stderr.  It is a C++ code example and demo of the library (it uses every functions and every structures of LibOFX)\
-usage: `ofxdump` _path_to_ofx_file_`/`_ofx_filename_
+ofxdump prints to stdout, in human-readable form, everything the library understands about a particular OFX response file, and sends errors to stderr.  It is a C++ code example and demo of the library (it uses every functions and every structures of LibOFX).
+
+Usage: `ofxdump _path_to_ofx_file_/_ofx_filename_`
 
 ### ofx2qif
 ofx2qif is a OFX "file" to QIF (Quicken Interchange Format) converter.  It was written as a C code example, and as a way for LibOFX to immediately provide something useful, as an incentive for people to try out the library.  It is not recommended that financial software use the output of this utility for OFX support.  The QIF file format is very primitive, and much information is lost.  The utility currently supports every transaction tags of the qif format except the address lines, and supports many of the tags of `!Account`. It should generate QIF files that will import successfully in just about every software with QIF support.
-I do not plan on working on this utility much further, but I would be more than happy to accept contributions.\
-usage: `ofx2qif` _path_to_ofx_file_`/`_ofx_filename_ `>` _output_filename_`.qif`
+I do not plan on working on this utility much further, but I would be more than happy to accept contributions.
+
+Usage: `ofx2qif _path_to_ofx_file_/_ofx_filename_ > _output_filename_.qif`
 
 ### ofxconnect
 ofxconnect is a sample app to demonstrate & test new direct connect API'\s (try "make check" in the ofxconnect folder).  Read [ofxdump/README.privateserver](ofxdump/README.privateserver) first.
+
+It also serves as an implementation sample, so you can understand how to use it in your own code.
+
+#### Direct Connect protocol
+
+Direct Connect consists of two separate steps:  First, contacting the partner
+server to retrieve information about your bank.  Second, contacting your bank
+to retrieve your accounts and statements.  The partner server should be
+contacted when the user sets up his accounts.  
+
+Common mistakes with the partner server are to contact it EVERY time you
+contact the bank, and contacting it just once to cache the contact
+info for all banks.  The former is overkill, the latter means users won't
+have up-to-date bank contact information.
+
+#### Usage
+
+Step-by-step guide to using the ofxconnect utility:
+
+1. Retrieve the list of banks
+
+    ```shell
+    $ ofxconnect -b
+    ```
+
+2. Find your bank in the list.  Retrieve the FI partner ID's (fipid's) for that bank
+
+    ```shell
+    $ ofxconnect -f "Wells Fargo"
+    101458
+    102078
+    5571
+    ```
+
+3. Retrieve the service capabilities of each fipid to find the one which has the services you want.\
+Note that all the 6-digit fipids don't seem to work well with libofx right now.
+
+    ```shell
+    $ ofxconnect -v 5571
+    Statements? Yes
+    Billpay? Yes
+    Investments? No
+    ```
+
+4. Retrieve and view the list of all your accounts
+
+    ```shell
+    $ ofxconnect -a --fipid=5571 --user=myusername --pass=mypassword accounts.ofx
+    $ ofxdump accounts.ofx 2>/dev/null
+    ```
+
+5. Look for entries like this:
+
+    ```
+    Account ID: 999888777 00 123456789
+    Account name: Bank account 1234567890
+    Account type: CHECKING
+    Bank ID: 999888777
+    Branch ID: 00
+    Account #: 1234567890
+    ```
+
+6. Retrieve a statement for one of the accounts
+
+    ```shell
+    $ ofxconnect -s --fipid=5571 --user=myusername --pass=mypassword --bank=xxx --account=xxx --type=x --past=xx statement.ofx
+    $ ofxdump statement.ofx 2>/dev/null
+    ````
+
+    The `--bank` and `--account` parameters should be exactly like the "Bank ID" and "Account #" results from the account request.\
+    The `--type` is: `1=CHECKING`, `2=INVESTMENT`, `3=CREDITCARD`. Other types are not supported.\
+    The `--past` is how many days previous from today you want.
+
+#### Testing in live environment
+
+> There is an OFX test server which is used by the developers to ensure
+> that the OFX connection works correctly.  The providers of this server
+> have asked us not to post the connection information publicly.
+>
+> Therefore, the test script file which connects to this server is 
+> encrypted using a GnuPG key: OFX Test Server <libofx-devel@lists.sf.net>.
+>
+> You will need this private key to unlock this file.  If you are an
+> active, contributing member of the open source OFX community, please
+> e-mail me for this key.  Please do not share the key with anyone who does
+> not fit this description.  Please do not post the key on any mailing list
+> or any other archived forum.  If the key does become comprimised, please
+> e-mail me, or the libofx-devel list and we'll cancel that key and 
+> encrypt it using a new one.
+>
+> Thanks
+>
+> Ace Jones <acejones@users.sf.net>
 
 ## Dependencies
 
@@ -113,12 +208,12 @@ Vcpkg will automatically set-up all the required optional dependencies, per the 
 Make sure you have the OpenSP library installed (libosp.so) before compiling.  You can grab it at http://openjade.sourceforge.net/. The recommended version is OpenSP 1.5.
 If you have a version of OpenJade or OpenSP already installed before compiling OpenSP, make sure that you use ./configure --prefix=/usr to build OpenSP.  Otherwise, LibOFX will probably link with the older, incompatible version of OpenSP.
 
-Then type:
-`./autogen.sh` (For libofx cloned from repository)
-`./configure` (For a distributed tarball)
-`make`
+Then type:\
+1. `./autogen.sh` (for libofx cloned from repository)\
+or `./configure` (for a distributed tarball)\
+2. `make`\
 And as root type:
-`make install`
+3. `make install`
 
 ### Troubleshooting 
 
