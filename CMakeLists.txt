@@ -120,6 +120,11 @@ elseif (DISABLE_OPENSP_MULTIBYTE)
     set(SP_MULTI_BYTE 0)
 endif ()
 
+# Disable CRT warnings
+if(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif()
+
 #TODO: once Autotools build stuff is gone, remove these and set them directly in libofx.pc.in itself
 set(OPENSPLIBS ${OpenSP_LIBRARIES})
 set(OPENSPINCLUDES ${OpenSP_INCLUDE_DIRS})
