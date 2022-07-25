@@ -171,7 +171,7 @@ Required by the ofxconnect tool.
 
 You can use CMake to build LibOFX. See the `CMakeLists.txt` in root folder for the currently required version.
 CMake is designed so that the build process can be done in a separate directory. This is highly recommended for users and required for packagers.
-To build LibOFX in the subdirectory `build/` type:
+To build LibOFX in the subdirectory `build/`, type:
 
 ```shell
 $ cmake -B build -S .   # add "-G Ninja" if ninja is installed (optional, see "CMake switches" section below)
@@ -182,19 +182,19 @@ $ ccmake -B build -S .  # to change the configuration of the build process (opti
 There are several CMake options available that can be enabled/disabled to change the set of features enabled or the compilation behavior:
 
 
-| Switch                        |                Value                |               Default               | Purpose                                                                                                                                                                             | 
-|-------------------------------|:-----------------------------------:|:-----------------------------------:|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `-D BUILD_SHARED_LIBS`        |             `ON`/`OFF`              |                `ON`                 | Whether to build LibOFX dynamically (shared) or statically                                                                                                                          |
-| `-D ENABLE_ICONV`             |             `ON`/`OFF`              |                `ON`                 | Enables ICONV support for encoding conversion                                                                                                                                       |
-| `-D ENABLE_OFX2QIF`           |             `ON`/`OFF`              |                `ON`                 | Enables OFX file to QIF (Quicken Interchange Format) file converter                                                                                                                 |
-| `-D ENABLE_OFXDUMP`           |             `ON`/`OFF`              |                `ON`                 | Enables ofxdump utility which prints, in human readable form, everything the library understands about a file                                                                       |
-| `-D ENABLE_OFXCONNECT`        |             `ON`/`OFF`              |                `ON`                 | Enables ofxconnect utility which allows to test OFX Direct Connect                                                                                                                  |
-| `-D DISABLE_OPENSP_MULTIBYTE` |             `ON`/`OFF`              |                `OFF`                | Overrides the auto-detected value of the `SP_MULTI_BYTE` and forces it to 0. See [On the SP_MULTI_BYTE](#on-the-spmultibyte) notes.                                                 |
-| `-D CMAKE_BUILD_TYPE`         |               Various               |          `RelWithDebInfo`           | Chooses the build type; refer to CMake manual for a list of possible types                                                                                                          |
-| `-D ENABLE_VCPKG_INTEGRATION` |             `ON`/`OFF`              |                `OFF`                | An alternative way to enable vcpkg integration. A attempt will be made to detect the location of the `vcpkg.cmake` toolchain file using `VCPKG_ROOT` environment variable.          |
-| `-D CMAKE_TOOLCHAIN_FILE`     |               A path                |                None                 | A path to the `[vcpkg root]/scripts/buildsystems/vcpkg.cmake` toolchain file, where `[vcpkg root]` is your clone of the vcpkg Git repository. Implies `ENABLE_VCPKG_INTEGRATION=ON` |
-| `-D OpenSP_INCLUDE_DIR`       | A path, e.g. `/usr/include/opensp`  | Whatever `FindOpenSP.cmake` detects | A path to the OpenSP library includes. Normally `FindOpenSP.cmake` module should locate it, but if it can't or you want to override it, you can use this switch.                    |
-| `-D OpenSP_LIBRARY`           | A path, e.g. `/usr/lib/libosp.so.5` | Whatever `FindOpenSP.cmake` detects | Like the `OpenSP_INCLUDE_DIR` above, but for the library file itself.                                                                                                               |
+| Switch                        |                                                             Value                                                             |               Default               | Purpose                                                                                                                                                                    | 
+|-------------------------------|:-----------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------:|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `-D BUILD_SHARED_LIBS`        |                                                          `ON`/`OFF`                                                           |                `ON`                 | Whether to build LibOFX dynamically (shared) or statically                                                                                                                 |
+| `-D ENABLE_ICONV`             |                                                          `ON`/`OFF`                                                           |                `ON`                 | Enables ICONV support for encoding conversion                                                                                                                              |
+| `-D ENABLE_OFX2QIF`           |                                                          `ON`/`OFF`                                                           |                `ON`                 | Enables OFX file to QIF (Quicken Interchange Format) file converter                                                                                                        |
+| `-D ENABLE_OFXDUMP`           |                                                          `ON`/`OFF`                                                           |                `ON`                 | Enables ofxdump utility which prints, in human readable form, everything the library understands about a file                                                              |
+| `-D ENABLE_OFXCONNECT`        |                                                          `ON`/`OFF`                                                           |                `ON`                 | Enables ofxconnect utility which allows to test OFX Direct Connect                                                                                                         |
+| `-D DISABLE_OPENSP_MULTIBYTE` |                                                          `ON`/`OFF`                                                           |                `OFF`                | Overrides the auto-detected value of the `SP_MULTI_BYTE` and forces it to 0. See [On the SP_MULTI_BYTE](#on-the-spmultibyte) notes.                                        |
+| `-D CMAKE_BUILD_TYPE`         |                                                            Various                                                            |          `RelWithDebInfo`           | Chooses the build type; refer to CMake manual for a list of possible types                                                                                                 |
+| `-D CMAKE_TOOLCHAIN_FILE`     | A path, e.g. `[vcpkg root]/scripts/buildsystems/vcpkg.cmake`, where `[vcpkg root]` is your clone of the vcpkg Git repository. |                None                 | A path to the toolchain file.  Implies `ENABLE_VCPKG_INTEGRATION=ON`                                                                                                       |
+| `-D ENABLE_VCPKG_INTEGRATION` |                                                          `ON`/`OFF`                                                           |                `OFF`                | An alternative way to enable vcpkg integration. A attempt will be made to detect the location of the `vcpkg.cmake` toolchain file using `VCPKG_ROOT` environment variable. |
+| `-D OpenSP_INCLUDE_DIR`       |                                              A path, e.g. `/usr/include/opensp`                                               | Whatever `FindOpenSP.cmake` detects | A path to the OpenSP library includes. Normally `FindOpenSP.cmake` module should locate it, but if it can't or you want to override it, you can use this switch.           |
+| `-D OpenSP_LIBRARY`           |                                              A path, e.g. `/usr/lib/libosp.so.5`                                              | Whatever `FindOpenSP.cmake` detects | Like the `OpenSP_INCLUDE_DIR` above, but for the library file itself.                                                                                                      |
 
 ### Vcpkg integration
 
@@ -209,7 +209,7 @@ Vcpkg will automatically set-up all the required optional dependencies, per the 
 
 ## Using classic Autotools build system
 
-Make sure you have the OpenSP library installed (libosp.so) before compiling.  You can grab it at http://openjade.sourceforge.net/. The recommended version is OpenSP 1.5.
+Make sure you have the OpenSP library installed (`libosp.so`) before compiling.  You can grab it at http://openjade.sourceforge.net/. The recommended version is OpenSP 1.5.
 If you have a version of OpenJade or OpenSP already installed before compiling OpenSP, make sure that you use `./configure --prefix=/usr` to build OpenSP.  Otherwise, LibOFX will probably link with the older, incompatible version of OpenSP.
 
 Then type:\
@@ -235,7 +235,7 @@ If you really want to install OpenSP in `/usr/local/lib`, you must add `--with-o
 ### Q: Problems compiling OpenSP 1.4
 
 If you are getting errors like:
-`../include/Message.h:157: `class OpenSP::Messenger' is inaccessible nsgmls.cxx:60: within this context)`
+`../include/Message.h:157: 'class OpenSP::Messenger' is inaccessible nsgmls.cxx:60: within this context)`
 
 Try to change private to protected in file `OpenSP-1.4/nsgmls/RasEventHandler.h`, on line 105.
 
