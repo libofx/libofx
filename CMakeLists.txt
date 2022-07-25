@@ -88,9 +88,9 @@ endif ()
 option(BUILD_SHARED_LIBS "Decides whether to build ${CMAKE_PROJECT_NAME} as a shared or static library" ON)
 add_feature_info("shared" BUILD_SHARED_LIBS "Enables compiling ${CMAKE_PROJECT_NAME} as a shared library (as opposed to statically)")
 
-if(BUILD_SHARED_LIBS AND MSVC)
+if (BUILD_SHARED_LIBS AND MSVC)
     add_compile_definitions(LIBOFX_DLL=1)
-endif()
+endif ()
 
 # set up SP_MULTI_BYTE
 option(DISABLE_OPENSP_MULTIBYTE "Force ${CMAKE_PROJECT_NAME} to compile with the assumption that OpenSP was NOT compiled with SP_MULTI_BYTE defined" OFF)
@@ -121,9 +121,9 @@ elseif (DISABLE_OPENSP_MULTIBYTE)
 endif ()
 
 # Disable CRT warnings
-if(MSVC)
+if (MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-endif()
+endif ()
 
 #TODO: once Autotools build stuff is gone, remove these and set them directly in libofx.pc.in itself
 set(OPENSPLIBS ${OpenSP_LIBRARIES})
