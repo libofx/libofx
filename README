@@ -160,7 +160,7 @@ In such case you can force LibOFX to override such detected value by enabling th
 Used to convert the encoding, not required but very recommended.
 
 ## Libxml++
-Required by the ofxconnect tool.
+Required by the ofxconnect tool. Needs to be compatible with version 2.6 of the ABI, see https://libxmlplusplus.github.io/libxmlplusplus/#abi-versions for details.
 
 ## Libcurl
 Required by the ofxconnect tool.
@@ -220,6 +220,10 @@ And as root type:
 3. `make install`
 
 ## FAQ/Troubleshooting 
+
+### Q: vcpkg fails to build ofxconnect due to missing Libxml++
+
+LibOFX depends on [Libxml++ library that compatible with version 2.6 of its ABI](#libxml), meanwhile vcpkg provides a version compatible with ABI 5.0. Unfortunately, at this point there is no workaround for it if building with vcpkg. 
 
 ### Q: Getting "configure: error: unable to link a test program, is OpenSP installed?"
 
