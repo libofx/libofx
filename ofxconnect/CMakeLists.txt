@@ -9,7 +9,9 @@ set(ofxconnect_SRCS
         )
 
 # required by libxml++
-set(CMAKE_CXX_STANDARD 11)
+if (CMAKE_CXX_STANDARD LESS 11)
+    set(CMAKE_CXX_STANDARD 11)
+endif()
 
 add_executable(ofxconnect ${ofxconnect_SRCS})
 target_link_libraries(ofxconnect ofx CURL::libcurl PkgConfig::LIBXMLPP)
