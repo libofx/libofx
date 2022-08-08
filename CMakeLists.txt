@@ -45,23 +45,30 @@ if (NOT CMAKE_BUILD_TYPE)
 endif (NOT CMAKE_BUILD_TYPE)
 
 # locate required dependencies
-find_package(OpenSP REQUIRED)
+find_package(OpenSP)
+set_package_properties(OpenSP PROPERTIES TYPE REQUIRED PURPOSE "The underlying library that the LibOFX builds upon, we cannot build without it!")
 
 # locate optional dependencies
 if (ENABLE_OFXCONNECT)
-    find_package(CURL REQUIRED)
+    find_package(CURL)
+    set_package_properties(CURL PROPERTIES TYPE REQUIRED PURPOSE "ENABLE_OFXCONNECT is ON, so we need curl for the ofxconnect tool to perform downloading of the statements")
     if (CURL_FOUND)
         set(HAVE_LIBCURL 1)
     endif ()
 
-    find_package(PkgConfig REQUIRED)
+    find_package(PkgConfig)
+    set_package_properties(PkgConfig PROPERTIES TYPE REQUIRED PURPOSE "ENABLE_OFXCONNECT is ON, so we need PkgConfig to locate the libxml++ library")
+
     if (PkgConfig_FOUND)
         pkg_check_modules(LIBXMLPP REQUIRED IMPORTED_TARGET libxml++-2.6>=2.6)
+        #TODO: if not found, handle the feature_summary by hand somehow
     endif ()
 endif ()
 
 if (ENABLE_ICONV)
-    find_package(Iconv REQUIRED)
+    find_package(Iconv)
+    set_package_properties(Iconv PROPERTIES TYPE REQUIRED PURPOSE "ENABLE_ICONV is on, so we need Iconv to build")
+
     if (Iconv_FOUND)
         set(HAVE_ICONV 1)
         include(CheckCXXSourceCompiles)
