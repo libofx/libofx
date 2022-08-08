@@ -54,9 +54,9 @@ if (ENABLE_OFXCONNECT)
         set(HAVE_LIBCURL 1)
     endif ()
 
-    find_package(PkgConfig)
+    find_package(PkgConfig REQUIRED)
     if (PkgConfig_FOUND)
-        pkg_check_modules(LIBXMLPP IMPORTED_TARGET libxml++-2.6>=2.6)
+        pkg_check_modules(LIBXMLPP REQUIRED IMPORTED_TARGET libxml++-2.6>=2.6)
     endif ()
 endif ()
 
