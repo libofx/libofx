@@ -6,6 +6,4 @@
 Makefile
 Makefile.in
 ofxdump
-cmdline.c
-cmdline.h
 *.1

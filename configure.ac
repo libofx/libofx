@@ -274,9 +274,9 @@ AC_DEFUN([adl_FUNC_GETOPT_LONG],
    [# FreeBSD has a gnugetopt library for this
     AC_CHECK_LIB([gnugetopt],[getopt_long],[AC_DEFINE([HAVE_GETOPT_LONG])],
      [# use the GNU replacement
+      AC_CONFIG_LIBOBJ_DIR(getopt)
       AC_LIBOBJ(getopt)
-      AC_LIBOBJ(getopt1)
-      AC_CONFIG_LINKS([lib/getopt.h:lib/gnugetopt.h])])])])
+      AC_LIBOBJ(getopt1)])])])
 
 dnl check for getopt in standard library
 adl_FUNC_GETOPT_LONG

@@ -308,7 +308,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
             const char* inchar = s_buffer.c_str();
             char * outchar = iconv_buffer;
             int iconv_retval = iconv (conversion_descriptor,
-#ifdef _WIN32 //Win32's iconv implementation takes a const char** inchar
+#ifdef HAVE_ICONV_CONST
                                       &inchar,
 #else
                                       const_cast<char**>(&inchar),
