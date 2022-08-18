@@ -55,23 +55,38 @@ Cache variables
 
 The following cache variables may also be set:
 
+``OpenSP_INCLUDE_DIR``
+  the OpenSP include directory
+
 ``OpenSP_LIBRARY``
   the absolute path of the osp library
 
 #]=======================================================================]
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(OpenSP REQUIRED IMPORTED_TARGET GLOBAL opensp)
+if (NOT OpenSP_INCLUDE_DIR AND NOT OpenSP_LIBRARY)
+  find_package(PkgConfig)
+  if (PkgConfig_FOUND)
+    pkg_check_modules(OpenSP IMPORTED_TARGET GLOBAL opensp)
 
-if (OpenSP_FOUND)
-  add_library(OpenSP::OpenSP ALIAS PkgConfig::OpenSP)
-else ()
-  find_path(OpenSP_INCLUDE_DIRS
+    if (OpenSP_FOUND)
+      add_library(OpenSP::OpenSP INTERFACE IMPORTED)
+      target_link_libraries(OpenSP::OpenSP INTERFACE PkgConfig::OpenSP)
+
+      set(OpenSP_INCLUDE_DIR ${OpenSP_INCLUDE_DIRS})
+      set(OpenSP_LIBRARY ${OpenSP_LIBRARIES})
+    endif ()
+  endif ()
+endif ()
+
+if (NOT OpenSP_INCLUDE_DIR)
+  find_path(OpenSP_INCLUDE_DIR
     NAMES ParserEventGeneratorKit.h
     PATH_SUFFIXES OpenSP opensp
     DOC "The OpenSP include directory"
     )
+endif ()
 
+if (NOT OpenSP_LIBRARY)
   find_library(OpenSP_LIBRARY_RELEASE
     NAMES osp libosp opensp libopensp sp133 libsp
     )
@@ -84,10 +99,10 @@ else ()
   select_library_configurations(OpenSP)
 endif ()
 
-if (OpenSP_FOUND)
-  if (OpenSP_INCLUDE_DIRS AND EXISTS "${OpenSP_INCLUDE_DIRS}/config.h")
+if (OpenSP_INCLUDE_DIR AND OpenSP_LIBRARY)
+  if (EXISTS "${OpenSP_INCLUDE_DIR}/config.h")
     if (NOT OpenSP_VERSION)
-      file(STRINGS "${OpenSP_INCLUDE_DIRS}/config.h" opensp_version_str REGEX "^#define[\t ]+SP_VERSION[\t ]+\".*\"")
+      file(STRINGS "${OpenSP_INCLUDE_DIR}/config.h" opensp_version_str REGEX "^#define[\t ]+SP_VERSION[\t ]+\".*\"")
       string(REGEX REPLACE "^.*SP_VERSION[\t ]+\"([^\"]*)\".*$" "\\1" OpenSP_VERSION "${opensp_version_str}")
       unset(opensp_version_str)
     endif ()
@@ -99,10 +114,12 @@ if (OpenSP_FOUND)
     endif ()
 
     include(CheckCXXSymbolExists)
-    check_cxx_symbol_exists(SP_MULTI_BYTE "${OpenSP_INCLUDE_DIRS}/config.h" OpenSP_MULTI_BYTE)
+    check_cxx_symbol_exists(SP_MULTI_BYTE "${OpenSP_INCLUDE_DIR}/config.h" OpenSP_MULTI_BYTE)
   endif ()
 
   if (NOT TARGET OpenSP::OpenSP)
+    set(OpenSP_INCLUDE_DIRS ${OpenSP_INCLUDE_DIR})
+
     add_library(OpenSP::OpenSP UNKNOWN IMPORTED)
     set_target_properties(OpenSP::OpenSP PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${OpenSP_INCLUDE_DIRS}")
 
@@ -125,11 +142,11 @@ endif ()
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(OpenSP
   FOUND_VAR OpenSP_FOUND
-  REQUIRED_VARS OpenSP_LIBRARIES OpenSP_INCLUDE_DIRS
+  REQUIRED_VARS OpenSP_LIBRARY OpenSP_INCLUDE_DIR
   VERSION_VAR OpenSP_VERSION
   )
 
-mark_as_advanced(OpenSP_LIBRARY OpenSP_MULTI_BYTE)
+mark_as_advanced(OpenSP_INCLUDE_DIR OpenSP_LIBRARY OpenSP_MULTI_BYTE)
 
 include(FeatureSummary)
 set_package_properties(OpenSP PROPERTIES
