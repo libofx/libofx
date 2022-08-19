@@ -104,7 +104,7 @@ if (BUILD_SHARED_LIBS AND MSVC)
 endif ()
 
 # set up SP_MULTI_BYTE
-set(FORCE_OPENSP_MULTIBYTE AUTO CACHE STRING "Force ${CMAKE_PROJECT_NAME} to compile with the assumption that OpenSP was compiled with SP_MULTI_BYTE *undefined*. Leave AUTO if auto-detected value should be used, or set to ON or OFF as needed.")  #
+set(FORCE_OPENSP_MULTIBYTE AUTO CACHE STRING "Whether to let FindOpenSP CMake module auto-detect the SP_MULTIBYTE value (leave 'AUTO'), or to override it with 'ON' or 'OFF'")
 set_property(CACHE FORCE_OPENSP_MULTIBYTE PROPERTY STRINGS AUTO ON OFF)
 
 # CheckCXXSymbolExists returns "" if symbol is not found
