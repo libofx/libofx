@@ -114,7 +114,7 @@ endif()
 
 message(CHECK_START "Setting up the SP_MULTI_BYTE")
 set(SP_MULTI_BYTE OpenSP_MULTI_BYTE)
-if (NOT FORCE_OPENSP_MULTIBYTE STREQUAL "AUTO") 
+if (NOT FORCE_OPENSP_MULTIBYTE STREQUAL "AUTO")
     if (NOT FORCE_OPENSP_MULTIBYTE EQUAL OpenSP_MULTI_BYTE)
         message(CHECK_PASS "detected by FindOpenSP to be ${OpenSP_MULTI_BYTE}, but overriding to ${FORCE_OPENSP_MULTIBYTE}, as set by FORCE_OPENSP_MULTIBYTE. If this is not indeded, it can cause wide character processing issues!")
         set(SP_MULTI_BYTE ${FORCE_OPENSP_MULTIBYTE})
@@ -122,7 +122,7 @@ if (NOT FORCE_OPENSP_MULTIBYTE STREQUAL "AUTO")
         message(CHECK_PASS "detected by FindOpenSP to be ${OpenSP_MULTI_BYTE}, with FORCE_OPENSP_MULTIBYTE also set to ${FORCE_OPENSP_MULTIBYTE}")
     endif ()
 else ()
-    message(CHECK_PASS "detected by FindOpenSP to be ${OpenSP_MULTI_BYTE}. Use FORCE_OPENSP_MULTIBYTE to set a different value")    
+    message(CHECK_PASS "detected by FindOpenSP to be ${OpenSP_MULTI_BYTE}. Use FORCE_OPENSP_MULTIBYTE to set a different value")
 endif ()
 
 # Disable CRT warnings
@@ -130,7 +130,7 @@ if (MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif ()
 
-#TODO: once Autotools build stuff is gone, remove these and set them directly in libofx.pc.in itself
+# TODO: once Autotools build stuff is gone, remove these and set them directly in libofx.pc.in itself
 set(OPENSPLIBS ${OpenSP_LIBRARIES})
 set(OPENSPINCLUDES ${OpenSP_INCLUDE_DIRS})
 set(VERSION ${LIBOFX_VERSION_RELEASE_STRING})
