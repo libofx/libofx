@@ -23,7 +23,7 @@ else
 endif
 
 MAINTAINERCLEANFILES  = cmdline.c cmdline.h
-EXTRA_DIST = cmdline.ggo
+EXTRA_DIST = cmdline.ggo CMakeLists.txt
 
 # Run all our example files through ofxdump to verify we can parse
 # them without failure

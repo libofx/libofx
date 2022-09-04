@@ -19,7 +19,7 @@ cmdline.c cmdline.h: cmdline.ggo Makefile
 endif
 MAINTAINERCLEANFILES  = cmdline.c cmdline.h
 
-EXTRA_DIST = cmdline.ggo test-privateserver.sh
+EXTRA_DIST = cmdline.ggo test-privateserver.sh CMakeLists.txt
 
 # See README.privateserver for details on this server and how to get
 # the key needed to run this test.

@@ -12,7 +12,7 @@ if BUILD_OFXCONNECT
   MAYBE_OFXCONNECT = ofxconnect
 endif
 
-DIST_SUBDIRS = m4 inc dtd lib doc . ofx2qif ofxdump ofxconnect
+DIST_SUBDIRS = m4 inc dtd lib doc . getopt ofx2qif ofxdump ofxconnect
 SUBDIRS = m4 inc dtd lib doc . $(MAYBE_OFX2QIF) $(MAYBE_OFXDUMP) $(MAYBE_OFXCONNECT)
 
 doc_DATA = \
@@ -25,6 +25,10 @@ doc_DATA = \
   totest.txt
 
 EXTRA_DIST = \
+  CMakeLists.txt \
+  cmake_install.cmake \
+  cmake/modules/FindOpenSP.cmake \
+  config.h.cmake \
   libofx.spec.in \
   libofx.spec \
   libofx.pc \

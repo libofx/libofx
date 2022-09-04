@@ -1,6 +1,6 @@
 lib_LTLIBRARIES = libofx.la
 
-EXTRA_DIST = gnugetopt.h getopt.c getopt1.c
+EXTRA_DIST = CMakeLists.txt
 
 libofx_la_SOURCES =  messages.cpp \
 		ofx_utilities.cpp \

@@ -415,6 +415,7 @@ AC_OUTPUT(
 			inc/libofx.h
 			dtd/Makefile
 			doc/Makefile
+                        getopt/Makefile
 			ofx2qif/Makefile
 			ofxdump/Makefile
 			ofxconnect/Makefile
