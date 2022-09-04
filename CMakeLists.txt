@@ -39,10 +39,17 @@ endif ()
 # actually set up the project
 project(libofx)
 
+# This is the project version
 set(LIBOFX_MAJOR_VERSION 0)
 set(LIBOFX_MINOR_VERSION 10)
 set(LIBOFX_MICRO_VERSION 6)
 set(LIBOFX_VERSION_RELEASE_STRING ${LIBOFX_MAJOR_VERSION}.${LIBOFX_MINOR_VERSION}.${LIBOFX_MICRO_VERSION})
+
+# This is the library version (SONAME) so affects ABI
+# LIBOFX_LIBRARY_SONAME must be changed when ABI is broken (backwards compat)
+# LIBOFX_LIBRARY_VERSION must be changed if just adding new functions and such (backwards compat not broken)
+set(LIBOFX_LIBRARY_SONAME 7)
+set(LIBOFX_LIBRARY_VERSION ${LIBOFX_LIBRARY_SONAME}.0.2)
 
 # If no build type is set, use "Release with Debug Info"
 if (NOT CMAKE_BUILD_TYPE)
