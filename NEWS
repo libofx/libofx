@@ -1,3 +1,15 @@
+2022-09-04, LibOFX 0.10.6:
+
+        - Update FindOpenSP; also allow to forcefully ENABLE SP_MULTI_BYTE (#71)
+        - Add support for CMake build system (#63)
+        - Minor code cleanup in CharStringtostring function and its header (#65)
+        - Ignore SGML parser character error because the char is accepted fine (#60) (#64)
+        - Fix find_dtd() when OFX_DTD_PATH env var is used (#66)
+        - Add ./configure option to disable CLI tools
+        - Only link ofx2qif against C++ STD lib
+        - Win32 code fixes for MSVC compilation
+        - Don't deconst iconv input buffer under Windows (#51)
+
 2022-04-19, LibOFX 0.10.5:
         - Fix missing include for ptrdiff_t on Homebrew (#57)
 

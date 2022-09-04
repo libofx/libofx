@@ -12,8 +12,8 @@ dnl Process this file with autoconf to produce a configure script.
 
 LIBOFX_MAJOR_VERSION=0
 LIBOFX_MINOR_VERSION=10
-LIBOFX_MICRO_VERSION=5
-AC_INIT(libofx, 0.10.5)  # must repeat the version number here, sorry
+LIBOFX_MICRO_VERSION=6
+AC_INIT(libofx, 0.10.6)  # must repeat the version number here, sorry
 
 LIBOFX_VERSION_RELEASE_STRING="$LIBOFX_MAJOR_VERSION.$LIBOFX_MINOR_VERSION.$LIBOFX_MICRO_VERSION"
 
