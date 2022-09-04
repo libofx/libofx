@@ -176,6 +176,9 @@ if (ENABLE_OFX2QIF)
     add_subdirectory(ofx2qif)
 endif ()
 
+# TODO: wire up docs
+# TODO: wire up tests
+
 # set up vcpkg integration
 option(ENABLE_VCPKG_INTEGRATION "Enable vcpkg integration" OFF)
 add_feature_info("vcpkg" ENABLE_VCPKG_INTEGRATION "Enables integration with vcpkg, a C++ library manager")
