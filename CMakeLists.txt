@@ -7,6 +7,7 @@ if (${CMAKE_VERSION} VERSION_LESS 3.25.0)
     set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 endif ()
 
+include(GNUInstallDirs)
 include(CMakeDependentOption)
 include(FeatureSummary)
 
@@ -136,8 +137,8 @@ set(OPENSPINCLUDES ${OpenSP_INCLUDE_DIRS})
 set(VERSION ${LIBOFX_VERSION_RELEASE_STRING})
 set(prefix "${CMAKE_INSTALL_PREFIX}")
 set(exec_prefix "\${prefix}")
-set(libdir "\${prefix}/lib")
-set(includedir "\${prefix}/include")
+set(libdir "\${prefix}/${CMAKE_INSTALL_LIBDIR}")
+set(includedir "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
 
 # create the libofx.h file out of the libofx.h.in
 configure_file("inc/libofx.h.in" "${CMAKE_CURRENT_BINARY_DIR}/inc/libofx.h")
@@ -189,9 +190,9 @@ endif ()
 # create the libofx.pc pkg-config file out of the libofx.pc.in
 configure_file("libofx.pc.in" "${CMAKE_BINARY_DIR}/libofx.pc")
 
-install(DIRECTORY dtd DESTINATION share/libofx FILES_MATCHING PATTERN "*.dtd" PATTERN "*.dcl")
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/inc/libofx.h" DESTINATION include/libofx)
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libofx.pc" DESTINATION lib/pkgconfig)
+install(DIRECTORY dtd DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/libofx FILES_MATCHING PATTERN "*.dtd" PATTERN "*.dcl")
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/inc/libofx.h" DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libofx.pc" DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 
 feature_summary(WHAT REQUIRED_PACKAGES_NOT_FOUND
         DESCRIPTION "The following REQUIRED packages have not been found:")

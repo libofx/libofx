@@ -18,4 +18,4 @@ if (TARGET getopt)
     target_link_libraries(ofxdump getopt)
 endif ()
 
-install(TARGETS ofxdump RUNTIME DESTINATION bin)
+install(TARGETS ofxdump RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

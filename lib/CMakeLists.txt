@@ -45,7 +45,7 @@ add_library(ofx ${ofx_SRCS} ${ofx_HEADERS})
 set_target_properties(ofx PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 target_link_libraries(ofx OpenSP::OpenSP)
 target_include_directories(ofx BEFORE PRIVATE ${COMMON_INCLUDE_DIRS})
-target_compile_definitions(ofx PRIVATE IN_LIBOFX=1 MAKEFILE_DTD_PATH="${CMAKE_INSTALL_PREFIX}/share/libofx/dtd/")
+target_compile_definitions(ofx PRIVATE IN_LIBOFX=1 MAKEFILE_DTD_PATH="${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/libofx/dtd/")
 
 if (CMAKE_COMPILER_IS_GNUCXX)
     set_target_properties(ofx PROPERTIES CXX_VISIBILITY_PRESET hidden)

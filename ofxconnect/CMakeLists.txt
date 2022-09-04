@@ -26,4 +26,4 @@ if (TARGET getopt)
     target_link_libraries(ofxconnect getopt)
 endif ()
 
-install(TARGETS ofxconnect RUNTIME DESTINATION bin)
+install(TARGETS ofxconnect RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
