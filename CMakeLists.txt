@@ -2,7 +2,11 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 cmake_minimum_required(VERSION 3.12)
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
+
+if (${CMAKE_VERSION} VERSION_LESS 3.25.0)
+    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
+endif ()
+
 include(CMakeDependentOption)
 include(FeatureSummary)
 
@@ -100,31 +104,25 @@ if (BUILD_SHARED_LIBS AND MSVC)
 endif ()
 
 # set up SP_MULTI_BYTE
-option(DISABLE_OPENSP_MULTIBYTE "Force ${CMAKE_PROJECT_NAME} to compile with the assumption that OpenSP was NOT compiled with SP_MULTI_BYTE defined" OFF)
+set(FORCE_OPENSP_MULTIBYTE AUTO CACHE STRING "Whether to let FindOpenSP CMake module auto-detect the SP_MULTIBYTE value (leave 'AUTO'), or to override it with 'ON' or 'OFF'")
+set_property(CACHE FORCE_OPENSP_MULTIBYTE PROPERTY STRINGS AUTO ON OFF)
 
-if (OpenSP_INCLUDE_DIR AND EXISTS "${OpenSP_INCLUDE_DIR}/config.h")
-    file(STRINGS "${OpenSP_INCLUDE_DIR}/config.h" opensp_multibyte_str REGEX "^#define[\t ]+SP_MULTI_BYTE[ \t]+[01].*$")
-    if (opensp_multibyte_str)
-        string(REGEX REPLACE "^#define[\t ]+SP_MULTI_BYTE[ \t]+([01]).*$" "\\1" SP_MULTI_BYTE "${opensp_multibyte_str}")
-        if (SP_MULTI_BYTE STREQUAL "")
-            message(STATUS "SP_MULTI_BYTE detected but not set to any value, ignoring")
-        else ()
-            message(STATUS "SP_MULTI_BYTE detected to be ${SP_MULTI_BYTE}")
-        endif ()
-    endif ()
-    unset(opensp_multibyte_str)
-endif ()
+# CheckCXXSymbolExists returns "" if symbol is not found
+if (NOT OpenSP_MULTI_BYTE)
+    set(OpenSP_MULTI_BYTE 0)
+endif()
 
-if (NOT DISABLE_OPENSP_MULTIBYTE AND NOT SP_MULTI_BYTE)
-    set(SP_MULTI_BYTE 1)
-    message(STATUS "Could not detect SP_MULTI_BYTE, assuming to be 1")
-elseif (DISABLE_OPENSP_MULTIBYTE)
-    if (SP_MULTI_BYTE)
-        message(WARNING "SP_MULTI_BYTE detected to be 1, but forced to be 0. If this is not indeded, it may lead to inability to process files correctly!")
+message(CHECK_START "Setting up the SP_MULTI_BYTE")
+set(SP_MULTI_BYTE OpenSP_MULTI_BYTE)
+if (NOT FORCE_OPENSP_MULTIBYTE STREQUAL "AUTO") 
+    if (NOT FORCE_OPENSP_MULTIBYTE EQUAL OpenSP_MULTI_BYTE)
+        message(CHECK_PASS "detected by FindOpenSP to be ${OpenSP_MULTI_BYTE}, but overriding to ${FORCE_OPENSP_MULTIBYTE}, as set by FORCE_OPENSP_MULTIBYTE. If this is not indeded, it can cause wide character processing issues!")
+        set(SP_MULTI_BYTE ${FORCE_OPENSP_MULTIBYTE})
     else ()
-        message(STATUS "SP_MULTI_BYTE forced to 0")
+        message(CHECK_PASS "detected by FindOpenSP to be ${OpenSP_MULTI_BYTE}, with FORCE_OPENSP_MULTIBYTE also set to ${FORCE_OPENSP_MULTIBYTE}")
     endif ()
-    set(SP_MULTI_BYTE 0)
+else ()
+    message(CHECK_PASS "detected by FindOpenSP to be ${OpenSP_MULTI_BYTE}. Use FORCE_OPENSP_MULTIBYTE to set a different value")    
 endif ()
 
 # Disable CRT warnings
