@@ -26,7 +26,6 @@ doc_DATA = \
 
 EXTRA_DIST = \
   CMakeLists.txt \
-  cmake_install.cmake \
   cmake/modules/FindOpenSP.cmake \
   config.h.cmake \
   libofx.spec.in \
