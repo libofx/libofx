@@ -19,8 +19,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Prepare packages
-      run: sudo apt-get update && sudo apt-get install -y libxml++2.6-dev libosp-dev libcurl4-gnutls-dev libgetoptions-dev doc-base sgml-data
+    - name: Prepare ubuntu packages
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libxml++2.6-dev libosp-dev libcurl4-gnutls-dev libgetoptions-dev doc-base sgml-data
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
