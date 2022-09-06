@@ -1,0 +1,29 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Prepare packages
+      run: sudo apt-get update && sudo apt-get install -y libxml++2.6-dev libosp-dev libcurl4-gnutls-dev libgetoptions-dev doc-base sgml-data doxygen
+    - name: autotools
+      run: ./autogen.sh
+    - name: configure
+      run: mkdir build && cd build && ../configure
+    - name: make
+      run: cd build && make
+    - name: make check
+      run: cd build && make check
+    - name: make doc
+      run: cd build && make doc
+    - name: make distcheck
+      run: cd build && make distcheck
