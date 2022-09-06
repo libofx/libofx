@@ -15,7 +15,7 @@ cmdline.c cmdline.h: cmdline.ggo Makefile
 
 endif
 
-ofxdump.1: $(top_srcdir)/configure.ac
+ofxdump.1: ofxdump$(EXEEXT)
 if HAVE_HELP2MAN
 	$(HELP2MAN) -n 'Dump content of OFX files as human-readable text' -N --output=ofxdump.1 ./ofxdump$(EXEEXT)
 else

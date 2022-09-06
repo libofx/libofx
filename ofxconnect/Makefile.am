@@ -23,9 +23,9 @@ EXTRA_DIST = cmdline.ggo test-privateserver.sh CMakeLists.txt
 
 # See README.privateserver for details on this server and how to get
 # the key needed to run this test.
-TESTS = test-privateserver.sh 
+TESTS = test-privateserver.sh
 
-ofxconnect.1: $(top_srcdir)/configure.ac
+ofxconnect.1: ofxconnect$(EXEEXT)
 if HAVE_HELP2MAN
 	$(HELP2MAN)  -n 'Create a statement request file' -N --output=ofxconnect.1 ./ofxconnect$(EXEEXT)
 else
