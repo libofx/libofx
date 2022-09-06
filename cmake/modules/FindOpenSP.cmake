@@ -83,17 +83,17 @@ if (NOT OpenSP_INCLUDE_DIR)
     NAMES ParserEventGeneratorKit.h
     PATH_SUFFIXES OpenSP opensp
     DOC "The OpenSP include directory"
-    )
+  )
 endif ()
 
 if (NOT OpenSP_LIBRARY)
   find_library(OpenSP_LIBRARY_RELEASE
     NAMES osp libosp opensp libopensp sp133 libsp
-    )
+  )
 
   find_library(OpenSP_LIBRARY_DEBUG
     NAMES ospd libospd openspd libopenspd sp133d libspd
-    )
+  )
 
   include(SelectLibraryConfigurations)
   select_library_configurations(OpenSP)
@@ -144,7 +144,7 @@ find_package_handle_standard_args(OpenSP
   FOUND_VAR OpenSP_FOUND
   REQUIRED_VARS OpenSP_LIBRARY OpenSP_INCLUDE_DIR
   VERSION_VAR OpenSP_VERSION
-  )
+)
 
 mark_as_advanced(OpenSP_INCLUDE_DIR OpenSP_LIBRARY OpenSP_MULTI_BYTE)
 
@@ -152,4 +152,4 @@ include(FeatureSummary)
 set_package_properties(OpenSP PROPERTIES
   URL "http://openjade.sourceforge.net/doc/index.htm"
   DESCRIPTION "An SGML System Conforming to International Standard ISO 8879"
-  )
+)

@@ -1,4 +1,3 @@
-
 set(ofx_SRCS
         messages.cpp
         ofx_utilities.cpp
@@ -18,7 +17,7 @@ set(ofx_SRCS
         ofx_request_statement.cpp
         ofx_sgml.cpp
         ofc_sgml.cpp
-        )
+)
 
 set(ofx_HEADERS
         messages.hh
@@ -35,7 +34,7 @@ set(ofx_HEADERS
         ofx_request_statement.hh
         ofx_utilities.hh
         tree.hh
-        )
+)
 
 if (WIN32)
     set(ofx_SRCS ${ofx_SRCS} win32.cpp)
@@ -44,9 +43,11 @@ endif ()
 
 add_library(ofx ${ofx_SRCS} ${ofx_HEADERS})
 set_target_properties(ofx PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+set_target_properties(ofx PROPERTIES SOVERSION ${LIBOFX_LIBRARY_SONAME})
+set_target_properties(ofx PROPERTIES VERSION ${LIBOFX_LIBRARY_VERSION})
 target_link_libraries(ofx OpenSP::OpenSP)
 target_include_directories(ofx BEFORE PRIVATE ${COMMON_INCLUDE_DIRS})
-target_compile_definitions(ofx PRIVATE IN_LIBOFX=1 MAKEFILE_DTD_PATH="${CMAKE_INSTALL_PREFIX}/share/libofx/dtd/")
+target_compile_definitions(ofx PRIVATE IN_LIBOFX=1 MAKEFILE_DTD_PATH="${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/libofx/dtd/")
 
 if (CMAKE_COMPILER_IS_GNUCXX)
     set_target_properties(ofx PROPERTIES CXX_VISIBILITY_PRESET hidden)
@@ -58,4 +59,11 @@ endif (MSVC)
 
 if (Iconv_FOUND)
     target_link_libraries(ofx Iconv::Iconv)
+endif ()
+
+if (BUILD_SHARED_LIBS)
+  install(TARGETS ofx
+          LIBRARY
+          DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  )
 endif ()

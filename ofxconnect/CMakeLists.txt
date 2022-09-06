@@ -6,7 +6,7 @@ set(ofxconnect_SRCS
         ofxconnect.cpp
         ofxpartner.cpp
         nodeparser.cpp
-        )
+)
 
 # required by libxml++
 if (CMAKE_CXX_STANDARD LESS 11)
@@ -20,10 +20,10 @@ target_compile_definitions(ofxconnect PRIVATE
         CMDLINE_PARSER_PACKAGE="ofxconnect"
         CMDLINE_PARSER_PACKAGE_NAME="ofxconnect"
         CMDLINE_PARSER_VERSION="${LIBOFX_VERSION_RELEASE_STRING}"
-        )
+)
 
 if (TARGET getopt)
     target_link_libraries(ofxconnect getopt)
 endif ()
 
-install(TARGETS ofxconnect RUNTIME DESTINATION bin)
+install(TARGETS ofxconnect RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
