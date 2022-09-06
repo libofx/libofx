@@ -31,7 +31,7 @@ jobs:
 
     - name: make
       working-directory: build
-      run: make
+      run: make -j4
 
     - name: make check
       working-directory: build
@@ -43,4 +43,4 @@ jobs:
 
     - name: make distcheck
       working-directory: build
-      run: make distcheck
+      run: make -j4 distcheck
