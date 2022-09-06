@@ -1,0 +1,46 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Prepare packages
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libxml++2.6-dev libosp-dev libcurl4-gnutls-dev libgetoptions-dev doc-base sgml-data
+        sudo apt-get install doxygen gengetopt
+
+    - name: autotools
+      run: |
+        ./autogen.sh
+        mkdir build
+
+    - name: configure
+      working-directory: build
+      run: ../configure
+
+    - name: make
+      working-directory: build
+      run: make -j4
+
+    - name: make check
+      working-directory: build
+      run: make check && rm -rf doc/ofx_sample_files
+
+    - name: make doc
+      working-directory: build
+      run: make doc
+
+    - name: make distcheck
+      working-directory: build
+      run: make -j4 distcheck
