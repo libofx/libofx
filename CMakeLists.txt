@@ -55,6 +55,7 @@ set(LIBOFX_LIBRARY_VERSION ${LIBOFX_LIBRARY_SONAME}.0.2)
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE RelWithDebInfo)
 endif (NOT CMAKE_BUILD_TYPE)
+include(CTest)
 
 # locate required dependencies
 find_package(OpenSP)
