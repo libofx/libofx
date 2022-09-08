@@ -307,7 +307,7 @@ int main (int argc, char *argv[])
     char tridstr[33];
     memset(tridstr, 0, 33);
 
-    bool ok = true;
+    bool is_trid_given = true;
 
     if ( args_info.trid_given )
     {
@@ -317,10 +317,10 @@ int main (int argc, char *argv[])
     else
     {
       std::cerr << "ERROR: --trid is required for a payment inquiry request" << std::endl;
-      ok = false;
+      is_trid_given = false;
     }
 
-    if ( ok )
+    if ( is_trid_given )
     {
       char* request = libofx_request_payment_status( &fi, tridstr );
 
@@ -360,7 +360,7 @@ int main (int argc, char *argv[])
     strcpy(payment.datedue, "20060301");
     strcpy(payment.memo, "This is a test");
 
-    bool ok = true;
+    bool is_payment_args_given = true;
 
     if ( args_info.bank_given )
     {
@@ -372,7 +372,7 @@ int main (int argc, char *argv[])
       if ( args_info.type_given && args_info.type_arg == 1 )
       {
         std::cerr << "ERROR: --bank is required for a bank request" << std::endl;
-        ok = false;
+        is_payment_args_given = false;
       }
     }
 
@@ -386,7 +386,7 @@ int main (int argc, char *argv[])
       if ( args_info.type_given && args_info.type_arg == 2 )
       {
         std::cerr << "ERROR: --broker is required for an investment statement request" << std::endl;
-        ok = false;
+        is_payment_args_given = false;
       }
     }
 
@@ -398,7 +398,7 @@ int main (int argc, char *argv[])
     else
     {
       std::cerr << "ERROR: --acct is required for a statement request" << std::endl;
-      ok = false;
+      is_payment_args_given = false;
     }
 
     if ( args_info.type_given )
@@ -423,10 +423,10 @@ int main (int argc, char *argv[])
     else
     {
       std::cerr << "ERROR: --type is required for a statement request" << std::endl;
-      ok = false;
+      is_payment_args_given = false;
     }
 
-    if ( ok )
+    if ( is_payment_args_given )
     {
       char* request = libofx_request_payment( &fi, &account, &payee, &payment );
 
