@@ -25,8 +25,7 @@ jobs:
         sudo apt-get install -y libxml++2.6-dev libosp-dev libcurl4-gnutls-dev libgetoptions-dev doc-base sgml-data
 
     - name: Configure CMake
-      # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
-      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+      # Configure CMake in a 'build' subdirectory.
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Build
@@ -35,7 +34,5 @@ jobs:
 
     - name: Test
       working-directory: ${{github.workspace}}/build
-      # Execute tests defined by the CMake configuration.
-      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ./ofxdump/ofxdump
-#      run: ctest -C ${{env.BUILD_TYPE}}
+      # Execute tests defined by CMake configuration.
+      run: ctest -C ${{env.BUILD_TYPE}}
