@@ -8,10 +8,10 @@ dnl Process this file with autoconf to produce a configure script.
 # FUNCTION:
 # implements checks for a variety of system-specific functions
 
-AC_INIT([libofx], [0.10.6])  # must repeat the version number here, sorry
+AC_INIT([libofx], [0.10.7])  # must repeat the version number here, sorry
 AC_SUBST([LIBOFX_MAJOR_VERSION], [0])
 AC_SUBST([LIBOFX_MINOR_VERSION], [10])
-AC_SUBST([LIBOFX_MICRO_VERSION], [6])
+AC_SUBST([LIBOFX_MICRO_VERSION], [7])
 
 LIBOFX_VERSION_RELEASE_STRING="$LIBOFX_MAJOR_VERSION.$LIBOFX_MINOR_VERSION.$LIBOFX_MICRO_VERSION"
 

@@ -1,3 +1,8 @@
+2022-09-08, LibOFX 0.10.7:
+
+        - autotools: fix LIBOFX_MAJOR_VERSION and friends in libofx.h (#76)
+        - CMake: miscellaneous fixes (#73)
+
 2022-09-04, LibOFX 0.10.6:
 
         - Update FindOpenSP; also allow to forcefully ENABLE SP_MULTI_BYTE (#71)
