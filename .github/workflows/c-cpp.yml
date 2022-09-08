@@ -35,7 +35,7 @@ jobs:
 
     - name: make check
       working-directory: build
-      run: make check
+      run: make check && rm doc/ofx_sample_files
 
     - name: make doc
       working-directory: build
