@@ -1,0 +1,39 @@
+# LibOFXConfig.cmake provides information about the installed LibOFX library.
+# It can be used directly from CMake via find_package(libofx NO_MODULE)
+#
+# The following CMake variables are provided:
+#   LibOFX_INCLUDE_DIR            - the include directory
+#   LibOFX_LIBDIR                 - the library directory
+#   LibOFX_DATADIR                - the data dir, contains the .dtd/.dcl files
+#
+# The following imported library targets are created, which may be used directly
+# with target_link_libraries():
+#   libofx::libofx                - the LibOFX library
+
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/LibOFXTargets.cmake")
+
+include(CMakeFindDependencyMacro)
+
+if (${CMAKE_VERSION} VERSION_LESS 3.25.0)
+    set("${CMAKE_FIND_PACKAGE_NAME}_CMAKE_MODULE_PATH_save" "${CMAKE_MODULE_PATH}")
+    list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_LIST_DIR}")
+
+    find_dependency(OpenSP)
+
+    set(CMAKE_MODULE_PATH "${${CMAKE_FIND_PACKAGE_NAME}_CMAKE_MODULE_PATH_save}")
+    unset("${CMAKE_FIND_PACKAGE_NAME}_CMAKE_MODULE_PATH_save")
+else()
+    find_dependency(OpenSP)
+endif()
+
+if(@ENABLE_ICONV@)
+    find_dependency(Iconv)
+endif()
+
+set_and_check(LibOFX_INCLUDE_DIR "@PACKAGE_CMAKE_INSTALL_INCLUDEDIR@")
+set_and_check(LibOFX_LIBDIR "@PACKAGE_CMAKE_INSTALL_LIBDIR@")
+set_and_check(LibOFX_DATADIR "@PACKAGE_CMAKE_INSTALL_DATADIR@")
+
+check_required_components(LibOFX)

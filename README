@@ -149,8 +149,10 @@ LibOFX is based on the excellent OpenSP library written by James Clark, and now 
 | 1.5pre8                                             | COMPATIBLE with LibOFX >= 0.23 ||
 | 1.5                                                 | COMPATIBLE with LibOFX >= 0.23 ||
 
-### Locating the library file
+### Locating the OpenSP library file
 The [`FindOpenSP.cmake`](cmake/modules/FindOpenSP.cmake) module attempts to locate the library and its headers on the filesystem. If it fails to do so, or if you want to tell it to use a specific library file instead, you can pass [CMake switches](#cmake-switches) to do so.
+
+Note that the [upstream CMake](https://gitlab.kitware.com/cmake/cmake/-/blob/master/Modules/FindOpenSP.cmake) ships the [`FindOpenSP.cmake`](cmake/modules/FindOpenSP.cmake) module as of version 3.25, so its copy included with LibOFX sourcecode is used only if your CMake version is older than that.
 
 ### On the SP_MULTI_BYTE
 LibOFX must know if OpenSP library was compiled with the `SP_MULTI_BYTE` defined. The `FindOpenSP` module will attempt to detect the `SP_MULTI_BYTE`, based on OpenSP's `config.h`.  If, however, you see strings such as `SAEET` or `SAEET▄ù≡ù` instead of `STATEMENT` in ofxdump's output, it means that the library was misconfigured.
@@ -218,6 +220,15 @@ or `./configure` (for a distributed tarball)\
 2. `make`\
 And as root type:
 3. `make install`
+
+# Consuming (using as a dependency in your project)
+
+LibOFX is distributed with both PkgConfig libofx.pc (materialized from [libofx.pc.in](libofx.pc.in)) and [CMake config-file package](https://cmake.org/cmake/help/latest/manual/cmake-packages.7.html) (materialized from [LibOFXConfig.cmake.in](LibOFXConfig.cmake.in)). If possible, use the latter, as it is more robust
+and can automatically locate the OpenSP dependency library via the [`FindOpenSP.cmake`](#locating-the-opensp-library-file).
+
+A copy of [`FindOpenSP.cmake`](#locating-the-opensp-library-file) module is distributed alongside the CMake config-file package for use in case your CMake version does not ship it. See a note in
+[`FindOpenSP.cmake`](#locating-the-opensp-library-file) for details on that.
+
 
 ## FAQ/Troubleshooting 
 
