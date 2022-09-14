@@ -95,13 +95,13 @@ NodeParser NodeParser::Select(const std::string& key, const std::string& value) 
   NodeParser result;
   for (const_iterator iter = begin(); iter != end(); ++iter)
   {
-    xmlpp::Node::NodeList list = (*iter)->get_children();
-    for (xmlpp::Node::NodeList::const_iterator iter3 = list.begin(); iter3 != list.end(); ++iter3)
+    xmlpp::Node::NodeList list2 = (*iter)->get_children();
+    for (xmlpp::Node::NodeList::const_iterator iter3 = list2.begin(); iter3 != list2.end(); ++iter3)
     {
       if ( (*iter3)->get_name() == key )
       {
-        xmlpp::Node::NodeList list = (*iter3)->get_children();
-        for (xmlpp::Node::NodeList::const_iterator iter4 = list.begin(); iter4 != list.end(); ++iter4)
+        xmlpp::Node::NodeList list3 = (*iter3)->get_children();
+        for (xmlpp::Node::NodeList::const_iterator iter4 = list3.begin(); iter4 != list3.end(); ++iter4)
         {
           const xmlpp::TextNode* nodeText = dynamic_cast<const xmlpp::TextNode*>(*iter4);
           if ( nodeText && nodeText->get_content() == value )
