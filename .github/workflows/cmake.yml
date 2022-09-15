@@ -36,3 +36,13 @@ jobs:
       working-directory: ${{github.workspace}}/build
       # Execute tests defined by CMake configuration.
       run: ctest -C ${{env.BUILD_TYPE}}
+
+    - name: Create source package artifact
+      working-directory: ${{github.workspace}}/build
+      run: make package_source
+
+    - name: Upload source package artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: package_source
+        path: ${{github.workspace}}/build/libofx-*-Source.tar.gz
