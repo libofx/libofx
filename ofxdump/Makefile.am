@@ -41,7 +41,9 @@ TESTS = \
  ../doc/ofx_sample_files/ofx-2.1.1-sect-16.5.6.5.ofx \
  ../doc/ofx_sample_files/ofx-2.1.1-sect-8.5.5.ofx \
  ../doc/ofx_sample_files/failing-ofx-file1.xml \
- ../doc/ofx_sample_files/failing-ofx-file2.xml
+ ../doc/ofx_sample_files/failing-ofx-file2.xml \
+ ../doc/ofx_sample_files/null-ptr-deref-1.ofx \
+ ../doc/ofx_sample_files/null-ptr-deref-2.ofx
 
 # To ensure we are not just always green, test that two bogus files
 # actually fail the ofxdump run.
@@ -49,7 +51,9 @@ TESTS = \
 XFAIL_TESTS = \
  ../doc/ofx_sample_files/failing-ofx-file1.xml \
  ../doc/ofx_sample_files/failing-ofx-file2.xml \
- ../doc/ofx_sample_files/ofx-2.1.1-sect-13.13.ofx
+ ../doc/ofx_sample_files/ofx-2.1.1-sect-13.13.ofx \
+ ../doc/ofx_sample_files/null-ptr-deref-1.ofx \
+ ../doc/ofx_sample_files/null-ptr-deref-2.ofx
 
 TEST_EXTENSIONS = .xml .sgml .ofx
 OFX_LOG_COMPILER = ./ofxdump
