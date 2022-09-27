@@ -28,6 +28,7 @@ EXTRA_DIST = \
   CMakeLists.txt \
   cmake/modules/FindOpenSP.cmake \
   config.h.cmake \
+  LibOFXConfig.cmake.in \
   libofx.spec.in \
   libofx.spec \
   libofx.pc \
