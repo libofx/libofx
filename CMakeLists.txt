@@ -48,6 +48,7 @@ set(LIBOFX_VERSION_RELEASE_STRING ${LIBOFX_MAJOR_VERSION}.${LIBOFX_MINOR_VERSION
 # This is the library version (SONAME) so affects ABI
 # LIBOFX_LIBRARY_SONAME must be changed when ABI is broken (backwards compat)
 # LIBOFX_LIBRARY_VERSION must be changed if just adding new functions and such (backwards compat not broken)
+# Note that these are used by write_basic_package_version_file() to generate LibOFXConfigVersion.cmake
 set(LIBOFX_LIBRARY_SONAME 7)
 set(LIBOFX_LIBRARY_VERSION ${LIBOFX_LIBRARY_SONAME}.0.2)
 
@@ -139,22 +140,11 @@ if (MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif ()
 
-# TODO: once Autotools build stuff is gone, remove these and set them directly in libofx.pc.in itself
-set(OPENSPLIBS ${OpenSP_LIBRARIES})
-set(OPENSPINCLUDES ${OpenSP_INCLUDE_DIRS})
-set(VERSION ${LIBOFX_VERSION_RELEASE_STRING})
-set(prefix "${CMAKE_INSTALL_PREFIX}")
-set(exec_prefix "\${prefix}")
-set(libdir "\${prefix}/${CMAKE_INSTALL_LIBDIR}")
-set(includedir "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
-
 # create the libofx.h file out of the libofx.h.in
 configure_file("inc/libofx.h.in" "${CMAKE_CURRENT_BINARY_DIR}/inc/libofx.h")
 
 # create the config.h file out of the config.h.cmake
 configure_file("config.h.cmake" "${CMAKE_CURRENT_BINARY_DIR}/config.h")
-
-set(COMMON_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/inc ${CMAKE_CURRENT_BINARY_DIR})
 
 # Handle the getopt in a cross-platform way
 add_subdirectory(getopt)
@@ -198,12 +188,41 @@ elseif (DEFINED CMAKE_TOOLCHAIN_FILE)
     endif ()
 endif ()
 
+# TODO: once Autotools build stuff is gone, remove these and set them directly in libofx.pc.in itself
+set(OPENSPLIBS ${OpenSP_LIBRARIES})
+set(OPENSPINCLUDES ${OpenSP_INCLUDE_DIRS})
+set(VERSION ${LIBOFX_VERSION_RELEASE_STRING})
+set(prefix "${CMAKE_INSTALL_PREFIX}")
+set(exec_prefix "\${prefix}")
+set(libdir "\${prefix}/${CMAKE_INSTALL_LIBDIR}")
+set(includedir "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
+
 # create the libofx.pc pkg-config file out of the libofx.pc.in
 configure_file("libofx.pc.in" "${CMAKE_BINARY_DIR}/libofx.pc")
+
+include(CMakePackageConfigHelpers)
+configure_package_config_file(LibOFXConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/LibOFXConfig.cmake
+        INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/libofx
+        PATH_VARS CMAKE_INSTALL_INCLUDEDIR CMAKE_INSTALL_LIBDIR CMAKE_INSTALL_BINDIR CMAKE_INSTALL_DATADIR
+        )
+write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/LibOFXConfigVersion.cmake
+        VERSION ${LIBOFX_LIBRARY_VERSION}
+        COMPATIBILITY SameMajorVersion
+        )
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/LibOFXConfig.cmake
+            ${CMAKE_CURRENT_BINARY_DIR}/LibOFXConfigVersion.cmake
+            ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/FindOpenSP.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/libofx
+        )
 
 install(DIRECTORY dtd DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/libofx FILES_MATCHING PATTERN "*.dtd" PATTERN "*.dcl")
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/inc/libofx.h" DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libofx)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libofx.pc" DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+install(EXPORT LibOFXTargets
+        FILE LibOFXTargets.cmake
+        NAMESPACE libofx::
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/libofx
+        )
 
 feature_summary(WHAT REQUIRED_PACKAGES_NOT_FOUND
         DESCRIPTION "The following REQUIRED packages have not been found:")

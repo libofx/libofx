@@ -6,7 +6,6 @@ set(ofx2qif_SRCS
 )
 
 add_executable(ofx2qif ${ofx2qif_SRCS})
-target_link_libraries(ofx2qif ofx)
-target_include_directories(ofx2qif BEFORE PRIVATE ${COMMON_INCLUDE_DIRS})
+target_link_libraries(ofx2qif libofx)
 
 install(TARGETS ofx2qif RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
