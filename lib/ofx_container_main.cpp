@@ -59,7 +59,9 @@ int OfxMainContainer::add_container(OfxGenericContainer * container)
   message_out(DEBUG, "OfxMainContainer::add_container for element " + container->tag_identifier + "; destroying the generic container");
   /* Call gen_event anyway, it could be a status container or similar */
   container->gen_event();
-  delete container;
+  if (container != this) {
+    delete container;
+  }
   return 0;
 }
 
