@@ -59,8 +59,8 @@ if (CMAKE_COMPILER_IS_GNUCXX)
 endif (CMAKE_COMPILER_IS_GNUCXX)
 
 if (MSVC)
-    set_target_properties(libofx PROPERTIES OUTPUT_NAME "libofx")
-endif (MSVC)
+    set_target_properties(libofx PROPERTIES OUTPUT_NAME "ofx")
+endif ()
 
 if (Iconv_FOUND)
     target_link_libraries(libofx Iconv::Iconv)
