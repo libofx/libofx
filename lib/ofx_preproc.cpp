@@ -523,7 +523,7 @@ static std::string get_dtd_installation_directory()
   char ch_fn[MAX_PATH], *p;
   std::string str_fn;
 
-  if (!GetModuleFileName(NULL, ch_fn, MAX_PATH)) return "";
+  if (!GetModuleFileNameA(NULL, ch_fn, MAX_PATH)) return "";
 
   if ((p = strrchr(ch_fn, '\\')) != NULL)
     * p = '\0';
