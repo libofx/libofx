@@ -42,7 +42,7 @@ project(libofx)
 # This is the project version
 set(LIBOFX_MAJOR_VERSION 0)
 set(LIBOFX_MINOR_VERSION 10)
-set(LIBOFX_MICRO_VERSION 7)
+set(LIBOFX_MICRO_VERSION 8)
 set(LIBOFX_VERSION_RELEASE_STRING ${LIBOFX_MAJOR_VERSION}.${LIBOFX_MINOR_VERSION}.${LIBOFX_MICRO_VERSION})
 
 # This is the library version (SONAME) so affects ABI
@@ -50,7 +50,7 @@ set(LIBOFX_VERSION_RELEASE_STRING ${LIBOFX_MAJOR_VERSION}.${LIBOFX_MINOR_VERSION
 # LIBOFX_LIBRARY_VERSION must be changed if just adding new functions and such (backwards compat not broken)
 # Note that these are used by write_basic_package_version_file() to generate LibOFXConfigVersion.cmake
 set(LIBOFX_LIBRARY_SONAME 7)
-set(LIBOFX_LIBRARY_VERSION ${LIBOFX_LIBRARY_SONAME}.0.2)
+set(LIBOFX_LIBRARY_VERSION ${LIBOFX_LIBRARY_SONAME}.0.3)
 
 # If no build type is set, use "Release with Debug Info"
 if (NOT CMAKE_BUILD_TYPE)

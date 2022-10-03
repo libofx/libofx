@@ -30,6 +30,12 @@ set (SAMPLE_OFX_FILENAMES_FAILING
   failing-ofx-file1.xml
   failing-ofx-file2.xml
   ofx-2.1.1-sect-13.13.ofx
+  ofx_sample_files/downcast.ofx
+  ofx_sample_files/heap-buffer-overflow-1.ofx
+  ofx_sample_files/heap-buffer-overflow-2.ofx
+  ofx_sample_files/null-ptr-deref-1.ofx
+  ofx_sample_files/null-ptr-deref-2.ofx
+  ofx_sample_files/use-after-free.ofx
 )
 # This is the list of all sample files (good and fail)
 set (SAMPLE_OFX_FILENAMES

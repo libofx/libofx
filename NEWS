@@ -1,3 +1,12 @@
+2022-09-27, LibOFX 0.10.8:
+
+        - Fix null pointer dereference bugs (#87)
+        - Initial support for exporting Config.cmake with targets (#81)
+        - Fix version and tools description in vcpkg.json
+        - Add cpack rules for "make source_package"
+        - Fix installation path of libofx.h (#83)
+        - Rename some variables that shadowed others to clarify different meanings #75 (#80)
+
 2022-09-08, LibOFX 0.10.7:
 
         - autotools: fix LIBOFX_MAJOR_VERSION and friends in libofx.h (#76)

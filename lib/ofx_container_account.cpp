@@ -50,7 +50,9 @@ OfxAccountContainer::OfxAccountContainer(LibofxContext *p_libofx_context, OfxGen
     	OFX elements will set this attribute elsewhere */
     ASSIGN(data.account_type, data.OFX_INVESTMENT);
   }
-  if (parentcontainer != NULL && ((OfxStatementContainer*)parentcontainer)->data.currency_valid == true)
+  if (parentcontainer != NULL 
+      && parentcontainer->type == "STATEMENT" 
+      && ((OfxStatementContainer*)parentcontainer)->data.currency_valid == true)
   {
     ASSIGN_STRNCPY(data.currency, std::string(((OfxStatementContainer*)parentcontainer)->data.currency));
   }
