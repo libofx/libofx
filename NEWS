@@ -1,3 +1,8 @@
+2022-10-03, LibOFX 0.10.9:
+
+- Fix library name on Windows (#88)
+- Fix several more memory issues (#90)
+
 2022-09-27, LibOFX 0.10.8:
 
         - Fix null pointer dereference bugs (#87)
