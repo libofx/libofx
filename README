@@ -198,16 +198,16 @@ There are several CMake options available that can be enabled/disabled to change
 | `-D OpenSP_INCLUDE_DIR`       |                                              A path, e.g. `/usr/include/opensp`                                               | Whatever `FindOpenSP.cmake` detects | A path to the OpenSP library includes. Normally `FindOpenSP.cmake` module should locate it, but if it can't or you want to override it, you can use this switch.           |
 | `-D OpenSP_LIBRARY`           |                                              A path, e.g. `/usr/lib/libosp.so.5`                                              | Whatever `FindOpenSP.cmake` detects | Like the `OpenSP_INCLUDE_DIR` above, but for the library file itself.                                                                                                      |
 
-### Vcpkg integration
+### Building sources with vcpkg
 
 vcpkg is a command-line package manager for C++, supported on macOS, Linux and Windows platforms. It is a preferred way of obtaining the dependencies due to its ability to deploy them according to a declarative [vcpkg.json](vcpkg.json) manifest file provided with the source code. This allows to maintain a set of dependencies and their corresponding versions independently for each branch and automatically switching between them as needed. It also guarantees reproducibility of the dev environment and substantially reduces the effort required to set up a working environment.
 
 Refer to the [Getting Started](https://github.com/microsoft/vcpkg#getting-started) guide on project's website on how to get started if you're not yet familiar with it.
 
-In order to build LibOFX with it, simply enabling an additional switch in your CMake command should be enough:\
+In order to build LibOFX sources with it, simply enabling an additional switch in your CMake command should be enough:\
 `-DCMAKE_TOOLCHAIN_FILE=[vcpkg root]/scripts/buildsystems/vcpkg.cmake`, where `[vcpkg root]` is your clone of the vcpkg Git repository. Alternatively, if you have `VCPKG_ROOT` environment variable set-up, you can simply enable `-D ENABLE_VCPKG_INTEGRATION=ON` switch to have it autodetect the location of the vcpkg toolchain file. See notes on the [CMake switches](#cmake-switches) available as well. 
 
-Vcpkg will automatically set-up all the required optional dependencies, per the [CMake switches](#cmake-switches) enabled via the command line. 
+Vcpkg will automatically set-up all the required optional dependencies, per the [CMake switches](#cmake-switches) enabled via the command line.
 
 ## Using classic Autotools build system
 
@@ -223,12 +223,47 @@ And as root type:
 
 # Consuming (using as a dependency in your project)
 
-LibOFX is distributed with both PkgConfig libofx.pc (materialized from [libofx.pc.in](libofx.pc.in)) and [CMake config-file package](https://cmake.org/cmake/help/latest/manual/cmake-packages.7.html) (materialized from [LibOFXConfig.cmake.in](LibOFXConfig.cmake.in)). If possible, use the latter, as it is more robust
-and can automatically locate the OpenSP dependency library via the [`FindOpenSP.cmake`](#locating-the-opensp-library-file).
+LibOFX is distributed with both the PkgConfig `libofx.pc` file (materialized from [`libofx.pc.in`](libofx.pc.in)) and
+the [CMake config-file package](https://cmake.org/cmake/help/latest/manual/cmake-packages.7.html) (materialized from
+[`LibOFXConfig.cmake.in`](LibOFXConfig.cmake.in)). If possible, use the latter, as it is more robust and can automatically
+locate the OpenSP dependency library via the [`FindOpenSP.cmake`](#locating-the-opensp-library-file). Note that a copy of
+the [`FindOpenSP.cmake`](#locating-the-opensp-library-file) module is distributed alongside the CMake config-file package
+for use in case your CMake version does not ship it. See a note in [`FindOpenSP.cmake`](#locating-the-opensp-library-file)
+for details on that.
 
-A copy of [`FindOpenSP.cmake`](#locating-the-opensp-library-file) module is distributed alongside the CMake config-file package for use in case your CMake version does not ship it. See a note in
-[`FindOpenSP.cmake`](#locating-the-opensp-library-file) for details on that.
+To locate the LiBOFX package, adding the following to your project's `CMakeLists.txt` should be enough:
+```cmake
+find_package(LibOFX CONFIG)
+```
 
+## Integrating in your vcpkg-compatible project
+
+While you can build LibOFX sourcecode using CMake and vcpkg from scratch (as explained [above](#building-sources-with-vcpkg)),
+for example if you wanted to actually work on its code, you may also just simply need to integrate LibOFX in your own project.
+In such case, you can resort to vcpkg to use its own [upstream portfile](https://github.com/microsoft/vcpkg/tree/master/ports/libofx)
+to do its dependency management and integration magic.
+
+It should be as easy as adding:
+```json
+"dependencies": [
+  "libofx"
+]
+```
+
+to your project's `vcpkg.json` manifest file. In case you wanted to also enable additional features, e.g. `ofx2qif` or  `ofxdump` tools,
+you can instead use the following expanded syntax:
+```json
+"dependencies": [
+  {
+    "name": "libofx",
+    "features": [
+      "ofxdump"
+    ]
+  }
+]
+```
+
+Refer to [vcpkg manual on manifest files](https://vcpkg.io/en/docs/maintainers/manifest-files.html) for more details.
 
 ## FAQ/Troubleshooting 
 
