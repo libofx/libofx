@@ -171,7 +171,7 @@ int  OfxPositionContainer::gen_event()
 
 void OfxPositionContainer::add_account(OfxAccountData * account_data)
 {
-  if (account_data->account_id_valid == true)
+  if (account_data->account_id_valid)
   {
     data.account_ptr = account_data;
     ASSIGN_STRNCPY(data.account_id, std::string(account_data->account_id));
