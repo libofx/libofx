@@ -43,23 +43,23 @@ int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
 {
   char dest_string[255];
   std::cout << "ofx_proc_security():\n";
-  if (data.unique_id_valid == true)
+  if (data.unique_id_valid)
   {
     std::cout << "    Unique ID of the security: " << data.unique_id << "\n";
   }
-  if (data.unique_id_type_valid == true)
+  if (data.unique_id_type_valid)
   {
     std::cout << "    Format of the Unique ID: " << data.unique_id_type << "\n";
   }
-  if (data.unique_id2_valid == true)
+  if (data.unique_id2_valid)
   {
     std::cout << "    Unique ID of the underlying security: " << data.unique_id2 << "\n";
   }
-  if (data.unique_id2_type_valid == true)
+  if (data.unique_id2_type_valid)
   {
     std::cout << "    Format of the underlying Unique ID: " << data.unique_id2_type << "\n";
   }
-  if (data.security_type_valid == true)
+  if (data.security_type_valid)
   {
     if (data.security_type == OfxSecurityData::OFX_DEBT_SECURITY)
       strncpy(dest_string, "DEBTINFO: Debt security", sizeof(dest_string));
@@ -75,19 +75,19 @@ int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
       strncpy(dest_string, "ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    Security type: " << dest_string << "\n";
   }
-  if (data.secname_valid == true)
+  if (data.secname_valid)
   {
     std::cout << "    Name of the security: " << data.secname << "\n";
   }
-  if (data.ticker_valid == true)
+  if (data.ticker_valid)
   {
     std::cout << "    Ticker symbol: " << data.ticker << "\n";
   }
-  if (data.rating_valid == true)
+  if (data.rating_valid)
   {
     std::cout << "    Rating of the security: " << data.rating << "\n";
   }
-  if (data.unitprice_valid == true)
+  if (data.unitprice_valid)
   {
     if (data.security_type_valid == true
        && data.security_type == OfxSecurityData::OFX_DEBT_SECURITY)
@@ -95,28 +95,28 @@ int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
     else
       std::cout << "    Price of each unit of the security: " <<  std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.unitprice << "\n";
   }
-  if (data.date_unitprice_valid == true)
+  if (data.date_unitprice_valid)
   {
     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.date_unitprice)));
     std::cout << "    Date as of which the unitprice is valid: " << dest_string << "\n";
   }
-  if (data.amounts_are_foreign_currency_valid == true)
+  if (data.amounts_are_foreign_currency_valid)
   {
     std::cout << "    Amounts are in foreign currency: " << (data.amounts_are_foreign_currency ? "Yes" : "No") << "\n";
   }
-  if (data.currency_valid == true)
+  if (data.currency_valid)
   {
     std::cout << "    Currency: " << data.currency << "\n";
   }
-  if (data.currency_ratio_valid == true)
+  if (data.currency_ratio_valid)
   {
     std::cout << "    Ratio of default currency to currency: " << data.currency_ratio << "\n";
   }
-  if (data.memo_valid == true)
+  if (data.memo_valid)
   {
     std::cout << "    Extra security information (memo): " << data.memo << "\n";
   }
-  if (data.asset_class_valid == true)
+  if (data.asset_class_valid)
   {
     if (data.asset_class == OfxSecurityData::OFX_ASSET_CLASS_DOMESTICBOND)
       strncpy(dest_string, "DOMESTICBOND: Domestic bond", sizeof(dest_string));
@@ -136,15 +136,15 @@ int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
       strncpy(dest_string, "ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    Asset class: " << dest_string << "\n";
   }
-  if (data.fiasset_class_valid == true)
+  if (data.fiasset_class_valid)
   {
     std::cout << "    FI defined asset class: " << data.fiasset_class << "\n";
   }
-  if (data.par_value_valid == true)
+  if (data.par_value_valid)
   {
     std::cout << "    Par value: " << data.par_value << "\n";
   }
-  if (data.debt_type_valid == true)
+  if (data.debt_type_valid)
   {
     if (data.debt_type == OfxSecurityData::OFX_DEBT_TYPE_COUPON)
       strncpy(dest_string, "COUPON: Coupon debt", sizeof(dest_string));
@@ -154,7 +154,7 @@ int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
       strncpy(dest_string, "ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    Debt type: " << dest_string << "\n";
   }
-  if (data.debt_class_valid == true)
+  if (data.debt_class_valid)
   {
     if (data.debt_class == OfxSecurityData::OFX_DEBTCLASS_TREASURY)
       strncpy(dest_string, "TREASURY: Treasury debt", sizeof(dest_string));
@@ -168,16 +168,16 @@ int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
       strncpy(dest_string, "ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    Debt class: " << dest_string << "\n";
   }
-  if (data.coupon_rate_valid == true)
+  if (data.coupon_rate_valid)
   {
     std::cout << "    Coupon rate: " << data.coupon_rate << "%\n";
   }
-  if (data.date_coupon_valid == true)
+  if (data.date_coupon_valid)
   {
     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.date_coupon)));
     std::cout << "    Date for the next coupon: " << dest_string << "\n";
   }
-  if (data.coupon_freq_valid == true)
+  if (data.coupon_freq_valid)
   {
     if (data.coupon_freq == OfxSecurityData::OFX_COUPON_FREQ_MONTHLY)
       strncpy(dest_string, "MONTHLY: Monthly coupon", sizeof(dest_string));
@@ -193,20 +193,20 @@ int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
       strncpy(dest_string, "ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    Coupon frequency: " << dest_string << "\n";
   }
-  if (data.call_price_valid == true)
+  if (data.call_price_valid)
   {
     std::cout << "    Call price (unit price): " <<  std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.call_price << "\n";
   }
-  if (data.yield_to_call_valid == true)
+  if (data.yield_to_call_valid)
   {
     std::cout << "    Yield to next call (rate): " << data.yield_to_call << "%\n";
   }
-  if (data.call_date_valid == true)
+  if (data.call_date_valid)
   {
     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.call_date)));
     std::cout << "    Date for the next call: " << dest_string << "\n";
   }
-  if (data.call_type_valid == true)
+  if (data.call_type_valid)
   {
     if (data.call_type == OfxSecurityData::OFX_CALL_TYPE_CALL)
       strncpy(dest_string, "CALL: Call", sizeof(dest_string));
@@ -220,16 +220,16 @@ int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
       strncpy(dest_string, "ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    Call type: " << dest_string << "\n";
   }
-  if (data.yield_to_maturity_valid == true)
+  if (data.yield_to_maturity_valid)
   {
     std::cout << "    Yield to maturity (rate): " << data.yield_to_maturity << "%\n";
   }
-  if (data.maturity_date_valid == true)
+  if (data.maturity_date_valid)
   {
     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.maturity_date)));
     std::cout << "    Maturity date: " << dest_string << "\n";
   }
-  if (data.mutual_fund_type_valid == true)
+  if (data.mutual_fund_type_valid)
   {
     if (data.mutual_fund_type == OfxSecurityData::OFX_MFTYPE_OPENEND)
       strncpy(dest_string, "OPENEND: Open ended", sizeof(dest_string));
@@ -240,7 +240,7 @@ int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
     else
       strncpy(dest_string, "ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    Mutual fund type: " << dest_string << "\n";
-  if (data.stock_type_valid == true)
+  if (data.stock_type_valid)
   {
     if (data.stock_type == OfxSecurityData::OFX_STOCKTYPE_COMMON)
       strncpy(dest_string, "COMMON: Common stock", sizeof(dest_string));
@@ -255,16 +255,16 @@ int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
     std::cout << "    Stock type: " << dest_string << "\n";
   }
   }
-  if (data.yield_valid == true)
+  if (data.yield_valid)
   {
     std::cout << "    Current yield (rate): " << data.yield << "%\n";
   }
-  if (data.yield_asof_date_valid == true)
+  if (data.yield_asof_date_valid)
   {
     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.yield_asof_date)));
     std::cout << "    Date for which current yield is valid: " << dest_string << "\n";
   }
-  if (data.option_type_valid == true)
+  if (data.option_type_valid)
   {
     if (data.option_type == OfxSecurityData::OFX_OPTION_TYPE_CALL)
       strncpy(dest_string, "CALL: Call option", sizeof(dest_string));
@@ -274,16 +274,16 @@ int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
       strncpy(dest_string, "ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    Option type: " << dest_string << "\n";
   }
-  if (data.strike_price_valid == true)
+  if (data.strike_price_valid)
   {
     std::cout << "    Strike price: " << data.strike_price << "\n";
   }
-  if (data.date_expire_valid == true)
+  if (data.date_expire_valid)
   {
     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.date_expire)));
     std::cout << "    Expiration date: " << dest_string << "\n";
   }
-  if (data.shares_per_cont_valid == true)
+  if (data.shares_per_cont_valid)
   {
     std::cout << "    Shares per contract: " << data.shares_per_cont << "\n";
   }
@@ -296,12 +296,12 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
   char dest_string[255];
   std::cout << "ofx_proc_transaction():\n";
 
-  if (data.account_id_valid == true)
+  if (data.account_id_valid)
   {
     std::cout << "    Account ID : " << data.account_id << "\n";
   }
 
-  if (data.transactiontype_valid == true)
+  if (data.transactiontype_valid)
   {
     if (data.transactiontype == OFX_CREDIT)
       strncpy(dest_string, "CREDIT: Generic credit", sizeof(dest_string));
@@ -343,34 +343,34 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
   }
 
 
-  if (data.date_initiated_valid == true)
+  if (data.date_initiated_valid)
   {
     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.date_initiated)));
     std::cout << "    Date initiated: " << dest_string << "\n";
   }
-  if (data.date_posted_valid == true)
+  if (data.date_posted_valid)
   {
     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.date_posted)));
     std::cout << "    Date posted: " << dest_string << "\n";
   }
-  if (data.date_funds_available_valid == true)
+  if (data.date_funds_available_valid)
   {
     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.date_funds_available)));
     std::cout << "    Date funds are available: " << dest_string << "\n";
   }
-  if (data.amount_valid == true)
+  if (data.amount_valid)
   {
     std::cout << "    Total money amount: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.amount << "\n";
   }
-  if (data.units_valid == true)
+  if (data.units_valid)
   {
     if (data.invtransactiontype_valid)
     {
       std::cout << "    # of units: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(4) << data.units;
       strncpy(dest_string, " (bonds: face value; options: contracts; all others: shares)", sizeof(dest_string));
-      if (data.security_data_valid == true)
+      if (data.security_data_valid)
       {
-        if (data.security_data_ptr->security_type_valid == true)
+        if (data.security_data_ptr->security_type_valid)
         {
           if (data.security_data_ptr->security_type == OfxSecurityData::OFX_DEBT_SECURITY)
             strncpy(dest_string, " (face value)", sizeof(dest_string));
@@ -388,26 +388,26 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
       std::cout << "    # of units: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.units;
     std::cout << "\n";
   }
-  if (data.oldunits_valid == true)
+  if (data.oldunits_valid)
   {
     if (data.invtransactiontype_valid)
       std::cout << "    # of units before split: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(4) << data.oldunits << "\n";
     else
       std::cout << "    # of units before split: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.oldunits << "\n";
   }
-  if (data.newunits_valid == true)
+  if (data.newunits_valid)
   {
     std::cout << "    # of units after split: " << std::setprecision(4) << data.newunits << "\n";
   }
-  if (data.unitprice_valid == true)
+  if (data.unitprice_valid)
   {
     if (data.invtransactiontype_valid)
     {
       std::cout << "    Unit price: " <<  std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(4) << data.unitprice;
       strncpy(dest_string, " (bonds: % of par; options: premium per share of underlying; all others: price per share)\n", sizeof(dest_string));
-      if (data.security_data_valid == true)
+      if (data.security_data_valid)
       {
-        if (data.security_data_ptr->security_type_valid == true)
+        if (data.security_data_ptr->security_type_valid)
         {
           if (data.security_data_ptr->security_type == OfxSecurityData::OFX_DEBT_SECURITY)
           {
@@ -426,35 +426,35 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
     else
       std::cout << "    Unit price: " <<  std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.unitprice << "\n";
  }
-  if (data.fees_valid == true)
+  if (data.fees_valid)
   {
     std::cout << "    Fees: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.fees << "\n";
   }
-  if (data.commission_valid == true)
+  if (data.commission_valid)
   {
     std::cout << "    Commission: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.commission << "\n";
   }
-  if (data.amounts_are_foreign_currency_valid == true)
+  if (data.amounts_are_foreign_currency_valid)
   {
     std::cout << "    Amounts are in foreign currency: " << (data.amounts_are_foreign_currency ? "Yes" : "No") << "\n";
   }
-  if (data.currency_valid == true)
+  if (data.currency_valid)
   {
     std::cout << "    Currency: " << data.currency << "\n";
   }
-  if (data.currency_ratio_valid == true)
+  if (data.currency_ratio_valid)
   {
     std::cout << "    Ratio of default currency to currency: " << data.currency_ratio << "\n";
   }
-  if (data.fi_id_valid == true)
+  if (data.fi_id_valid)
   {
     std::cout << "    Financial institution's ID for this transaction: " << data.fi_id << "\n";
   }
-  if (data.fi_id_corrected_valid == true)
+  if (data.fi_id_corrected_valid)
   {
     std::cout << "    Financial institution ID replaced or corrected by this transaction: " << data.fi_id_corrected << "\n";
   }
-  if (data.fi_id_correction_action_valid == true)
+  if (data.fi_id_correction_action_valid)
   {
     std::cout << "    Action to take on the corrected transaction: ";
     if (data.fi_id_correction_action == DELETE)
@@ -464,7 +464,7 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
     else
       std::cout << "ofx_proc_transaction(): This should not happen!\n";
   }
-  if (data.invtransactiontype_valid == true)
+  if (data.invtransactiontype_valid)
   {
     std::cout << "    Investment transaction type: ";
     if (data.invtransactiontype == OFX_BUYDEBT)
@@ -512,51 +512,51 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
 
     std::cout << dest_string << "\n";
   }
-  if (data.unique_id_valid == true)
+  if (data.unique_id_valid)
   {
     std::cout << "    Unique ID of the security being traded: " << data.unique_id << "\n";
   }
-  if (data.unique_id_type_valid == true)
+  if (data.unique_id_type_valid)
   {
     std::cout << "    Format of the Unique ID: " << data.unique_id_type << "\n";
   }
-  if (data.server_transaction_id_valid == true)
+  if (data.server_transaction_id_valid)
   {
     std::cout << "    Server's transaction ID (confirmation number): " << data.server_transaction_id << "\n";
   }
-  if (data.check_number_valid == true)
+  if (data.check_number_valid)
   {
     std::cout << "    Check number: " << data.check_number << "\n";
   }
-  if (data.reference_number_valid == true)
+  if (data.reference_number_valid)
   {
     std::cout << "    Reference number: " << data.reference_number << "\n";
   }
-  if (data.standard_industrial_code_valid == true)
+  if (data.standard_industrial_code_valid)
   {
     std::cout << "    Standard Industrial Code: " << data.standard_industrial_code << "\n";
   }
-  if (data.payee_id_valid == true)
+  if (data.payee_id_valid)
   {
     std::cout << "    Payee_id: " << data.payee_id << "\n";
   }
-  if (data.name_valid == true)
+  if (data.name_valid)
   {
     std::cout << "    Name of payee or transaction description: " << data.name << "\n";
   }
-  if (data.memo_valid == true)
+  if (data.memo_valid)
   {
     std::cout << "    Extra transaction information (memo): " << data.memo << "\n";
   }
-  if (data.accrued_interest_valid == true)
+  if (data.accrued_interest_valid)
   {
     std::cout << "    Accrued Interest: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.accrued_interest << "\n";
   }
-  if (data.avg_cost_basis_valid == true)
+  if (data.avg_cost_basis_valid)
   {
     std::cout << "    Average cost basis: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.avg_cost_basis << "\n";
   }
-  if (data.buy_type_valid == true)
+  if (data.buy_type_valid)
   {
     if (data.buy_type == OfxTransactionData::OFX_BUY_TYPE_BUY)
       strncpy(dest_string, "BUY: Buy", sizeof(dest_string));
@@ -570,29 +570,29 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    Buy type: " << dest_string << "\n";
   }
-  if (data.denominator_valid == true)
+  if (data.denominator_valid)
   {
     std::cout << "    Stock split ratio denominator: " << data.denominator << "\n";
   }
-  if (data.date_payroll_valid == true)
+  if (data.date_payroll_valid)
   {
     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.date_payroll)));
     std::cout << "    Date 401(k) funds were deducted from payroll: " << dest_string << "\n";
   }
-  if (data.date_purchase_valid == true)
+  if (data.date_purchase_valid)
   {
     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.date_purchase)));
     std::cout << "    Original purchase date of the security: " << dest_string << "\n";
   }
-  if (data.gain_valid == true)
+  if (data.gain_valid)
   {
     std::cout << "    Average cost basis: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.gain << "\n";
   }
-  if (data.cash_for_fractional_valid == true)
+  if (data.cash_for_fractional_valid)
   {
     std::cout << "    Average cost basis: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.cash_for_fractional << "\n";
   }
-  if (data.income_type_valid == true)
+  if (data.income_type_valid)
   {
     if (data.income_type == OfxTransactionData::OFX_CGLONG)
       strncpy(dest_string, "CGLONG: Long term capital gains", sizeof(dest_string));
@@ -608,7 +608,7 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    Income type: " << dest_string << "\n";
   }
-  if (data.inv_401k_source_valid == true)
+  if (data.inv_401k_source_valid)
   {
     if (data.inv_401k_source == OfxTransactionData::OFX_401K_SOURCE_PRETAX)
       strncpy(dest_string, "PRETAX", sizeof(dest_string));
@@ -628,35 +628,35 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    Source of 401(k) money: " << dest_string << "\n";
   }
-  if (data.load_valid == true)
+  if (data.load_valid)
   {
     std::cout << "    Load (amount): " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.load << "\n";
   }
-  if (data.loan_id_valid == true)
+  if (data.loan_id_valid)
   {
     std::cout << "    401(k) loan id: " << data.loan_id << "\n";
   }
-  if (data.loan_interest_valid == true)
+  if (data.loan_interest_valid)
   {
     std::cout << "    401(k) loan interest (amount): " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.loan_interest << "\n";
   }
-  if (data.loan_principal_valid == true)
+  if (data.loan_principal_valid)
   {
     std::cout << "    401(k) loan principle (amount): " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.loan_principal << "\n";
   }
-  if (data.markdown_valid == true)
+  if (data.markdown_valid)
   {
     std::cout << "    Markdown (unitprice): " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.markdown << "\n";
   }
-  if (data.markup_valid == true)
+  if (data.markup_valid)
   {
     std::cout << "    Markup (unitprice): " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.markup << "\n";
   }
-  if (data.numerator_valid == true)
+  if (data.numerator_valid)
   {
     std::cout << "    Stock split ratio numerator: " << data.numerator << "\n";
   }
-  if (data.opt_action_valid == true)
+  if (data.opt_action_valid)
   {
     if (data.opt_action == OfxTransactionData::OFX_OPTACTION_EXERCISE)
       strncpy(dest_string, "EXERCISE", sizeof(dest_string));
@@ -668,11 +668,11 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    Option action: " << dest_string << "\n";
   }
-  if (data.penalty_valid == true)
+  if (data.penalty_valid)
   {
     std::cout << "    Penalty withheld (amount): " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.penalty << "\n";
   }
-  if (data.pos_type_valid == true)
+  if (data.pos_type_valid)
   {
     if (data.pos_type == OfxTransactionData::OFX_POSTYPE_LONG)
       strncpy(dest_string, "LONG", sizeof(dest_string));
@@ -682,15 +682,15 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    Position Type: " << dest_string << "\n";
   }
-  if (data.prior_year_contrib_valid == true)
+  if (data.prior_year_contrib_valid)
   {
     std::cout << "    Prior year 401(k) contribution: " << (data.prior_year_contrib ? "Yes" : "No") << "\n";
   }
-  if (data.related_fi_tid_valid == true)
+  if (data.related_fi_tid_valid)
   {
     std::cout << "    Related transaction TID: " << data.related_fi_tid << "\n";
   }
-  if (data.related_type_valid == true)
+  if (data.related_type_valid)
   {
     if (data.related_type == OfxTransactionData::OFX_RELTYPE_SPREAD)
       strncpy(dest_string, "SPREAD", sizeof(dest_string));
@@ -704,7 +704,7 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    Related Option Type: " << dest_string << "\n";
   }
-  if (data.option_secured_valid == true)
+  if (data.option_secured_valid)
   {
     if (data.option_secured == OfxTransactionData::OFX_SECURED_NAKED)
       strncpy(dest_string, "NAKED", sizeof(dest_string));
@@ -714,7 +714,7 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    How is the option secured: " << dest_string << "\n";
   }
-  if (data.sell_reason_valid == true)
+  if (data.sell_reason_valid)
   {
     if (data.sell_reason == OfxTransactionData::OFX_SELLREASON_CALL)
       strncpy(dest_string, "CALL: the debt was called", sizeof(dest_string));
@@ -726,7 +726,7 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    Reason for the debt sell: " << dest_string << "\n";
   }
-  if (data.sell_type_valid == true)
+  if (data.sell_type_valid)
   {
     if (data.sell_type == OfxTransactionData::OFX_SELL_TYPE_SELL)
       strncpy(dest_string, "SELL: Sell", sizeof(dest_string));
@@ -740,15 +740,15 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    Sell type: " << dest_string << "\n";
   }
-  if (data.shares_per_cont_valid == true)
+  if (data.shares_per_cont_valid)
   {
     std::cout << "    Shares per option contract: " << data.shares_per_cont << "\n";
   }
-  if (data.state_withholding_valid == true)
+  if (data.state_withholding_valid)
   {
     std::cout << "    State taxes withheld: " <<  std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.state_withholding << "\n";
   }
-  if (data.subacct_from_valid == true)
+  if (data.subacct_from_valid)
   {
     if (data.subacct_from == OfxTransactionData::OFX_SUBACCT_CASH)
       strncpy(dest_string, "CASH", sizeof(dest_string));
@@ -762,7 +762,7 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    From sub account type: " << dest_string << "\n";
   }
-  if (data.subacct_funding_valid == true)
+  if (data.subacct_funding_valid)
   {
     if (data.subacct_funding == OfxTransactionData::OFX_SUBACCT_CASH)
       strncpy(dest_string, "CASH", sizeof(dest_string));
@@ -776,7 +776,7 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    Funding sub account type: " << dest_string << "\n";
   }
-  if (data.subacct_security_valid == true)
+  if (data.subacct_security_valid)
   {
     if (data.subacct_security == OfxTransactionData::OFX_SUBACCT_CASH)
       strncpy(dest_string, "CASH", sizeof(dest_string));
@@ -790,7 +790,7 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    Security sub account type: " << dest_string << "\n";
   }
-  if (data.subacct_to_valid == true)
+  if (data.subacct_to_valid)
   {
     if (data.subacct_to == OfxTransactionData::OFX_SUBACCT_CASH)
       strncpy(dest_string, "CASH", sizeof(dest_string));
@@ -804,15 +804,15 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    To sub account type: " << dest_string << "\n";
   }
-  if (data.taxes_valid == true)
+  if (data.taxes_valid)
   {
     std::cout << "    Tax on the trade (amount): " <<  std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.taxes << "\n";
   }
-  if (data.tax_exempt_valid == true)
+  if (data.tax_exempt_valid)
   {
     std::cout << "    Tax exempt: " << (data.tax_exempt ? "Yes" : "No") << "\n";
   }
-  if (data.transfer_action_valid == true)
+  if (data.transfer_action_valid)
   {
     if (data.transfer_action == OfxTransactionData::OFX_TFERACTION_IN)
       strncpy(dest_string, "IN", sizeof(dest_string));
@@ -822,7 +822,7 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    Action for the transfer: " << dest_string << "\n";
   }
-  if (data.unit_type_valid == true)
+  if (data.unit_type_valid)
   {
     if (data.unit_type == OfxTransactionData::OFX_UNITTYPE_SHARES)
       strncpy(dest_string, "SHARES", sizeof(dest_string));
@@ -832,11 +832,11 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    Type of the Units value: " << dest_string << "\n";
   }
-  if (data.withholding_valid == true)
+  if (data.withholding_valid)
   {
     std::cout << "    Federal tax withheld (amount): " <<  std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.withholding << "\n";
   }
-  if (data.security_data_valid == true)
+  if (data.security_data_valid)
   {
     ofx_proc_security_cb(*(data.security_data_ptr), NULL );
   }
@@ -848,19 +848,19 @@ int ofx_proc_position_cb(struct OfxPositionData data, void * position_data)
 {
   char dest_string[255];
   std::cout << "ofx_proc_position():\n";
-  if (data.account_id_valid == true)
+  if (data.account_id_valid)
   {
     std::cout << "    Account ID: " << data.account_id << "\n";
   }
-  if (data.unique_id_valid == true)
+  if (data.unique_id_valid)
   {
     std::cout << "    Unique ID of the security: " << data.unique_id << "\n";
   }
-  if (data.unique_id_type_valid == true)
+  if (data.unique_id_type_valid)
   {
     std::cout << "    Format of the Unique ID: " << data.unique_id_type << "\n";
   }
-  if (data.heldinaccount_type_valid == true)
+  if (data.heldinaccount_type_valid)
   {
     if (data.heldinaccount_type == OfxPositionData::OFX_HELDINACCT_CASH)
       strncpy(dest_string, "CASH: Cash subaccount", sizeof(dest_string));
@@ -874,7 +874,7 @@ int ofx_proc_position_cb(struct OfxPositionData data, void * position_data)
       strncpy(dest_string, "ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    Held in account type: " << dest_string << "\n";
   }
-  if (data.position_type_valid == true)
+  if (data.position_type_valid)
   {
     if (data.position_type == OfxPositionData::OFX_POSITION_SHORT)
       strncpy(dest_string, "SHORT: Short (writer for options, short for all others)", sizeof(dest_string));
@@ -884,13 +884,13 @@ int ofx_proc_position_cb(struct OfxPositionData data, void * position_data)
       strncpy(dest_string, "ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    Position type: " << dest_string << "\n";
   }
-  if (data.units_valid == true)
+  if (data.units_valid)
   {
     std::cout << "    Units: " << std::setprecision(4) << data.units;
     strncpy(dest_string, " (bonds: face value; options: contracts; all others: shares)\n", sizeof(dest_string));
-    if (data.security_data_valid == true)
+    if (data.security_data_valid)
     {
-      if (data.security_data_ptr->security_type_valid == true)
+      if (data.security_data_ptr->security_type_valid)
       {
         if (data.security_data_ptr->security_type == OfxSecurityData::OFX_DEBT_SECURITY)
           strncpy(dest_string, " (face value)\n", sizeof(dest_string));
@@ -904,13 +904,13 @@ int ofx_proc_position_cb(struct OfxPositionData data, void * position_data)
     }
     std::cout << dest_string;
   }
-  if (data.unit_price_valid == true)
+  if (data.unit_price_valid)
   {
-    if (data.security_data_valid == true)
+    if (data.security_data_valid)
     {
       std::cout << "    Unit price: " <<  std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(4) << data.unit_price;
       strncpy(dest_string, " (bonds: % of par; options: premium per share of underlying; all others: price per share)\n", sizeof(dest_string));
-      if (data.security_data_ptr->security_type_valid == true)
+      if (data.security_data_ptr->security_type_valid)
       {
         if (data.security_data_ptr->security_type == OfxSecurityData::OFX_DEBT_SECURITY)
           strncpy(dest_string, "% (% of par)\n", sizeof(dest_string));
@@ -926,32 +926,32 @@ int ofx_proc_position_cb(struct OfxPositionData data, void * position_data)
     else
       std::cout << "    Unit price: " <<  std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.unit_price << "\n";
   }
-  if (data.market_value_valid == true)
+  if (data.market_value_valid)
   {
     std::cout << "    Market Value: " << data.market_value << "\n";
   }
-  if (data.amounts_are_foreign_currency_valid == true)
+  if (data.amounts_are_foreign_currency_valid)
   {
     std::cout << "    Amounts are in foreign currency: " << (data.amounts_are_foreign_currency ? "Yes" : "No") << "\n";
   }
-  if (data.currency_valid == true)
+  if (data.currency_valid)
   {
     std::cout << "    Currency: " << data.currency << "\n";
   }
-  if (data.currency_ratio_valid == true)
+  if (data.currency_ratio_valid)
   {
     std::cout << "    Ratio of default currency to currency: " << data.currency_ratio << "\n";
   }
-  if (data.date_unit_price_valid == true)
+  if (data.date_unit_price_valid)
   {
     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.date_unit_price)));
     std::cout << "    Date of unit price: " << dest_string << "\n";
   }
-  if (data.memo_valid == true)
+  if (data.memo_valid)
   {
     std::cout << "    Extra position information (memo): " << data.memo << "\n";
   }
-  if (data.inv_401k_source_valid == true)
+  if (data.inv_401k_source_valid)
   {
     if (data.inv_401k_source == OfxPositionData::OFX_401K_POSN_SOURCE_PRETAX)
       strncpy(dest_string, "PRETAX", sizeof(dest_string));
@@ -971,7 +971,7 @@ int ofx_proc_position_cb(struct OfxPositionData data, void * position_data)
       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
     std::cout << "    Source of 401(k) money: " << dest_string << "\n";
   }
-  if (data.security_data_valid == true)
+  if (data.security_data_valid)
   {
     ofx_proc_security_cb(*(data.security_data_ptr), NULL );
   }
@@ -983,60 +983,60 @@ int ofx_proc_statement_cb(struct OfxStatementData data, void * statement_data)
 {
   char dest_string[255];
   std::cout << "ofx_proc_statement():\n";
-  if (data.currency_valid == true)
+  if (data.currency_valid)
   {
     std::cout << "    Default Currency: " << data.currency << "\n";
   }
-  if (data.account_id_valid == true)
+  if (data.account_id_valid)
   {
     std::cout << "    Account ID: " << data.account_id << "\n";
   }
-  if (data.date_asof_valid == true)
+  if (data.date_asof_valid)
   {
     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.date_asof)));
     std::cout << "    Statement as-of date: " << dest_string << "\n";
   }
-  if (data.date_start_valid == true)
+  if (data.date_start_valid)
   {
     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.date_start)));
     std::cout << "    Start date of this statement: " << dest_string << "\n";
   }
-  if (data.date_end_valid == true)
+  if (data.date_end_valid)
   {
     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.date_end)));
     std::cout << "    End date of this statement: " << dest_string << "\n";
   }
-  if (data.ledger_balance_valid == true)
+  if (data.ledger_balance_valid)
   {
     std::cout << "    Ledger balance: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.ledger_balance << "\n";
   }
-  if (data.ledger_balance_date_valid == true)
+  if (data.ledger_balance_date_valid)
   {
     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.ledger_balance_date)));
     std::cout << "    Ledger balance date: " << dest_string << "\n";
   }
-  if (data.available_balance_valid == true)
+  if (data.available_balance_valid)
   {
     std::cout << "    Available balance: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.available_balance << "\n";
   }
-  if (data.available_balance_date_valid == true)
+  if (data.available_balance_date_valid)
   {
     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.available_balance_date)));
     std::cout << "    Available balance date: " << dest_string << "\n";
   }
-  if (data.margin_balance_valid == true)
+  if (data.margin_balance_valid)
   {
     std::cout << "    Margin balance: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.margin_balance << "\n";
   }
-  if (data.short_balance_valid == true)
+  if (data.short_balance_valid)
   {
     std::cout << "    Short balance: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.short_balance << "\n";
   }
-  if (data.buying_power_valid == true)
+  if (data.buying_power_valid)
   {
     std::cout << "    Buying power: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.buying_power << "\n";
   }
-  if (data.marketing_info_valid == true)
+  if (data.marketing_info_valid)
   {
     std::cout << "    Marketing information: " << data.marketing_info << "\n";
   }
@@ -1047,12 +1047,12 @@ int ofx_proc_statement_cb(struct OfxStatementData data, void * statement_data)
 int ofx_proc_account_cb(struct OfxAccountData data, void * account_data)
 {
   std::cout << "ofx_proc_account():\n";
-  if (data.account_id_valid == true)
+  if (data.account_id_valid)
   {
     std::cout << "    Account ID: " << data.account_id << "\n";
     std::cout << "    Account name: " << data.account_name << "\n";
   }
-  if (data.account_type_valid == true)
+  if (data.account_type_valid)
   {
     std::cout << "    Account type: ";
     switch (data.account_type)
@@ -1082,7 +1082,7 @@ int ofx_proc_account_cb(struct OfxAccountData data, void * account_data)
       std::cout << "ofx_proc_account() WRITEME: This is an unknown account type!";
     }
   }
-  if (data.currency_valid == true)
+  if (data.currency_valid)
   {
     std::cout << "    Default Currency: " << data.currency << "\n";
   }
@@ -1105,11 +1105,11 @@ int ofx_proc_account_cb(struct OfxAccountData data, void * account_data)
 int ofx_proc_status_cb(struct OfxStatusData data, void * status_data)
 {
   std::cout << "ofx_proc_status():\n";
-  if (data.ofx_element_name_valid == true)
+  if (data.ofx_element_name_valid)
   {
     std::cout << "    Ofx entity this status is relevant to: " << data.ofx_element_name << " \n";
   }
-  if (data.severity_valid == true)
+  if (data.severity_valid)
   {
     std::cout << "    Severity: ";
     switch (data.severity)
@@ -1127,11 +1127,11 @@ int ofx_proc_status_cb(struct OfxStatusData data, void * status_data)
       std::cout << "WRITEME: Unknown status severity!\n";
     }
   }
-  if (data.code_valid == true)
+  if (data.code_valid)
   {
     std::cout << "    Code: " << data.code << ", name: " << data.name << "\n    Description: " << data.description << "\n";
   }
-  if (data.server_message_valid == true)
+  if (data.server_message_valid)
   {
     std::cout << "    Server Message: " << data.server_message << "\n";
   }

@@ -282,7 +282,7 @@ public:
     }
     else     //curr_container_element != NULL
     {
-      if (end_element_for_data_element == true)
+      if (end_element_for_data_element)
       {
         incoming_data = strip_whitespace(incoming_data);
 

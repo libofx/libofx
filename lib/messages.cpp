@@ -52,7 +52,7 @@ void show_line_number()
   extern SGMLApplication::Position position;
 
 
-  if (ofx_show_position == true)
+  if (ofx_show_position)
   {
     SGMLApplication::Location *location = new SGMLApplication::Location(entity_ptr, position);
     if (location->lineNumber < LONG_MAX)
@@ -71,77 +71,77 @@ int message_out(OfxMsgType error_type, const std::string message)
   switch  (error_type)
   {
   case DEBUG :
-    if (ofx_DEBUG_msg == true)
+    if (ofx_DEBUG_msg)
     {
       std::cerr << "LibOFX DEBUG: " << message << "\n";
       show_line_number();
     }
     break;
   case DEBUG1 :
-    if (ofx_DEBUG1_msg == true)
+    if (ofx_DEBUG1_msg)
     {
       std::cerr << "LibOFX DEBUG1: " << message << "\n";
       show_line_number();
     }
     break;
   case DEBUG2 :
-    if (ofx_DEBUG2_msg == true)
+    if (ofx_DEBUG2_msg)
     {
       std::cerr << "LibOFX DEBUG2: " << message << "\n";
       show_line_number();
     }
     break;
   case DEBUG3 :
-    if (ofx_DEBUG3_msg == true)
+    if (ofx_DEBUG3_msg)
     {
       std::cerr << "LibOFX DEBUG3: " << message << "\n";
       show_line_number();
     }
     break;
   case DEBUG4 :
-    if (ofx_DEBUG4_msg == true)
+    if (ofx_DEBUG4_msg)
     {
       std::cerr << "LibOFX DEBUG4: " << message << "\n";
       show_line_number();
     }
     break;
   case DEBUG5 :
-    if (ofx_DEBUG5_msg == true)
+    if (ofx_DEBUG5_msg)
     {
       std::cerr << "LibOFX DEBUG5: " << message << "\n";
       show_line_number();
     }
     break;
   case STATUS :
-    if (ofx_STATUS_msg == true)
+    if (ofx_STATUS_msg)
     {
       std::cerr << "LibOFX STATUS: " << message << "\n";
       show_line_number();
     }
     break;
   case INFO :
-    if (ofx_INFO_msg == true)
+    if (ofx_INFO_msg)
     {
       std::cerr << "LibOFX INFO: " << message << "\n";
       show_line_number();
     }
     break;
   case WARNING :
-    if (ofx_WARNING_msg == true)
+    if (ofx_WARNING_msg)
     {
       std::cerr << "LibOFX WARNING: " << message << "\n";
       show_line_number();
     }
     break;
   case ERROR :
-    if (ofx_ERROR_msg == true)
+    if (ofx_ERROR_msg)
     {
       std::cerr << "LibOFX ERROR: " << message << "\n";
       show_line_number();
     }
     break;
   case PARSER :
-    if (ofx_PARSER_msg == true)
+    if (ofx_PARSER_msg)
     {
       std::cerr << "LibOFX PARSER: " << message << "\n";
       show_line_number();

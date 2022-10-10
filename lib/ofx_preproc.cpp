@@ -196,7 +196,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
               message_out(ERROR, "ofx_proc_file(): putenv failed");
             }
 #define OPENSP_UTF8_WARNING_TEXT "ofx_proc_file(): OpenSP cannot process an UTF-8 XML file without garbling it.  Furthermore, on windows the support for UTF-8 encode SGML files is broken. This is worked around by forcing a single byte encoding.  If the file is indeed UTF-8, it should pass through unmolested, but you will likely get 'non SGML character number' errors, even though the output is correct."
-            if (file_is_xml == true)
+            if (file_is_xml)
             {
               /* Normally the following would be "SP_ENCODING=xml".
                * Unfortunately, opensp's generic api will garble UTF-8 if this 
@@ -288,7 +288,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
 
         if (file_is_xml == true || (ofx_start == true && ofx_end == false))
         {
-          if (ofx_start == true)
+          if (ofx_start)
           {
             /* The above test won't help us if the <OFX> tag is on the same line
              * as the xml header, but as opensp can't be used to parse it anyway
@@ -350,7 +350,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
     input_file.close();
     tmp_file.close();
 #ifdef HAVE_ICONV
-    if (used_iconv == true)
+    if (used_iconv)
     {
       iconv_close(conversion_descriptor);
     }
