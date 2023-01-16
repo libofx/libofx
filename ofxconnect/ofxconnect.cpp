@@ -85,7 +85,7 @@ bool post(const char* request, const char* url, const char* filename)
 #else
 bool post(const char*, const char*, const char*)
 {
-  std::cerr << "ERROR: libox must be configured with libcurl to post this request directly" << std::endl;
+  std::cerr << "ERROR: libofx must be configured with libcurl to post this request directly" << std::endl;
   return false;
 }
 #endif
