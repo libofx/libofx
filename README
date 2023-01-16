@@ -42,58 +42,24 @@ Usage: `ofx2qif _path_to_ofx_file_/_ofx_filename_ > _output_filename_.qif`
 ofxconnect is a sample app to demonstrate & test new Direct Connect APIs.
 It also serves as an implementation sample, so you can understand how to use it in your own code.
 
-### The Direct Connect protocol
-
-Direct Connect consists of two separate steps:  First, contacting the partner
-server to retrieve information about your bank.  Second, contacting your bank
-to retrieve your accounts and statements.  The partner server should be
-contacted when the user sets up his accounts.  
-
-Common mistakes with the partner server are to contact it EVERY time you
-contact the bank, and contacting it just once to cache the contact
-info for all banks.  The former is overkill, the latter means users won't
-have up-to-date bank contact information.
-
 ### Usage
 
 Step-by-step guide to using the ofxconnect utility:
 
-1. Retrieve the list of banks
+1. Find the information needed to connect to your Financial Institution (FI), including the OFX server URL, organization name, and identifier (FID)
+
+2. Retrieve and view a list of all your accounts
 
     ```shell
-    $ ofxconnect -b
-    ```
-
-2. Find your bank in the list.  Retrieve the FI partner ID's (fipid's) for that bank
-
-    ```shell
-    $ ofxconnect -f "Wells Fargo"
-    101458
-    102078
-    5571
-    ```
-
-3. Retrieve the service capabilities of each fipid to find the one which has the services you want.\
-Note that all the 6-digit fipids don't seem to work well with LibOFX right now.
-
-    ```shell
-    $ ofxconnect -v 5571
-    Statements? Yes
-    Billpay? Yes
-    Investments? No
-    ```
-
-4. Retrieve and view the list of all your accounts
-
-    ```shell
-    $ ofxconnect -a --fipid=5571 --user=myusername --pass=mypassword accounts.ofx
+    $ ofxconnect -a --url=https://ofx.example.com --user=myuserid --pass=mypassword \
+                    --org=ReferenceFI --fid=00000 accounts.ofx
     $ ofxdump accounts.ofx 2>/dev/null
     ```
 
-5. Look for entries like this:
+3. Look for entries in the list like this:
 
     ```
-    Account ID: 999888777 00 123456789
+    Account ID: 999888777 00 1234567890
     Account name: Bank account 1234567890
     Account type: CHECKING
     Bank ID: 999888777
@@ -101,14 +67,15 @@ Note that all the 6-digit fipids don't seem to work well with LibOFX right now.
     Account #: 1234567890
     ```
 
-6. Retrieve a statement for one of the accounts
+4. Retrieve and view a statement for one of the accounts
 
     ```shell
-    $ ofxconnect -s --fipid=5571 --user=myusername --pass=mypassword --bank=xxx --account=xxx --type=x --past=xx statement.ofx
+    $ ofxconnect -s --url=https://ofx.example.com --user=myuserid --pass=mypassword \
+                    --org=ReferenceFI --fid=00000 --bank=999888777 --account=1234567890 \
+                    --type=1 --past=90 statement.ofx
     $ ofxdump statement.ofx 2>/dev/null
     ````
 
-    The `--bank` and `--account` parameters should be exactly like the "Bank ID" and "Account #" results from the account request.\
     The `--type` is: `1=CHECKING`, `2=INVESTMENT`, `3=CREDITCARD`. Other types are not supported.\
     The `--past` is how many days previous from today you want.
 

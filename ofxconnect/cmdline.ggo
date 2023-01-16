@@ -7,7 +7,6 @@ purpose "prints to stdout the created OFX file based on the options you pass it.
 # Options
 # option <long> <short> <desc> {argtype} {typestr="<type descr>"} {default="<default value>"} {required} {argoptional} {multiple}
 #section "Parameters"
-option "fipid" - "FI partner identifier (looks up fid, org & url from partner server)" string no
 option "fid" - "FI identifier" string no
 option "org" - "FI org tag" string no
 option "bank" - "IBAN bank identifier" string no
@@ -27,7 +26,3 @@ groupoption "statement-req"  s  "Request for a statement" group="command"
 groupoption "accountinfo-req"  a  "Request for a list of accounts" group="command"
 groupoption "payment-req"  p  "Request to make a payment" group="command"
 groupoption "paymentinquiry-req" i "Request to inquire about the status of a payment" group="command"
-groupoption "bank-list"  b  "List all known banks" group="command"
-groupoption "bank-fipid"  f  "List all fipids for a given bank" group="command"
-groupoption "bank-services"  v  "List supported services for a given fipid" group="command"
-groupoption "allsupport"  -  "List all banks which support online banking" group="command"
