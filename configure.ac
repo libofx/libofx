@@ -16,7 +16,7 @@ AC_SUBST([LIBOFX_MICRO_VERSION], [9])
 LIBOFX_VERSION_RELEASE_STRING="$LIBOFX_MAJOR_VERSION.$LIBOFX_MINOR_VERSION.$LIBOFX_MICRO_VERSION"
 
 AC_CONFIG_SRCDIR(inc/libofx.h.in)
-AM_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR(m4)
 AC_PROG_CC
@@ -73,15 +73,11 @@ AC_SUBST(LIBOFX_SO_AGE)
 
 AC_PROG_INSTALL
 
-AC_PROG_LIBTOOL
-AC_LIBTOOL_DLOPEN
-AC_LIBTOOL_WIN32_DLL
-AC_LIBTOOL_RC
+LT_INIT([dlopen win32-dll])
+LT_LANG([Windows Resource])
 
-AC_ISC_POSIX
 AC_C_BIGENDIAN
 AC_PROG_MAKE_SET
-AC_HEADER_STDC
 
 AC_ARG_WITH(opensp-includes,
 [  --with-opensp-includes=PATH     specify where to look for OpenSP includes
@@ -101,7 +97,8 @@ for d in /usr/include/OpenSP /usr/local/include/OpenSP /usr/include/sp/generic /
 	save_CPPFLAGS="$CPPFLAGS"
 	CPPFLAGS="$CPPFLAGS -I$d"
 	AC_MSG_CHECKING(for ParserEventGenerator.h in $d)
-	AC_TRY_CPP([#include <ParserEventGeneratorKit.h>],
+	AC_PREPROC_IFELSE(
+	[ AC_LANG_SOURCE([[#include <ParserEventGeneratorKit.h>]]) ],
 	[ AC_MSG_RESULT(yes); OPENSPINCLUDES=$d ], [ AC_MSG_RESULT(no) ])
 	CPPFLAGS="$save_CPPFLAGS"
     fi
@@ -122,7 +119,8 @@ AC_CACHE_VAL(ox_sp_multibyte,
 	save_CPPFLAGS="$CPPFLAGS"
 	CPPFLAGS="$CPPFLAGS -DOPENSPCONFIG_H=\"$d\""
 	AC_MSG_CHECKING(for OpenSP's config.h in $d)
-	AC_TRY_CPP([#include OPENSPCONFIG_H],
+	AC_PREPROC_IFELSE(
+	[ AC_LANG_SOURCE([[#include OPENSPCONFIG_H]]) ],
 	[ AC_MSG_RESULT(yes); OPENSPCONFIG_H=$d ], [ AC_MSG_RESULT(no) ])
 	CPPFLAGS="$save_CPPFLAGS"
     fi
@@ -155,7 +153,7 @@ ac_save_CPPFLAGS="$CPPFLAGS"
 if test "x$OPENSPINCLUDES" != x ; then
   CPPFLAGS="-I$OPENSPINCLUDES $CPPFLAGS"
 fi
-AC_LANG_CPLUSPLUS
+AC_LANG([C++])
 AC_CHECK_HEADERS([ParserEventGeneratorKit.h SGMLApplication.h EventGenerator.h],
 				[] ,
 				[ AC_MSG_ERROR([OpenSP includes not found]) ],
@@ -168,8 +166,9 @@ LIBS="$OPENSPLIBS $LIBS"
 AC_MSG_CHECKING([for libosp])
 ##dnl This is code from the opensp documentation, I modified it a little
 ##dnl It is really just a link test rather than a run test, it does nothing
-AC_LANG_CPLUSPLUS
-	AC_TRY_RUN([
+AC_LANG([C++])
+	AC_RUN_IFELSE([
+		AC_LANG_SOURCE([[
 		#include "ParserEventGeneratorKit.h"
 		class OutlineApplication : public SGMLApplication {
 		public:
@@ -185,6 +184,7 @@ AC_LANG_CPLUSPLUS
 		  EventGenerator *egp = parserKit.makeEventGenerator(argc - 1, argv + 1);
 		  OutlineApplication app;
 		}
+		]])
 	],
 	[AC_MSG_RESULT([yes])],
 	[AC_MSG_RESULT([no])
@@ -243,8 +243,7 @@ dnl Available from the GNU Autoconf Macro Archive at:
 dnl http://www.gnu.org/software/ac-archive/htmldoc/adl_func_getopt_long.html
 dnl
 AC_DEFUN([adl_FUNC_GETOPT_LONG],
- [AC_PREREQ(2.49)dnl
-  # clean out junk possibly left behind by a previous configuration
+ [# clean out junk possibly left behind by a previous configuration
   rm -f lib/getopt.h
   # Check for getopt_long support
   AC_CHECK_HEADERS([getopt.h])
@@ -358,24 +357,27 @@ else
 
     AC_CHECK_HEADER(iconv.h,
 	AC_MSG_CHECKING(for iconv)
-	AC_TRY_LINK([#include <stdlib.h>
-#include <iconv.h>],[
+	AC_LINK_IFELSE([
+	    AC_LANG_PROGRAM([[
+#include <stdlib.h>
+#include <iconv.h>]], [[
 iconv_t cd = iconv_open ("","");
-iconv (cd, NULL, NULL, NULL, NULL);],[
+iconv (cd, NULL, NULL, NULL, NULL);]])],[
 	    AC_MSG_RESULT(yes)
 	    WITH_ICONV=1],[
 	    AC_MSG_RESULT(no)
-	    AC_MSG_CHECKING(for iconv in -liconv)
 
 	    _ldflags="${LDFLAGS}"
 	    _libs="${LIBS}"
 	    LDFLAGS="${LDFLAGS} ${ICONV_LIBS}"
 	    LIBS="${LIBS} -liconv"
-
-	    AC_TRY_LINK([#include <stdlib.h>
-#include <iconv.h>],[
+	    AC_MSG_CHECKING(for iconv in -liconv)
+	    AC_LINK_IFELSE([
+		AC_LANG_PROGRAM([[
+#include <stdlib.h>
+#include <iconv.h>]],[[
 iconv_t cd = iconv_open ("","");
-iconv (cd, NULL, NULL, NULL, NULL);],[
+iconv (cd, NULL, NULL, NULL, NULL);]])],[
 		AC_MSG_RESULT(yes)
 		WITH_ICONV=1
 		ICONV_LIBS="${ICONV_LIBS} -liconv"
@@ -385,7 +387,7 @@ iconv (cd, NULL, NULL, NULL, NULL);],[
 		LIBS="${_libs}"
 		LDFLAGS="${_ldflags}"])]))
 fi
-AC_DEFINE_UNQUOTED(HAVE_ICONV, $WITH_ICONV, [Defined if libxml++ is available])
+AC_DEFINE_UNQUOTED(HAVE_ICONV, $WITH_ICONV, [Defined if iconv is available])
 
 AC_SUBST(WITH_ICONV)
 AC_SUBST(ICONV_LIBS)
@@ -400,8 +402,7 @@ AC_SUBST(QT_CFLAGS)
 LIBOFX_DTD_DIR='${datadir}/libofx/dtd'
 AC_SUBST(LIBOFX_DTD_DIR)
 
-	AC_CONFIG_FILES([Makefile])
-AC_OUTPUT(
+	AC_CONFIG_FILES([Makefile
 	   		libofx.spec
 			libofx.pc
 			libofx.lsm
@@ -415,4 +416,5 @@ AC_OUTPUT(
 			ofx2qif/Makefile
 			ofxdump/Makefile
 			ofxconnect/Makefile
-			)
+			])
+AC_OUTPUT
