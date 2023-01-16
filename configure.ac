@@ -292,7 +292,8 @@ AM_CONDITIONAL(HAVE_HELP2MAN, test "x$HELP2MAN" != "xno")
 # ----------------------------------------------------------------------------
 
 PKG_CHECK_MODULES(LIBCURL, libcurl >= 7.9.7,
-        [libcurl_available=yes],
+        [libcurl_available=yes
+         AC_DEFINE(HAVE_LIBCURL, 1, [Defined if libcurl is available])],
         [libcurl_available=no
          AC_MSG_WARN([libcurl is not available. ofxconnect (Direct connect samples) will NOT be built.])
         ])
