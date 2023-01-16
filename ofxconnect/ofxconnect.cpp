@@ -46,7 +46,6 @@
 #include "cmdline.h" /* Gengetopt generated parser */
 
 #include "nodeparser.h"
-#include "ofxpartner.h"
 
 #ifdef HAVE_LIBCURL
 bool post(const char* request, const char* url, const char* filename)
@@ -125,18 +124,6 @@ int main (int argc, char *argv[])
       exit(1);
     }
   }
-  else if ( args_info.bank_fipid_given || args_info.bank_services_given )
-  {
-    if ( (args_info.inputs_num > 0) )
-    {
-      std::cout << "bank " << args_info.inputs[0] << std::endl;
-    }
-    else
-    {
-      std::cerr << "ERROR: You must specify an bank" << std::endl;
-      exit(1);
-    }
-  }
 
   OfxFiLogin fi;
   memset(&fi, 0, sizeof(OfxFiLogin));
@@ -148,24 +135,12 @@ int main (int argc, char *argv[])
     // Get the FI Login information
     //
 
-    if ( args_info.fipid_given )
-    {
-      std::cerr << "fipid " <<  args_info.fipid_arg << std::endl;
-      std::cerr << "contacting partner server..." << std::endl;
-      OfxFiServiceInfo svcinfo = OfxPartner::ServiceInfo(args_info.fipid_arg);
-      std::cout << "fid " << svcinfo.fid << std::endl;
-      strncpy(fi.fid, svcinfo.fid, OFX_FID_LENGTH - 1);
-      std::cout << "org " << svcinfo.org << std::endl;
-      strncpy(fi.org, svcinfo.org, OFX_ORG_LENGTH - 1);
-      std::cout << "url " << svcinfo.url << std::endl;
-      url = svcinfo.url;
-    }
     if ( args_info.fid_given )
     {
       std::cerr << "fid " <<  args_info.fid_arg << std::endl;
       strncpy(fi.fid, args_info.fid_arg, OFX_FID_LENGTH - 1);
     }
-    else if ( ! args_info.fipid_given )
+    else
     {
       std::cerr << "ERROR: --fid is required" << std::endl;
       ok = false;
@@ -176,7 +151,7 @@ int main (int argc, char *argv[])
       std::cerr << "org " << args_info.org_arg << std::endl;
       strncpy(fi.org, args_info.org_arg, OFX_ORG_LENGTH - 1);
     }
-    else if ( ! args_info.fipid_given )
+    else
     {
       std::cerr << "ERROR: --org is required" << std::endl;
       ok = false;
@@ -458,43 +433,6 @@ int main (int argc, char *argv[])
         std::cout << request;
 
       free(request);
-    }
-  }
-
-  if ( args_info.bank_list_given )
-  {
-    std::cout << OfxPartner::BankNames();
-  }
-
-  if ( args_info.bank_fipid_given && args_info.inputs_num > 0 )
-  {
-    std::cout << OfxPartner::FipidForBank(args_info.inputs[0]);
-  }
-
-  if ( args_info.bank_services_given && args_info.inputs_num > 0 )
-  {
-    OfxFiServiceInfo svcinfo = OfxPartner::ServiceInfo(args_info.inputs[0]);
-    std::cout << "Account List? " << (svcinfo.accountlist ? "Yes" : "No") << std::endl;
-    std::cout << "Statements? " << (svcinfo.statements ? "Yes" : "No") << std::endl;
-    std::cout << "Billpay? " << (svcinfo.billpay ? "Yes" : "No") << std::endl;
-    std::cout << "Investments? " << (svcinfo.investments ? "Yes" : "No") << std::endl;
-  }
-
-  if ( args_info.allsupport_given )
-  {
-    std::vector<std::string> banks = OfxPartner::BankNames();
-    std::vector<std::string>::const_iterator it_bank = banks.begin();
-    while ( it_bank != banks.end() )
-    {
-      std::vector<std::string> fipids = OfxPartner::FipidForBank(*it_bank);
-      std::vector<std::string>::const_iterator it_fipid = fipids.begin();
-      while ( it_fipid != fipids.end() )
-      {
-        if ( OfxPartner::ServiceInfo(*it_fipid).accountlist )
-          std::cout << *it_bank << std::endl;
-        ++it_fipid;
-      }
-      ++it_bank;
     }
   }
 

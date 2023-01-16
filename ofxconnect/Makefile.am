@@ -1,6 +1,6 @@
 bin_PROGRAMS = ofxconnect
 ofxconnect_LDADD = $(top_builddir)/lib/libofx.la @LIBCURL_LIBS@ @LIBXMLPP_LIBS@
-ofxconnect_SOURCES = cmdline.h cmdline.c nodeparser.cpp nodeparser.h ofxpartner.cpp ofxpartner.h ofxconnect.cpp 
+ofxconnect_SOURCES = cmdline.h cmdline.c nodeparser.cpp nodeparser.h ofxconnect.cpp
 dist_man_MANS = ofxconnect.1
 
 AM_CPPFLAGS = \

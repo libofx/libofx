@@ -43,9 +43,6 @@ struct gengetopt_args_info
 {
   const char *help_help; /**< @brief Print help and exit help description.  */
   const char *version_help; /**< @brief Print version and exit help description.  */
-  char * fipid_arg;	/**< @brief FI partner identifier (looks up fid, org & url from partner server).  */
-  char * fipid_orig;	/**< @brief FI partner identifier (looks up fid, org & url from partner server) original value given at command line.  */
-  const char *fipid_help; /**< @brief FI partner identifier (looks up fid, org & url from partner server) help description.  */
   char * fid_arg;	/**< @brief FI identifier.  */
   char * fid_orig;	/**< @brief FI identifier original value given at command line.  */
   const char *fid_help; /**< @brief FI identifier help description.  */
@@ -83,14 +80,9 @@ struct gengetopt_args_info
   const char *accountinfo_req_help; /**< @brief Request for a list of accounts help description.  */
   const char *payment_req_help; /**< @brief Request to make a payment help description.  */
   const char *paymentinquiry_req_help; /**< @brief Request to inquire about the status of a payment help description.  */
-  const char *bank_list_help; /**< @brief List all known banks help description.  */
-  const char *bank_fipid_help; /**< @brief List all fipids for a given bank help description.  */
-  const char *bank_services_help; /**< @brief List supported services for a given fipid help description.  */
-  const char *allsupport_help; /**< @brief List all banks which support online banking help description.  */
   
   unsigned int help_given ;	/**< @brief Whether help was given.  */
   unsigned int version_given ;	/**< @brief Whether version was given.  */
-  unsigned int fipid_given ;	/**< @brief Whether fipid was given.  */
   unsigned int fid_given ;	/**< @brief Whether fid was given.  */
   unsigned int org_given ;	/**< @brief Whether org was given.  */
   unsigned int bank_given ;	/**< @brief Whether bank was given.  */
@@ -106,10 +98,6 @@ struct gengetopt_args_info
   unsigned int accountinfo_req_given ;	/**< @brief Whether accountinfo-req was given.  */
   unsigned int payment_req_given ;	/**< @brief Whether payment-req was given.  */
   unsigned int paymentinquiry_req_given ;	/**< @brief Whether paymentinquiry-req was given.  */
-  unsigned int bank_list_given ;	/**< @brief Whether bank-list was given.  */
-  unsigned int bank_fipid_given ;	/**< @brief Whether bank-fipid was given.  */
-  unsigned int bank_services_given ;	/**< @brief Whether bank-services was given.  */
-  unsigned int allsupport_given ;	/**< @brief Whether allsupport was given.  */
 
   char **inputs ; /**< @brief unnamed options (options without names) */
   unsigned inputs_num ; /**< @brief unnamed options number */

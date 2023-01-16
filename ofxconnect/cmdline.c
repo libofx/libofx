@@ -36,7 +36,6 @@ const char *gengetopt_args_info_description = "";
 const char *gengetopt_args_info_help[] = {
   "  -h, --help                Print help and exit",
   "  -V, --version             Print version and exit",
-  "      --fipid=STRING        FI partner identifier (looks up fid, org & url from\n                              partner server)",
   "      --fid=STRING          FI identifier",
   "      --org=STRING          FI org tag",
   "      --bank=STRING         IBAN bank identifier",
@@ -53,10 +52,6 @@ const char *gengetopt_args_info_help[] = {
   "  -a, --accountinfo-req     Request for a list of accounts",
   "  -p, --payment-req         Request to make a payment",
   "  -i, --paymentinquiry-req  Request to inquire about the status of a payment",
-  "  -b, --bank-list           List all known banks",
-  "  -f, --bank-fipid          List all fipids for a given bank",
-  "  -v, --bank-services       List supported services for a given fipid",
-  "      --allsupport          List all banks which support online banking",
     0
 };
 
@@ -84,7 +79,6 @@ void clear_given (struct gengetopt_args_info *args_info)
 {
   args_info->help_given = 0 ;
   args_info->version_given = 0 ;
-  args_info->fipid_given = 0 ;
   args_info->fid_given = 0 ;
   args_info->org_given = 0 ;
   args_info->bank_given = 0 ;
@@ -100,10 +94,6 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->accountinfo_req_given = 0 ;
   args_info->payment_req_given = 0 ;
   args_info->paymentinquiry_req_given = 0 ;
-  args_info->bank_list_given = 0 ;
-  args_info->bank_fipid_given = 0 ;
-  args_info->bank_services_given = 0 ;
-  args_info->allsupport_given = 0 ;
   args_info->command_group_counter = 0 ;
 }
 
@@ -111,8 +101,6 @@ static
 void clear_args (struct gengetopt_args_info *args_info)
 {
   FIX_UNUSED (args_info);
-  args_info->fipid_arg = NULL;
-  args_info->fipid_orig = NULL;
   args_info->fid_arg = NULL;
   args_info->fid_orig = NULL;
   args_info->org_arg = NULL;
@@ -142,26 +130,21 @@ void init_args_info(struct gengetopt_args_info *args_info)
 
   args_info->help_help = gengetopt_args_info_help[0] ;
   args_info->version_help = gengetopt_args_info_help[1] ;
-  args_info->fipid_help = gengetopt_args_info_help[2] ;
-  args_info->fid_help = gengetopt_args_info_help[3] ;
-  args_info->org_help = gengetopt_args_info_help[4] ;
-  args_info->bank_help = gengetopt_args_info_help[5] ;
-  args_info->broker_help = gengetopt_args_info_help[6] ;
-  args_info->user_help = gengetopt_args_info_help[7] ;
-  args_info->pass_help = gengetopt_args_info_help[8] ;
-  args_info->acct_help = gengetopt_args_info_help[9] ;
-  args_info->type_help = gengetopt_args_info_help[10] ;
-  args_info->past_help = gengetopt_args_info_help[11] ;
-  args_info->url_help = gengetopt_args_info_help[12] ;
-  args_info->trid_help = gengetopt_args_info_help[13] ;
-  args_info->statement_req_help = gengetopt_args_info_help[15] ;
-  args_info->accountinfo_req_help = gengetopt_args_info_help[16] ;
-  args_info->payment_req_help = gengetopt_args_info_help[17] ;
-  args_info->paymentinquiry_req_help = gengetopt_args_info_help[18] ;
-  args_info->bank_list_help = gengetopt_args_info_help[19] ;
-  args_info->bank_fipid_help = gengetopt_args_info_help[20] ;
-  args_info->bank_services_help = gengetopt_args_info_help[21] ;
-  args_info->allsupport_help = gengetopt_args_info_help[22] ;
+  args_info->fid_help = gengetopt_args_info_help[2] ;
+  args_info->org_help = gengetopt_args_info_help[3] ;
+  args_info->bank_help = gengetopt_args_info_help[4] ;
+  args_info->broker_help = gengetopt_args_info_help[5] ;
+  args_info->user_help = gengetopt_args_info_help[6] ;
+  args_info->pass_help = gengetopt_args_info_help[7] ;
+  args_info->acct_help = gengetopt_args_info_help[8] ;
+  args_info->type_help = gengetopt_args_info_help[9] ;
+  args_info->past_help = gengetopt_args_info_help[10] ;
+  args_info->url_help = gengetopt_args_info_help[11] ;
+  args_info->trid_help = gengetopt_args_info_help[12] ;
+  args_info->statement_req_help = gengetopt_args_info_help[14] ;
+  args_info->accountinfo_req_help = gengetopt_args_info_help[15] ;
+  args_info->payment_req_help = gengetopt_args_info_help[16] ;
+  args_info->paymentinquiry_req_help = gengetopt_args_info_help[17] ;
   
 }
 
@@ -254,8 +237,6 @@ static void
 cmdline_parser_release (struct gengetopt_args_info *args_info)
 {
   unsigned int i;
-  free_string_field (&(args_info->fipid_arg));
-  free_string_field (&(args_info->fipid_orig));
   free_string_field (&(args_info->fid_arg));
   free_string_field (&(args_info->fid_orig));
   free_string_field (&(args_info->org_arg));
@@ -314,8 +295,6 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "help", 0, 0 );
   if (args_info->version_given)
     write_into_file(outfile, "version", 0, 0 );
-  if (args_info->fipid_given)
-    write_into_file(outfile, "fipid", args_info->fipid_orig, 0);
   if (args_info->fid_given)
     write_into_file(outfile, "fid", args_info->fid_orig, 0);
   if (args_info->org_given)
@@ -346,14 +325,6 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "payment-req", 0, 0 );
   if (args_info->paymentinquiry_req_given)
     write_into_file(outfile, "paymentinquiry-req", 0, 0 );
-  if (args_info->bank_list_given)
-    write_into_file(outfile, "bank-list", 0, 0 );
-  if (args_info->bank_fipid_given)
-    write_into_file(outfile, "bank-fipid", 0, 0 );
-  if (args_info->bank_services_given)
-    write_into_file(outfile, "bank-services", 0, 0 );
-  if (args_info->allsupport_given)
-    write_into_file(outfile, "allsupport", 0, 0 );
   
 
   i = EXIT_SUCCESS;
@@ -411,10 +382,6 @@ reset_group_command(struct gengetopt_args_info *args_info)
   args_info->accountinfo_req_given = 0 ;
   args_info->payment_req_given = 0 ;
   args_info->paymentinquiry_req_given = 0 ;
-  args_info->bank_list_given = 0 ;
-  args_info->bank_fipid_given = 0 ;
-  args_info->bank_services_given = 0 ;
-  args_info->allsupport_given = 0 ;
 
   args_info->command_group_counter = 0;
 }
@@ -634,7 +601,6 @@ cmdline_parser_internal (
       static struct option long_options[] = {
         { "help",	0, NULL, 'h' },
         { "version",	0, NULL, 'V' },
-        { "fipid",	1, NULL, 0 },
         { "fid",	1, NULL, 0 },
         { "org",	1, NULL, 0 },
         { "bank",	1, NULL, 0 },
@@ -650,14 +616,10 @@ cmdline_parser_internal (
         { "accountinfo-req",	0, NULL, 'a' },
         { "payment-req",	0, NULL, 'p' },
         { "paymentinquiry-req",	0, NULL, 'i' },
-        { "bank-list",	0, NULL, 'b' },
-        { "bank-fipid",	0, NULL, 'f' },
-        { "bank-services",	0, NULL, 'v' },
-        { "allsupport",	0, NULL, 0 },
         { 0,  0, 0, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVsapibfv", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVsapi", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -733,69 +695,10 @@ cmdline_parser_internal (
             goto failure;
         
           break;
-        case 'b':	/* List all known banks.  */
-        
-          if (args_info->command_group_counter && override)
-            reset_group_command (args_info);
-          args_info->command_group_counter += 1;
-        
-          if (update_arg( 0 , 
-               0 , &(args_info->bank_list_given),
-              &(local_args_info.bank_list_given), optarg, 0, 0, ARG_NO,
-              check_ambiguity, override, 0, 0,
-              "bank-list", 'b',
-              additional_error))
-            goto failure;
-        
-          break;
-        case 'f':	/* List all fipids for a given bank.  */
-        
-          if (args_info->command_group_counter && override)
-            reset_group_command (args_info);
-          args_info->command_group_counter += 1;
-        
-          if (update_arg( 0 , 
-               0 , &(args_info->bank_fipid_given),
-              &(local_args_info.bank_fipid_given), optarg, 0, 0, ARG_NO,
-              check_ambiguity, override, 0, 0,
-              "bank-fipid", 'f',
-              additional_error))
-            goto failure;
-        
-          break;
-        case 'v':	/* List supported services for a given fipid.  */
-        
-          if (args_info->command_group_counter && override)
-            reset_group_command (args_info);
-          args_info->command_group_counter += 1;
-        
-          if (update_arg( 0 , 
-               0 , &(args_info->bank_services_given),
-              &(local_args_info.bank_services_given), optarg, 0, 0, ARG_NO,
-              check_ambiguity, override, 0, 0,
-              "bank-services", 'v',
-              additional_error))
-            goto failure;
-        
-          break;
 
         case 0:	/* Long option with no short option */
-          /* FI partner identifier (looks up fid, org & url from partner server).  */
-          if (strcmp (long_options[option_index].name, "fipid") == 0)
-          {
-          
-          
-            if (update_arg( (void *)&(args_info->fipid_arg), 
-                 &(args_info->fipid_orig), &(args_info->fipid_given),
-                &(local_args_info.fipid_given), optarg, 0, 0, ARG_STRING,
-                check_ambiguity, override, 0, 0,
-                "fipid", '-',
-                additional_error))
-              goto failure;
-          
-          }
           /* FI identifier.  */
-          else if (strcmp (long_options[option_index].name, "fid") == 0)
+          if (strcmp (long_options[option_index].name, "fid") == 0)
           {
           
           
@@ -944,23 +847,6 @@ cmdline_parser_internal (
                 &(local_args_info.trid_given), optarg, 0, 0, ARG_INT,
                 check_ambiguity, override, 0, 0,
                 "trid", '-',
-                additional_error))
-              goto failure;
-          
-          }
-          /* List all banks which support online banking.  */
-          else if (strcmp (long_options[option_index].name, "allsupport") == 0)
-          {
-          
-            if (args_info->command_group_counter && override)
-              reset_group_command (args_info);
-            args_info->command_group_counter += 1;
-          
-            if (update_arg( 0 , 
-                 0 , &(args_info->allsupport_given),
-                &(local_args_info.allsupport_given), optarg, 0, 0, ARG_NO,
-                check_ambiguity, override, 0, 0,
-                "allsupport", '-',
                 additional_error))
               goto failure;
           

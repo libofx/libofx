@@ -4,7 +4,6 @@
 set(ofxconnect_SRCS
         cmdline.c
         ofxconnect.cpp
-        ofxpartner.cpp
         nodeparser.cpp
 )
 
