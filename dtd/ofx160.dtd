@@ -265,7 +265,7 @@
 <!ENTITY % EXTDPMTFORENUM "(#PCDATA)">
 <!--#ENTITY % EXTDPMTFORENUM		#Enum("INDIVIDUAL","BUSINESS")-->
 <!ENTITY % COUPONFREQENUM "(#PCDATA)">
-<!--#ENTITY % COUPONFREQENUM		#Enum("MONTHLY","QUARTERLY","SEMIANNUALLY","ANNUALLY","OTHER")-->
+<!--#ENTITY % COUPONFREQENUM		#Enum("MONTHLY","QUARTERLY","SEMIANNUALLY","ANUALLY","OTHER")-->
 <!ENTITY % CHARTYPEENUM "(#PCDATA)">
 <!--#ENTITY % CHARTYPEENUM		#Enum("ALPHAONLY","NUMERICONLY","ALPHAORNUMERIC","ALPHAANDNUMERIC")-->
 <!ENTITY % BALANCEENUM "(#PCDATA)">
@@ -276,7 +276,7 @@
 <!--#ENTITY % ACCOUNTENUM2		#Enum("CHECKING","SAVINGS","MONEYMRKT","CREDITLINE","CMA")-->
 <!ENTITY % FREQENUM "(#PCDATA)">
 <!--#ENTITY % FREQENUM			#Enum("WEEKLY","BIWEEKLY","TWICEMONTHLY","MONTHLY","FOURWEEKS","BIMONTHLY",
-							"QUARTERLY","SEMIANNUALLY","TRIANNUALLY","ANNUALLY")-->
+							"QUARTERLY","SEMIANNUALLY","TRIANNUALLY","ANUALLY")-->
 <!ENTITY % DAYSENUM "(#PCDATA)">
 <!--#ENTITY % DAYSENUM			#Enum("MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY",
 							"SATURDAY","SUNDAY")-->
@@ -859,7 +859,7 @@
 <!--#ELEMENT STPCHKSYNCRQ #Link(TOKEN2,BANKMSGSRQV2)-->
 
 
-<!-- intrabank transfer synchronization request, v2 adds ccacctfrom -->
+<!-- intrabank transfer sychronization request, v2 adds ccacctfrom -->
 <!-- OFX 1.5 -->
 <!-- FROM BANKACCTFROM to (BANKACCTFROM | CCACCTFROM) -->
 <!ELEMENT INTRASYNCRQ - - (%SYNCRQMACRO , (BANKACCTFROM | CCACCTFROM), INTRATRNRQ*)>
@@ -1398,7 +1398,7 @@
 <!ELEMENT DFLTDAYSTOPAY - o %DAYSPANTYPE> 		  <!--  the default number of days to pay -->
 <!ELEMENT XFERDAYSWITH          - o     %DAYSPANTYPE>       <!--  number of days before the processing date that funds are withdrawn for xfers-->
 <!ELEMENT XFERDFLTDAYSTOPAY     - o %DAYSPANTYPE>   <!--  the default number of days to pay for transfers-->
-<!ELEMENT POSTPROCWND   - o     %DAYSPANTYPE>       <!--  the number of days after a transaction is processed that it is accessible
+<!ELEMENT POSTPROCWND   - o     %DAYSPANTYPE>       <!--  the number of days after a transaction is processed that it is acessible
                                                                                           for status inquiries -->
 <!ELEMENT STSVIAMODS    - o     %BOOLTYPE>      <!--  server supports communication of server-initiated payment status changes
                                                                                           via the PMTMODRS -->
@@ -2288,7 +2288,7 @@
 <!ELEMENT INVSTMTRS  - - (DTASOF , CURDEF , INVACCTFROM , INVTRANLIST? ,
                INVPOSLIST? , INVBAL? , INVOOLIST? ,  MKTGINFO?) >
 
-<!-- Marketing Message -->
+<!-- Marketing Mesage -->
 <!ELEMENT MKTVAL  - O %AMTTYPE >
 
 <!-- ** Transaction List ** -->
@@ -2493,7 +2493,7 @@
 
 <!ELEMENT DENOMINATOR  - O %AMTTYPE >
 
-<!-- Amount of cash received from fractional shares -->
+<!-- Amount of cash recieved from fractional shares -->
 <!ELEMENT FRACCASH  - O %AMTTYPE >
 
 <!-- ** Transfer Transaction ** -->
@@ -3045,7 +3045,7 @@
 		     )">
 
 <!-- OFX 1.6 correction: Disallow an empty <MSGSETLIST> by requiring one or
-     more occurrences of the %MSGSETMACRO contents.
+     more occurances of the %MSGSETMACRO contents.
      Also, make <SIGNONMSGSET> and <PROFMSGSET> required. -->
 <!ELEMENT MSGSETLIST    - - (
     ((( SIGNONMSGSET, (%MSGSETMACRO)+, PROFMSGSET ) |

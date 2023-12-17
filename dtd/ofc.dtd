@@ -27,7 +27,7 @@
 	model. These entity tags will never occur 
 	in the OFC document instance itself.
 
-	The formatting rules are described in the 
+	The formating rules are described in the 
 	OFC Build & Parse Specification, which
 	can be obtained from Microsoft.   
 -->
@@ -45,7 +45,7 @@
 <!ENTITY % NUMSTR 	"(#PCDATA)">
 
 <!--  ID: Used for specifying a unique id.
-	Must be composed of alphanumeric
+	Must be composed of alpha-numeric
 	characters. It may contain the 
 	following delimiters: ()-,.;:/\#
 	as well as spaces.
@@ -110,7 +110,7 @@
 	If the user is new to the system, the response must 
 	contain values for OFC services available on this server, 
 	as well as the default days to pay and the default days 
-	before withdrawal on new payees, when using the 
+	before withdrawl on new payees, when using the 
 	U.S. payment service model. The server returns 
 	the SESSKEY to be used during the next OFC HTTP session.
 -->
@@ -143,7 +143,7 @@
 <!ELEMENT TRNRS		- o	(CLTID, STATUS, ERROR?,
 	(STMTRS | INTRARS | INTERRS | PAYMTRS | PAYIQRS)?)>
 
-<!--  Account Statement: This is used for statement
+<!--  Account Statement: This is used for statment
 	downloads and file exchange. 
 -->
 <!ELEMENT ACCTSTMT	- o	(ACCTFROM, STMTRS)>
@@ -153,7 +153,7 @@
 <!--  ***************************************************************  -->
 
 <!--  Account Transaction: Sent to enable or change services
-	for a particular account belonging to a user.
+	for a paticular account belonging to a user.
 -->
 <!ELEMENT ACCTRQ	- o	(ACCTFROM, (SERVRQST+))>
 <!ELEMENT ACCTRS	- o	(SERVAUTH+)>
@@ -166,7 +166,7 @@
 <!ELEMENT PAYEERS	- o	(PAYEEID, PAYEE?, DAYSREQD, DAYSWITH)>
 
 <!--  Mail Transaction: Sent to inquire about 
-	services for a particular account belonging to
+	services for a paticular account belonging to
 	a user.  
 -->
 <!ELEMENT MAILRQ	- o	(SERVICE, ACCTFROM?, (MEMO+))>
@@ -191,7 +191,7 @@
 	an intra-bank transfer. If the server returns
 	a status indicating success, and no date/time
 	is specified, it will be assumed the funds are 
-	immediately available. The user's account
+	immeadiately available. The user's account
 	must have been previously enabled for banking 
 	services using the ACCTRQ/ACCTRS transactions. 
 -->
@@ -204,7 +204,7 @@
 	an inter-bank transfer. If the server returns
 	a status indicating success, and no date/time
 	is specified, it will be assumed the funds are 
-	immediately available. The user's account
+	immeadiately available. The user's account
 	must have been previously enabled for bill payment 
 	services using the ACCTRQ/ACCTRS transactions. 
 	The NAME and PAYACCT fields are for the "payee" 
@@ -341,7 +341,7 @@
 	should verify that this is a crash recovery by
 	comparing the session key against the key of the
 	previous session. If the keys match, then it can be 
-	assumed that the client did not receive the 
+	assumed that the client did not recieve the 
 	transaction response of the previous session, 
 	and return the response transactions of the previous
 	session. This key is always assigned by the
@@ -395,7 +395,7 @@
 	1, request rejected 
 	2, account pending
 	3, account closed
-	4, no CLTID (unsolicited transaction)
+	4, no CLTID (unsolicitied transaction)
 	5, password change required
 	
 	error status
@@ -463,7 +463,7 @@
 	3, Money Market
 	4, Credit Line
 	5, Loan
-	6, Inter-bank transfer payee
+	6, Inter-bank tranfer payee
 	7, Other
 -->
 <!ELEMENT ACCTTYPE	- o	%NUMSTR>
@@ -477,11 +477,11 @@
 	3, Dividend
 	4, Service Charge
 	5, Deposit
-	6, ATM Withdrawal
+	6, ATM Withdrawl
 	7, Transfer
 	8, Check
 	9, Electronic Payment
-	10, Cash Withdrawal
+	10, Cash Withdrawl
 	11, Electronic Payroll Deposit
 	12, Other
 -->
@@ -509,7 +509,7 @@
 -->
 <!ELEMENT DAYSREQD	- o	%NUMSTR>
 
-<!--  Withdrawal date: Used for specifying the number of 
+<!--  Withdrawl date: Used for specifying the number of 
 	days before funds will be withdarwn from a user's 
 	account prior to the due date of the payment.
 -->
@@ -550,13 +550,13 @@
 
 <!--  Service: Used for specifying a service.
 	These services are either banking services,
-	or billpayment services.
+	or billpayment services.  
 
 	0, Banking Services
 	1, Billpay Services (Service Model)
-	2. Payee Id/Acct Info (Interbank Transfer Model)
-	3. Payee Id Only (Interbank Transfer Model)
-	4. Acct Info Only (Interbank Transfer Model)
+	2. Payee Id/Acct Info (Interbank Tranfer Model)  
+	3. Payee Id Only (Interbank Tranfer Model)  
+	4. Acct Info Only (Interbank Tranfer Model)  
 -->
 <!ELEMENT SERVICE	- o	%NUMSTR>
 
